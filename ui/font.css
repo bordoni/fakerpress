@@ -1,0 +1,14 @@
+@font-face {
+	font-family: 'FakerPress';
+	src:url('font/fakerpress.eot');
+	src:url('font/fakerpress.eot?#iefix') format('embedded-opentype'),
+		url('font/fakerpress.ttf') format('truetype'),
+		url('font/fakerpress.woff') format('woff'),
+		url('font/fakerpress.svg#fakerpress') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.icon-fakerpress:before {
+	content: "\e600";
+}

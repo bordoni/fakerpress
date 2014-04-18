@@ -7,7 +7,7 @@ Stable tag:        trunk
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 
-Faker Press is a clean way to generate fake data to your WordPress instalation, great for developers who need testing
+FakerPress is a clean way to generate fake data to your WordPress instalation, great for developers who need testing
 
 == Description ==
 
