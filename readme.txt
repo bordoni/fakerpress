@@ -45,7 +45,7 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 
 **See room for improvement?**
 
-Great! There are several ways you can get involved to help make Stream better:
+Great! There are several ways you can get involved to help make FakerPress better:
 
 1. **Report Bugs:** If you find a bug, error or other problem, please report it! You can do this by [creating a new topic](http://wordpress.org/support/plugin/fakerpress) in the plugin forum. Once a developer can verify the bug by reproducing it, they will create an official bug report in GitHub where the bug will be worked on.
 2. **Suggest New Features:** Have an awesome idea? Please share it! Simply [create a new topic](http://wordpress.org/support/plugin/fakerpress) in the plugin forum to express your thoughts on why the feature should be included and get a discussion going around your idea.
