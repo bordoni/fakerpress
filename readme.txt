@@ -1,6 +1,6 @@
-=== Faker Press ===
+=== FakerPress ===
 Contributors:      iryz, bordoni
-Tags:              generator, admin, exemples, testing, taxonomies, users, post type
+Tags:              generator, admin, exemples, testing, taxonomies, users, post type, faker, fake data, random
 Requires at least: 3.7
 Tested up to:      3.9
 Stable tag:        trunk
@@ -51,7 +51,7 @@ Great! There are several ways you can get involved to help make Stream better:
 2. **Suggest New Features:** Have an awesome idea? Please share it! Simply [create a new topic](http://wordpress.org/support/plugin/fakerpress) in the plugin forum to express your thoughts on why the feature should be included and get a discussion going around your idea.
 3. **Issue Pull Requests:** If you're a developer, the easiest way to get involved is to help out on [issues already reported](https://github.com/iryz/fakerpress/issues) in GitHub. Be sure to check out the [contributing guide](https://github.com/iryz/fakerpress/blob/master/contributing.md) for developers.
 
-Thank you for wanting to make Stream better for everyone! We salute you.
+Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
 
