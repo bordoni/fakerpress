@@ -9,6 +9,8 @@
 	font-style: normal;
 }
 
-.icon-fakerpress:before {
+.icon-fakerpress:before,
+.toplevel_page_fakerpress.menu-top .wp-menu-image:before {
+	font-family: 'FakerPress';
 	content: "\e600";
 }
