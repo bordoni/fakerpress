@@ -2,15 +2,51 @@
 
 Please take a moment to review this document in order to make the contribution process easy and effective for everyone involved.
 
-Following these guidelines will help us get back to you more quickly, and will show that you care about making Stream better just like we do. In return, we'll do our best to respond to your issue or pull request as soon as possible with the same respect.
+Following these guidelines will help us get back to you more quickly, and will show that you care about making FakerPress better just like we do. In return, we'll do our best to respond to your issue or pull request as soon as possible with the same respect.
 
 
 ## Use the issue tracker
 
-The [issue tracker](https://github.com/x-team/wp-stream/issues) is the preferred channel for [bug reports](#bugs), [features requests](#features) and [submitting pull requests](#pull-requests), but please respect the following restrictions:
+The [issue tracker](https://github.com/iryz/fakerpress/issues) is the preferred channel for [bug reports](#bugs), [features requests](#features) and [submitting pull requests](#pull-requests), but please respect the following restrictions:
 
-* Support issues or usage questions that are not bugs should be posted on the [Plugin Support Forum](http://wordpress.org/support/plugin/stream).
+* Support issues or usage questions that are not bugs should be posted on the [Plugin Support Forum](http://wordpress.org/support/plugin/fakerpress).
 * Please **do not** derail or troll issues. Keep the discussion on topic and respect the opinions of others.
+* Make sure to read all the [labels below](#tracker-labels) to avoid confusion on status of each issue
+
+<a name="tracker-labels"></a>
+## Labels on issue tracker
+
+There is an idea behind this naming convetion, and we will stick to it because it's faily important to keep thing tidy if we want to move forward fast and clean.
+
+We will split the labels in two pieces, groups of labels and a label name, following the pattern below:
+
+```html
+<label-group>:<label-name>
+```
+
+Below you will find a list of fixed ones and it's explanations and what variables we might have:
+
+#### Group: "Type"
+* `type:bug`
+* `type:feature`
+* `type:l18n`
+* `type:3rd_party`
+* `type:invalid`
+* `type:enhancement`
+
+#### Group: "Status"
+* `status:confirmed`
+* `status:in_progress`
+* `status:incomplete`
+* `status:rejected`
+* `status:pull_requested`
+* `status:resolved`
+* `status:testing`
+* `status:on_hold`
+
+#### Group: "Information"
+* `info:feedback`
+* `info:help`
 
 
 <a name="bugs"></a>
@@ -22,7 +58,7 @@ Guidelines for bug reports:
 
 1. **Check if the bug has already been fixed** &mdash; Someone may already be on top of it, so try to reproduce it using the latest from the `master` branch.
 
-2. **Use the [GitHub issue search](https://github.com/x-team/wp-stream/search?type=Issues)** &mdash; Someone might already know about it, so please check if the issue has already been reported.
+2. **Use the [GitHub issue search](https://github.com/iryz/fakerpress/search?type=Issues)** &mdash; Someone might already know about it, so please check if the issue has already been reported.
 
 3. **Isolate the problem** &mdash; The better you can determine exactly what behavior(s) cause the issue, the faster and more effectively it can be resolved. “I’m getting an error message.” is not a good bug report. A good bug report shouldn't leave others needing to contact you for more information.
 
@@ -48,7 +84,7 @@ Example:
 
 Feature requests are very welcome! But take a moment to find out whether your idea fits with the scope and aims of the project. It's up to *you* to make a strong case to convince the project's developers of the merits of this feature. Please provide as much detail and context as possible.
 
-Building something great means choosing features carefully especially because it is much, much easier to add features than it is to take them away. Additions to Stream will be evaluated on a combination of scope (how well it fits into the project), maintenance burden and general usefulness to users.
+Building something great means choosing features carefully especially because it is much, much easier to add features than it is to take them away. Additions to FakerPress will be evaluated on a combination of scope (how well it fits into the project), maintenance burden and general usefulness to users.
 
 <a name="pull-requests"></a>
 ## Pull requests
@@ -56,9 +92,9 @@ Building something great means choosing features carefully especially because it
 Good pull requests &mdash; patches, improvements, new features &mdash; are a fantastic help.
 They should remain focused in scope and avoid containing unrelated commits.
 
-**Please ask first** before embarking on any significant pull request (e.g. implementing features, refactoring code), otherwise you risk spending a lot of time working on something that the project's developers might not want to merge into the project. You can solicit feedback and opinions in an open enhancement issue, or [create a new one](https://github.com/x-team/wp-stream/issues/new).
+**Please ask first** before embarking on any significant pull request (e.g. implementing features, refactoring code), otherwise you risk spending a lot of time working on something that the project's developers might not want to merge into the project. You can solicit feedback and opinions in an open enhancement issue, or [create a new one](https://github.com/iryz/fakerpress/issues/new).
 
-Please use the [git flow for pull requests](#git-flow) and follow [WordPress Coding Standards](http://make.wordpress.org/core/handbook/coding-standards/) before submitting your work. Adhering to these guidelines is the best way to get your work included in Stream.
+Please use the [git flow for pull requests](#git-flow) and follow [WordPress Coding Standards](http://make.wordpress.org/core/handbook/coding-standards/) before submitting your work. Adhering to these guidelines is the best way to get your work included in FakerPress.
 
 <a name="git-flow"></a>
 #### Git Flow for pull requests
@@ -67,11 +103,11 @@ Please use the [git flow for pull requests](#git-flow) and follow [WordPress Cod
 
    ```bash
    # Clone your fork of the repo into the current directory
-   git clone git@github.com:<YOUR_USERNAME>/wp-stream.git
+   git clone git@github.com:<YOUR_USERNAME>/fakerpress.git
    # Navigate to the newly cloned directory
-   cd wp-stream
+   cd fakerpress
    # Assign the original repo to a remote called "upstream"
-   git remote add upstream https://github.com/x-team/wp-stream
+   git remote add upstream https://github.com/iryz/fakerpress
    ```
 
 2. If you cloned a while ago, get the latest changes from upstream:
