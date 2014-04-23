@@ -13,5 +13,11 @@ require_once Plugin::path( 'inc/vendor/Faker/src/autoload.php' );
 // Require our Administration Class
 require_once Plugin::path( 'classes/admin.php' );
 
+// Require the Base module
+require_once Plugin::path( 'modules/base.php' );
+
+// Require the Post module
+require_once Plugin::path( 'modules/post.php' );
+
 // Initialize the main Class of the plugin Administration
 Plugin::$admin = new Admin;
