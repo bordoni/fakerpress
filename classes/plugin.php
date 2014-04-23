@@ -43,14 +43,6 @@ class Plugin {
 	public static $slug = 'fakerpress';
 
 	/**
-	 * Just a noob check, to try to avoid multiple actions/filters from been hooked
-	 *
-	 * @since 0.1.0
-	 * @var string
-	 */
-	public static $hooked = false;
-
-	/**
 	 * The __FILE__ that initialized the plugin
 	 *
 	 * @since 0.1.0
