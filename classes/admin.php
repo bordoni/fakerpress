@@ -27,7 +27,7 @@ Class Admin {
 	 * @return null
 	 */
 	public function _action_admin_menu() {
-		add_menu_page( __( 'FakerPress Administration', 'fakerpress' ), __( 'FakerPress', 'fakerpress' ), 'manage_options', 'fakerpress', array( &$this, '_include_settings_page' ), 'div' );
+		add_menu_page( __( 'FakerPress Administration', 'fakerpress' ), __( 'FakerPress', 'fakerpress' ), 'manage_options', Plugin::$slug, array( &$this, '_include_settings_page' ), 'div' );
 	}
 
 	public function _action_enqueue_ui() {
