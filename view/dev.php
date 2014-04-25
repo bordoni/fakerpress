@@ -4,6 +4,6 @@
 		$faker   = new \FakerPress\Module\Post();
 		$post_id = $faker->save();
 
-		echo wp_kses_post( '<a href="' . get_edit_post_link( $post_id ) . '">Edit Generate Post (ID: ' . absint( $post_id ) .') </a>' )
+		echo wp_kses_post( '<a href="' . get_edit_post_link( $post_id ) . '">Edit Generated Post (ID: ' . absint( $post_id ) .') </a>' )
 	?>
 </div>
