@@ -1,8 +1,6 @@
 <?php
 namespace FakerPress\Module;
 
-include_once \Fakerpress\Plugin::path( 'providers/post.php' );
-
 class Post extends Base {
 
 	public $faked_args = array(
@@ -17,8 +15,8 @@ class Post extends Base {
 
 	public function __construct( $args = array() ) {
 		$this->faker = \Faker\Factory::create( 'en_US' );
-		$provider    = new \Faker\Provider\Post( $this );
 
+		$provider = new \Faker\Provider\Post( $this );
 		$this->faker->addProvider( $provider );
 
 		$this->args = apply_filters( 'fakerpress.module.post.args', wp_parse_args( array_merge( $this->args, $this->faked_args ) , $args ) );
