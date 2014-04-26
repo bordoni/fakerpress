@@ -3,7 +3,13 @@ namespace FakerPress\Module;
 
 class Comment extends Base {
 
-	public $faked_args = array();
+	public $faked_args = array(
+		'comment_content' => null,
+		'user_id'		  => null,
+		'comment_author'  => null,
+		'comment_approved' => null,
+		'comment_post_ID'     => null,
+	);
 
 	public $args = array();
 
@@ -25,6 +31,6 @@ class Comment extends Base {
 		}
 
 		// Here you should use the `$this->args['param_name']`
-		return $this->args;
+		return wp_insert_comment( $this->args );
 	}
 }
