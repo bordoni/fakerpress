@@ -100,4 +100,30 @@ class Comment extends Base {
 
 		return $comment_post_ID;
 	}
+
+	public function comment_author_email( $author_email = null, $max_chars = 200, $save = true ) {
+		if ( $author_email == null ){
+			$author_email = $this->generator->safeEmail;
+			$author_email = substr( $author_email, 0, strlen( $author_email ) - 1 );
+		}
+
+		if ( true === $save ){
+			$this->fakerpress->args['comment_author_email'] = $author_email;
+		}
+
+		return $author_email;
+	}
+
+	public function comment_author_url( $author_url = null, $max_chars = 200, $save = true ) {
+		if ( $author_url == null ){
+			$author_url = $this->generator->url;
+			$author_url = substr( $author_url, 0, strlen( $author_url ) - 1 );
+		}
+
+		if ( true === $save ){
+			$this->fakerpress->args['comment_author_url'] = $author_url;
+		}
+
+		return $author_url;
+	}
 }
