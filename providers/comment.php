@@ -25,8 +25,21 @@ class Comment extends Base {
 		if ( $user_id == null ){
 			$args = array(
 				'blog_id'      => $GLOBALS['blog_id'],
-				'count_total'  => 'false',
+				'role'         => '',
+				'meta_key'     => '',
+				'meta_value'   => '',
+				'meta_compare' => '',
+				'meta_query'   => array(),
+				'include'      => array(),
+				'exclude'      => array(),
+				'orderby'      => 'login',
+				'order'        => 'ASC',
+				'offset'       => '',
+				'search'       => '',
+				'number'       => '',
+				'count_total'  => false,
 				'fields'       => 'all',
+				'who'          => '',
 			);
 
 			$users = get_users( $args );
@@ -38,7 +51,8 @@ class Comment extends Base {
 			}
 
 			if ( $users_id ){
-				$user_id = array_rand( $users_id, 1 );
+				$rand    = array_rand( $users_id, 1 );
+				$user_id = $users_id[$rand];
 			}
 		}
 
@@ -50,7 +64,7 @@ class Comment extends Base {
 	}
 
 	public function comment_author( $save = true ) {
-		$author_obj     = get_userdata( self::user_id() );
+		$author_obj     = get_userdata( $this->fakerpress->args['user_id'] );
 		$comment_author = $author_obj->user_login;
 
 		if ( true === $save ){
@@ -86,7 +100,8 @@ class Comment extends Base {
 			}
 
 			if ( $post_id ){
-				$comment_post_ID = array_rand( $post_id, 1 );
+				$rand = array_rand( $post_id, 1 );
+				$comment_post_ID = $post_id[$rand];
 			}
 		}
 
