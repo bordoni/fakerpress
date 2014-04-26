@@ -21,9 +21,25 @@ class Comment extends Base {
 		return $comment_content;
 	}
 
-	public function user_id( $user_id = 2, $save = true ) {
+	public function user_id( $user_id = null, $save = true ) {
 		if ( $user_id == null ){
-			$user_id = get_current_user_ID();
+			$args = array(
+				'blog_id'      => $GLOBALS['blog_id'],
+				'count_total'  => 'false',
+				'fields'       => 'all',
+			);
+
+			$users = get_users( $args );
+
+			if ( $users ){
+				foreach ( $users as $user ){
+					$users_id[] = $user->ID;
+				}
+			}
+
+			if ( $users_id ){
+				$user_id = array_rand( $users_id, 1 );
+			}
 		}
 
 		if ( true === $save ){
@@ -63,8 +79,10 @@ class Comment extends Base {
 
 			$posts = get_posts( $args );
 
-			foreach ( $posts as $post ){
-				$post_id[] = $post->ID;
+			if ( $posts ){
+				foreach ( $posts as $post ){
+					$post_id[] = $post->ID;
+				}
 			}
 
 			if ( $post_id ){
