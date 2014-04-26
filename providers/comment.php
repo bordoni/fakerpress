@@ -38,8 +38,7 @@ class Comment extends Base {
 			}
 
 			if ( $users_id ){
-				$rand    = array_rand( $users_id, 1 );
-				$user_id = $users_id[$rand];
+				$user_id = $this->generator->randomElement( $users_id, 1 );
 			}
 		}
 
@@ -87,8 +86,7 @@ class Comment extends Base {
 			}
 
 			if ( $post_id ){
-				$rand = array_rand( $post_id, 1 );
-				$comment_post_ID = $post_id[$rand];
+				$comment_post_ID = $this->generator->randomElement( $post_id, 1 );
 			}
 		}
 
