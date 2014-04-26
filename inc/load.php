@@ -20,7 +20,7 @@ require_once Plugin::path( 'modules/base.php' );
 require_once Plugin::path( 'modules/post.php' );
 
 // Require the Comment module
-require_once Plugin::path( 'modules/comments.php' );
+require_once Plugin::path( 'modules/comment.php' );
 
 // Initialize the main Class of the plugin Administration
 Plugin::$admin = new Admin;

@@ -10,9 +10,11 @@ class Comment extends Base {
 		$this->generator->addProvider( $provider );
 	}
 
-	public function comment_content( $max_chars = 200, $save = true ) {
-		$comment_content = $this->generator->text( $max_chars );
-		$comment_content = substr( $comment_content, 0, strlen( $comment_content ) - 1 );
+	public function comment_content( $comment_content = null, $max_chars = 200, $save = true ) {
+		if ( $comment_content == null ){
+			$comment_content = $this->generator->text( $max_chars );
+			$comment_content = substr( $comment_content, 0, strlen( $comment_content ) - 1 );
+		}
 
 		if ( true === $save ){
 			$this->fakerpress->args['comment_content'] = $comment_content;
@@ -49,9 +51,11 @@ class Comment extends Base {
 		return $user_id;
 	}
 
-	public function comment_author( $save = true ) {
-		$author_obj     = get_userdata( $this->fakerpress->args['user_id'] );
-		$comment_author = $author_obj->user_login;
+	public function comment_author( $comment_author = null, $save = true ) {
+		if ( $comment_author == null ){
+			$author_obj     = get_userdata( $this->fakerpress->args['user_id'] );
+			$comment_author = $author_obj->user_login;
+		}
 
 		if ( true === $save ){
 			$this->fakerpress->args['comment_author'] = $comment_author;
