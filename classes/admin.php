@@ -45,14 +45,9 @@ Class Admin {
 	public function _include_settings_page() {
 		// Default Page of the plugin
 		$view = (object) array(
-			'slug' => 'purge',
+			'slug' => Filter::super( INPUT_GET, 'view', FILTER_SANITIZE_FILE, 'settings' ),
 			'path' => null,
 		);
-
-		// Grab the view in the GET argument
-		if ( isset( $_GET['view'] ) && ! empty( $_GET['view'] ) ){
-			$view->slug = sanitize_file_name( $_GET['view'] );
-		}
 
 		// First we check if the file exists in our plugin folder, otherwhise give the user an error
 		if ( ! file_exists( Plugin::path( "view/{$view->slug}.php" ) ) ){
@@ -64,8 +59,8 @@ Class Admin {
 
 		// Execute some actions before including the view, to allow others to hook in here
 		// Use these to do stuff related to the view you are working with
-		do_action( 'fakerpress-view', $view );
-		do_action( "fakerpress-view-{$view->slug}", $view );
+		do_action( 'fakerpress.view', $view );
+		do_action( "fakerpress.view.{$view->slug}", $view );
 
 		// PHP include the view
 		include_once $view->path;
@@ -78,7 +73,8 @@ Class Admin {
 	 * @return string
 	 */
 	public function _filter_admin_footer_text( $text ){
-		if ( ! isset( $_GET['page'] ) || strtolower( $_GET['page'] ) !== 'fakerpress' ){
+		$page = Filter::super( INPUT_GET, 'page', FILTER_SANITIZE_STRING );
+		if ( is_null( $page ) || strtolower( $page ) !== Plugin::$slug ){
 			return $text;
 		}
 
@@ -100,7 +96,8 @@ Class Admin {
 	 * @return string
 	 */
 	public function _filter_update_footer( $text ){
-		if ( ! isset( $_GET['page'] ) || strtolower( $_GET['page'] ) !== 'fakerpress' ){
+		$page = Filter::super( INPUT_GET, 'page', FILTER_SANITIZE_STRING );
+		if ( is_null( $page ) || strtolower( $page ) !== Plugin::$slug ){
 			return $text;
 		}
 

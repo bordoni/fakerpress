@@ -11,6 +11,9 @@ $FakerPress = new Plugin;
 require_once Plugin::path( 'inc/vendor/Faker/src/autoload.php' );
 
 // Require our Administration Class
+require_once Plugin::path( 'classes/filter.php' );
+
+// Require our Administration Class
 require_once Plugin::path( 'classes/admin.php' );
 
 // Require the Base module
