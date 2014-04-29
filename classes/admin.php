@@ -6,8 +6,12 @@ Class Admin {
 	 * Static method to include all the Hooks for WordPress
 	 * There is a safe conditional here, it can only be triggered once!
 	 *
+	 * @uses add_action
+	 * @uses add_filter
+	 *
 	 * @since 0.1.0
-	 * @return null No return needed!
+	 *
+	 * @return null Construct never returns
 	 */
 	public function __construct(){
 		// When trying to add a menu, make bigger than the default to avoid conflicting index further on
@@ -23,13 +27,29 @@ Class Admin {
 	/**
 	 * Method triggered to add the menu to WordPress administration
 	 *
+	 * @uses add_menu_page
+	 * @uses __
+	 * @uses \FakerPress\Plugin::$slug
+	 *
 	 * @since 0.1.0
-	 * @return null
+	 * @return null Actions do not return
 	 */
 	public function _action_admin_menu() {
 		add_menu_page( __( 'FakerPress Administration', 'fakerpress' ), __( 'FakerPress', 'fakerpress' ), 'manage_options', Plugin::$slug, array( &$this, '_include_settings_page' ), 'div' );
 	}
 
+	/**
+	 * Register and enqueue the WordPress admin UI elements like JavaScript and CSS
+	 *
+	 * @uses wp_register_style
+	 * @uses wp_enqueue_style
+	 * @uses \FakerPress\Plugin::url
+	 * @uses \FakerPress\Plugin::version
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return null Actions do not return
+	 */
 	public function _action_enqueue_ui() {
 		wp_register_style( 'fakerpress.icon', Plugin::url( 'ui/font.css' ), array(), Plugin::version, 'screen' );
 
@@ -38,6 +58,10 @@ Class Admin {
 
 	/**
 	 * Method to include the settings page, from views folders
+	 *
+	 * @uses \FakerPress\Filter::super
+	 * @uses \FakerPress\Plugin::path
+	 * @uses do_action
 	 *
 	 * @since 0.1.0
 	 * @return null
@@ -69,6 +93,10 @@ Class Admin {
 	/**
 	 * Filter the WordPress Version on plugins pages to display plugin version
 	 *
+	 * @uses \FakerPress\Filter::super
+	 * @uses \FakerPress\Plugin::$slug
+	 * @uses __
+	 *
 	 * @since 0.1.0
 	 * @return string
 	 */
@@ -78,7 +106,9 @@ Class Admin {
 			return $text;
 		}
 
-		// DONT FORGET TO ADD THE LINKS BEFORE RELEASING
+		/**
+		 * @todo Review the links to the Official repository before release
+		 */
 		return
 			'<a target="_blank" href="http://wordpress.org/support/plugin/fakerpress#postform">' . __( 'Contact Support', 'fakerpress' ) . '</a>' .
 			' | ' .
@@ -91,6 +121,12 @@ Class Admin {
 
 	/**
 	 * Filter the WordPress Version on plugins pages to display the plugin version
+	 *
+	 * @uses \FakerPress\Filter::super
+	 * @uses \FakerPress\Plugin::$slug
+	 * @uses \FakerPress\Plugin::admin_url
+	 * @uses \FakerPress\Plugin::version
+	 * @uses __
 	 *
 	 * @since 0.1.0
 	 * @return string
