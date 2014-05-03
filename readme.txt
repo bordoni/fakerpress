@@ -33,7 +33,7 @@ Our goal with this plugin is to fill this gap where you have problem with a good
  * Create random HTML to test your Theme
  * Generate comments with random User data
  * Create fake Taxonomy terms and Assign it to random posts
- * Generate fake User Data to test your Plugin
+ * Generate fake User Data to test your plugin
 
 **Languages:**
 
