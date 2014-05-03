@@ -23,26 +23,20 @@ class Comment extends Base {
 		return $comment_content;
 	}
 
-	public function user_id( $user_id = null, $save = true ) {
-		if ( $user_id == null ){
-			$args = array(
-				'blog_id'      => $GLOBALS['blog_id'],
-				'count_total'  => false,
-				'fields'       => 'all',
+	public function user_id( $users = array(), $save = true ) {
+		// We only need to query if there is no users passed
+		if ( empty( $users ) ){
+			$users = get_users(
+				array(
+					'blog_id' => $GLOBALS['blog_id'],
+					'count_total' => false,
+					'fields' => 'ID', // When you pass only one field it returns an array of the values
+				)
 			);
-
-			$users = get_users( $args );
-
-			if ( $users ){
-				foreach ( $users as $user ){
-					$users_id[] = $user->ID;
-				}
-			}
-
-			if ( $users_id ){
-				$user_id = $this->generator->randomElement( $users_id, 1 );
-			}
 		}
+
+		// Cast $users as an array and always return an absolute integer
+		$user_id = absint( $this->generator->randomElement( (array) $users ) );
 
 		if ( true === $save ){
 			$this->fakerpress->args['user_id'] = $user_id;
