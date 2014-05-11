@@ -1,55 +1,40 @@
 <?php
 namespace Faker\Provider;
 
-class Post extends Base {
-	public function __construct( $fakerpress ) {
-		$this->generator  = $fakerpress->faker;
-		$this->fakerpress = $fakerpress;
+class WP_Post extends Base {
 
-		$provider = new Html( $this->generator );
-		$this->generator->addProvider( $provider );
-	}
+	protected static $default = array(
+		'ping_status' => array( 'closed', 'open' )
+	);
 
-	public function post_title( $qty_words = 5, $save = true ) {
+	public function post_title( $qty_words = 5 ) {
 		$title = $this->generator->sentence( $qty_words );
 		$title = substr( $title, 0, strlen( $title ) - 1 );
-
-		if ( true === $save ){
-			$this->fakerpress->args['post_title'] = $title;
-		}
 
 		return $title;
 	}
 
-	public function post_content( $html = true, $save = true ) {
+	public function post_content( $html = true ) {
 		if ( $html === true ){
 			$content = implode( "\n", $this->generator->html_elements() );
 		} else {
 			$content = implode( "\r\n\r\n", $this->generator->paragraphs( $this->generator->randomDigitNotNull() ) );
 		}
 
-		if ( true === $save ){
-			$this->fakerpress->args['post_content'] = $content;
-		}
-
 		return $content;
 	}
 
-	public function post_type( $haystack = array(), $save = true ){
+	public function post_type( $haystack = array() ){
 		if ( empty( $haystack ) ){
 			$haystack = get_post_types( array(), 'names' );
 		}
 
 		$selected = $this->generator->randomElement( (array) $haystack );
 
-		if ( true === $save ){
-			$this->fakerpress->args['post_type'] = $selected;
-		}
-
 		return $selected;
 	}
 
-	public function user_id( $haystack = array(), $save = true ){
+	public function user_id( $haystack = array() ){
 		if ( empty( $haystack ) ){
 			$haystack = get_users(
 				array(
@@ -62,14 +47,32 @@ class Post extends Base {
 
 		$selected = $this->generator->randomElement( (array) $haystack );
 
-		if ( true === $save ){
-			$this->fakerpress->args['user_id'] = $selected;
-		}
-
 		return $selected;
 	}
 
-	public function post_date( $min, $max = null, $save = true ){
-		return null;
+	public function post_date( $min = 'now', $max = null, $save = true ){
+		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+		try {
+			$min = new \Carbon\Carbon( $min );
+		} catch (Exception $e) {
+		 	$min = new \Carbon\Carbon();
+		}
+
+		if ( ! is_null( $max ) ){
+			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+			try {
+				$max = new \Carbon\Carbon( $max );
+			} catch (Exception $e) {
+			 	$max = null;
+			}
+		}
+
+		if ( ! is_null( $max ) ) {
+			$selected = $this->generator->dateTimeBetween( (string) $min, (string) $max );
+		} else {
+			$selected = (string) $min;
+		}
+
+		return $selected;
 	}
 }
