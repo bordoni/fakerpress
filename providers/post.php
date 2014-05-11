@@ -34,4 +34,42 @@ class Post extends Base {
 
 		return $content;
 	}
+
+	public function post_type( $haystack = array(), $save = true ){
+		if ( empty( $haystack ) ){
+			$haystack = get_post_types( array(), 'names' );
+		}
+
+		$selected = $this->generator->randomElement( (array) $haystack );
+
+		if ( true === $save ){
+			$this->fakerpress->args['post_type'] = $selected;
+		}
+
+		return $selected;
+	}
+
+	public function user_id( $haystack = array(), $save = true ){
+		if ( empty( $haystack ) ){
+			$haystack = get_users(
+				array(
+					'blog_id' => $GLOBALS['blog_id'],
+					'count_total' => false,
+					'fields' => 'ID', // When you pass only one field it returns an array of the values
+				)
+			);
+		}
+
+		$selected = $this->generator->randomElement( (array) $haystack );
+
+		if ( true === $save ){
+			$this->fakerpress->args['user_id'] = $selected;
+		}
+
+		return $selected;
+	}
+
+	public function post_date( $min, $max = null, $save = true ){
+		return null;
+	}
 }
