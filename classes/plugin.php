@@ -109,12 +109,13 @@ class Plugin {
 	 * @return string plugin_basename from __FILE__
 	 */
 	public static function basename() {
-		$__link = WP_PLUGIN_DIR . '/' . self::$folder;
-		$__file = self::$_file;
-		if ( is_link( $__link ) && readlink( $__link ) == dirname( $_file ) ) {
-			$__file = $__link . '/' . end( explode( '/', $__file ) );
+		$_link = WP_PLUGIN_DIR . '/' . self::$folder;
+		$_file = self::$_file;
+
+		if ( is_link( $_link ) && readlink( $_link ) == dirname( $_file ) ) {
+			$_file = $_link . '/' . end( explode( '/', $_file ) );
 		}
-		return (string) plugin_basename( $__file );
+		return (string) plugin_basename( $_file );
 	}
 
 	/**
