@@ -4,7 +4,8 @@ namespace Faker\Provider;
 class WP_Post extends Base {
 
 	protected static $default = array(
-		'ping_status' => array( 'closed', 'open' )
+		'ping_status' => array( 'closed', 'open' ),
+		'comment_status' => array( 'closed', 'open' ),
 	);
 
 	public function post_title( $qty_words = 5 ) {
@@ -29,9 +30,7 @@ class WP_Post extends Base {
 			$haystack = get_post_types( array(), 'names' );
 		}
 
-		$selected = $this->generator->randomElement( (array) $haystack );
-
-		return $selected;
+		return $this->generator->randomElement( (array) $haystack );
 	}
 
 	public function user_id( $haystack = array() ){
@@ -45,9 +44,23 @@ class WP_Post extends Base {
 			);
 		}
 
-		$selected = $this->generator->randomElement( (array) $haystack );
+		return $this->generator->randomElement( (array) $haystack );
+	}
 
-		return $selected;
+	public function post_status( $haystack = array() ){
+		if ( empty( $haystack ) ){
+			$haystack = array_values( get_post_stati() );
+		}
+
+		return $this->generator->randomElement( (array) $haystack );
+	}
+
+	public function ping_status( $haystack = array() ){
+		if ( empty( $haystack ) ){
+			$haystack = static::$default['ping_status'];
+		}
+
+		return $this->generator->randomElement( (array) $haystack );
 	}
 
 	public function post_date( $min = 'now', $max = null, $save = true ){
@@ -55,7 +68,7 @@ class WP_Post extends Base {
 		try {
 			$min = new \Carbon\Carbon( $min );
 		} catch (Exception $e) {
-		 	$min = new \Carbon\Carbon();
+			$min = new \Carbon\Carbon();
 		}
 
 		if ( ! is_null( $max ) ){
@@ -63,7 +76,7 @@ class WP_Post extends Base {
 			try {
 				$max = new \Carbon\Carbon( $max );
 			} catch (Exception $e) {
-			 	$max = null;
+				$max = null;
 			}
 		}
 
