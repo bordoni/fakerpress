@@ -9,6 +9,8 @@ class Post extends Base {
 		'post_type',
 		'user_id',
 		'post_date',
+		'post_status',
+		'ping_status',
 	);
 
 	public $dependencies = array(
