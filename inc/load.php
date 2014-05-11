@@ -10,6 +10,9 @@ $FakerPress = new Plugin;
 // Include the Faker Main Class
 require_once Plugin::path( 'inc/vendor/Faker/src/autoload.php' );
 
+// Include the Carbon class to deal with dates
+require_once Plugin::path( 'inc/vendor/Carbon/src/Carbon/Carbon.php' );
+
 // Require our Administration Class
 require_once Plugin::path( 'classes/filter.php' );
 
