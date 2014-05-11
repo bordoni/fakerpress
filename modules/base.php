@@ -27,7 +27,7 @@ abstract class Base {
 	final public function __construct( $settings = array() ) {
 		$reflection = new \ReflectionClass( get_called_class() );
 
-		$this->slug = strtolower( $reflection->getShortName() );
+		$this->slug  = strtolower( $reflection->getShortName() );
 		$this->faker = \Faker\Factory::create();
 
 		$this->settings = apply_filters( "fakerpress.module.{$this->slug}.settings", wp_parse_args( $this->settings, $settings ) );
@@ -55,7 +55,9 @@ abstract class Base {
 	 * Method that will be called from the construct which is a final function
 	 * @return null
 	 */
-	abstract public function init();
+	public function init() {
+		break;
+	}
 
 	/**
 	 * Use this method to save the fake data to the database
