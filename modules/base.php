@@ -24,17 +24,41 @@ abstract class Base {
 
 	public $dependencies = array();
 
+	public $provider = null;
+
 	final public function __construct( $settings = array() ) {
 		$reflection = new \ReflectionClass( get_called_class() );
 
 		$this->slug  = strtolower( $reflection->getShortName() );
 		$this->faker = \Faker\Factory::create();
 
-		$this->settings = apply_filters( "fakerpress.module.{$this->slug}.settings", wp_parse_args( $this->settings, $settings ) );
+		$this->settings = (array) apply_filters( "fakerpress.module.{$this->slug}.settings", wp_parse_args( $this->settings, $settings ) );
 
-		$this->load_dependencies();
+		$this->provider = (string) apply_filters( "fakerpress.module.{$this->slug}.provider", $this->provider );
+
+		$this->dependencies = (array) apply_filters( "fakerpress.module.{$this->slug}.dependencies", $this->dependencies );
+
+		// We need to merge the Provider to the Dependecies, so everything is loaded
+		$providers = array_merge( $this->dependencies, (array) $this->provider );
+		foreach ( $providers as $provider_class ) {
+			$provider = new $provider_class( $this->faker );
+			$this->faker->addProvider( $provider );
+		}
+
+		// Create a Reflection of the Provider class to discover all the methods that will fake an Argument
+		$provider_reflection = new \ReflectionClass( $this->provider );
+		$provider_methods    = $provider_reflection->getMethods();
+
+		// Loop and verify which methods are will be faked on `generate`
+		foreach ( $provider_methods as $method ) {
+			if ( $provider_reflection->getName() !== $method->class ){
+				continue;
+			}
+			$this->faked[] = $method->name;
+		}
+
+		// Execute a method that can be overwritten by the called class
 		$this->init();
-
 	}
 
 	final public function __get( $name ){
@@ -56,7 +80,7 @@ abstract class Base {
 	 * @return null
 	 */
 	public function init() {
-		break;
+		return;
 	}
 
 	/**
@@ -73,22 +97,10 @@ abstract class Base {
 		$this->args = apply_filters( "fakerpress.module.{$this->slug}.args", wp_parse_args( $this->args, $args ) );
 
 		foreach ( $this->faked as $name ) {
-			$this->args[ $name ] = call_user_func_array( array( $this->faker, $name ), ( isset( $this->args[ $name ] ) ? array( $this->args[ $name ] ) : array() ) );
+			$this->args[ $name ] = call_user_func_array( array( $this->faker, $name ), ( isset( $this->args[ $name ] ) ? (array) $this->args[ $name ] : array() ) );
 		}
 
 		return $this->args;
 	}
 
-	/**
-	 * This method will load all the needed Faker dependencies for this Module
-	 * @return null
-	 */
-	public function load_dependencies() {
-		$this->dependencies = apply_filters( "fakerpress.module.{$this->slug}.dependencies", $this->dependencies );
-
-		foreach ( $this->dependencies as $provider_name ) {
-			$provider = new $provider_name( $this->faker );
-			$this->faker->addProvider( $provider );
-		}
-	}
 }
