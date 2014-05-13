@@ -63,6 +63,14 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
+	public function comment_status( $haystack = array() ){
+		if ( empty( $haystack ) ){
+			$haystack = static::$default['comment_status'];
+		}
+
+		return $this->generator->randomElement( (array) $haystack );
+	}
+
 	public function post_date( $min = 'now', $max = null ){
 		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 		try {
