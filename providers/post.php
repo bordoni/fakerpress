@@ -71,6 +71,22 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
+	public function menu_order( $haystack = array() ){
+		if ( empty( $haystack ) ){
+			return 0;
+		}
+
+		return $this->generator->randomElement( (array) $haystack );
+	}
+
+	public function post_password( $generator = null, $args = array() ){
+		if ( is_null( $generator ) ){
+			return '';
+		}
+
+		return call_user_func_array( $generator, $args );
+	}
+
 	public function post_date( $min = 'now', $max = null ){
 		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 		try {
