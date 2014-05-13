@@ -63,12 +63,12 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function post_date( $min = 'now', $max = null, $save = true ){
+	public function post_date( $min = 'now', $max = null ){
 		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 		try {
 			$min = new \Carbon\Carbon( $min );
 		} catch (Exception $e) {
-			$min = new \Carbon\Carbon();
+			return null;
 		}
 
 		if ( ! is_null( $max ) ){
@@ -76,12 +76,12 @@ class WP_Post extends Base {
 			try {
 				$max = new \Carbon\Carbon( $max );
 			} catch (Exception $e) {
-				$max = null;
+				return null;
 			}
 		}
 
 		if ( ! is_null( $max ) ) {
-			$selected = $this->generator->dateTimeBetween( (string) $min, (string) $max );
+			$selected = $this->generator->dateTimeBetween( (string) $min, (string) $max )->format( 'Y-m-d H:i:s' );
 		} else {
 			$selected = (string) $min;
 		}
