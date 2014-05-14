@@ -3,6 +3,18 @@ namespace FakerPress;
 
 Class Admin {
 	/**
+	 * Variable holding the menu reference
+	 * @var string|null
+	 */
+	public static $menu = null;
+
+	/**
+	 * Variable holding the submenus objects
+	 * @var array
+	 */
+	public static $submenus = array();
+
+	/**
 	 * Static method to include all the Hooks for WordPress
 	 * There is a safe conditional here, it can only be triggered once!
 	 *
@@ -16,12 +28,38 @@ Class Admin {
 	public function __construct(){
 		// When trying to add a menu, make bigger than the default to avoid conflicting index further on
 		add_action( 'admin_menu', array( $this, '_action_admin_menu' ), 11 );
+		add_action( 'fakerpress.view', array( $this, '_action_current_menu_js' ) );
 
 		// Creating information for the plugin pages footer
 		add_filter( 'admin_footer_text', array( $this, '_filter_admin_footer_text' ) );
 		add_filter( 'update_footer', array( $this, '_filter_update_footer' ), 15 );
 
 		add_action( 'admin_enqueue_scripts', array( $this, '_action_enqueue_ui' ) );
+	}
+
+	public static function add_submenu( $view, $title, $label, $capability = 'manage_options', $priority = 10 ){
+		self::$submenus[] = (object) array(
+			'view' => $view,
+			'title' => $title,
+			'label' => $label,
+			'capability' => $capability,
+			'priority' => $priority,
+		);
+	}
+
+	public function _action_current_menu_js( $view ) {
+		?>
+		<script>
+			(function($){
+				var fakerpress_menu_items = $('#toplevel_page_fakerpress').children('.wp-submenu').children('li').not('.wp-submenu-head'),
+					fakerpress_menu_new_current = fakerpress_menu_items.children('a').filter('[href="admin.php?page=fakerpress&view=<?php echo esc_attr( $view->slug ); ?>"]');
+				if ( fakerpress_menu_new_current.length !== 0 ){
+					fakerpress_menu_items.filter('.current').removeClass('current');
+					fakerpress_menu_new_current.parent().addClass('current');
+				}
+			}(jQuery))
+		</script>
+		<?php
 	}
 
 	/**
@@ -35,7 +73,17 @@ Class Admin {
 	 * @return null Actions do not return
 	 */
 	public function _action_admin_menu() {
-		add_menu_page( __( 'FakerPress Administration', 'fakerpress' ), __( 'FakerPress', 'fakerpress' ), 'manage_options', Plugin::$slug, array( &$this, '_include_settings_page' ), 'div' );
+		$menu_id    = add_menu_page( __( 'FakerPress Administration', 'fakerpress' ), __( 'FakerPress', 'fakerpress' ), 'manage_options', Plugin::$slug, array( &$this, '_include_settings_page' ), 'div' );
+		self::$menu = Plugin::$slug . '-wpmenu';
+
+		self::add_submenu( 'posts', __( 'Create Fake Posts', 'fakerpress' ), __( 'Posts', 'fakerpress' ), 'manage_options', 10 );
+
+		foreach ( self::$submenus as $submenu ) {
+			add_submenu_page( Plugin::$slug, esc_attr( $submenu->title ), esc_attr( $submenu->label ), $submenu->capability, Plugin::$slug . '&view=' . $submenu->view, array( &$this, '_include_settings_page' ) );
+		}
+
+		// Change the Default Submenu for FakerPress menus
+		$GLOBALS['submenu'][ Plugin::$slug ][0][0] = esc_attr__( 'Settings', 'FakerPress' );
 	}
 
 	/**
