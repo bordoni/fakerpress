@@ -5,8 +5,11 @@
 		$faker = new \FakerPress\Module\Post();
 		$faker->generate(
 			array(
-				'post_type' => array( 'page', 'post' ),
+				'post_type' => array( array( 'page', 'post' ) ),
+				'post_status' => array( 'publish' ),
+				'post_date' => array( '-7 years', 'now' )
 			)
 		);
+
 	?>
 </div>
