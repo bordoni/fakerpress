@@ -3,16 +3,16 @@ namespace FakerPress;
 
 Class Admin {
 	/**
-	 * Variable holding the menu reference
-	 * @var string|null
-	 */
-	public static $menu = null;
-
-	/**
 	 * Variable holding the submenus objects
 	 * @var array
 	 */
-	public static $submenus = array();
+	protected static $menus = array();
+
+	/**
+	 * Variable holding the submenus objects
+	 * @var object
+	 */
+	public static $view = null;
 
 	/**
 	 * Static method to include all the Hooks for WordPress
@@ -26,9 +26,19 @@ Class Admin {
 	 * @return null Construct never returns
 	 */
 	public function __construct(){
+		add_action( 'admin_init', array( $this, '_action_set_admin_view' ) );
+
 		// When trying to add a menu, make bigger than the default to avoid conflicting index further on
 		add_action( 'admin_menu', array( $this, '_action_admin_menu' ), 11 );
-		add_action( 'fakerpress.view', array( $this, '_action_current_menu_js' ) );
+		add_action( 'fakerpress.before_view', array( $this, '_action_current_menu_js' ) );
+
+		self::$menus[] = (object) array(
+			'view' => 'settings',
+			'title' => esc_attr__( 'FakerPress Administration', 'fakerpress' ),
+			'label' => esc_attr__( 'FakerPress', 'fakerpress' ),
+			'capability' => 'manage_options',
+			'priority' => 0,
+		);
 
 		// Creating information for the plugin pages footer
 		add_filter( 'admin_footer_text', array( $this, '_filter_admin_footer_text' ) );
@@ -37,29 +47,85 @@ Class Admin {
 		add_action( 'admin_enqueue_scripts', array( $this, '_action_enqueue_ui' ) );
 	}
 
-	public static function add_submenu( $view, $title, $label, $capability = 'manage_options', $priority = 10 ){
-		self::$submenus[] = (object) array(
-			'view' => $view,
-			'title' => $title,
-			'label' => $label,
-			'capability' => $capability,
-			'priority' => $priority,
+	/**
+	 * Creating submenus easier to be extent from outside
+	 *
+	 * @param string  $view The slug of the View, _GET param
+	 * @param string  $title Translatable string for the title of the page
+	 * @param string  $label Translatable string that will go on the menu
+	 * @param string  $capability WordPress capability that will be required to access this view
+	 * @param integer $priority The priority to show this submenu
+	 */
+	public static function add_menu( $view, $title, $label, $capability = 'manage_options', $priority = 10 ){
+		$priority = absint( $priority );
+		self::$menus[] = (object) array(
+			'view' => sanitize_title( $view ),
+			'title' => esc_attr( $title ),
+			'label' => esc_attr( $label ),
+			'capability' => sanitize_title( $capability ),
+			'priority' => $priority === 0 ? $priority + 1 : $priority,
 		);
 	}
 
+	public function get_menus(){
+		usort( self::$menus, array( $this, '_sort_priority' ) );
+		return self::$menus;
+	}
+
+	public function _sort_priority( $a, $b ){
+		return $a->priority - $b->priority;
+	}
+
 	public function _action_current_menu_js( $view ) {
+		$menus = $this->get_menus();
 		?>
 		<script>
 			(function($){
-				var fakerpress_menu_items = $('#toplevel_page_fakerpress').children('.wp-submenu').children('li').not('.wp-submenu-head'),
-					fakerpress_menu_new_current = fakerpress_menu_items.children('a').filter('[href="admin.php?page=fakerpress&view=<?php echo esc_attr( $view->slug ); ?>"]');
-				if ( fakerpress_menu_new_current.length !== 0 ){
-					fakerpress_menu_items.filter('.current').removeClass('current');
-					fakerpress_menu_new_current.parent().addClass('current');
+				'use strict';
+				var fp = typeof FakerPress === 'object' ? FakerPress : {};
+
+				fp.view = {
+					name: '<?php echo esc_attr( $view->slug ); ?>',
+					default: '<?php echo esc_attr( $menus[0]->view ); ?>'
+				}
+
+				fp.menu = {
+					$container: $('#toplevel_page_fakerpress')
+				};
+
+				fp.menu.$main = fp.menu.$container.children('a');
+				fp.menu.$items = fp.menu.$container.children('.wp-submenu').children('li').not('.wp-submenu-head');
+				fp.menu.$current = fp.menu.$items.filter('.current');
+
+				if ( fp.view.default !== fp.view.name ){
+					fp.menu.$current = fp.menu.$items.children('a').filter('[href="admin.php?page=fakerpress&view=' + fp.view.name + '"]');
+					fp.menu.$items.filter('.current').removeClass('current');
+					fp.menu.$current.parent().addClass('current');
 				}
 			}(jQuery))
 		</script>
 		<?php
+	}
+
+	public function _action_set_admin_view(){
+		$menus = $this->get_menus();
+
+		// Default Page of the plugin
+		$view = (object) array(
+			'slug' => Filter::super( INPUT_GET, 'view', FILTER_SANITIZE_FILE, $menus[0]->view ),
+			'path' => null,
+		);
+
+		// First we check if the file exists in our plugin folder, otherwhise give the user an error
+		if ( ! file_exists( Plugin::path( "view/{$view->slug}.php" ) ) ){
+			$view->slug = 'error';
+		}
+
+		// Define the path for the view we
+		$view->path = Plugin::path( "view/{$view->slug}.php" );
+
+		// Set the Admin::$view
+		self::$view = apply_filters( 'fakerpress.view', $view );
 	}
 
 	/**
@@ -73,13 +139,16 @@ Class Admin {
 	 * @return null Actions do not return
 	 */
 	public function _action_admin_menu() {
-		$menu_id    = add_menu_page( __( 'FakerPress Administration', 'fakerpress' ), __( 'FakerPress', 'fakerpress' ), 'manage_options', Plugin::$slug, array( &$this, '_include_settings_page' ), 'div' );
-		self::$menu = Plugin::$slug . '-wpmenu';
+		self::add_menu( 'posts', __( 'Create Fake Posts', 'fakerpress' ), __( 'Posts', 'fakerpress' ), 'manage_options', 10 );
 
-		self::add_submenu( 'posts', __( 'Create Fake Posts', 'fakerpress' ), __( 'Posts', 'fakerpress' ), 'manage_options', 10 );
+		self::$menus = $this->get_menus();
 
-		foreach ( self::$submenus as $submenu ) {
-			add_submenu_page( Plugin::$slug, esc_attr( $submenu->title ), esc_attr( $submenu->label ), $submenu->capability, Plugin::$slug . '&view=' . $submenu->view, array( &$this, '_include_settings_page' ) );
+		foreach ( self::$menus as &$menu ) {
+			if ( $menu->priority === 0 ) {
+				$menu->hook = add_menu_page( $menu->title, $menu->label, $menu->capability, Plugin::$slug, array( &$this, '_include_settings_page' ), 'none' );
+			} else {
+				$menu->hook = add_submenu_page( Plugin::$slug, $menu->title, $menu->label, $menu->capability, Plugin::$slug . '&view=' . $menu->view, array( &$this, '_include_settings_page' ) );
+			}
 		}
 
 		// Change the Default Submenu for FakerPress menus
@@ -115,27 +184,20 @@ Class Admin {
 	 * @return null
 	 */
 	public function _include_settings_page() {
-		// Default Page of the plugin
-		$view = (object) array(
-			'slug' => Filter::super( INPUT_GET, 'view', FILTER_SANITIZE_FILE, 'settings' ),
-			'path' => null,
-		);
-
-		// First we check if the file exists in our plugin folder, otherwhise give the user an error
-		if ( ! file_exists( Plugin::path( "view/{$view->slug}.php" ) ) ){
-			$view->slug = 'error';
-		}
-
-		// Define the path for the view we
-		$view->path = Plugin::path( "view/{$view->slug}.php" );
+		$view = self::$view;
 
 		// Execute some actions before including the view, to allow others to hook in here
 		// Use these to do stuff related to the view you are working with
-		do_action( 'fakerpress.view', $view );
-		do_action( "fakerpress.view.{$view->slug}", $view );
+		do_action( 'fakerpress.before_view', self::$view );
+		do_action( "fakerpress.before_view.{$view->slug}", self::$view );
 
 		// PHP include the view
-		include_once $view->path;
+		include_once self::$view->path;
+
+		// Execute some actions before including the view, to allow others to hook in here
+		// Use these to do stuff related to the view you are working with
+		do_action( 'fakerpress.after_view', self::$view );
+		do_action( "fakerpress.after_view.{$view->slug}", self::$view );
 	}
 
 	/**
