@@ -35,6 +35,29 @@ class WP_Comment extends Base {
 		return absint( $comment_author );
 	}
 
+	public function comment_parent( $comment_parent = null ) {
+		
+		return absint( $comment_parent );
+	}
+
+	public function comment_author_IP( $ip = null ) {
+
+		if ( $ip == null ){
+			$ip = $this->generator->ipv4;
+		}
+
+		return $ip;
+	}
+
+	public function comment_agent( $user_agent = null ) {
+
+		if ( $user_agent == null ){
+			$user_agent = $this->generator->userAgent;
+		}
+
+		return $user_agent;
+	}
+
 	public function comment_approved( $comment_approved = 1 ) {
 
 		return $comment_approved;
@@ -81,5 +104,31 @@ class WP_Comment extends Base {
 		}
 
 		return $author_url;
+	}
+
+	public function comment_date( $min = 'now', $max = null ){
+		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+		try {
+			$min = new \Carbon\Carbon( $min );
+		} catch (Exception $e) {
+			return null;
+		}
+
+		if ( ! is_null( $max ) ){
+			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+			try {
+				$max = new \Carbon\Carbon( $max );
+			} catch (Exception $e) {
+				return null;
+			}
+		}
+
+		if ( ! is_null( $max ) ) {
+			$selected = $this->generator->dateTimeBetween( (string) $min, (string) $max )->format( 'Y-m-d H:i:s' );
+		} else {
+			$selected = (string) $min;
+		}
+
+		return $selected;
 	}
 }
