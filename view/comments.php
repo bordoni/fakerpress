@@ -3,12 +3,7 @@
 
 	<?php
 		$faker = new \FakerPress\Module\Comment();
-		$faker->generate(
-			array(
-				'post_status' => array( 'publish' ),
-				'post_date' => array( '-7 years', 'now' )
-			)
-		);
-		$faker->save();
+		$save = $faker->save();
+		$faker->generate( $save );
 	?>
 </div>
