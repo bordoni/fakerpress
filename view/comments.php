@@ -4,6 +4,6 @@
 	<?php
 		$faker = new \FakerPress\Module\Comment();
 		$save = $faker->save();
-		$faker->generate( $save );
+		$faker->generate();
 	?>
 </div>
