@@ -23,20 +23,17 @@ Our goal with this plugin is to fill this gap where you have problem with a good
  * Pages
  * Custom Post Types
  * Users
- * Themes
- * Plugins
  * Tags
  * Categories
  * Custom Taxonomies
- * Settings
- * Menus
- * Media Library
- * Widgets
  * Comments
 
 **Noteworthy features:**
 
- * We shall List everything that is good here
+ * Create random HTML to test your Theme
+ * Generate comments with random User data
+ * Create fake Taxonomy terms and Assign it to random posts
+ * Generate fake User Data to test your plugin
 
 **Languages:**
 

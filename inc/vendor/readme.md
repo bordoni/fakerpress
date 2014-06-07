@@ -8,6 +8,12 @@ git subtree add --prefix inc/vendor/repoName \
   git@github.com:user/repoName.git master --squash
 ```
 
+When adding if you encounter the error below, you will have to commit before adding the subtree.
+
+```bash
+Working tree has modifications.  Cannot add.
+```
+
 To **update** the vendor library with the latest changes:
 
 ```bash
@@ -26,3 +32,4 @@ git subtree push --prefix inc/vendor/repoName \
 
 ## List of dependencies
 * [Faker](https://github.com/fzaninotto/Faker)
+* [Carbon](https://github.com/briannesbitt/Carbon)
