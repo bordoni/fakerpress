@@ -8,7 +8,7 @@ class WP_Comment extends Base {
 			$comment_content = $this->generator->text( $max_chars );
 			$comment_content = substr( $comment_content, 0, strlen( $comment_content ) - 1 );
 		}
-		
+
 		return $comment_content;
 	}
 
@@ -36,11 +36,11 @@ class WP_Comment extends Base {
 	}
 
 	public function comment_parent( $comment_parent = null ) {
-		
+
 		return absint( $comment_parent );
 	}
 
-	public function comment_author_IP( $ip = null ) {
+	public function comment_author_ip( $ip = null ) {
 
 		if ( $ip == null ){
 			$ip = $this->generator->ipv4;
@@ -63,7 +63,7 @@ class WP_Comment extends Base {
 		return $comment_approved;
 	}
 
-	public function comment_post_ID( $comment_post_ID = null ) {
+	public function comment_post_id( $comment_post_ID = null ) {
 		if ( $comment_post_ID == null ){
 			$args = array(
 				'posts_per_page'   => -1,
@@ -88,7 +88,7 @@ class WP_Comment extends Base {
 		return $comment_post_ID;
 	}
 
-	public function comment_author_email( $author_email = null, $max_chars = 200 ) {
+	public function comment_author_email( $author_email = null ) {
 		if ( $author_email == null ){
 			$author_email = $this->generator->safeEmail;
 			$author_email = substr( $author_email, 0, strlen( $author_email ) - 1 );
@@ -97,7 +97,7 @@ class WP_Comment extends Base {
 		return $author_email;
 	}
 
-	public function comment_author_url( $author_url = null, $max_chars = 200 ) {
+	public function comment_author_url( $author_url = null ) {
 		if ( $author_url == null ){
 			$author_url = $this->generator->url;
 			$author_url = substr( $author_url, 0, strlen( $author_url ) - 1 );
