@@ -1,5 +1,5 @@
 === FakerPress ===
-Contributors:      iryz, bordoni
+Contributors:      iryz, bordoni, luancuba
 Tags:              generator, admin, exemples, testing, taxonomies, users, post type, faker, fake data, random
 Requires at least: 3.7
 Tested up to:      3.9
