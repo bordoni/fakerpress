@@ -82,12 +82,12 @@ Class Admin {
 		<script>
 			(function($){
 				'use strict';
-				var fp = typeof FakerPress === 'object' ? FakerPress : {};
+				var fp = typeof FakerPress === 'object' ? window.FakerPress : {};
 
 				fp.view = {
 					name: '<?php echo esc_attr( $view->slug ); ?>',
 					default: '<?php echo esc_attr( $menus[0]->view ); ?>'
-				}
+				};
 
 				fp.menu = {
 					$container: $('#toplevel_page_fakerpress')
@@ -102,7 +102,7 @@ Class Admin {
 					fp.menu.$items.filter('.current').removeClass('current');
 					fp.menu.$current.parent().addClass('current');
 				}
-			}(jQuery))
+			}(jQuery));
 		</script>
 		<?php
 	}
