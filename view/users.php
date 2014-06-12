@@ -4,6 +4,6 @@
 	<?php
 		$faker = new \FakerPress\Module\User();
 		$save = $faker->save();
-		var_dump( $faker->generate() );
+		$faker->generate();
 	?>
 </div>
