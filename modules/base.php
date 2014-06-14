@@ -6,6 +6,7 @@ include_once \Fakerpress\Plugin::path( 'providers/html.php' );
 include_once \Fakerpress\Plugin::path( 'providers/wp-term.php' );
 include_once \Fakerpress\Plugin::path( 'providers/post.php' );
 include_once \Fakerpress\Plugin::path( 'providers/comment.php' );
+include_once \Fakerpress\Plugin::path( 'providers/user.php' );
 
 /**
  * Abstract of a Module Generator.
