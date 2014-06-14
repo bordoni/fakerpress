@@ -4,11 +4,11 @@ namespace Faker\Provider;
 class WP_Comment extends Base {
 
 	public function comment_content( $comment_content = null, $max_chars = 200 ) {
-		if ( $comment_content == null ){
+		if ( is_null( $comment_content ) ){
 			$comment_content = $this->generator->text( $max_chars );
 			$comment_content = substr( $comment_content, 0, strlen( $comment_content ) - 1 );
 		}
-		
+
 		return $comment_content;
 	}
 
@@ -31,18 +31,17 @@ class WP_Comment extends Base {
 	}
 
 	public function comment_author( $comment_author = null ) {
-
+		// Lacks the method to random a bunch of elements
 		return absint( $comment_author );
 	}
 
 	public function comment_parent( $comment_parent = null ) {
-		
+		// Lacks the method to random a bunch of elements
 		return absint( $comment_parent );
 	}
 
-	public function comment_author_IP( $ip = null ) {
-
-		if ( $ip == null ){
+	public function comment_author_ip( $ip = null ) {
+		if ( is_null( $ip ) ){
 			$ip = $this->generator->ipv4;
 		}
 
@@ -50,8 +49,7 @@ class WP_Comment extends Base {
 	}
 
 	public function comment_agent( $user_agent = null ) {
-
-		if ( $user_agent == null ){
+		if ( is_null( $user_agent ) ){
 			$user_agent = $this->generator->userAgent;
 		}
 
@@ -63,8 +61,9 @@ class WP_Comment extends Base {
 		return $comment_approved;
 	}
 
-	public function comment_post_ID( $comment_post_ID = null ) {
-		if ( $comment_post_ID == null ){
+	public function comment_post_id( $comment_post_ID = null ) {
+		if ( is_null( $comment_post_ID ) ){
+			// We should be able to pass these arguments
 			$args = array(
 				'posts_per_page'   => -1,
 				'post_type'        => 'post',
@@ -73,23 +72,24 @@ class WP_Comment extends Base {
 			);
 
 			$posts = get_posts( $args );
+			// Should be using WP_Query, but it's alright for now
 
-			if ( $posts ){
-				foreach ( $posts as $post ){
-					$post_id[] = $post->ID;
-				}
+			foreach ( $posts as $post ){
+				$post_id[] = $post->ID;
 			}
 
-			if ( $post_id ){
+			if ( ! empty($post_id) ){
 				$comment_post_ID = absint( $this->generator->randomElement( $post_id, 1 ) );
 			}
+
+			// We need to check if there is no posts, should we include the comment anyways?
 		}
 
 		return $comment_post_ID;
 	}
 
-	public function comment_author_email( $author_email = null, $max_chars = 200 ) {
-		if ( $author_email == null ){
+	public function comment_author_email( $author_email = null ) {
+		if ( is_null( $author_email ) ){
 			$author_email = $this->generator->safeEmail;
 			$author_email = substr( $author_email, 0, strlen( $author_email ) - 1 );
 		}
@@ -97,8 +97,8 @@ class WP_Comment extends Base {
 		return $author_email;
 	}
 
-	public function comment_author_url( $author_url = null, $max_chars = 200 ) {
-		if ( $author_url == null ){
+	public function comment_author_url( $author_url = null ) {
+		if ( is_null( $author_url ) ){
 			$author_url = $this->generator->url;
 			$author_url = substr( $author_url, 0, strlen( $author_url ) - 1 );
 		}

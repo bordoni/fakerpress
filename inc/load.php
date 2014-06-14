@@ -25,6 +25,9 @@ require_once Plugin::path( 'modules/base.php' );
 // Require the Post module
 require_once Plugin::path( 'modules/post.php' );
 
+// Require the Post module
+require_once Plugin::path( 'modules/term.php' );
+
 // Require the Comment module
 require_once Plugin::path( 'modules/comment.php' );
 

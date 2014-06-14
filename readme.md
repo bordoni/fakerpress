@@ -4,7 +4,7 @@
 ![Banner](assets/banner-1544x500.png)
 FakerPress is a clean way to generate fake data to your WordPress instalation, great for developers who need testing
 
-**Contributors:** [iryz](http://profiles.wordpress.org/iryz), [bordoni](http://profiles.wordpress.org/bordoni)  
+**Contributors:** [iryz](http://profiles.wordpress.org/iryz), [bordoni](http://profiles.wordpress.org/bordoni), [luancuba](http://profiles.wordpress.org/luancuba)  
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [admin](http://wordpress.org/plugins/tags/admin), [exemples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake data), [random](http://wordpress.org/plugins/tags/random)  
 **Requires at least:** 3.7  
 **Tested up to:** 3.9  
