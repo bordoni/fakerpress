@@ -65,11 +65,8 @@ Class Admin {
 			'capability' => sanitize_title( $capability ),
 			'priority' => $priority === 0 ? $priority + 1 : $priority,
 		);
-	}
 
-	public function get_menus(){
 		usort( self::$menus, array( $this, '_sort_priority' ) );
-		return self::$menus;
 	}
 
 	public function _sort_priority( $a, $b ){
@@ -77,7 +74,6 @@ Class Admin {
 	}
 
 	public function _action_current_menu_js( $view ) {
-		$menus = $this->get_menus();
 		?>
 		<script>
 			(function($){
@@ -86,7 +82,7 @@ Class Admin {
 
 				fp.view = {
 					name: '<?php echo esc_attr( $view->slug ); ?>',
-					default: '<?php echo esc_attr( $menus[0]->view ); ?>'
+					default: '<?php echo esc_attr( self::$menus[0]->view ); ?>'
 				};
 
 				fp.menu = {
@@ -108,11 +104,9 @@ Class Admin {
 	}
 
 	public function _action_set_admin_view(){
-		$menus = $this->get_menus();
-
 		// Default Page of the plugin
 		$view = (object) array(
-			'slug' => Filter::super( INPUT_GET, 'view', FILTER_SANITIZE_FILE, $menus[0]->view ),
+			'slug' => Filter::super( INPUT_GET, 'view', 'file', self::$menus[0]->view ),
 			'path' => null,
 		);
 
@@ -140,8 +134,6 @@ Class Admin {
 	 */
 	public function _action_admin_menu() {
 		self::add_menu( 'posts', __( 'Create Fake Posts', 'fakerpress' ), __( 'Posts', 'fakerpress' ), 'manage_options', 10 );
-
-		self::$menus = $this->get_menus();
 
 		foreach ( self::$menus as &$menu ) {
 			if ( $menu->priority === 0 ) {

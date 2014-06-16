@@ -98,7 +98,7 @@ class Plugin {
 		 */
 		$args = wp_parse_args( $args, $defaults );
 
-		return add_query_arg( $args, admin_url( 'options-general.php' ) ) . ( $hash !== false ? "#{$hash}" : '' );
+		return add_query_arg( $args, admin_url( 'admin.php' ) ) . ( $hash !== false ? "#{$hash}" : '' );
 	}
 
 	/**

@@ -4,12 +4,11 @@
  */
 namespace FakerPress;
 
-define( 'FILTER_SANITIZE_FILE', 'FILTER_SANITIZE_FILE' );
-
 class Filter {
 
 	public static $filter_callbacks = array(
 		FILTER_DEFAULT                     => null,
+
 		// Validate
 		FILTER_VALIDATE_BOOLEAN            => 'is_bool',
 		FILTER_VALIDATE_EMAIL              => 'is_email',
@@ -18,6 +17,7 @@ class Filter {
 		FILTER_VALIDATE_IP                 => array( 'Filter', 'is_ip_address' ),
 		FILTER_VALIDATE_REGEXP             => array( 'Filter', 'is_regex' ),
 		FILTER_VALIDATE_URL                => 'wp_http_validate_url',
+
 		// Sanitize
 		FILTER_SANITIZE_EMAIL              => 'sanitize_email',
 		FILTER_SANITIZE_ENCODED            => 'esc_url_raw',
@@ -26,7 +26,8 @@ class Filter {
 		FILTER_SANITIZE_SPECIAL_CHARS      => 'htmlspecialchars',
 		FILTER_SANITIZE_STRING             => 'sanitize_text_field',
 		FILTER_SANITIZE_URL                => 'esc_url_raw',
-		FILTER_SANITIZE_FILE               => 'sanitize_file_name',
+		'file'                             => 'sanitize_file_name',
+
 		// Other
 		FILTER_UNSAFE_RAW                  => null,
 	);
@@ -69,15 +70,15 @@ class Filter {
 		// Default value when there is none
 		$default = ( array_key_exists( 'default', (array) $options ) ? $options['default'] : $options );
 		if ( 'validator' === $filter_type && false === $var ) {
-			$var = $default;
+			$var = empty( $options ) ? false : $default;
 		} elseif ( 'sanitizer' === $filter_type && null === $var ) {
-			$var = $default;
+			$var = empty( $options ) ? null : $default;
 		}
 
 		// Only filter value if it is not null
 		if ( isset( $var ) && $filter && FILTER_DEFAULT !== $filter ) {
 			if ( ! isset( self::$filter_callbacks[ $filter ] ) ) {
-				throw new Exception( __( 'Filter not supported.', 'fakerpress' ) );
+				throw new \Exception( __( 'Filter not supported.', 'fakerpress' ) );
 			}
 
 			$filter_callback = self::$filter_callbacks[ $filter ];
