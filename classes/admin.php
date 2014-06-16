@@ -28,13 +28,16 @@ Class Admin {
 	public function __construct(){
 		add_action( 'admin_init', array( $this, '_action_set_admin_view' ) );
 
+		// Add needs to come before `admin_menu`
+		add_action( 'init', array( $this, '_add_core_submenus' ) );
+
 		// When trying to add a menu, make bigger than the default to avoid conflicting index further on
 		add_action( 'admin_menu', array( $this, '_action_admin_menu' ), 11 );
 		add_action( 'fakerpress.before_view', array( $this, '_action_current_menu_js' ) );
 
 		self::$menus[] = (object) array(
 			'view' => 'settings',
-			'title' => esc_attr__( 'FakerPress Administration', 'fakerpress' ),
+			'title' => esc_attr__( 'FakerPress Settings', 'fakerpress' ),
 			'label' => esc_attr__( 'FakerPress', 'fakerpress' ),
 			'capability' => 'manage_options',
 			'priority' => 0,
@@ -43,6 +46,8 @@ Class Admin {
 		// Creating information for the plugin pages footer
 		add_filter( 'admin_footer_text', array( $this, '_filter_admin_footer_text' ) );
 		add_filter( 'update_footer', array( $this, '_filter_update_footer' ), 15 );
+
+		add_filter( 'fakerpress.view', array( $this, '_filter_set_view_title' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, '_action_enqueue_ui' ) );
 	}
@@ -66,10 +71,10 @@ Class Admin {
 			'priority' => $priority === 0 ? $priority + 1 : $priority,
 		);
 
-		usort( self::$menus, array( $this, '_sort_priority' ) );
+		usort( self::$menus, '\FakerPress\Admin::_sort_priority' );
 	}
 
-	public function _sort_priority( $a, $b ){
+	public static function _sort_priority( $a, $b ){
 		return $a->priority - $b->priority;
 	}
 
@@ -133,8 +138,6 @@ Class Admin {
 	 * @return null Actions do not return
 	 */
 	public function _action_admin_menu() {
-		self::add_menu( 'posts', __( 'Create Fake Posts', 'fakerpress' ), __( 'Posts', 'fakerpress' ), 'manage_options', 10 );
-
 		foreach ( self::$menus as &$menu ) {
 			if ( $menu->priority === 0 ) {
 				$menu->hook = add_menu_page( $menu->title, $menu->label, $menu->capability, Plugin::$slug, array( &$this, '_include_settings_page' ), 'none' );
@@ -145,6 +148,16 @@ Class Admin {
 
 		// Change the Default Submenu for FakerPress menus
 		$GLOBALS['submenu'][ Plugin::$slug ][0][0] = esc_attr__( 'Settings', 'FakerPress' );
+	}
+
+	/**
+	 *
+	 */
+	public function _add_core_submenus(){
+		self::add_menu( 'users', __( 'Users', 'fakerpress' ), __( 'Users', 'fakerpress' ), 'manage_options', 10 );
+		self::add_menu( 'terms', __( 'Terms', 'fakerpress' ), __( 'Terms', 'fakerpress' ), 'manage_options', 10 );
+		self::add_menu( 'posts', __( 'Posts', 'fakerpress' ), __( 'Posts', 'fakerpress' ), 'manage_options', 10 );
+		self::add_menu( 'comments', __( 'Comments', 'fakerpress' ), __( 'Comments', 'fakerpress' ), 'manage_options', 10 );
 	}
 
 	/**
@@ -190,6 +203,28 @@ Class Admin {
 		// Use these to do stuff related to the view you are working with
 		do_action( 'fakerpress.after_view', self::$view );
 		do_action( "fakerpress.after_view.{$view->slug}", self::$view );
+	}
+
+
+	public function _filter_set_view_title( $view ){
+		foreach ( self::$menus as $menu ){
+			if ( $view->slug !== $menu->view ){
+				continue;
+			}
+			$view->title = $menu->title;
+		}
+
+		add_filter( 'admin_title', array( $this, '_filter_set_admin_page_title' ), 15, 2 );
+
+		return $view;
+	}
+
+	public function _filter_set_admin_page_title( $admin_title, $title ){
+		$pos = strpos( $admin_title, $title );
+		if ( $pos !== false ) {
+			$admin_title = substr_replace( $admin_title, sprintf( apply_filters( 'fakerpress.admin_title_base', __( '%s on FakerPress', 'fakerpress' ) ), self::$view->title ), $pos, strlen( $title ) );
+		}
+		return $admin_title;
 	}
 
 	/**

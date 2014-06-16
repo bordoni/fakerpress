@@ -1,3 +1,4 @@
 <div class='wrap'>
-    <h2><?php esc_attr_e( 'FakerPress Settings', 'fakerpress' ); ?></h2>
+	<h2><?php echo esc_attr( \FakerPress\Admin::$view->title ); ?></h2>
+
 </div>
