@@ -49,5 +49,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
+= 0.1.1 =
+* Fatal Error gerated by a missing file Carbon related fixed
+
 = 0.1.0 =
 * First initial concept of using [Faker](https://github.com/fzaninotto/Faker) to gerenate data on WordPress
