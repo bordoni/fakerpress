@@ -108,7 +108,7 @@ if [ -d assets ]; then
 fi
 
 # convert .gitignores to svn:ignore
-for gitignore in $(find . -name .gitignore); do
+for gitignore in $(find . -path ./.gitignore); do
 	echo "Convert $gitignore to svn:global-ignores"
 	svn propset svn:global-ignores -F $gitignore $(dirname $gitignore)
 	svn rm --force $gitignore
