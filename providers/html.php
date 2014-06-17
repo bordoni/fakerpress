@@ -93,7 +93,9 @@ class Html extends Base {
 		for ( $i = 0; $i < $qty; $i++ ) {
 			$index = ( $indexes * $i ) + Base::randomNumber( 0, $indexes );
 
-			$sentences[$index] = $this->element( $element, array(), $sentences[$index] );
+			if ( isset( $sentences[$index] ) ){
+				$sentences[$index] = $this->element( $element, array(), $sentences[$index] );
+			}
 		}
 
 		return implode( ' ', $sentences );

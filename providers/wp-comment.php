@@ -14,7 +14,7 @@ class WP_Comment extends Base {
 
 	public function user_id( $users = array() ) {
 		// We only need to query if there is no users passed
-		if ( empty( $users ) ){
+		if ( is_array( $users ) && empty( $users ) ){
 			$users = get_users(
 				array(
 					'blog_id' => $GLOBALS['blog_id'],
@@ -32,7 +32,7 @@ class WP_Comment extends Base {
 
 	public function comment_author( $comment_author = null ) {
 		// Lacks the method to random a bunch of elements
-		return absint( $comment_author );
+		return $this->generator->name();
 	}
 
 	public function comment_parent( $comment_parent = null ) {
@@ -40,7 +40,9 @@ class WP_Comment extends Base {
 		return absint( $comment_parent );
 	}
 
-	public function comment_author_ip( $ip = null ) {
+	// @codingStandardsIgnoreStart | Because of the cammel casing on the name
+	public function comment_author_IP( $ip = null ) {
+	// @codingStandardsIgnoreEnd
 		if ( is_null( $ip ) ){
 			$ip = $this->generator->ipv4;
 		}
@@ -61,7 +63,9 @@ class WP_Comment extends Base {
 		return $comment_approved;
 	}
 
-	public function comment_post_id( $comment_post_ID = null ) {
+	// @codingStandardsIgnoreStart | Because of the cammel casing on the name
+	public function comment_post_ID( $comment_post_ID = null ) {
+	// @codingStandardsIgnoreEnd
 		if ( is_null( $comment_post_ID ) ){
 			// We should be able to pass these arguments
 			$args = array(

@@ -21,6 +21,8 @@ abstract class Base {
 
 	public $args = array();
 
+	public $params = array();
+
 	public $settings = array();
 
 	public $faked = array();
@@ -100,10 +102,10 @@ abstract class Base {
 		$this->args = apply_filters( "fakerpress.module.{$this->slug}.args", wp_parse_args( $this->args, $args ) );
 
 		foreach ( $this->faked as $name ) {
-			$this->args[ $name ] = call_user_func_array( array( $this->faker, $name ), ( isset( $this->args[ $name ] ) ? (array) $this->args[ $name ] : array() ) );
+			$this->params[ $name ] = call_user_func_array( array( $this->faker, $name ), ( isset( $this->args[ $name ] ) ? (array) $this->args[ $name ] : array() ) );
 		}
 
-		return $this->args;
+		return $this->params;
 	}
 
 }

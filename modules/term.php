@@ -11,9 +11,9 @@ class Term extends Base {
 
 	public function save() {
 		$args = array(
-			'description' => $this->description,
-			'parent' => $this->parent_term,
+			'description' => $this->params['description'],
+			'parent' => $this->params['parent_term'],
 		);
-		return wp_insert_term( $this->name, $this->taxonomy, $args );
+		return wp_insert_term( $this->params['name'], $this->params['taxonomy'], $args );
 	}
 }
