@@ -12,6 +12,6 @@ class Post extends Base {
 	public $provider = '\Faker\Provider\WP_Post';
 
 	public function save() {
-		return wp_insert_post( $this->args );
+		return wp_insert_post( $this->params );
 	}
 }
