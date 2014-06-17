@@ -37,7 +37,7 @@ Class Admin {
 
 		self::$menus[] = (object) array(
 			'view' => 'settings',
-			'title' => esc_attr__( 'FakerPress Settings', 'fakerpress' ),
+			'title' => esc_attr__( 'Settings', 'fakerpress' ),
 			'label' => esc_attr__( 'FakerPress', 'fakerpress' ),
 			'capability' => 'manage_options',
 			'priority' => 0,
