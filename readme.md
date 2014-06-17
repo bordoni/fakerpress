@@ -22,12 +22,9 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 **Create Fake Data for:**
 
  * Posts
- * Pages
- * Custom Post Types
  * Users
  * Tags
  * Categories
- * Custom Taxonomies
  * Comments
 
 **Noteworthy features:**
