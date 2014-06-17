@@ -226,6 +226,16 @@ Class Admin {
 			$view->title = $menu->title;
 		}
 
+		switch ( $view->slug ) {
+			case 'changelog':
+				$view->title = esc_attr__( 'Changelog', 'fakerpress' );
+				break;
+
+			case 'error':
+				$view->title = esc_attr__( 'Not Found (404)', 'fakerpress' );
+				break;
+		}
+
 		add_filter( 'admin_title', array( $this, '_filter_set_admin_page_title' ), 15, 2 );
 
 		return $view;
