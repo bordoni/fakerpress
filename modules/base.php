@@ -4,9 +4,9 @@ namespace FakerPress\Module;
 // Inluding needed providers
 include_once \Fakerpress\Plugin::path( 'providers/html.php' );
 include_once \Fakerpress\Plugin::path( 'providers/wp-term.php' );
-include_once \Fakerpress\Plugin::path( 'providers/post.php' );
-include_once \Fakerpress\Plugin::path( 'providers/comment.php' );
-include_once \Fakerpress\Plugin::path( 'providers/user.php' );
+include_once \Fakerpress\Plugin::path( 'providers/wp-post.php' );
+include_once \Fakerpress\Plugin::path( 'providers/wp-comment.php' );
+include_once \Fakerpress\Plugin::path( 'providers/wp-user.php' );
 
 /**
  * Abstract of a Module Generator.

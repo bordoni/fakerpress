@@ -43,7 +43,7 @@ class WP_User extends Base {
 			$display_name = $this->generator->firstName( $this->generator->randomElements( $gender, 1 ) );
 		}
 		return $display_name;
-	} 
+	}
 
 	public function nickname( $nickname = null ) {
 		if ( is_null( $nickname ) ) {
