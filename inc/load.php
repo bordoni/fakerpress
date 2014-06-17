@@ -24,15 +24,19 @@ require_once Plugin::path( 'modules/base.php' );
 
 // Require the Post module
 require_once Plugin::path( 'modules/post.php' );
+require_once Plugin::path( 'controllers/posts.php' );
 
 // Require the User module
 require_once Plugin::path( 'modules/user.php' );
+require_once Plugin::path( 'controllers/users.php' );
 
 // Require the Post module
 require_once Plugin::path( 'modules/term.php' );
+require_once Plugin::path( 'controllers/terms.php' );
 
 // Require the Comment module
 require_once Plugin::path( 'modules/comment.php' );
+require_once Plugin::path( 'controllers/comments.php' );
 
 // Initialize the main Class of the plugin Administration
 Plugin::$admin = new Admin;
