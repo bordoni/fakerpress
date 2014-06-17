@@ -26,6 +26,11 @@ Class Admin {
 	 * @return null Construct never returns
 	 */
 	public function __construct(){
+		$this->control['posts']    = new Control\Posts;
+		$this->control['terms']    = new Control\Terms;
+		$this->control['users']    = new Control\Users;
+		$this->control['comments'] = new Control\Comments;
+
 		add_action( 'admin_init', array( $this, '_action_set_admin_view' ) );
 
 		// Add needs to come before `admin_menu`
@@ -33,7 +38,7 @@ Class Admin {
 
 		// When trying to add a menu, make bigger than the default to avoid conflicting index further on
 		add_action( 'admin_menu', array( $this, '_action_admin_menu' ), 11 );
-		add_action( 'fakerpress.before_view', array( $this, '_action_current_menu_js' ) );
+		add_action( 'fakerpress.view.start', array( $this, '_action_current_menu_js' ) );
 
 		self::$menus[] = (object) array(
 			'view' => 'settings',
@@ -48,6 +53,7 @@ Class Admin {
 		add_filter( 'update_footer', array( $this, '_filter_update_footer' ), 15 );
 
 		add_filter( 'fakerpress.view', array( $this, '_filter_set_view_title' ) );
+		add_filter( 'fakerpress.view', array( $this, '_filter_set_view_action' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, '_action_enqueue_ui' ) );
 	}
@@ -193,18 +199,24 @@ Class Admin {
 
 		// Execute some actions before including the view, to allow others to hook in here
 		// Use these to do stuff related to the view you are working with
-		do_action( 'fakerpress.before_view', self::$view );
-		do_action( "fakerpress.before_view.{$view->slug}", self::$view );
+		do_action( 'fakerpress.view.start', self::$view );
+		do_action( "fakerpress.view.start.{$view->slug}", self::$view );
 
 		// PHP include the view
 		include_once self::$view->path;
 
 		// Execute some actions before including the view, to allow others to hook in here
 		// Use these to do stuff related to the view you are working with
-		do_action( 'fakerpress.after_view', self::$view );
-		do_action( "fakerpress.after_view.{$view->slug}", self::$view );
+		do_action( 'fakerpress.view.end', self::$view );
+		do_action( "fakerpress.view.end.{$view->slug}", self::$view );
 	}
 
+
+	public function _filter_set_view_action( $view ){
+		$view->action = Filter::super( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
+
+		return $view;
+	}
 
 	public function _filter_set_view_title( $view ){
 		foreach ( self::$menus as $menu ){
