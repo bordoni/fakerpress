@@ -85,6 +85,10 @@ Class Admin {
 		add_filter( 'fakerpress.view', array( $this, '_filter_set_view_title' ) );
 		add_filter( 'fakerpress.view', array( $this, '_filter_set_view_action' ) );
 
+		// Allow WordPress
+		add_filter( 'fakerpress.messages.allowed_html', array( $this, '_filter_messages_allowed_html' ), 1, 1 );
+
+		// This has to turn to something bigger
 		add_action( 'admin_enqueue_scripts', array( $this, '_action_enqueue_ui' ) );
 	}
 
@@ -129,41 +133,14 @@ Class Admin {
 	 *
 	 */
 	public static function add_message( $html, $type = 'success', $priority = 10 ){
-		$allowed_html = array(
-			'a' => array(
-				'class' => array(),
-				'href' => array(),
-				'title' => array()
-			),
-			'br' => array(
-				'class' => array(),
-			),
-			'em' => array(
-				'class' => array(),
-			),
-			'strong' => array(
-				'class' => array(),
-			),
-			'b' => array(
-				'class' => array(),
-			),
-			'i' => array(
-				'class' => array(),
-			),
-			'ul' => array(
-				'class' => array(),
-			),
-			'ol' => array(
-				'class' => array(),
-			),
-			'li' => array(
-				'class' => array(),
-			),
-		);
-
 		$priority = absint( $priority );
+
+		/**
+		 * @filter fakerpress.messages.allowed_html
+		 * @since 0.1.2
+		 */
 		self::$messages[] = (object) array(
-			'html' => wp_kses( $html, $allowed_html, array( 'http', 'https' ) ),
+			'html' => wp_kses( wpautop( $html ), apply_filters( 'fakerpress.messages.allowed_html', array() ), array( 'http', 'https' ) ),
 			'type' => esc_attr( $type ),
 			'priority' => $priority === 0 ? $priority + 1 : $priority,
 		);
@@ -238,6 +215,9 @@ Class Admin {
 
 		// Set the Admin::$view
 		self::$view = apply_filters( 'fakerpress.view', $view );
+
+		do_action( 'fakerpress.view.request', self::$view );
+		do_action( 'fakerpress.view.request.' . self::$view->slug , self::$view );
 	}
 
 	/**
@@ -270,8 +250,39 @@ Class Admin {
 	 * @return null Actions do not return
 	 */
 	public function _action_admin_notices() {
-		foreach ( self::$messages as $message ) {
+		foreach ( self::$messages as $k => $message ) {
+			$classes = array(
+				// Plugin class to give the styling
+				'fakerpress-message',
+				// This is to use WordPress JS to move them above the h2
+				'updated-nag',
+			);
 
+			if ( $k === 0 ) {
+				$classes[] = 'first';
+			}
+
+			if ( $k + 1 === count( self::$messages ) ) {
+				$classes[] = 'last';
+			}
+
+			switch ( $message->type ) {
+				case 'error':
+					$classes[] = 'fakerpress-message-error';
+					break;
+				case 'success':
+					$classes[] = 'fakerpress-message-success';
+					break;
+				case 'warning':
+					$classes[] = 'fakerpress-message-warning';
+					break;
+				default:
+					break;
+			}
+
+			?>
+				<div class="<?php echo wp_kses( implode( ' ', $classes ), array() ); ?>"><?php echo wp_kses( $message->html, apply_filters( 'fakerpress.messages.allowed_html', array() ), array( 'http', 'https' ) ); ?></div>
+			<?php
 		}
 	}
 
@@ -287,8 +298,10 @@ Class Admin {
 	 */
 	public function _action_enqueue_ui() {
 		wp_register_style( 'fakerpress.icon', Plugin::url( 'ui/font.css' ), array(), Plugin::version, 'screen' );
+		wp_register_style( 'fakerpress.messages', Plugin::url( 'ui/messages.css' ), array(), Plugin::version, 'screen' );
 
 		wp_enqueue_style( 'fakerpress.icon' );
+		wp_enqueue_style( 'fakerpress.messages' );
 	}
 
 	/**
@@ -354,6 +367,43 @@ Class Admin {
 			$admin_title = substr_replace( $admin_title, sprintf( apply_filters( 'fakerpress.admin_title_base', __( '%s on FakerPress', 'fakerpress' ) ), self::$view->title ), $pos, strlen( $title ) );
 		}
 		return $admin_title;
+	}
+
+	public function _filter_messages_allowed_html() {
+		return array(
+			'a' => array(
+				'class' => array(),
+				'href' => array(),
+				'title' => array()
+			),
+			'br' => array(
+				'class' => array(),
+			),
+			'p' => array(
+				'class' => array(),
+			),
+			'em' => array(
+				'class' => array(),
+			),
+			'strong' => array(
+				'class' => array(),
+			),
+			'b' => array(
+				'class' => array(),
+			),
+			'i' => array(
+				'class' => array(),
+			),
+			'ul' => array(
+				'class' => array(),
+			),
+			'ol' => array(
+				'class' => array(),
+			),
+			'li' => array(
+				'class' => array(),
+			),
+		);
 	}
 
 	/**

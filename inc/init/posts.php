@@ -2,7 +2,7 @@
 namespace FakerPress;
 
 add_action(
-	'fakerpress.view.start.posts',
+	'fakerpress.view.request.posts',
 	function( $view ) {
 		if ( Admin::$request_method === 'post' && ! empty( $_POST )  ) {
 			$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
@@ -14,16 +14,43 @@ add_action(
 
 			$quantity = absint( Filter::super( INPUT_POST, 'fakerpress_qty', FILTER_SANITIZE_NUMBER_INT ) );
 
+			if ( $quantity === 0 ){
+				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
+			}
+
 			$faker = new Module\Post;
 
+			$results = (object) array();
+
 			for ( $i = 0; $i < $quantity; $i++ ) {
-				$faker->generate(
+				$results->all[] = $faker->generate(
 					array(
 						'post_status' => array( array( 'publish' ) ),
 						'post_date' => array( '-2 months', 'now' ),
 						'post_type' => array( 'post' ),
 					)
 				)->save();
+			}
+
+			$results->success = array_filter( $results->all, 'absint' );
+
+			if ( count( $results->success ) !== 0 ){
+				return Admin::add_message(
+					sprintf(
+						__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),
+						count( $results->success ),
+						_n( 'post', 'posts', count( $results->success ), 'fakerpress' ),
+						implode(
+							', ',
+							array_map(
+								function ( $id ){
+									return '<a href="' . get_edit_post_link( $id ) . '">' . $id . '</a>';
+								},
+								$results->success
+							)
+						)
+					)
+				);
 			}
 		}
 	}

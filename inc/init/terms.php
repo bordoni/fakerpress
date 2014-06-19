@@ -2,7 +2,7 @@
 namespace FakerPress;
 
 add_action(
-	'fakerpress.view.start.terms',
+	'fakerpress.view.request.terms',
 	function( $view ) {
 		if ( Admin::$request_method === 'post' && ! empty( $_POST )  ) {
 			$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
@@ -14,10 +14,29 @@ add_action(
 
 			$quantity = absint( Filter::super( INPUT_POST, 'fakerpress_qty', FILTER_SANITIZE_NUMBER_INT ) );
 
+			if ( $quantity === 0 ){
+				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'terms' ), 'error' );
+			}
+
 			$faker = new Module\Term;
 
+			$results = (object) array();
+
 			for ( $i = 0; $i < $quantity; $i++ ) {
-				$faker->generate()->save();
+				$result = $faker->generate()->save();
+				$results->all[] = $result['term_id'];
+			}
+
+
+			if ( count( $results->all ) !== 0 ){
+				return Admin::add_message(
+					sprintf(
+						__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),
+						count( $results->all ),
+						_n( 'term', 'terms', count( $results->all ), 'fakerpress' ),
+						implode( ', ', $results->all )
+					)
+				);
 			}
 		}
 	}

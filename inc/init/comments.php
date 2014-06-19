@@ -2,7 +2,7 @@
 namespace FakerPress;
 
 add_action(
-	'fakerpress.view.start.comments',
+	'fakerpress.view.request.comments',
 	function( $view ) {
 		if ( Admin::$request_method === 'post' && ! empty( $_POST )  ) {
 			$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
@@ -14,15 +14,33 @@ add_action(
 
 			$quantity = absint( Filter::super( INPUT_POST, 'fakerpress_qty', FILTER_SANITIZE_NUMBER_INT ) );
 
+			if ( $quantity === 0 ){
+				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'comments' ), 'error' );
+			}
+
 			$faker = new Module\Comment;
 
+			$results = (object) array();
+
 			for ( $i = 0; $i < $quantity; $i++ ) {
-				$faker->generate(
+				$results->all[] = $faker->generate(
 					array(
 						'comment_date' => array( '-2 months', 'now' ),
 						'user_id' => array( 0 ),
 					)
 				)->save();
+			}
+			$results->success = array_filter( $results->all, 'absint' );
+
+			if ( count( $results->success ) !== 0 ){
+				return Admin::add_message(
+					sprintf(
+						__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),
+						count( $results->success ),
+						_n( 'comment', 'comments', count( $results->success ), 'fakerpress' ),
+						implode( ', ', $results->success )
+					)
+				);
 			}
 		}
 	}
