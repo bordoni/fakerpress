@@ -1,0 +1,173 @@
+# Copyright (C) 2014 FakerPress
+# This file is distributed under the same license as the FakerPress package.
+# Translators:
+# Gustavo Bordoni <bordoni.dev@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: FakerPress\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/fakerpress\n"
+"POT-Creation-Date: 2014-06-19 20:51:53+00:00\n"
+"PO-Revision-Date: 2014-06-19 21:03+0000\n"
+"Last-Translator: Gustavo Bordoni <bordoni.dev@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/fakerpress/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: classes/admin.php:45 classes/admin.php:156
+msgid "Settings"
+msgstr "Configurações"
+
+#. #-#-#-#-#  plugin.pot (FakerPress 0.1.1)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: classes/admin.php:46
+msgid "FakerPress"
+msgstr "FakerPress"
+
+#: classes/admin.php:163
+msgid "Users"
+msgstr "Usuários"
+
+#: classes/admin.php:164
+msgid "Terms"
+msgstr "Termos"
+
+#: classes/admin.php:165
+msgid "Posts"
+msgstr "Posts"
+
+#: classes/admin.php:166
+msgid "Comments"
+msgstr "Comentários"
+
+#: classes/admin.php:231
+msgid "Changelog"
+msgstr "Mudanças"
+
+#: classes/admin.php:235
+msgid "Not Found (404)"
+msgstr "Não encontrado (404)"
+
+#: classes/admin.php:247
+msgid "%s on FakerPress"
+msgstr "%s no FakerPress"
+
+#: classes/admin.php:272
+msgid "Contact Support"
+msgstr "Contacte o Suporte"
+
+#: classes/admin.php:277
+msgid "Add your [stars] on [wp.org] to spread the love."
+msgstr "Dê [stars] para nós no [wp.org] para ajudar o Plugin"
+
+#: classes/admin.php:299
+msgid "Version"
+msgstr "Versão"
+
+#: classes/admin.php:299
+msgid "View what changed in this version"
+msgstr "Veja o que mudou nessa versão"
+
+#: classes/filter.php:57
+msgid "Invalid use, type must be one of INPUT_* family."
+msgstr "Uso Inválido, o tipo deve ser um dos INPUT_*"
+
+#: classes/filter.php:81
+msgid "Filter not supported."
+msgstr "Não existe suporte para este filtro"
+
+#: fakerpress.php:58
+msgid ""
+"<b>FakerPress</b> requires PHP 5.3 or higher, and the plugin has now "
+"disabled itself."
+msgstr "<b>FakerPress</b> precisa do PHP 5.3 ou maior, o plugin agora foi desativado."
+
+#: fakerpress.php:60
+msgid ""
+"To allow better control over dates, advanced security improvements and "
+"performance gain."
+msgstr "Para permitir melhor controle de datas, melhor segurança e ganhos de performance."
+
+#: fakerpress.php:62
+msgid ""
+"Contact your Hosting or your system administrator and ask for this Upgrade "
+"to version 5.3 of PHP."
+msgstr "Entre em contato com a sua hospedagem e peça para que eles atualizem o seu PHP para o 5.3"
+
+#: view/changelog.php:2
+msgid "What has Changed in FakerPress"
+msgstr "O Que mudou no FakerPress"
+
+#: view/changelog.php:4
+msgid "Sorry but this page still doesn't have the information available."
+msgstr "Desculpe mas essa página ainda não tem informações disponíveis"
+
+#: view/comments.php:9 view/posts.php:9 view/terms.php:9 view/users.php:9
+msgid "Quantity"
+msgstr "Quantidade"
+
+#: view/comments.php:12 view/posts.php:12 view/users.php:12
+msgid "e.g.: 12"
+msgstr "ex: 12"
+
+#: view/comments.php:14
+msgid "The amount of Comments you want to generate on this request"
+msgstr "A Quantidade de comentários que você deseja gerar"
+
+#: view/comments.php:19 view/posts.php:19 view/terms.php:19 view/users.php:19
+msgid "Generate"
+msgstr "Gerar"
+
+#: view/error.php:2
+msgid "Oops, 404 Error!"
+msgstr "Ihhh, Erro 404!"
+
+#: view/error.php:4
+msgid ""
+"Yeah... Something went very wrong somewhere along your last actions.\n"
+"\n"
+"Right now we feel ashemed about this problem, poke us on twitter (<a href='http://twitter.com/IryzTeam' target='_blank'>@IryzTeam</a>)!"
+msgstr "É... Algo deu muito errado nas últimas ações feitas.\n\nAgora nós nos sentimos com vergonha deste problema, entre em contato no twitter (<a href='http://twitter.com/IryzTeam' target='_blank'>@IryzTeam</a>)!"
+
+#: view/posts.php:14
+msgid "The amount of Posts you want to generate on this request"
+msgstr "A quantidade de posts que você deseja gerar nessa requisição"
+
+#: view/settings.php:4
+msgid ""
+"Yeah! The plugin is still simple enough that it doesn't have any settings to be changed.\n"
+"\n"
+"Checkout the menus of our plugin to check what you can generate with the plugin."
+msgstr "Atualmente o plugin não tem funcionalidades suficientes para ter configurações!\n\nVerifique o meu lateral para ver o que é possível fazer com o plugin."
+
+#: view/terms.php:12
+msgid "e.g.: 25"
+msgstr "ex: 25"
+
+#: view/terms.php:14
+msgid "The amount of terms you want to generate on this request"
+msgstr "A Quantidade de termos que você deseja gerar nessa requisição"
+
+#: view/users.php:14
+msgid "The amount of Users you want to generate on this request"
+msgstr "A quantidade de usuários que você deseja criar dessa vez"
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/iryz/fakerpress"
+msgstr "https://github.com/iryz/fakerpress"
+
+#. Description of the plugin/theme
+msgid ""
+"FakerPress is a clean way to generate fake data to your WordPress "
+"instalation, great for developers who need testing"
+msgstr "FakerPress uma forma limpa de gerar dados para o seu WordPress, bom para desenvolvedores que precisam de testes."
+
+#. Author of the plugin/theme
+msgid "Iryz"
+msgstr "Iryz"
+
+#. Author URI of the plugin/theme
+msgid "http://iryz.org"
+msgstr "http://iryz.org"
