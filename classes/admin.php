@@ -4,24 +4,45 @@ namespace FakerPress;
 Class Admin {
 	/**
 	 * Variable holding the submenus objects
+	 *
+	 * @since 0.1.0
+	 *
 	 * @var array
 	 */
 	protected static $menus = array();
 
 	/**
+	 * Variable holding the messages objects
+	 *
+	 * @since 0.1.2
+	 *
+	 * @var array
+	 */
+	protected static $messages = array();
+
+	/**
 	 * Variable holding the submenus objects
+	 *
+	 * @since 0.1.0
+	 *
 	 * @var object
 	 */
 	public static $view = null;
 
 	/**
 	 * Easier way to determine which method originated the request
+	 *
+	 * @since 0.1.2
+	 *
 	 * @var string
 	 */
 	public static $request_method = 'get';
 
 	/**
 	 * Makes it easier to check if is AJAX
+	 *
+	 * @since 0.1.2
+	 *
 	 * @var bool
 	 */
 	public static $is_ajax = false;
@@ -43,6 +64,7 @@ Class Admin {
 		self::$is_ajax = ( defined( 'DOING_AJAX' ) && DOING_AJAX );
 
 		add_action( 'admin_init', array( $this, '_action_set_admin_view' ) );
+		add_action( 'admin_notices', array( $this, '_action_admin_notices' ) );
 
 		// When trying to add a menu, make bigger than the default to avoid conflicting index further on
 		add_action( 'admin_menu', array( $this, '_action_admin_menu' ), 11 );
@@ -74,6 +96,9 @@ Class Admin {
 	 * @param string  $label Translatable string that will go on the menu
 	 * @param string  $capability WordPress capability that will be required to access this view
 	 * @param integer $priority The priority to show this submenu
+	 *
+	 * @since 0.1.0
+	 *
 	 */
 	public static function add_menu( $view, $title, $label, $capability = 'manage_options', $priority = 10 ){
 		$priority = absint( $priority );
@@ -85,13 +110,80 @@ Class Admin {
 			'priority' => $priority === 0 ? $priority + 1 : $priority,
 		);
 
-		usort( self::$menus, '\FakerPress\Admin::_sort_priority' );
+		usort(
+			self::$menus,
+			function( $a, $b ){
+				return $a->priority - $b->priority;
+			}
+		);
 	}
 
-	public static function _sort_priority( $a, $b ){
-		return $a->priority - $b->priority;
+	/**
+	 * Creating messages in a standard way
+	 *
+	 * @param string  $html HTML or text of the message
+	 * @param string  $type The type of the Message
+	 * @param integer $priority The priority to show this message
+	 *
+	 * @since 0.1.2
+	 *
+	 */
+	public static function add_message( $html, $type = 'success', $priority = 10 ){
+		$allowed_html = array(
+			'a' => array(
+				'class' => array(),
+				'href' => array(),
+				'title' => array()
+			),
+			'br' => array(
+				'class' => array(),
+			),
+			'em' => array(
+				'class' => array(),
+			),
+			'strong' => array(
+				'class' => array(),
+			),
+			'b' => array(
+				'class' => array(),
+			),
+			'i' => array(
+				'class' => array(),
+			),
+			'ul' => array(
+				'class' => array(),
+			),
+			'ol' => array(
+				'class' => array(),
+			),
+			'li' => array(
+				'class' => array(),
+			),
+		);
+
+		$priority = absint( $priority );
+		self::$messages[] = (object) array(
+			'html' => wp_kses( $html, $allowed_html, array( 'http', 'https' ) ),
+			'type' => esc_attr( $type ),
+			'priority' => $priority === 0 ? $priority + 1 : $priority,
+		);
+
+		usort(
+			self::$messages,
+			function( $a, $b ){
+				return $a->priority - $b->priority;
+			}
+		);
 	}
 
+	/**
+	 * [_action_current_menu_js description]
+	 * @param  [type] $view [description]
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return [type]       [description]
+	 */
 	public function _action_current_menu_js( $view ) {
 		?>
 		<script>
@@ -122,6 +214,13 @@ Class Admin {
 		<?php
 	}
 
+	/**
+	 * [_action_set_admin_view description]
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return [type] [description]
+	 */
 	public function _action_set_admin_view(){
 		// Default Page of the plugin
 		$view = (object) array(
@@ -165,12 +264,22 @@ Class Admin {
 	}
 
 	/**
+	 * Method triggered to add messages recorded in this request to the admin front-end
+	 *
+	 * @since 0.1.2
+	 * @return null Actions do not return
+	 */
+	public function _action_admin_notices() {
+		foreach ( self::$messages as $message ) {
+
+		}
+	}
+
+	/**
 	 * Register and enqueue the WordPress admin UI elements like JavaScript and CSS
 	 *
 	 * @uses wp_register_style
 	 * @uses wp_enqueue_style
-	 * @uses \FakerPress\Plugin::url
-	 * @uses \FakerPress\Plugin::version
 	 *
 	 * @since 0.1.0
 	 *
