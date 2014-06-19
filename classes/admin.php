@@ -15,6 +15,18 @@ Class Admin {
 	public static $view = null;
 
 	/**
+	 * Easier way to determine which method originated the request
+	 * @var string
+	 */
+	public static $request_method = 'get';
+
+	/**
+	 * Makes it easier to check if is AJAX
+	 * @var bool
+	 */
+	public static $is_ajax = false;
+
+	/**
 	 * Static method to include all the Hooks for WordPress
 	 * There is a safe conditional here, it can only be triggered once!
 	 *
@@ -26,15 +38,11 @@ Class Admin {
 	 * @return null Construct never returns
 	 */
 	public function __construct(){
-		$this->control['posts']    = new Control\Posts;
-		$this->control['terms']    = new Control\Terms;
-		$this->control['users']    = new Control\Users;
-		$this->control['comments'] = new Control\Comments;
+		self::$request_method = strtolower( Filter::super( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ) );
+
+		self::$is_ajax = ( defined( 'DOING_AJAX' ) && DOING_AJAX );
 
 		add_action( 'admin_init', array( $this, '_action_set_admin_view' ) );
-
-		// Add needs to come before `admin_menu`
-		add_action( 'init', array( $this, '_add_core_submenus' ) );
 
 		// When trying to add a menu, make bigger than the default to avoid conflicting index further on
 		add_action( 'admin_menu', array( $this, '_action_admin_menu' ), 11 );
@@ -154,16 +162,6 @@ Class Admin {
 
 		// Change the Default Submenu for FakerPress menus
 		$GLOBALS['submenu'][ Plugin::$slug ][0][0] = esc_attr__( 'Settings', 'FakerPress' );
-	}
-
-	/**
-	 *
-	 */
-	public function _add_core_submenus(){
-		self::add_menu( 'users', __( 'Users', 'fakerpress' ), __( 'Users', 'fakerpress' ), 'manage_options', 10 );
-		self::add_menu( 'terms', __( 'Terms', 'fakerpress' ), __( 'Terms', 'fakerpress' ), 'manage_options', 10 );
-		self::add_menu( 'posts', __( 'Posts', 'fakerpress' ), __( 'Posts', 'fakerpress' ), 'manage_options', 10 );
-		self::add_menu( 'comments', __( 'Comments', 'fakerpress' ), __( 'Comments', 'fakerpress' ), 'manage_options', 10 );
 	}
 
 	/**

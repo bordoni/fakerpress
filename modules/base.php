@@ -98,7 +98,7 @@ abstract class Base {
 			$this->params[ $name ] = call_user_func_array( array( $this->faker, $name ), ( isset( $this->args[ $name ] ) ? (array) $this->args[ $name ] : array() ) );
 		}
 
-		return $this->params;
+		return $this;
 	}
 
 }
