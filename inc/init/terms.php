@@ -12,7 +12,8 @@ add_action(
 			}
 			// After this point we are safe to say that we have a good POST request
 
-			$quantity = absint( Filter::super( INPUT_POST, 'fakerpress_qty', FILTER_SANITIZE_NUMBER_INT ) );
+			$quantity   = absint( Filter::super( INPUT_POST, 'fakerpress_qty', FILTER_SANITIZE_NUMBER_INT ) );
+			$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_taxonomies', FILTER_SANITIZE_STRING ) ) ) );
 
 			if ( $quantity === 0 ){
 				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'terms' ), 'error' );
@@ -23,7 +24,12 @@ add_action(
 			$results = (object) array();
 
 			for ( $i = 0; $i < $quantity; $i++ ) {
-				$result = $faker->generate()->save();
+				$result = $faker->generate(
+					array(
+						'taxonomy' => array( $taxonomies )
+					)
+				)->save();
+
 				$results->all[] = $result['term_id'];
 			}
 

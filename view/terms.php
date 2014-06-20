@@ -1,3 +1,14 @@
+<?php
+$taxonomies = get_taxonomies( array( 'public' => true ), 'object' );
+
+$_json_taxonomies_output = array();
+foreach ( $taxonomies as $key => $taxonomy ) {
+	$_json_taxonomies_output[] = array(
+		'id' => $taxonomy->name,
+		'text' => $taxonomy->labels->name,
+	);
+}
+?>
 <div class='wrap'>
 	<h2><?php echo esc_attr( \FakerPress\Admin::$view->title ); ?></h2>
 
@@ -12,6 +23,15 @@
 							<input style='width: 90px;' type='number' max='100' min='1' placeholder='<?php esc_attr_e( 'e.g.: 25', 'fakerpress' ); ?>' value='' name='fakerpress_qty' />
 						</div>
 						<p class="description"><?php _e( 'The amount of terms you want to generate on this request', 'fakerpress' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="fakerpress_taxonomies"><?php _e( 'Taxonomies', 'fakerpress' ); ?></label></th>
+					<td>
+						<div id="fakerpress[taxonomies]">
+							<input type='hidden' class='field-select2-taxonomies' name='fakerpress_taxonomies' data-possibilities='<?php echo json_encode( $_json_taxonomies_output ); ?>' />
+						</div>
+						<p class="description"><?php _e( 'Group of taxonomies that the terms will be created within', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
 			</tbody>
