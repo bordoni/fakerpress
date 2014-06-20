@@ -48,6 +48,17 @@ Class Admin {
 	public static $is_ajax = false;
 
 	/**
+	 * Bool if we are inside of a Plugin request
+	 *
+	 * @todo Make this work with an AJAX request
+	 *
+	 * @since 0.1.2
+	 *
+	 * @var bool
+	 */
+	public static $in_plugin = false;
+
+	/**
 	 * Static method to include all the Hooks for WordPress
 	 * There is a safe conditional here, it can only be triggered once!
 	 *
@@ -63,12 +74,8 @@ Class Admin {
 
 		self::$is_ajax = ( defined( 'DOING_AJAX' ) && DOING_AJAX );
 
-		add_action( 'admin_init', array( $this, '_action_set_admin_view' ) );
-		add_action( 'admin_notices', array( $this, '_action_admin_notices' ) );
-
-		// When trying to add a menu, make bigger than the default to avoid conflicting index further on
-		add_action( 'admin_menu', array( $this, '_action_admin_menu' ), 11 );
-		add_action( 'fakerpress.view.start', array( $this, '_action_current_menu_js' ) );
+		$page = Filter::super( INPUT_GET, 'page', FILTER_SANITIZE_STRING );
+		self::$in_plugin = ( ! is_null( $page ) && strtolower( $page ) === Plugin::$slug );
 
 		self::$menus[] = (object) array(
 			'view' => 'settings',
@@ -77,6 +84,15 @@ Class Admin {
 			'capability' => 'manage_options',
 			'priority' => 0,
 		);
+
+		// From this point on we are doing hooks!
+
+		add_action( 'admin_init', array( $this, '_action_set_admin_view' ) );
+		add_action( 'admin_notices', array( $this, '_action_admin_notices' ) );
+
+		// When trying to add a menu, make bigger than the default to avoid conflicting index further on
+		add_action( 'admin_menu', array( $this, '_action_admin_menu' ), 11 );
+		add_action( 'fakerpress.view.start', array( $this, '_action_current_menu_js' ) );
 
 		// Creating information for the plugin pages footer
 		add_filter( 'admin_footer_text', array( $this, '_filter_admin_footer_text' ) );
@@ -199,6 +215,10 @@ Class Admin {
 	 * @return [type] [description]
 	 */
 	public function _action_set_admin_view(){
+		if ( ! self::$in_plugin ){
+			return;
+		}
+
 		// Default Page of the plugin
 		$view = (object) array(
 			'slug' => Filter::super( INPUT_GET, 'view', 'file', self::$menus[0]->view ),
@@ -362,6 +382,9 @@ Class Admin {
 	}
 
 	public function _filter_set_admin_page_title( $admin_title, $title ){
+		if ( ! self::$in_plugin ){
+			return $admin_title;
+		}
 		$pos = strpos( $admin_title, $title );
 		if ( $pos !== false ) {
 			$admin_title = substr_replace( $admin_title, sprintf( apply_filters( 'fakerpress.admin_title_base', __( '%s on FakerPress', 'fakerpress' ) ), self::$view->title ), $pos, strlen( $title ) );
@@ -417,8 +440,7 @@ Class Admin {
 	 * @return string
 	 */
 	public function _filter_admin_footer_text( $text ){
-		$page = Filter::super( INPUT_GET, 'page', FILTER_SANITIZE_STRING );
-		if ( is_null( $page ) || strtolower( $page ) !== Plugin::$slug ){
+		if ( ! self::$in_plugin ){
 			return $text;
 		}
 
@@ -448,8 +470,7 @@ Class Admin {
 	 * @return string
 	 */
 	public function _filter_update_footer( $text ){
-		$page = Filter::super( INPUT_GET, 'page', FILTER_SANITIZE_STRING );
-		if ( is_null( $page ) || strtolower( $page ) !== Plugin::$slug ){
+		if ( ! self::$in_plugin ){
 			return $text;
 		}
 
