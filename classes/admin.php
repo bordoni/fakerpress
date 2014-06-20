@@ -297,8 +297,8 @@ Class Admin {
 	 * @return null Actions do not return
 	 */
 	public function _action_enqueue_ui() {
-		wp_register_style( 'fakerpress.icon', Plugin::url( 'ui/font.css' ), array(), Plugin::version, 'screen' );
-		wp_register_style( 'fakerpress.messages', Plugin::url( 'ui/messages.css' ), array(), Plugin::version, 'screen' );
+		wp_register_style( 'fakerpress.icon', Plugin::url( 'ui/css/font.css' ), array(), Plugin::version, 'screen' );
+		wp_register_style( 'fakerpress.messages', Plugin::url( 'ui/css/messages.css' ), array(), Plugin::version, 'screen' );
 
 		wp_enqueue_style( 'fakerpress.icon' );
 		wp_enqueue_style( 'fakerpress.messages' );
