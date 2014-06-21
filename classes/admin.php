@@ -323,7 +323,7 @@ Class Admin {
 		// Enqueue a global CSS files
 		wp_enqueue_style( 'fakerpress.icon' );
 
-		if ( self::$in_plugin ){
+		if ( ! self::$in_plugin ){
 			return;
 		}
 

@@ -14,7 +14,7 @@ add_action(
 
 			$quantity = absint( Filter::super( INPUT_POST, 'fakerpress_qty', FILTER_SANITIZE_NUMBER_INT ) );
 
-			$roles = array_intersect( garray_keys( get_editable_roles() ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_roles', FILTER_SANITIZE_STRING ) ) ) );
+			$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_roles', FILTER_SANITIZE_STRING ) ) ) );
 
 			if ( $quantity === 0 ){
 				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'users' ), 'error' );
