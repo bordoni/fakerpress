@@ -14,6 +14,8 @@ add_action(
 
 			$quantity = absint( Filter::super( INPUT_POST, 'fakerpress_qty', FILTER_SANITIZE_NUMBER_INT ) );
 
+			$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_taxonomies', FILTER_SANITIZE_STRING ) ) ) );
+
 			if ( $quantity === 0 ){
 				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
 			}
@@ -25,6 +27,7 @@ add_action(
 			for ( $i = 0; $i < $quantity; $i++ ) {
 				$results->all[] = $faker->generate(
 					array(
+						'tax_input' => array( $taxonomies ),
 						'post_status' => array( array( 'publish' ) ),
 						'post_date' => array( '-2 months', 'now' ),
 						'post_type' => array( 'post' ),

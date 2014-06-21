@@ -331,7 +331,7 @@ Class Admin {
 		wp_register_style( 'fakerpress.messages', Plugin::url( 'ui/css/messages.css' ), array(), Plugin::version, 'screen' );
 
 		// Register the plugin JS files
-		wp_register_script( 'fakerpress.fields', Plugin::url( 'ui/js/fields.js' ), array( 'jquery', 'fakerpress.select2' ), Plugin::version, true );
+		wp_register_script( 'fakerpress.fields', Plugin::url( 'ui/js/fields.js' ), array( 'jquery', 'underscore', 'fakerpress.select2' ), Plugin::version, true );
 
 		// Register Vendor Select2
 		wp_register_style( 'fakerpress.select2', Plugin::url( 'ui/vendor/select2/select2.css' ), array(), '3.5.0', 'screen' );

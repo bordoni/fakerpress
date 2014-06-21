@@ -28,9 +28,9 @@ foreach ( $roles as $role_name => $role_data ) {
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="fakerpress_taxonomies"><?php _e( 'Roles', 'fakerpress' ); ?></label></th>
+					<th scope="row"><label for="fakerpress_roles"><?php _e( 'Roles', 'fakerpress' ); ?></label></th>
 					<td>
-						<div id="fakerpress[taxonomies]">
+						<div id="fakerpress[roles]">
 							<input type='hidden' class='field-select2-simple' name='fakerpress_roles' data-possibilities='<?php echo json_encode( $_json_roles_output ); ?>' />
 						</div>
 						<p class="description"><?php _e( 'Sampling roles to be used', 'fakerpress' ); ?></p>
