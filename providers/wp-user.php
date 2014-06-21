@@ -12,9 +12,18 @@ class WP_User extends Base {
 
 	public function user_pass( $pass = null, $qty = 10 ) {
 		if ( is_null( $pass ) ){
+			// By the way we should be using the WordPress wp_generate_password
 			$pass = $this->generator->randomNumber( $qty - 1 ) + $this->generator->randomLetter();
 		}
 		return $pass;
+	}
+
+	public function role( $role = null ) {
+		if ( is_null( $role ) ){
+			$role = array_keys( get_editable_roles() );
+		}
+
+		return $this->generator->randomElement( $role );
 	}
 
 	public function user_nicename( $nicename = null ) {

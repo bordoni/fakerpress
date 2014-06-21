@@ -317,11 +317,33 @@ Class Admin {
 	 * @return null Actions do not return
 	 */
 	public function _action_enqueue_ui() {
-		wp_register_style( 'fakerpress.icon', Plugin::url( 'ui/font.css' ), array(), Plugin::version, 'screen' );
-		wp_register_style( 'fakerpress.messages', Plugin::url( 'ui/messages.css' ), array(), Plugin::version, 'screen' );
+		// Register a global CSS files
+		wp_register_style( 'fakerpress.icon', Plugin::url( 'ui/css/font.css' ), array(), Plugin::version, 'screen' );
 
+		// Enqueue a global CSS files
 		wp_enqueue_style( 'fakerpress.icon' );
+
+		if ( ! self::$in_plugin ){
+			return;
+		}
+
+		// Register the plugin CSS files
+		wp_register_style( 'fakerpress.messages', Plugin::url( 'ui/css/messages.css' ), array(), Plugin::version, 'screen' );
+
+		// Register the plugin JS files
+		wp_register_script( 'fakerpress.fields', Plugin::url( 'ui/js/fields.js' ), array( 'jquery', 'underscore', 'fakerpress.select2' ), Plugin::version, true );
+
+		// Register Vendor Select2
+		wp_register_style( 'fakerpress.select2', Plugin::url( 'ui/vendor/select2/select2.css' ), array(), '3.5.0', 'screen' );
+		wp_register_style( 'fakerpress.select2-wordpress', Plugin::url( 'ui/vendor/select2/select2-wordpress.css' ), array( 'fakerpress.select2' ), '3.5.0', 'screen' );
+		wp_register_script( 'fakerpress.select2', Plugin::url( 'ui/vendor/select2/select2.min.js' ), array( 'jquery' ), '3.5.0', true );
+
+		// Enqueue plugin CSS
 		wp_enqueue_style( 'fakerpress.messages' );
+
+		// Enqueue Vendor Select2
+		wp_enqueue_style( 'fakerpress.select2-wordpress' );
+		wp_enqueue_script( 'fakerpress.fields' );
 	}
 
 	/**
