@@ -14,6 +14,8 @@ add_action(
 
 			$quantity = absint( Filter::super( INPUT_POST, 'fakerpress_qty', FILTER_SANITIZE_NUMBER_INT ) );
 
+			$post_types = array_intersect( get_post_types( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_post_types', FILTER_SANITIZE_STRING ) ) ) );
+
 			$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_taxonomies', FILTER_SANITIZE_STRING ) ) ) );
 
 			if ( $quantity === 0 ){
@@ -30,7 +32,7 @@ add_action(
 						'tax_input' => array( $taxonomies ),
 						'post_status' => array( array( 'publish' ) ),
 						'post_date' => array( '-2 months', 'now' ),
-						'post_type' => array( 'post' ),
+						'post_type' => array( $post_types ),
 					)
 				)->save();
 			}
