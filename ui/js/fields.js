@@ -2,7 +2,7 @@
 ( function( $ ){
 	'use strict';
 	$(document).ready(function(){
-		$( '.field-select2-taxonomies' ).each(function(){
+		$( '.field-select2-simple' ).each(function(){
 			var $select = $(this);
 
 			$select.select2({
