@@ -33,7 +33,7 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function user_id( $haystack = array() ){
+	public function post_author( $haystack = array() ){
 		if ( empty( $haystack ) ){
 			$haystack = get_users(
 				array(
