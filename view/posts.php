@@ -49,16 +49,14 @@ foreach ( $types as $type ) {
 				<tr>
 					<th scope="row"><label for="fakerpress_max_date"><?php _e( 'Date', 'fakerpress' ); ?></label></th>
 					<td>
-						<div id="fakerpress[min_date]">
+						<div id="fakerpress-min-date">
 							<input style='width: 150px;' class='field-datepicker' type='text' max='25' min='1' placeholder='<?php esc_attr_e( 'dd/mm/aaaa', 'fakerpress' ); ?>' value='' name='fakerpress_min_date' />
 						</div>
-						<p class="description"><?php _e( 'Min Date', 'fakerpress' ); ?></p>
-					</td>
-					<td>
-						<div id="fakerpress[max_date]">
+						<div class="dashicons dashicons-arrow-right-alt2 dashicon-date"></div>
+						<div id="fakerpress-max-date">
 							<input style='width: 150px;' class='field-datepicker' type='text' max='25' min='1' placeholder='<?php esc_attr_e( 'dd/mm/aaaa', 'fakerpress' ); ?>' value='' name='fakerpress_max_date' />
 						</div>
-						<p class="description"><?php _e( 'Max Date', 'fakerpress' ); ?></p>
+						<p class="description-date"><?php _e( 'Choose the range for the comments dates.', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
 				<tr>

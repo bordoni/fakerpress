@@ -2,7 +2,7 @@
 ( function( $ ){
 	'use strict';
 	$(document).ready(function(){
-
+		
 		$('.field-datepicker').datepicker();
 
 		$( '.field-select2-simple' ).each(function(){
