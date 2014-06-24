@@ -43,7 +43,7 @@ class WP_Post extends Base {
 
 			$qty = min( count( $terms ), $qty );
 
-			$output[$taxonomy] = $this->generator->randomElements( $terms , $qty );
+			$output[ $taxonomy ] = $this->generator->randomElements( $terms , $qty );
 		}
 
 		return $output;

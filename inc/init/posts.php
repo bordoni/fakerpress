@@ -49,7 +49,7 @@ add_action(
 							', ',
 							array_map(
 								function ( $id ){
-									return '<a href="' . get_edit_post_link( $id ) . '">' . $id . '</a>';
+									return '<a href="' . esc_url( get_edit_post_link( $id ) ) . '">' . absint( $id ) . '</a>';
 								},
 								$results->success
 							)

@@ -2,7 +2,11 @@
 <ruleset name="WordPress Coding Standards for Plugins">
 	<description>Generally-applicable sniffs for WordPress plugins</description>
 
-	<rule ref="WordPress"></rule>
+	<rule ref="WordPress">
+		<exclude name="WordPress.VIP.RestrictedFunctions"/>
+		<exclude name="WordPress.VIP.SuperGlobalInputUsage"/>
+		<exclude name="WordPress.VIP.ValidatedSanitizedInput"/>
+	</rule>
 
 	<exclude-pattern>/tests/*</exclude-pattern><!-- because of PHPUnit method names -->
 	<exclude-pattern>/inc/vendor/*</exclude-pattern><!-- because of vendor shouldn't even be validated at all -->

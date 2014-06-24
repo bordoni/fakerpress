@@ -470,7 +470,7 @@ Class Admin {
 		 * @todo Review the links to the Official repository before release
 		 */
 		return
-			'<a target="_blank" href="http://wordpress.org/support/plugin/fakerpress#postform">' . __( 'Contact Support', 'fakerpress' ) . '</a>' .
+			'<a target="_blank" href="http://wordpress.org/support/plugin/fakerpress#postform">' . esc_attr__( 'Contact Support', 'fakerpress' ) . '</a>' .
 			' | ' .
 			str_replace(
 				array( '[stars]', '[wp.org]' ),
@@ -496,6 +496,6 @@ Class Admin {
 			return $text;
 		}
 
-		return __( 'Version' ) . ': ' . '<a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . Plugin::admin_url( 'view=changelog&version=' . Plugin::version ) . '">' . Plugin::version . '</a>';
+		return esc_attr_( 'Version' ) . ': ' . '<a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::version ) ) ) . '">' . esc_attr( Plugin::version ) . '</a>';
 	}
 }
