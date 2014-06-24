@@ -41,7 +41,6 @@ add_action(
 						'post_date' => array( $min_date, $max_date ),
 						'post_type' => array( 'post' ),
 						'post_author'   => array( $post_author ),
-						'post_date' => array( '-2 months', 'now' ),
 						'post_type' => array( $post_types ),
 					)
 				)->save();
