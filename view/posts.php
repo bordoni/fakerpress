@@ -48,7 +48,6 @@ foreach ( $post_types as $key => $post_type ) {
 	);
 }
 ?>
->>>>>>> master
 <div class='wrap'>
 	<h2><?php echo esc_attr( Admin::$view->title ); ?></h2>
 
