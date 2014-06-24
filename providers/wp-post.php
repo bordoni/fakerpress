@@ -25,6 +25,30 @@ class WP_Post extends Base {
 		return $content;
 	}
 
+	public function tax_input( $taxonomies = null, $range = array( 1, 6 ) ) {
+		$output = array();
+
+		if ( is_null( $taxonomies ) ){
+			return $output;
+		}
+
+		foreach ( $taxonomies as $taxonomy ){
+			$terms = array_map( 'absint', get_terms( $taxonomy, array( 'fields' => 'ids', 'hide_empty' => false ) ) );
+
+			if ( is_array( $range ) ){
+				$qty = call_user_func_array( array( $this->generator, 'numberBetween' ), $range );
+			} else {
+				$qty = $range;
+			}
+
+			$qty = min( count( $terms ), $qty );
+
+			$output[$taxonomy] = $this->generator->randomElements( $terms , $qty );
+		}
+
+		return $output;
+	}
+
 	public function post_type( $haystack = array() ){
 		if ( empty( $haystack ) ){
 			$haystack = get_post_types( array(), 'names' );

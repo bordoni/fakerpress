@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FakerPress\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/fakerpress\n"
-"POT-Creation-Date: 2014-06-19 20:51:53+00:00\n"
-"PO-Revision-Date: 2014-06-19 21:03+0000\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/fakerpress\n"
+"POT-Creation-Date: 2014-06-21 23:16:36+00:00\n"
+"PO-Revision-Date: 2014-06-21 23:37+0000\n"
 "Last-Translator: Gustavo Bordoni <bordoni.dev@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/fakerpress/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -16,57 +16,41 @@ msgstr ""
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: classes/admin.php:45 classes/admin.php:156
+#: classes/admin.php:82 classes/admin.php:263
 msgid "Settings"
 msgstr "Configurações"
 
-#. #-#-#-#-#  plugin.pot (FakerPress 0.1.1)  #-#-#-#-#
+#. #-#-#-#-#  fakerpress.pot (FakerPress 0.1.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: classes/admin.php:46
+#: classes/admin.php:83
 msgid "FakerPress"
 msgstr "FakerPress"
 
-#: classes/admin.php:163
-msgid "Users"
-msgstr "Usuários"
-
-#: classes/admin.php:164
-msgid "Terms"
-msgstr "Termos"
-
-#: classes/admin.php:165
-msgid "Posts"
-msgstr "Posts"
-
-#: classes/admin.php:166
-msgid "Comments"
-msgstr "Comentários"
-
-#: classes/admin.php:231
+#: classes/admin.php:393
 msgid "Changelog"
 msgstr "Mudanças"
 
-#: classes/admin.php:235
+#: classes/admin.php:397
 msgid "Not Found (404)"
 msgstr "Não encontrado (404)"
 
-#: classes/admin.php:247
+#: classes/admin.php:412
 msgid "%s on FakerPress"
 msgstr "%s no FakerPress"
 
-#: classes/admin.php:272
+#: classes/admin.php:473
 msgid "Contact Support"
 msgstr "Contacte o Suporte"
 
-#: classes/admin.php:277
+#: classes/admin.php:478
 msgid "Add your [stars] on [wp.org] to spread the love."
 msgstr "Dê [stars] para nós no [wp.org] para ajudar o Plugin"
 
-#: classes/admin.php:299
+#: classes/admin.php:499
 msgid "Version"
 msgstr "Versão"
 
-#: classes/admin.php:299
+#: classes/admin.php:499
 msgid "View what changed in this version"
 msgstr "Veja o que mudou nessa versão"
 
@@ -96,6 +80,64 @@ msgid ""
 "to version 5.3 of PHP."
 msgstr "Entre em contato com a sua hospedagem e peça para que eles atualizem o seu PHP para o 5.3"
 
+#: inc/init/comments.php:18 inc/init/posts.php:22 inc/init/terms.php:19
+#: inc/init/users.php:20
+msgid "Zero is not a good number of %s to fake..."
+msgstr "Zero não é um bom número de %s para criar..."
+
+#: inc/init/comments.php:38 inc/init/posts.php:45 inc/init/terms.php:40
+#: inc/init/users.php:39
+msgid "Faked %d new %s: [ %s ]"
+msgstr "Foram criados %d novos %s [ %s ]"
+
+#: inc/init/comments.php:40
+msgid "comment"
+msgid_plural "comments"
+msgstr[0] "comentário"
+msgstr[1] "comentários"
+
+#: inc/init/comments.php:52
+msgid "Comments"
+msgstr "Comentários"
+
+#: inc/init/posts.php:47
+msgid "post"
+msgid_plural "posts"
+msgstr[0] "post"
+msgstr[1] "posts"
+
+#: inc/init/posts.php:67
+msgid "Posts"
+msgstr "Posts"
+
+#: inc/init/terms.php:42
+msgid "term"
+msgid_plural "terms"
+msgstr[0] "termo"
+msgstr[1] "termos"
+
+#: inc/init/terms.php:54
+msgid "Terms"
+msgstr "Termos"
+
+#: inc/init/terms.php:64
+msgid "Your request has failed"
+msgstr "Sua requisição falhou"
+
+#: inc/init/terms.php:88
+msgid "Request successful"
+msgstr "Requisição feita com sucesso"
+
+#: inc/init/users.php:41
+msgid "user"
+msgid_plural "users"
+msgstr[0] "usuário"
+msgstr[1] "usuários"
+
+#: inc/init/users.php:53
+msgid "Users"
+msgstr "Usuários"
+
 #: view/changelog.php:2
 msgid "What has Changed in FakerPress"
 msgstr "O Que mudou no FakerPress"
@@ -104,11 +146,11 @@ msgstr "O Que mudou no FakerPress"
 msgid "Sorry but this page still doesn't have the information available."
 msgstr "Desculpe mas essa página ainda não tem informações disponíveis"
 
-#: view/comments.php:9 view/posts.php:9 view/terms.php:9 view/users.php:9
+#: view/comments.php:9 view/posts.php:39 view/terms.php:22 view/users.php:22
 msgid "Quantity"
 msgstr "Quantidade"
 
-#: view/comments.php:12 view/posts.php:12 view/users.php:12
+#: view/comments.php:12 view/posts.php:42 view/users.php:25
 msgid "e.g.: 12"
 msgstr "ex: 12"
 
@@ -116,7 +158,7 @@ msgstr "ex: 12"
 msgid "The amount of Comments you want to generate on this request"
 msgstr "A Quantidade de comentários que você deseja gerar"
 
-#: view/comments.php:19 view/posts.php:19 view/terms.php:19 view/users.php:19
+#: view/comments.php:19 view/posts.php:67 view/terms.php:41 view/users.php:41
 msgid "Generate"
 msgstr "Gerar"
 
@@ -131,9 +173,25 @@ msgid ""
 "Right now we feel ashemed about this problem, poke us on twitter (<a href='http://twitter.com/IryzTeam' target='_blank'>@IryzTeam</a>)!"
 msgstr "É... Algo deu muito errado nas últimas ações feitas.\n\nAgora nós nos sentimos com vergonha deste problema, entre em contato no twitter (<a href='http://twitter.com/IryzTeam' target='_blank'>@IryzTeam</a>)!"
 
-#: view/posts.php:14
-msgid "The amount of Posts you want to generate on this request"
-msgstr "A quantidade de posts que você deseja gerar nessa requisição"
+#: view/posts.php:44
+msgid "The amount of Posts you want to generate"
+msgstr "A quantidade de posts que você deseja gerar"
+
+#: view/posts.php:48
+msgid "Post Type"
+msgstr "Tipo de Post"
+
+#: view/posts.php:53
+msgid "Sampling group of Post Types"
+msgstr "Grupo de amostragem de tipos de Post"
+
+#: view/posts.php:57 view/terms.php:31
+msgid "Taxonomies"
+msgstr "Taxonomias"
+
+#: view/posts.php:62
+msgid "From which taxonomies the related terms should be selected"
+msgstr "De quais taxonomias os termos devem ser selecionados"
 
 #: view/settings.php:4
 msgid ""
@@ -142,17 +200,29 @@ msgid ""
 "Checkout the menus of our plugin to check what you can generate with the plugin."
 msgstr "Atualmente o plugin não tem funcionalidades suficientes para ter configurações!\n\nVerifique o meu lateral para ver o que é possível fazer com o plugin."
 
-#: view/terms.php:12
+#: view/terms.php:25
 msgid "e.g.: 25"
 msgstr "ex: 25"
 
-#: view/terms.php:14
+#: view/terms.php:27
 msgid "The amount of terms you want to generate on this request"
 msgstr "A Quantidade de termos que você deseja gerar nessa requisição"
 
-#: view/users.php:14
-msgid "The amount of Users you want to generate on this request"
-msgstr "A quantidade de usuários que você deseja criar dessa vez"
+#: view/terms.php:36
+msgid "Group of taxonomies that the terms will be created within"
+msgstr "Grupo de taxonomias que os termos serão criados"
+
+#: view/users.php:27
+msgid "The amount of Users you want to generate"
+msgstr "A quantidade de usuários que você deseja gerar"
+
+#: view/users.php:31
+msgid "Roles"
+msgstr "Cargos"
+
+#: view/users.php:36
+msgid "Sampling roles to be used"
+msgstr "Amostragem de cargos que será usada"
 
 #. Plugin URI of the plugin/theme
 msgid "https://github.com/iryz/fakerpress"

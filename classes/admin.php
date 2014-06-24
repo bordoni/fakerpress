@@ -331,7 +331,7 @@ Class Admin {
 		wp_register_style( 'fakerpress.messages', Plugin::url( 'ui/css/messages.css' ), array(), Plugin::version, 'screen' );
 
 		// Register the plugin JS files
-		wp_register_script( 'fakerpress.fields', Plugin::url( 'ui/js/fields.js' ), array( 'jquery', 'fakerpress.select2' ), Plugin::version, true );
+		wp_register_script( 'fakerpress.fields', Plugin::url( 'ui/js/fields.js' ), array( 'jquery', 'underscore', 'fakerpress.select2' ), Plugin::version, true );
 
 		// Enqueue jQuery UI DatePicker
 		wp_enqueue_script( 'jquery-ui-datepicker', array( 'jquery' ) );
