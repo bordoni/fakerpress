@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FakerPress\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/fakerpress\n"
-"POT-Creation-Date: 2014-06-21 23:16:36+00:00\n"
-"PO-Revision-Date: 2014-06-21 23:37+0000\n"
+"POT-Creation-Date: 2014-06-24 22:32:11+00:00\n"
+"PO-Revision-Date: 2014-06-24 22:33+0000\n"
 "Last-Translator: Gustavo Bordoni <bordoni.dev@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/fakerpress/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -26,31 +26,27 @@ msgstr "Configurações"
 msgid "FakerPress"
 msgstr "FakerPress"
 
-#: classes/admin.php:393
+#: classes/admin.php:405
 msgid "Changelog"
 msgstr "Mudanças"
 
-#: classes/admin.php:397
+#: classes/admin.php:409
 msgid "Not Found (404)"
 msgstr "Não encontrado (404)"
 
-#: classes/admin.php:412
+#: classes/admin.php:424
 msgid "%s on FakerPress"
 msgstr "%s no FakerPress"
 
-#: classes/admin.php:473
+#: classes/admin.php:485
 msgid "Contact Support"
 msgstr "Contacte o Suporte"
 
-#: classes/admin.php:478
+#: classes/admin.php:490
 msgid "Add your [stars] on [wp.org] to spread the love."
 msgstr "Dê [stars] para nós no [wp.org] para ajudar o Plugin"
 
-#: classes/admin.php:499
-msgid "Version"
-msgstr "Versão"
-
-#: classes/admin.php:499
+#: classes/admin.php:511
 msgid "View what changed in this version"
 msgstr "Veja o que mudou nessa versão"
 
@@ -80,33 +76,33 @@ msgid ""
 "to version 5.3 of PHP."
 msgstr "Entre em contato com a sua hospedagem e peça para que eles atualizem o seu PHP para o 5.3"
 
-#: inc/init/comments.php:18 inc/init/posts.php:22 inc/init/terms.php:19
+#: inc/init/comments.php:22 inc/init/posts.php:29 inc/init/terms.php:19
 #: inc/init/users.php:20
 msgid "Zero is not a good number of %s to fake..."
 msgstr "Zero não é um bom número de %s para criar..."
 
-#: inc/init/comments.php:38 inc/init/posts.php:45 inc/init/terms.php:40
+#: inc/init/comments.php:42 inc/init/posts.php:54 inc/init/terms.php:40
 #: inc/init/users.php:39
 msgid "Faked %d new %s: [ %s ]"
 msgstr "Foram criados %d novos %s [ %s ]"
 
-#: inc/init/comments.php:40
+#: inc/init/comments.php:44
 msgid "comment"
 msgid_plural "comments"
 msgstr[0] "comentário"
 msgstr[1] "comentários"
 
-#: inc/init/comments.php:52
+#: inc/init/comments.php:56
 msgid "Comments"
 msgstr "Comentários"
 
-#: inc/init/posts.php:47
+#: inc/init/posts.php:56
 msgid "post"
 msgid_plural "posts"
 msgstr[0] "post"
 msgstr[1] "posts"
 
-#: inc/init/posts.php:67
+#: inc/init/posts.php:76
 msgid "Posts"
 msgstr "Posts"
 
@@ -146,11 +142,11 @@ msgstr "O Que mudou no FakerPress"
 msgid "Sorry but this page still doesn't have the information available."
 msgstr "Desculpe mas essa página ainda não tem informações disponíveis"
 
-#: view/comments.php:9 view/posts.php:39 view/terms.php:22 view/users.php:22
+#: view/comments.php:9 view/posts.php:59 view/terms.php:22 view/users.php:22
 msgid "Quantity"
 msgstr "Quantidade"
 
-#: view/comments.php:12 view/posts.php:42 view/users.php:25
+#: view/comments.php:12 view/posts.php:62 view/users.php:25
 msgid "e.g.: 12"
 msgstr "ex: 12"
 
@@ -158,7 +154,20 @@ msgstr "ex: 12"
 msgid "The amount of Comments you want to generate on this request"
 msgstr "A Quantidade de comentários que você deseja gerar"
 
-#: view/comments.php:19 view/posts.php:67 view/terms.php:41 view/users.php:41
+#: view/comments.php:18 view/posts.php:86
+msgid "Date"
+msgstr "Data"
+
+#: view/comments.php:21 view/comments.php:25 view/posts.php:89
+#: view/posts.php:93
+msgid "dd/mm/aaaa"
+msgstr "dd/mm/aaaa"
+
+#: view/comments.php:27
+msgid "Choose the range for the comments dates."
+msgstr "Escolha um espaço de tempo para as datas dos comentários"
+
+#: view/comments.php:32 view/posts.php:109 view/terms.php:41 view/users.php:41
 msgid "Generate"
 msgstr "Gerar"
 
@@ -173,25 +182,37 @@ msgid ""
 "Right now we feel ashemed about this problem, poke us on twitter (<a href='http://twitter.com/IryzTeam' target='_blank'>@IryzTeam</a>)!"
 msgstr "É... Algo deu muito errado nas últimas ações feitas.\n\nAgora nós nos sentimos com vergonha deste problema, entre em contato no twitter (<a href='http://twitter.com/IryzTeam' target='_blank'>@IryzTeam</a>)!"
 
-#: view/posts.php:44
+#: view/posts.php:64
 msgid "The amount of Posts you want to generate"
 msgstr "A quantidade de posts que você deseja gerar"
 
-#: view/posts.php:48
+#: view/posts.php:68
 msgid "Post Type"
 msgstr "Tipo de Post"
 
-#: view/posts.php:53
+#: view/posts.php:73
 msgid "Sampling group of Post Types"
 msgstr "Grupo de amostragem de tipos de Post"
 
-#: view/posts.php:57 view/terms.php:31
+#: view/posts.php:77 view/terms.php:31
 msgid "Taxonomies"
 msgstr "Taxonomias"
 
-#: view/posts.php:62
+#: view/posts.php:82
 msgid "From which taxonomies the related terms should be selected"
 msgstr "De quais taxonomias os termos devem ser selecionados"
+
+#: view/posts.php:95
+msgid "Choose the range for the posts dates."
+msgstr "Escolha um espaço de tempo onde os posts serão criados"
+
+#: view/posts.php:99
+msgid "Author"
+msgstr "Autor"
+
+#: view/posts.php:104
+msgid "Choose some users to be authors of posts generated."
+msgstr "Escolha os usuários que poderão ser autores dos posts"
 
 #: view/settings.php:4
 msgid ""

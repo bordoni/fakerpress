@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FakerPress 0.1.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/fakerpress\n"
-"POT-Creation-Date: 2014-06-21 23:16:36+00:00\n"
+"POT-Creation-Date: 2014-06-24 22:32:11+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,31 +22,27 @@ msgstr ""
 msgid "FakerPress"
 msgstr ""
 
-#: classes/admin.php:393
+#: classes/admin.php:405
 msgid "Changelog"
 msgstr ""
 
-#: classes/admin.php:397
+#: classes/admin.php:409
 msgid "Not Found (404)"
 msgstr ""
 
-#: classes/admin.php:412
+#: classes/admin.php:424
 msgid "%s on FakerPress"
 msgstr ""
 
-#: classes/admin.php:473
+#: classes/admin.php:485
 msgid "Contact Support"
 msgstr ""
 
-#: classes/admin.php:478
+#: classes/admin.php:490
 msgid "Add your [stars] on [wp.org] to spread the love."
 msgstr ""
 
-#: classes/admin.php:499
-msgid "Version"
-msgstr ""
-
-#: classes/admin.php:499
+#: classes/admin.php:511
 msgid "View what changed in this version"
 msgstr ""
 
@@ -76,33 +72,33 @@ msgid ""
 "to version 5.3 of PHP."
 msgstr ""
 
-#: inc/init/comments.php:18 inc/init/posts.php:22 inc/init/terms.php:19
+#: inc/init/comments.php:22 inc/init/posts.php:29 inc/init/terms.php:19
 #: inc/init/users.php:20
 msgid "Zero is not a good number of %s to fake..."
 msgstr ""
 
-#: inc/init/comments.php:38 inc/init/posts.php:45 inc/init/terms.php:40
+#: inc/init/comments.php:42 inc/init/posts.php:54 inc/init/terms.php:40
 #: inc/init/users.php:39
 msgid "Faked %d new %s: [ %s ]"
 msgstr ""
 
-#: inc/init/comments.php:40
+#: inc/init/comments.php:44
 msgid "comment"
 msgid_plural "comments"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/init/comments.php:52
+#: inc/init/comments.php:56
 msgid "Comments"
 msgstr ""
 
-#: inc/init/posts.php:47
+#: inc/init/posts.php:56
 msgid "post"
 msgid_plural "posts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/init/posts.php:67
+#: inc/init/posts.php:76
 msgid "Posts"
 msgstr ""
 
@@ -142,11 +138,11 @@ msgstr ""
 msgid "Sorry but this page still doesn't have the information available."
 msgstr ""
 
-#: view/comments.php:9 view/posts.php:39 view/terms.php:22 view/users.php:22
+#: view/comments.php:9 view/posts.php:59 view/terms.php:22 view/users.php:22
 msgid "Quantity"
 msgstr ""
 
-#: view/comments.php:12 view/posts.php:42 view/users.php:25
+#: view/comments.php:12 view/posts.php:62 view/users.php:25
 msgid "e.g.: 12"
 msgstr ""
 
@@ -154,7 +150,20 @@ msgstr ""
 msgid "The amount of Comments you want to generate on this request"
 msgstr ""
 
-#: view/comments.php:19 view/posts.php:67 view/terms.php:41 view/users.php:41
+#: view/comments.php:18 view/posts.php:86
+msgid "Date"
+msgstr ""
+
+#: view/comments.php:21 view/comments.php:25 view/posts.php:89
+#: view/posts.php:93
+msgid "dd/mm/aaaa"
+msgstr ""
+
+#: view/comments.php:27
+msgid "Choose the range for the comments dates."
+msgstr ""
+
+#: view/comments.php:32 view/posts.php:109 view/terms.php:41 view/users.php:41
 msgid "Generate"
 msgstr ""
 
@@ -170,24 +179,36 @@ msgid ""
 "href='http://twitter.com/IryzTeam' target='_blank'>@IryzTeam</a>)!"
 msgstr ""
 
-#: view/posts.php:44
+#: view/posts.php:64
 msgid "The amount of Posts you want to generate"
 msgstr ""
 
-#: view/posts.php:48
+#: view/posts.php:68
 msgid "Post Type"
 msgstr ""
 
-#: view/posts.php:53
+#: view/posts.php:73
 msgid "Sampling group of Post Types"
 msgstr ""
 
-#: view/posts.php:57 view/terms.php:31
+#: view/posts.php:77 view/terms.php:31
 msgid "Taxonomies"
 msgstr ""
 
-#: view/posts.php:62
+#: view/posts.php:82
 msgid "From which taxonomies the related terms should be selected"
+msgstr ""
+
+#: view/posts.php:95
+msgid "Choose the range for the posts dates."
+msgstr ""
+
+#: view/posts.php:99
+msgid "Author"
+msgstr ""
+
+#: view/posts.php:104
+msgid "Choose some users to be authors of posts generated."
 msgstr ""
 
 #: view/settings.php:4
