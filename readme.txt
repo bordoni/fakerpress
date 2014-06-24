@@ -20,6 +20,7 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 **Create Fake Data for:**
 
  * Posts
+ * Custom Post Types
  * Users
  * Tags
  * Categories
@@ -48,6 +49,19 @@ Great! There are several ways you can get involved to help make FakerPress bette
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
+
+= 0.1.2 =
+* New: Admin messages for all pages ([#10](https://github.com/iryz/fakerpress/issues/10))
+* New: Select Date range for Comments and Posts ([#11](https://github.com/iryz/fakerpress/issues/11))
+* New: Select Author sampling group for Posts ([#11](https://github.com/iryz/fakerpress/issues/11))
+* New: Roles sampling group for Users ([#13](https://github.com/iryz/fakerpress/issues/13))
+* New: Taxonomies sampling group for Terms ([#13](https://github.com/iryz/fakerpress/issues/13))
+* New: Selection of Post Type for Posts ([#13](https://github.com/iryz/fakerpress/issues/13))
+* New: Selection of Terms sampling group for Posts ([#13](https://github.com/iryz/fakerpress/issues/13))
+* Tweak: Select2 usage to improve fields ([#13](https://github.com/iryz/fakerpress/issues/13))
+* Fix: `admin_title` been overwritten ([#14](https://github.com/iryz/fakerpress/issues/14))
+
+**Props**: [bordoni](http://profiles.wordpress.org/bordoni/), [luancuba](http://profiles.wordpress.org/luancuba/),
 
 = 0.1.1 =
 * Fatal Error gerated by a missing file Carbon related fixed
