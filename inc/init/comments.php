@@ -14,6 +14,10 @@ add_action(
 
 			$quantity = absint( Filter::super( INPUT_POST, 'fakerpress_qty', FILTER_SANITIZE_NUMBER_INT ) );
 
+			$min_date = Filter::super( INPUT_POST, 'fakerpress_min_date' );
+
+			$max_date = Filter::super( INPUT_POST, 'fakerpress_max_date' );
+
 			if ( $quantity === 0 ){
 				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'comments' ), 'error' );
 			}
@@ -25,7 +29,7 @@ add_action(
 			for ( $i = 0; $i < $quantity; $i++ ) {
 				$results->all[] = $faker->generate(
 					array(
-						'comment_date' => array( '-2 months', 'now' ),
+						'comment_date' => array( $min_date, $max_date ),
 						'user_id' => array( 0 ),
 					)
 				)->save();
