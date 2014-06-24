@@ -1,17 +1,9 @@
 <?php
 /**
- * FakerPress
- *
- * @package   fakerpress
- * @author    Gustavo Bordoni <gustavo@bordoni.me>
- * @license   GPL-2.0+
- * @link      http://bordoni.me
- * @copyright 2014 Bordoni
- *
  * Plugin Name:       FakerPress
  * Plugin URI:        https://github.com/iryz/fakerpress
  * Description:       FakerPress is a clean way to generate fake data to your WordPress instalation, great for developers who need testing
- * Version:           0.1.1
+ * Version:           0.1.2
  * Author:            Iryz
  * Author URI:        http://iryz.org
  * Text Domain:       fakerpress
@@ -57,9 +49,9 @@ if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
 			echo "<style>body{margin: 0 2px;font-family: 'Open Sans',sans-serif;font-size: 13px;line-height: 1.5em;}</style>";
 			echo wp_kses_post( __( '<b>FakerPress</b> requires PHP 5.3 or higher, and the plugin has now disabled itself.', 'fakerpress' ) ) .
 				'<br />' .
-				__( 'To allow better control over dates, advanced security improvements and performance gain.', 'fakerpress' ) .
+				esc_attr__( 'To allow better control over dates, advanced security improvements and performance gain.', 'fakerpress' ) .
 				'<br />' .
-				__( 'Contact your Hosting or your system administrator and ask for this Upgrade to version 5.3 of PHP.', 'vsh' );
+				esc_attr__( 'Contact your Hosting or your system administrator and ask for this Upgrade to version 5.3 of PHP.', 'vsh' );
 			exit();
 		}
 
