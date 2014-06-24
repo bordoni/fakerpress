@@ -3,15 +3,12 @@
 namespace FakerPress;
 
 $users = get_users(
-				array(
-					'blog_id' => $GLOBALS['blog_id'],
-					'count_total' => false,
-					'fields' => array( 
-									'ID', 
-									'display_name' 
-								), // When you pass only one field it returns an array of the values
-				)
-			);
+	array(
+		'blog_id' => $GLOBALS['blog_id'],
+		'count_total' => false,
+		'fields' => array( 'ID', 'display_name' ), // When you pass only one field it returns an array of the values
+	)
+);
 
 $_json_users_output = array();
 foreach ( $users as $user ) {
@@ -92,7 +89,7 @@ foreach ( $post_types as $key => $post_type ) {
 						<div id="fakerpress-max-date">
 							<input style='width: 150px;' class='field-datepicker' type='text' max='25' min='1' placeholder='<?php esc_attr_e( 'dd/mm/aaaa', 'fakerpress' ); ?>' value='' name='fakerpress_max_date' />
 						</div>
-						<p class="description-date"><?php _e( 'Choose the range for the comments dates.', 'fakerpress' ); ?></p>
+						<p class="description-date"><?php _e( 'Choose the range for the posts dates.', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
 				<tr>
