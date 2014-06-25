@@ -1,7 +1,7 @@
 #!/bin/bash
 # Given a svn-url file one directory up, export the latest git commits to the specified SVN repo.
 # Create a git release tag from the version specified in the plugin file.
-# Author: Weston Ruter (@westonruter)
+# Author: Gustavo Bordoni (@bordoni)
 
 set -e
 
@@ -44,7 +44,7 @@ fi
 git pull origin master
 git push origin master
 svn_url=$(cat svn-url)
-svn_repo_dir=/tmp/svn-$(basename $git_root)-$(md5sum <<< $git_root | cut -c1-32)
+svn_repo_dir=/tmp/svn-$(basename $git_root)-$(md5 <<< $git_root | cut -c1-32)
 
 for php in *.php; do
 	if grep -q 'Plugin Name:' $php && grep -q 'Version:' $php; then
@@ -97,7 +97,7 @@ cat <(
 	git ls-files --cached --full-name $git_root \
 	&
 	git ls-files --cached --full-name $git_root | xargs -I {} dirname {} | sort | uniq
-) | sort | rsync -avz --delete --delete-excluded --include-from=- --exclude='*' ./ $svn_repo_dir/trunk/
+) | sort | rsync -avz --delete --delete-excluded --exclude='.git/' ./ $svn_repo_dir/trunk/
 
 cd $svn_repo_dir/trunk
 
