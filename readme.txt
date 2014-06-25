@@ -50,6 +50,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
+= 0.1.3 =
+* Fixing a problem where the UI folder was not included in the final version
+
 = 0.1.2 =
 * New: Admin messages for all pages ([#10](https://github.com/iryz/fakerpress/issues/10))
 * New: Select Date range for Comments and Posts ([#11](https://github.com/iryz/fakerpress/issues/11))
