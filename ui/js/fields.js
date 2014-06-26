@@ -2,9 +2,6 @@
 ( function( $ ){
 	'use strict';
 	$(document).ready(function(){
-		
-		$('.field-datepicker').datepicker();
-
 		$( '.field-select2-simple' ).each(function(){
 			var $select = $(this);
 
@@ -16,6 +13,16 @@
 				}
 			});
 		});
+	});
+}( jQuery ) );
+
+// Date Fields
+( function( $ ){
+	'use strict';
+	$(document).ready(function(){
+		$( '.field-datepicker' ).datepicker( {
+			constrainInput: false
+		} );
 	});
 }( jQuery ) );
 

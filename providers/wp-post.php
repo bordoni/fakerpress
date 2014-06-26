@@ -115,7 +115,7 @@ class WP_Post extends Base {
 		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 		try {
 			$min = new \Carbon\Carbon( $min );
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return null;
 		}
 
@@ -123,7 +123,7 @@ class WP_Post extends Base {
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
 				$max = new \Carbon\Carbon( $max );
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				return null;
 			}
 		}
