@@ -5,7 +5,7 @@
 FakerPress is a clean way to generate fake data to your WordPress, great for developers who need testing
 
 **Contributors:** [iryz](http://profiles.wordpress.org/iryz), [bordoni](http://profiles.wordpress.org/bordoni), [luancuba](http://profiles.wordpress.org/luancuba)  
-**Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy content), [lorem ipsun](http://wordpress.org/plugins/tags/lorem ipsun), [admin](http://wordpress.org/plugins/tags/admin), [exemples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake data), [random](http://wordpress.org/plugins/tags/random)  
+**Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy content), [lorem ipsun](http://wordpress.org/plugins/tags/lorem ipsun), [admin](http://wordpress.org/plugins/tags/admin), [exemples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake data), [random](http://wordpress.org/plugins/tags/random), [developer](http://wordpress.org/plugins/tags/developer), [dev](http://wordpress.org/plugins/tags/dev), [development](http://wordpress.org/plugins/tags/development), [test](http://wordpress.org/plugins/tags/test), [tests](http://wordpress.org/plugins/tags/tests)  
 **Requires at least:** 3.7  
 **Tested up to:** 3.9  
 **Stable tag:** trunk (master)  
@@ -13,35 +13,36 @@ FakerPress is a clean way to generate fake data to your WordPress, great for dev
 
 ## Description ##
 
-**Note: This plugin requires PHP 5.3 or higher to be activated.**
-
-Whenever you create a new Theme or Plugin you will always need to create custom data to test whether your plugin is working or not, and as Developers ourselves we had this problem quite alot.
-
-Our goal with this plugin is to fill this gap where you have problem with a good solution both for Developers and for Users of WordPress.
-
-**Create Fake Data for:**
-
- * Posts
+[![Build Status](https://travis-ci.org/iryz/fakerpress.png?branch=master)](https://travis-ci.org/iryz/fakerpress)
+### Components Included ###
+* Posts
  * Custom Post Types
  * Users
  * Tags
  * Categories
  * Comments
 
-**Noteworthy features:**
+### Creating Dummy Content ###
+Normally a WordPress developer will need to perform the task of filling up an empty theme with dummy content, and doing this manually can be really time consuming, the main reasons this plugin was create was to speed up this process.
 
- * Create random HTML to test your Theme
- * Generate comments with random User data
- * Create fake Taxonomy terms and Assign it to random posts
- * Generate fake User Data to test your plugin
+### Generate Random HTML ###
+When creating dummy posts what you really want is that the HTML is really random so that you might see bugs that an XML import wouldn't.
 
-**Languages:**
+### Real Browser data on User Comments ###
+For comments our plugin is prepared to generate a real Browser data instead of leaving the field empty.
 
- * English
+### Random Terms generation ###
+For creating and assigning the terms you will have a much better tool that will allow you to select which kind of taxonomy you want to assign to your posts, and leaving the randomization to the plugin's code.
+
+### Real random User profiles ###
+If you fill up your WordPress with any data for the user profiles you might not catch an edge case, this plugin will fill up the fields with data that will really matter in the tests.
+
+### Languages ###
+* English
  * Portuguese (Brazil)
+ * Portuguese (Portugal)
 
-**See room for improvement?**
-
+### See room for improvement? ###
 Great! There are several ways you can get involved to help make FakerPress better:
 
 1. **Report Bugs:** If you find a bug, error or other problem, please report it! You can do this by [creating a new topic](http://wordpress.org/support/plugin/fakerpress) in the plugin forum. Once a developer can verify the bug by reproducing it, they will create an official bug report in GitHub where the bug will be worked on.
@@ -50,7 +51,6 @@ Great! There are several ways you can get involved to help make FakerPress bette
 
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
-[![Build Status](https://travis-ci.org/iryz/fakerpress.png?branch=master)](https://travis-ci.org/iryz/fakerpress)
 
 ## Changelog ##
 

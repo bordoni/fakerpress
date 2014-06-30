@@ -1,6 +1,6 @@
 === FakerPress ===
 Contributors:      iryz, bordoni, luancuba
-Tags:              generator, dummy content, lorem ipsun, admin, exemples, testing, taxonomies, users, post type, faker, fake data, random
+Tags:              generator, dummy content, lorem ipsun, admin, exemples, testing, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
 Requires at least: 3.7
 Tested up to:      3.9
 Stable tag:        trunk
@@ -17,7 +17,7 @@ Whenever you create a new Theme or Plugin you will always need to create custom 
 
 Our goal with this plugin is to fill this gap where you have problem with a good solution both for Developers and for Users of WordPress.
 
-**Create Fake Data for:**
+= Components Included =
 
  * Posts
  * Custom Post Types
@@ -26,19 +26,28 @@ Our goal with this plugin is to fill this gap where you have problem with a good
  * Categories
  * Comments
 
-**Noteworthy features:**
+= Creating Dummy Content =
+Normally a WordPress developer will need to perform the task of filling up an empty theme with dummy content, and doing this manually can be really time consuming, the main reasons this plugin was create was to speed up this process.
 
- * Create random HTML to test your Theme
- * Generate comments with random User data
- * Create fake Taxonomy terms and Assign it to random posts
- * Generate fake User Data to test your plugin
+= Generate Random HTML =
+When creating dummy posts what you really want is that the HTML is really random so that you might see bugs that an XML import wouldn't.
 
-**Languages:**
+= Real Browser data on User Comments =
+For comments our plugin is prepared to generate a real Browser data instead of leaving the field empty.
+
+= Random Terms generation =
+For creating and assigning the terms you will have a much better tool that will allow you to select which kind of taxonomy you want to assign to your posts, and leaving the randomization to the plugin's code.
+
+= Real random User profiles =
+If you fill up your WordPress with any data for the user profiles you might not catch an edge case, this plugin will fill up the fields with data that will really matter in the tests.
+
+= Languages =
 
  * English
  * Portuguese (Brazil)
+ * Portuguese (Portugal)
 
-**See room for improvement?**
+= See room for improvement? =
 
 Great! There are several ways you can get involved to help make FakerPress better:
 
