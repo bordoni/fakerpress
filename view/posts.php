@@ -1,7 +1,7 @@
 <?php
-
 namespace FakerPress;
 
+// Mounte the options for Users
 $users = get_users(
 	array(
 		'blog_id' => $GLOBALS['blog_id'],
@@ -18,6 +18,7 @@ foreach ( $users as $user ) {
 	);
 }
 
+// Mount the options for taxonomies
 $taxonomies = get_taxonomies( array( 'public' => true ), 'object' );
 
 $_json_taxonomies_output = array();
@@ -28,14 +29,13 @@ foreach ( $taxonomies as $key => $taxonomy ) {
 	);
 }
 
-
+// Mount the options for post_types
 $post_types = get_post_types( array( 'public' => true ), 'object' );
 
 // Exclude Attachments as we don't support images yet
 if ( isset( $post_types['attachment'] ) ){
 	unset( $post_types['attachment'] );
 }
-
 
 $_json_post_types_output = array();
 foreach ( $post_types as $key => $post_type ) {
@@ -44,6 +44,18 @@ foreach ( $post_types as $key => $post_type ) {
 		'text' => $post_type->labels->name,
 	);
 }
+
+// Mount the options for the `comment_status`
+$_json_comment_status_output = array(
+	array(
+		'id' => 'open',
+		'text' => esc_attr__( 'Allow Comments', 'fakerpress' ),
+	),
+	array(
+		'id' => 'closed',
+		'text' => esc_attr__( 'Comments closed', 'fakerpress' ),
+	),
+);
 ?>
 <div class='wrap'>
 	<h2><?php echo esc_attr( Admin::$view->title ); ?></h2>
@@ -68,6 +80,15 @@ foreach ( $post_types as $key => $post_type ) {
 							<input type='hidden' class='field-select2-simple' name='fakerpress_post_types' data-possibilities='<?php echo json_encode( $_json_post_types_output ); ?>' />
 						</div>
 						<p class="description"><?php _e( 'Sampling group of Post Types', 'fakerpress' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="fakerpress_comment_status"><?php _e( 'Comments Status', 'fakerpress' ); ?></label></th>
+					<td>
+						<div id="fakerpress[comment_status]">
+							<input type='hidden' class='field-select2-simple' name='fakerpress_comment_status' data-possibilities='<?php echo json_encode( $_json_comment_status_output ); ?>' />
+						</div>
+						<p class="description"><?php _e( 'Sampling group of options for the comment status of the posts', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
 				<tr>
