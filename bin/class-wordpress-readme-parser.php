@@ -42,7 +42,7 @@ class WordPress_Readme_Parser {
 				throw new Exception( "Parse error in $metadatum" );
 			}
 			list( $name, $value )  = array_slice( $metadataum_matches, 1, 2 );
-			$this->metadata[$name] = $value;
+			$this->metadata[ $name ] = $value;
 		}
 		$this->metadata['Contributors'] = preg_split( '/\s*,\s*/', $this->metadata['Contributors'] );
 		$this->metadata['Tags'] = preg_split( '/\s*,\s*/', $this->metadata['Tags'] );
@@ -51,6 +51,7 @@ class WordPress_Readme_Parser {
 		if ( ! $syntax_ok ) {
 			throw new Exception( 'Failed to parse sections from readme.txt' );
 		}
+
 		foreach ( $section_matches as $section_match ) {
 			array_shift( $section_match );
 
@@ -58,11 +59,19 @@ class WordPress_Readme_Parser {
 			$body        = trim( array_shift( $section_match ) );
 			$subsections = array();
 
+			if ( strpos( $body, '---' ) !== false ){
+				$description = explode( '---', $body );
+				$description = $description[0];
+			} else {
+				$description = '';
+			}
+
 			// @todo Parse out front matter /(.+?)(\n=\s+.+$)/s
 
 			// Parse subsections
 			if ( preg_match_all( '/(?:^|\n)= (.+?) =\n(.+?)(?=\n= |$)/s', $body, $subsection_matches, PREG_SET_ORDER ) ) {
-				$body = null;
+				$body = $description;
+
 				foreach ( $subsection_matches as $subsection_match ) {
 					array_shift( $subsection_match );
 					$subsections[] = array(
@@ -181,8 +190,8 @@ class WordPress_Readme_Parser {
 			$body = $section['body'];
 
 			$body = call_user_func( $general_section_formatter, $body );
-			if ( isset( $section_formatters[$section['heading']] ) ) {
-				$body = trim( call_user_func( $section_formatters[$section['heading']], $body ) );
+			if ( isset( $section_formatters[ $section['heading'] ] ) ) {
+				$body = trim( call_user_func( $section_formatters[ $section['heading'] ], $body ) );
 			}
 
 			if ( $body ) {

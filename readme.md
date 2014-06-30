@@ -13,6 +13,14 @@ FakerPress is a clean way to generate fake data to your WordPress, great for dev
 
 ## Description ##
 
+Whenever you create a new Theme or Plugin you will always need to create custom data to test whether your plugin is working or not, and as Developers ourselves we had this problem quite alot.
+
+Our goal with this plugin is to fill this gap where you have problem with a good solution both for Developers and for Users of WordPress.
+
+**Note: This plugin requires PHP 5.3 or higher to be activated.**
+
+
+
 [![Build Status](https://travis-ci.org/iryz/fakerpress.png?branch=master)](https://travis-ci.org/iryz/fakerpress)
 ### Components Included ###
 * Posts

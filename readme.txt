@@ -17,6 +17,8 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 
 **Note: This plugin requires PHP 5.3 or higher to be activated.**
 
+---
+
 = Components Included =
 
 * Posts
