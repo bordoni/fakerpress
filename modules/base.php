@@ -30,6 +30,8 @@ abstract class Base {
 		$this->slug  = strtolower( $reflection->getShortName() );
 		$this->faker = \Faker\Factory::create();
 
+		$this->flag = apply_filters( 'fakerpress.modules_flag', 'fakerpress_flag' );
+
 		$this->settings = (array) apply_filters( "fakerpress.module.{$this->slug}.settings", wp_parse_args( $this->settings, $settings ) );
 
 		$this->provider = (string) apply_filters( "fakerpress.module.{$this->slug}.provider", $this->provider );

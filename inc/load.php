@@ -45,6 +45,9 @@ require_once Plugin::path( 'providers/wp-comment.php' );
 require_once Plugin::path( 'modules/comment.php' );
 require_once Plugin::path( 'inc/init/comments.php' );
 
+// Load the Settings page actions
+require_once Plugin::path( 'inc/init/settings.php' );
+
 // Initialize the main Class of the plugin Administration
 Plugin::$admin = new Admin;
 

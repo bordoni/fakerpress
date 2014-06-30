@@ -6,8 +6,11 @@ class Comment extends Base {
 	public $provider = '\Faker\Provider\WP_Comment';
 
 	public function save() {
-		// Here you should use the `$this->args['param_name']`
-		//var_dump( $this->args );
-		return wp_insert_comment( $this->params );
+		$comment_id = wp_insert_comment( $this->params );
+
+		// Relate this post to FakerPress to make it possible to delete
+		add_comment_meta( $comment_id, $this->flag, 1 );
+
+		return $comment_id;
 	}
 }
