@@ -13,6 +13,7 @@ add_action(
 			// After this point we are safe to say that we have a good POST request
 
 			$quantity   = absint( Filter::super( INPUT_POST, 'fakerpress_qty', FILTER_SANITIZE_NUMBER_INT ) );
+
 			$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_taxonomies', FILTER_SANITIZE_STRING ) ) ) );
 
 			if ( $quantity === 0 ){
