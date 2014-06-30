@@ -19,12 +19,12 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 
 = Components Included =
 
- * Posts
- * Custom Post Types
- * Users
- * Tags
- * Categories
- * Comments
+* Posts
+* Custom Post Types
+* Users
+* Tags
+* Categories
+* Comments
 
 = Creating Dummy Content =
 Normally a WordPress developer will need to perform the task of filling up an empty theme with dummy content, and doing this manually can be really time consuming, the main reasons this plugin was create was to speed up this process.
@@ -43,9 +43,9 @@ If you fill up your WordPress with any data for the user profiles you might not 
 
 = Languages =
 
- * English
- * Portuguese (Brazil)
- * Portuguese (Portugal)
+* English
+* Portuguese (Brazil)
+* Portuguese (Portugal)
 
 = See room for improvement? =
 

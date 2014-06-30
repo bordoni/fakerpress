@@ -16,11 +16,11 @@ FakerPress is a clean way to generate fake data to your WordPress, great for dev
 [![Build Status](https://travis-ci.org/iryz/fakerpress.png?branch=master)](https://travis-ci.org/iryz/fakerpress)
 ### Components Included ###
 * Posts
- * Custom Post Types
- * Users
- * Tags
- * Categories
- * Comments
+* Custom Post Types
+* Users
+* Tags
+* Categories
+* Comments
 
 ### Creating Dummy Content ###
 Normally a WordPress developer will need to perform the task of filling up an empty theme with dummy content, and doing this manually can be really time consuming, the main reasons this plugin was create was to speed up this process.
@@ -39,8 +39,8 @@ If you fill up your WordPress with any data for the user profiles you might not 
 
 ### Languages ###
 * English
- * Portuguese (Brazil)
- * Portuguese (Portugal)
+* Portuguese (Brazil)
+* Portuguese (Portugal)
 
 ### See room for improvement? ###
 Great! There are several ways you can get involved to help make FakerPress better:
