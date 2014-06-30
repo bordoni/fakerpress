@@ -47,7 +47,7 @@ If you fill up your WordPress with any data for the user profiles you might not 
 * Portuguese (Brazil)
 * Portuguese (Portugal)
 
-**See room for improvement?**
+= See room for improvement? =
 
 Great! There are several ways you can get involved to help make FakerPress better:
 
