@@ -21,8 +21,28 @@
 	'use strict';
 	$(document).ready(function(){
 		$( '.field-datepicker' ).datepicker( {
-			constrainInput: false
+			constrainInput: false,
 		} );
+
+		var $minDate = $( 'input[name="fakerpress_min_date"]' ),
+		$maxDate = $( 'input[name="fakerpress_max_date"]' );
+
+		$minDate.on({
+			'change': function(e){
+				$maxDate.datepicker('destroy');
+				$maxDate.datepicker({ 
+					minDate: $(this).val() 
+				});
+			}
+		}),
+		$maxDate.on({
+			'change': function(e){
+				$minDate.datepicker('destroy');
+				$minDate.datepicker({ 
+					maxDate: $(this).val() 
+				});
+			}
+		})
 	});
 }( jQuery ) );
 
