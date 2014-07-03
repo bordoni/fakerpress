@@ -24,29 +24,27 @@
 			constrainInput: false
 		} );
 
-		var $minDate = $( '.field-min-date' ),
-			$maxDate = $( '.field-max-date' ),
-			$minDiv  = $( '#fakerpress-min-date' ),
-			$maxDiv  = $( '#fakerpress-max-date' );
+		$('.fakerpress-range-group').each(function(){
+
+			var $minDate = $( '.field-min-date' ),
+				$maxDate = $( '.field-max-date' ),
+				$minDiv  = $( '#fakerpress-min-date' ),
+				$maxDiv  = $( '#fakerpress-max-date' );
 
 		$minDate.on({
 			'change': function(e){
 				var $max = $(this).parent($minDiv).siblings($maxDiv);
-				$max.find($maxDate).datepicker('destroy');
-				$max.find($maxDate).datepicker({ 
-					minDate: $(this).val() 
-				});
+				$max.find($maxDate).datepicker( 'option', 'minDate', $(this).val() );
 			}
 		}),
 		$maxDate.on({
 			'change': function(e){
 				var $min = $(this).parent($maxDiv).siblings($minDiv);
-				$min.find($minDate).datepicker('destroy');
-				$min.find($minDate).datepicker({ 
-					maxDate: $(this).val() 
-				});
+				$min.find($minDate).datepicker( 'option', 'maxDate', $(this).val() );
 			}
 		})
+
+		});
 	});
 }( jQuery ) );
 
