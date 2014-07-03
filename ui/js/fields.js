@@ -24,8 +24,8 @@
 			constrainInput: false,
 		} );
 
-		var $minDate = $( 'input[name="fakerpress_min_date"]' ),
-		$maxDate = $( 'input[name="fakerpress_max_date"]' );
+		var $minDate = $( '.field-min-date' ),
+			$maxDate = $( '.field-max-date' );
 
 		$minDate.on({
 			'change': function(e){
