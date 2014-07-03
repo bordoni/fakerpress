@@ -25,20 +25,24 @@
 		} );
 
 		var $minDate = $( '.field-min-date' ),
-			$maxDate = $( '.field-max-date' );
+			$maxDate = $( '.field-max-date' ),
+			$minDiv  = $( '#fakerpress-min-date' ),
+			$maxDiv  = $( '#fakerpress-max-date' );
 
 		$minDate.on({
 			'change': function(e){
-				$maxDate.datepicker('destroy');
-				$maxDate.datepicker({ 
+				var $max = $(this).parent($minDiv).siblings($maxDiv);
+				$max.find($maxDate).datepicker('destroy');
+				$max.find($maxDate).datepicker({ 
 					minDate: $(this).val() 
 				});
 			}
 		}),
 		$maxDate.on({
 			'change': function(e){
-				$minDate.datepicker('destroy');
-				$minDate.datepicker({ 
+				var $min = $(this).parent($maxDiv).siblings($minDiv);
+				$min.find($minDate).datepicker('destroy');
+				$min.find($minDate).datepicker({ 
 					maxDate: $(this).val() 
 				});
 			}
