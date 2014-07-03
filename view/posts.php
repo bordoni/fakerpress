@@ -116,21 +116,6 @@ $_json_comment_status_output = array(
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="fakerpress_max_date"><?php _e( 'Date', 'fakerpress' ); ?></label></th>
-					<td>
-						<div class='fakerpress-range-group'>
-							<div id="fakerpress-min-date">
-								<input style='width: 150px;' class='field-datepicker field-min-date' type='text' placeholder='<?php esc_attr_e( 'mm/dd/yyyy', 'fakerpress' ); ?>' value='' name='fakerpress_min_date' />
-							</div>
-							<div class="dashicons dashicons-arrow-right-alt2 dashicon-date"></div>
-							<div id="fakerpress-max-date">
-								<input style='width: 150px;' class='field-datepicker field-max-date' type='text' placeholder='<?php esc_attr_e( 'mm/dd/yyyy', 'fakerpress' ); ?>' value='' name='fakerpress_max_date' />
-							</div>
-						</div>
-						<p class="description-date"><?php _e( 'Choose the range for the posts dates.', 'fakerpress' ); ?></p>
-					</td>
-				</tr>
-				<tr>
 					<th scope="row"><label for="fakerpress_author"><?php _e( 'Author', 'fakerpress' ); ?></label></th>
 					<td>
 						<div id="fakerpress[author]">
