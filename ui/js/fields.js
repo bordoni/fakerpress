@@ -21,7 +21,7 @@
 	'use strict';
 	$(document).ready(function(){
 		$( '.field-datepicker' ).datepicker( {
-			constrainInput: false,
+			constrainInput: false
 		} );
 
 		var $minDate = $( '.field-min-date' ),
