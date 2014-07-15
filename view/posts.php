@@ -173,7 +173,7 @@ $_json_comment_status_output = array(
 								<input style='width: 150px;' class='field-datepicker field-max-date' type='text' placeholder='<?php esc_attr_e( 'mm/dd/yyyy', 'fakerpress' ); ?>' value='' name='fakerpress_max_date' />
 							</div>
 						</div>
-						<p class="description-date"><?php _e( 'Choose the range for the posts dates.', 'fakerpress' ); ?></p>
+						<p class="description-date description"><?php _e( 'Choose the range for the posts dates.', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
 				<tr>
