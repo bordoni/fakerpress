@@ -13,6 +13,11 @@
 				}
 			});
 		});
+
+		$( '.field-date-selection' ).each(function(){
+			var $select = $(this);
+			$select.select2({ width: 200 });
+		});
 	});
 }( jQuery ) );
 
@@ -24,27 +29,37 @@
 			constrainInput: false
 		} );
 
+		var $minDate = $( '.field-min-date' ),
+			$maxDate = $( '.field-max-date' ),
+			$minDiv  = $( '#fakerpress-min-date' ),
+			$maxDiv  = $( '#fakerpress-max-date' ),
+			$dateField = $('.field-date-selection');
+
 		$('.fakerpress-range-group').each(function(){
+			$dateField.on({
+				'change': function(e){
+					var dataMin = $(this).find(':selected').data('min'),
+						dataMax = $(this).find(':selected').data('max'),
+						max = $(this).parent($minDiv).siblings($maxDiv),
+						min = $(this).parent($maxDiv).siblings($minDiv);
 
-			var $minDate = $( '.field-min-date' ),
-				$maxDate = $( '.field-max-date' ),
-				$minDiv  = $( '#fakerpress-min-date' ),
-				$maxDiv  = $( '#fakerpress-max-date' );
-
-		$minDate.on({
-			'change': function(e){
-				var $max = $(this).parent($minDiv).siblings($maxDiv);
-				$max.find($maxDate).datepicker( 'option', 'minDate', $(this).val() );
-			}
-		}),
-		$maxDate.on({
-			'change': function(e){
-				var $min = $(this).parent($maxDiv).siblings($minDiv);
-				$min.find($minDate).datepicker( 'option', 'maxDate', $(this).val() );
-			}
+						min.find($minDate).datepicker( 'option', 'maxDate', dataMin ).val( dataMin );
+						max.find($maxDate).datepicker( 'option', 'minDate', dataMax ).val( dataMax );
+				}
+			})
+			$minDate.on({
+				'change': function(e){
+					var max = $(this).parent($minDiv).siblings($maxDiv);
+					max.find($maxDate).datepicker( 'option', 'minDate', $(this).val() );
+				}
+			}),
+			$maxDate.on({
+				'change': function(e){
+					var min = $(this).parent($maxDiv).siblings($minDiv);
+					min.find($minDate).datepicker( 'option', 'maxDate', $(this).val() );
+				}
+			})	
 		})
-
-		});
 	});
 }( jQuery ) );
 
