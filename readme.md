@@ -33,6 +33,9 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 ### Creating Dummy Content ###
 Normally a WordPress developer will need to perform the task of filling up an empty theme with dummy content, and doing this manually can be really time consuming, the main reasons this plugin was create was to speed up this process.
 
+### Delete the Content Generated ###
+After you are done with your testing it should be easy to delete all the content created using FakerPress, now you will be able to do it.
+
 ### Generate Random HTML ###
 When creating dummy posts what you really want is that the HTML is really random so that you might see bugs that an XML import wouldn't.
 
@@ -61,6 +64,12 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 
 ## Changelog ##
+
+### 0.1.4 ###
+* New: Delete all content created by Fakerpress ([#26](https://github.com/iryz/fakerpress/issues/26))
+* New: Allow users to control `comment_status` on Posts ([#26](https://github.com/iryz/fakerpress/issues/26))
+* New: Predefined interval set of dates ([#21](https://github.com/iryz/fakerpress/issues/21))
+* Tweak: Prevent the user from selecting a bad combination of date fields ([#20](https://github.com/iryz/fakerpress/issues/20))
 
 ### 0.1.3 ###
 * Fixing a problem where the UI folder was not included in the final version
