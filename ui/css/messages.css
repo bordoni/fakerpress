@@ -22,22 +22,10 @@
 	border-left-color: #ffba00;
 }
 
-div#fakerpress-min-date, div#fakerpress-max-date, .dashicon-date, div#fakerpress-date-selection {
-	float:left;
-}
-
-div#fakerpress-date-selection {
-	margin-right:5px;
-}
-
 .dashicon-date {
 	height: 25px;
 	line-height: 26px;
 	border: 1px solid #DDD;
 	margin-top: 1px;
-}
-
-.description-date {
-	clear:both;
 }
 
