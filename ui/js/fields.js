@@ -29,36 +29,31 @@
 			constrainInput: false
 		} );
 
-		var $minDate = $( '.field-min-date' ),
-			$maxDate = $( '.field-max-date' ),
-			$minDiv  = $( '#fakerpress-min-date' ),
-			$maxDiv  = $( '#fakerpress-max-date' ),
-			$dateField = $('.field-date-selection');
+		var $min = $( '.field-min-date' ),
+			$max = $( '.field-max-date' ),
+			$intervals = $('.fakerpress-range-group').each(function(){
+				var $interval = $(this).on({
+					'change': function(e){
+						var $this = $( this ),
+							$minField = $interval.find( '.field-min-date' ),
+							$maxField = $interval.find( '.field-max-date' ),
+							min = $this.find(':selected').data('min'),
+							max = $this.find(':selected').data('max');
 
-		$('.fakerpress-range-group').each(function(){
-			$dateField.on({
-				'change': function(e){
-					var dataMin = $(this).find(':selected').data('min'),
-						dataMax = $(this).find(':selected').data('max'),
-						max = $(this).parent($minDiv).siblings($maxDiv),
-						min = $(this).parent($maxDiv).siblings($minDiv);
-
-						min.find($minDate).datepicker( 'option', 'maxDate', dataMin ).val( dataMin );
-						max.find($maxDate).datepicker( 'option', 'minDate', dataMax ).val( dataMax );
-				}
+						$minField.datepicker( 'option', 'maxDate', min ).val( min );
+						$maxField.datepicker( 'option', 'minDate', max ).val( max );
+					}
+				})
 			})
-			$minDate.on({
-				'change': function(e){
-					var max = $(this).parent($minDiv).siblings($maxDiv);
-					max.find($maxDate).datepicker( 'option', 'minDate', $(this).val() );
-				}
-			}),
-			$maxDate.on({
-				'change': function(e){
-					var min = $(this).parent($maxDiv).siblings($minDiv);
-					min.find($minDate).datepicker( 'option', 'maxDate', $(this).val() );
-				}
-			})	
+		$min.on({
+			'change': function(e){
+				$( this ).next( $max ).datepicker( 'option', 'minDate', $( this ).val() );
+			}
+		}),
+		$max.on({
+			'change': function(e){
+				$( this ).next( $min ).datepicker( 'option', 'maxDate', $( this ).val() );
+			}
 		})
 	});
 }( jQuery ) );
