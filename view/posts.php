@@ -48,56 +48,7 @@ foreach ( $post_types as $key => $post_type ) {
 }
 
 // Mount the carbon values for dates
-$_json_date_selection_output = array(
-	array(
-		'id' => 'today',
-		'text' => esc_attr__( 'Today', 'fakerpress' ),
-		'min' => Carbon::today(),
-		'max' => Carbon::today(),
-	),
-	array(
-		'id' => 'yesterday',
-		'text' => esc_attr__( 'Yesterday', 'fakerpress' ),
-		'min' => Carbon::yesterday(),
-		'max' => Carbon::yesterday(),
-	),
-	array(
-		'id' => 'tomorrow',
-		'text' => esc_attr__( 'Tomorrow', 'fakerpress' ),
-		'min' => Carbon::tomorrow(),
-		'max' => Carbon::tomorrow(),
-	),
-	array(
-		'id' => 'this week',
-		'text' => esc_attr__( 'This week', 'fakerpress' ),
-		'min' => Carbon::today()->subDays( 7 ),
-		'max' => Carbon::today(),
-	),
-	array(
-		'id' => 'this month',
-		'text' => esc_attr__( 'This month', 'fakerpress' ),
-		'min' => Carbon::today()->day( 1 ),
-		'max' => Carbon::today(),
-	),
-	array(
-		'id' => 'this year',
-		'text' => esc_attr__( 'This year', 'fakerpress' ),
-		'min' => Carbon::today()->day( 1 )->month( 1 ),
-		'max' => Carbon::today(),
-	),
-	array(
-		'id' => 'last 15 days',
-		'text' => esc_attr__( 'Last 15 days', 'fakerpress' ),
-		'min' => Carbon::today()->subDays( 15 ),
-		'max' => Carbon::today(),
-	),
-	array(
-		'id' => 'next 15 days',
-		'text' => esc_attr__( 'Next 15 Days', 'fakerpress' ),
-		'min' => Carbon::today(),
-		'max' => Carbon::today()->addDays( 15 ),
-	),
-);
+$_json_date_selection_output = Dates::get_intervals();
 
 // Mount the options for the `comment_status`
 $_json_comment_status_output = array(
@@ -155,23 +106,19 @@ $_json_comment_status_output = array(
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="fakerpress_max_date"><?php _e( 'Date', 'fakerpress' ); ?></label></th>
+					<th scope="row"><label for="fakerpress_interval_date"><?php _e( 'Date', 'fakerpress' ); ?></label></th>
 					<td>
 						<div class='fakerpress-range-group'>
-							<div id="fakerpress-date-selection">
-								<select class='field-date-selection' name='fakerpress_date_selection'>
-									<?php foreach ($_json_date_selection_output as $option) { ?>
-									<option data-min="<?php echo date( 'm/d/Y', strtotime( $option['min'] ) ); ?>" data-max="<?php echo date( 'm/d/Y', strtotime( $option['max'] ) ); ?>" value="<?php echo $option['text']; ?>"><?php echo $option['text']; ?></option>
-									<?php } ?>
-								</select>
-							</div>
-							<div id="fakerpress-min-date">
-								<input style='width: 150px;' class='field-datepicker field-min-date' type='text' placeholder='<?php esc_attr_e( 'mm/dd/yyyy', 'fakerpress' ); ?>' value='' name='fakerpress_min_date' />
-							</div>
-							<div class="dashicons dashicons-arrow-right-alt2 dashicon-date"></div>
-							<div id="fakerpress-max-date">
-								<input style='width: 150px;' class='field-datepicker field-max-date' type='text' placeholder='<?php esc_attr_e( 'mm/dd/yyyy', 'fakerpress' ); ?>' value='' name='fakerpress_max_date' />
-							</div>
+							<select id="fakerpress_interval_date" class='field-date-selection' data-placeholder='<?php esc_attr_e( 'Select an Interval', 'fakerpress' ); ?>' style="margin-right: 5px; margin-top: -4px;">
+								<option></option>;
+								<?php foreach ($_json_date_selection_output as $option) { ?>
+								<option data-min="<?php echo date( 'm/d/Y', strtotime( $option['min'] ) ); ?>" data-max="<?php echo date( 'm/d/Y', strtotime( $option['max'] ) ); ?>" value="<?php echo $option['text']; ?>"><?php echo $option['text']; ?></option>
+								<?php } ?>
+							</select>
+
+							<input style='width: 150px;' class='field-datepicker field-min-date' type='text' placeholder='<?php esc_attr_e( 'mm/dd/yyyy', 'fakerpress' ); ?>' value='' name='fakerpress_min_date' />
+							<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>
+							<input style='width: 150px;' class='field-datepicker field-max-date' type='text' placeholder='<?php esc_attr_e( 'mm/dd/yyyy', 'fakerpress' ); ?>' value='' name='fakerpress_max_date' />
 						</div>
 						<p class="description-date description"><?php _e( 'Choose the range for the posts dates.', 'fakerpress' ); ?></p>
 					</td>
