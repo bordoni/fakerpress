@@ -42,6 +42,7 @@ if ( isset( $post_types['attachment'] ) ){
 $_json_post_types_output = array();
 foreach ( $post_types as $key => $post_type ) {
 	$_json_post_types_output[] = array(
+		'hierarchical' => $post_type->hierarchical,
 		'id' => $post_type->name,
 		'text' => $post_type->labels->name,
 	);
@@ -78,13 +79,22 @@ $_json_comment_status_output = array(
 						<p class="description"><?php _e( 'The amount of Posts you want to generate', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
-				<tr>
+				<tr class='fk-field-container field-container-post_type'>
 					<th scope="row"><label for="fakerpress_post_types"><?php _e( 'Post Type', 'fakerpress' ); ?></label></th>
 					<td>
 						<div id="fakerpress[post_types]">
-							<input type='hidden' class='field-select2-simple' name='fakerpress_post_types' data-possibilities='<?php echo json_encode( $_json_post_types_output ); ?>' />
+							<input type='hidden' class='field-select2-simple field-post_type' name='fakerpress_post_types' data-possibilities='<?php echo json_encode( $_json_post_types_output ); ?>' />
 						</div>
 						<p class="description"><?php _e( 'Sampling group of Post Types', 'fakerpress' ); ?></p>
+					</td>
+				</tr>
+				<tr class='fk-field-container field-container-post_parent'>
+					<th scope="row"><label for="fakerpress_post_parents"><?php _e( 'Parents', 'fakerpress' ); ?></label></th>
+					<td>
+						<div id="fakerpress[post_parents]">
+							<input type='hidden' class='field-select2-posts field-post_parent' name='fakerpress_post_parents' />
+						</div>
+						<p class="description"><?php _e( 'What posts can be choosen as Parent to the ones created', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
 				<tr>

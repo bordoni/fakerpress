@@ -1,4 +1,4 @@
-// Taxonomies Fields
+// Simple Select2 Fields
 ( function( $ ){
 	'use strict';
 	$(document).ready(function(){
@@ -98,3 +98,66 @@
 		});
 	});
 }( jQuery, _ ) );
+
+// Post Query for Select2
+( function( $, _ ){
+	'use strict';
+	$(document).ready(function(){
+		$( '.field-select2-posts' ).each(function(){
+			var $select = $(this);
+
+			$select.select2({
+				width: 400,
+				multiple: true,
+				data: {results:[]},
+				allowClear: true,
+				ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+					dataType: 'json',
+					type: 'POST',
+					url: window.ajaxurl,
+					data: function (term, page) {
+						return {
+							action: 'fakerpress.query_posts',
+							search: search, // search term
+							page_limit: 10,
+							page: page,
+							post_type: null
+						};
+					},
+					results: function ( data ) { // parse the results into the format expected by Select2.
+						$.each( data.results, function( k, result ){
+							result.text = _.template('<abbr title="<%= post_title %>"><%= post_type %>: <%= ID %></abbr>')( result );
+							result.id = result.ID;
+						} );
+						return data;
+					}
+				},
+			});
+		});
+	});
+}( jQuery, _ ) );
+
+// Check if Post Type is hierarchical
+( function( $, _ ){
+	'use strict';
+	$(document).ready(function(){
+		$( '.field-post_type' ).on( 'change', function( event ){
+			var $field = $(this),
+				$field_PostType = $field.parents( '.form-table' ).find( '.field-container-post_parent' );
+
+			if ( ! _.isUndefined( event.added ) && event.added.hierarchical === true && $field_PostType.length === 0 ){
+				$field.parents( '.field-container-post_type' ).after( $field.data( 'post_parent' ) );
+			} else if ( ! _.isUndefined( event.removed ) && event.removed.hierarchical === true && $field_PostType.length !== 0 ){
+				$field.data( 'post_parent', $field_PostType.detach() );
+			}
+		} ).each(function(){
+			var $field = $(this);
+
+			if ( ! $field.hasClass( 'select2-offscreen' ) ){
+				return;
+			}
+			$field.data( 'post_parent', $field.parents( '.form-table' ).find( '.field-container-post_parent' ).detach() );
+		})
+	});
+}( window.jQuery, window._ ) );
+
