@@ -99,7 +99,8 @@ add_action(
 
 		$request = (object) $_POST;
 
-		if ( isset( $request->query['post_type'] ) ){
+
+		if ( isset( $request->query['post_type'] ) && ! is_array( $request->query['post_type'] ) ){
 			$request->query['post_type'] = array_map( 'trim', (array) explode( ',', $request->query['post_type'] ) );
 		}
 
