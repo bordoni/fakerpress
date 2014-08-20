@@ -12,7 +12,25 @@
 					return { 'results': $select.data( 'possibilities' ) };
 				}
 			});
-		});
+		})
+		.on( 'change', function( event ) {
+			var data = $( this ).data( 'value' );
+
+			if ( event.added ){
+				if ( _.isArray( data ) ) {
+					data.push( event.added );
+				} else {
+					data = [ event.added ];
+				}
+			} else {
+				if ( _.isArray( data ) ) {
+					data = _.without( data, event.removed );
+				} else {
+					data = [];
+				}
+			}
+			$( this ).data( 'value', data ).attr( 'data-value', JSON.stringify( data ) );
+		} );
 
 		$( '.field-date-selection' ).each(function(){
 			var $select = $(this);
@@ -105,28 +123,35 @@
 	$(document).ready(function(){
 		$( '.field-select2-posts' ).each(function(){
 			var $select = $(this);
-
 			$select.select2({
 				width: 400,
 				multiple: true,
 				data: {results:[]},
 				allowClear: true,
+				escapeMarkup: function (m) { return m; },
+				formatSelection: function ( post ){
+					return _.template('<abbr title="<%= post_title %>"><%= post_type.labels.singular_name %>: <%= ID %></abbr>')( post )
+				},
+				formatResult: function ( post ){
+					return _.template('<abbr title="<%= post_title %>"><%= post_type.labels.singular_name %>: <%= ID %></abbr>')( post )
+				},
 				ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 					dataType: 'json',
 					type: 'POST',
 					url: window.ajaxurl,
-					data: function (term, page) {
+					data: function (search, page) {
 						return {
 							action: 'fakerpress.query_posts',
-							search: search, // search term
-							page_limit: 10,
-							page: page,
-							post_type: null
+							query: {
+								s: search,
+								posts_per_page: 10,
+								paged: page,
+								post_type: _.pluck( _.where( $( '.field-post_type.select2-offscreen' ).data( 'value' ), { hierarchical: true } ) , 'id' )
+							}
 						};
 					},
 					results: function ( data ) { // parse the results into the format expected by Select2.
 						$.each( data.results, function( k, result ){
-							result.text = _.template('<abbr title="<%= post_title %>"><%= post_type %>: <%= ID %></abbr>')( result );
 							result.id = result.ID;
 						} );
 						return data;
