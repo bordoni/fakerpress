@@ -15,9 +15,9 @@ class WP_Post extends Base {
 		return $title;
 	}
 
-	public function post_content( $html = true ) {
+	public function post_content( $html = true, $args = array() ) {
 		if ( $html === true ){
-			$content = implode( "\n", $this->generator->html_elements() );
+			$content = implode( "\n", $this->generator->html_elements( $args ) );
 		} else {
 			$content = implode( "\r\n\r\n", $this->generator->paragraphs( $this->generator->randomDigitNotNull() ) );
 		}
