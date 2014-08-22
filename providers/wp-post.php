@@ -51,7 +51,8 @@ class WP_Post extends Base {
 
 	public function post_type( $haystack = array() ){
 		if ( empty( $haystack ) ){
-			$haystack = get_post_types( array(), 'names' );
+			// Later on we will remove the Attachment rule
+			$haystack = array_diff( get_post_types( array( 'public' => true, 'show_ui' => true ), 'names' ), array( 'attachment' ) );
 		}
 
 		return $this->generator->randomElement( (array) $haystack );
