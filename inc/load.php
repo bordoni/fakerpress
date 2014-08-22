@@ -24,6 +24,7 @@ require_once Plugin::path( 'classes/admin.php' );
 
 // Inluding needed providers
 require_once Plugin::path( 'providers/html.php' );
+require_once Plugin::path( 'providers/placeholdit.php' );
 
 // Require the Base module
 require_once Plugin::path( 'modules/base.php' );
