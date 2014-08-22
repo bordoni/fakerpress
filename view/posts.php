@@ -20,7 +20,7 @@ foreach ( $users as $user ) {
 	);
 }
 
-$_elements = array_merge( \Faker\Provider\HTML::$sets['header'], \Faker\Provider\HTML::$sets['list'], \Faker\Provider\HTML::$sets['block'] );
+$_elements = array_merge( \Faker\Provider\HTML::$sets['header'], \Faker\Provider\HTML::$sets['list'], \Faker\Provider\HTML::$sets['block'], \Faker\Provider\HTML::$sets['self_close'] );
 
 // Mount the options for taxonomies
 $taxonomies = get_taxonomies( array( 'public' => true ), 'object' );

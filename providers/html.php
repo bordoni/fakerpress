@@ -10,10 +10,13 @@ class HTML extends Base {
 
 		$provider = new Internet( $this->generator );
 		$this->generator->addProvider( $provider );
+
+		$provider = new PlaceHoldIt( $this->generator );
+		$this->generator->addProvider( $provider );
 	}
 
 	static public $sets = array(
-		'self_close' => array( 'img', 'hr', 'submit' ),
+		'self_close' => array( 'img', 'hr' ),
 		'header' => array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ),
 		'list' => array( 'ul', 'ol' ),
 		'block' => array( 'div', 'p', 'blockquote' ),
@@ -111,10 +114,27 @@ class HTML extends Base {
 
 		if ( $element->name === 'a' ){
 			if ( ! isset( $element->attr['title'] ) ) {
-				$element->attr['title'] = Lorem::sentence( 4 );
+				$element->attr['title'] = Lorem::sentence( Base::randomNumber( 1, Base::randomNumber( 3, 9 ) ) );
 			}
 			if ( ! isset( $element->attr['href'] ) ) {
 				$element->attr['href'] = $this->generator->url();
+			}
+		}
+
+		if ( $element->name === 'img' ){
+			if ( ! isset( $element->attr['class'] ) ) {
+				if ( $this->generator->randomDigit() > 4 ){
+					$element->attr['class'][] = $this->generator->randomElement( array( 'aligncenter', 'alignleft', 'alignright' ) );
+					$element->attr['class'] = implode( ' ', $element->attr['class'] );
+				}
+			}
+
+			if ( ! isset( $element->attr['alt'] ) ) {
+				$element->attr['alt'] = Lorem::sentence( Base::randomNumber( 1, Base::randomNumber( 3, 9 ) ) );
+			}
+
+			if ( ! isset( $element->attr['src'] ) ) {
+				$element->attr['src'] = $this->generator->placeholdit();
 			}
 		}
 
@@ -125,26 +145,26 @@ class HTML extends Base {
 
 		$html[] = sprintf( '<%s%s%s>', $element->name, ( ! empty( $attributes ) ? ' ' : '' ) . implode( ' ', $attributes ), ( $element->one_liner ? ' /' : '' ) );
 
-		if ( ! is_null( $text ) ){
-			$html[] = $text;
-		} elseif ( in_array( $element->name, self::$sets['inline'] ) ){
-			$text   = Lorem::text( Base::randomNumber( 5, 25 ) );
-			$html[] = substr( $text, 0, strlen( $text ) - 1 );
-		} elseif ( in_array( $element->name, self::$sets['item'] ) ){
-			$text   = Lorem::text( Base::randomNumber( 10, 60 ) );
-			$html[] = substr( $text, 0, strlen( $text ) - 1 );
-		} elseif ( in_array( $element->name, self::$sets['list'] ) ){
-			for ( $i = 0; $i < Base::randomNumber( 1, 15 ); $i++ ) {
-				$html[] = $this->element( 'li' );
-			}
-		} elseif ( in_array( $element->name, self::$sets['header'] ) ){
-			$text   = Lorem::text( Base::randomNumber( 60, 200 ) );
-			$html[] = substr( $text, 0, strlen( $text ) - 1 );
-		} else {
-			$html[] = $this->random_apply_element( 'a', Base::randomNumber( 0, 10 ), Lorem::paragraph( Base::randomNumber( 2, 40 ) ) );
-		}
-
 		if ( ! $element->one_liner ) {
+			if ( ! is_null( $text ) ){
+				$html[] = $text;
+			} elseif ( in_array( $element->name, self::$sets['inline'] ) ){
+				$text   = Lorem::text( Base::randomNumber( 5, 25 ) );
+				$html[] = substr( $text, 0, strlen( $text ) - 1 );
+			} elseif ( in_array( $element->name, self::$sets['item'] ) ){
+				$text   = Lorem::text( Base::randomNumber( 10, 60 ) );
+				$html[] = substr( $text, 0, strlen( $text ) - 1 );
+			} elseif ( in_array( $element->name, self::$sets['list'] ) ){
+				for ( $i = 0; $i < Base::randomNumber( 1, 15 ); $i++ ) {
+					$html[] = $this->element( 'li' );
+				}
+			} elseif ( in_array( $element->name, self::$sets['header'] ) ){
+				$text   = Lorem::text( Base::randomNumber( 60, 200 ) );
+				$html[] = substr( $text, 0, strlen( $text ) - 1 );
+			} else {
+				$html[] = $this->random_apply_element( 'a', Base::randomNumber( 0, 10 ), Lorem::paragraph( Base::randomNumber( 2, 40 ) ) );
+			}
+
 			$html[] = sprintf( '</%s>', $element->name );
 		}
 
