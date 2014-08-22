@@ -26,6 +26,7 @@ add_action(
 
 			$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_taxonomies', FILTER_SANITIZE_STRING ) ) ) );
 
+			$post_parents = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_post_parents', FILTER_SANITIZE_STRING ) ) );
 
 			if ( $quantity === 0 ){
 				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
@@ -41,6 +42,7 @@ add_action(
 						'tax_input' => array( $taxonomies ),
 						'post_status' => array( array( 'publish' ) ),
 						'post_date' => array( $min_date, $max_date ),
+						'post_parent' => array( $post_parents ),
 						'post_type' => array( 'post' ),
 						'post_author'   => array( $post_author ),
 						'post_type' => array( $post_types ),
@@ -77,5 +79,50 @@ add_action(
 	'init',
 	function() {
 		Admin::add_menu( 'posts', __( 'Posts', 'fakerpress' ), __( 'Posts', 'fakerpress' ), 'manage_options', 5 );
+	}
+);
+
+// We need o create a base class to lie all method related to AJAX
+add_action(
+	'wp_ajax_' . Plugin::$slug . '.query_posts',
+	function ( $request = null ){
+		$response = (object) array(
+			'status' => false,
+			'message' => __( 'Your request has failed', 'fakerpress' ),
+			'results' => array(),
+			'more' => true,
+		);
+
+		if ( ( ! Admin::$is_ajax && is_null( $request ) ) || ! is_user_logged_in() ){
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
+
+		$request = (object) $_POST;
+
+
+		if ( isset( $request->query['post_type'] ) && ! is_array( $request->query['post_type'] ) ){
+			$request->query['post_type'] = array_map( 'trim', (array) explode( ',', $request->query['post_type'] ) );
+		}
+
+		$query = new \WP_Query( $request->query );
+
+		if ( ! $query->have_posts() ){
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
+
+		$response->status  = true;
+		$response->message = __( 'Request successful', 'fakerpress' );
+
+		foreach ( $query->posts as $k => $post ) {
+			$query->posts[ $k ]->post_type = get_post_type_object( $post->post_type );
+		}
+
+		$response->results = $query->posts;
+
+		if ( $query->max_num_pages >= $request->query['paged'] ){
+			$response->more = false;
+		}
+
+		return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
 	}
 );
