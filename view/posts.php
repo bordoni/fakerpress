@@ -20,6 +20,8 @@ foreach ( $users as $user ) {
 	);
 }
 
+$_elements = array_merge( \Faker\Provider\HTML::$sets['header'], \Faker\Provider\HTML::$sets['list'], \Faker\Provider\HTML::$sets['block'] );
+
 // Mount the options for taxonomies
 $taxonomies = get_taxonomies( array( 'public' => true ), 'object' );
 
@@ -70,7 +72,7 @@ $_json_comment_status_output = array(
 		<?php wp_nonce_field( Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' ) ); ?>
 		<table class="form-table" style="display: table;">
 			<tbody>
-				<tr>
+				<tr class='fk-field-container'>
 					<th scope="row"><label for="fakerpress_qty"><?php _e( 'Quantity', 'fakerpress' ); ?></label></th>
 					<td>
 						<div id="fakerpress[qty]">
@@ -97,7 +99,7 @@ $_json_comment_status_output = array(
 						<p class="description"><?php _e( 'What posts can be choosen as Parent to the ones created', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
-				<tr>
+				<tr class='fk-field-container'>
 					<th scope="row"><label for="fakerpress_comment_status"><?php _e( 'Comments Status', 'fakerpress' ); ?></label></th>
 					<td>
 						<div id="fakerpress[comment_status]">
@@ -106,7 +108,23 @@ $_json_comment_status_output = array(
 						<p class="description"><?php _e( 'Sampling group of options for the comment status of the posts', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
-				<tr>
+				<tr class='fk-field-container field-container-post_content_use_html'>
+					<th scope="row"><label for="fakerpress_post_content_use_html"><?php _e( 'Use HTML', 'fakerpress' ); ?></label></th>
+					<td>
+						<input type='checkbox' style="margin-top: -3px;" name='fakerpress_post_content_use_html' checked />
+						<p style='display: inline-block;' class="description"><?php _e( 'Use HTML on your randomized post content?', 'fakerpress' ); ?></p>
+					</td>
+				</tr>
+				<tr class='fk-field-container fk-field-dependent' data-fk-depends=".field-container-post_content_use_html input" data-fk-condition='true'>
+					<th scope="row"><label for="fakerpress_post_content_html_tags"><?php _e( 'HTML tags', 'fakerpress' ); ?></label></th>
+					<td>
+						<div id="fakerpress[post_content_html_tags]">
+							<input type='hidden' class='field-select2-tags' name='fakerpress_post_content_html_tags' value='<?php echo implode( ',', $_elements ); ?>' data-tags='<?php echo json_encode( $_elements ); ?>' />
+						</div>
+						<p class="description"><?php _e( 'Select the group of tags that can be selected to print on the Post Content', 'fakerpress' ); ?></p>
+					</td>
+				</tr>
+				<tr class='fk-field-container'>
 					<th scope="row"><label for="fakerpress_taxonomies"><?php _e( 'Taxonomies', 'fakerpress' ); ?></label></th>
 					<td>
 						<div id="fakerpress[taxonomies]">
@@ -115,7 +133,7 @@ $_json_comment_status_output = array(
 						<p class="description"><?php _e( 'From which taxonomies the related terms should be selected', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
-				<tr>
+				<tr class='fk-field-container'>
 					<th scope="row"><label for="fakerpress_interval_date"><?php _e( 'Date', 'fakerpress' ); ?></label></th>
 					<td>
 						<div class='fakerpress-range-group'>
@@ -133,7 +151,7 @@ $_json_comment_status_output = array(
 						<p class="description-date description"><?php _e( 'Choose the range for the posts dates.', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
-				<tr>
+				<tr class='fk-field-container'>
 					<th scope="row"><label for="fakerpress_author"><?php _e( 'Author', 'fakerpress' ); ?></label></th>
 					<td>
 						<div id="fakerpress[author]">

@@ -1,5 +1,5 @@
 // Simple Select2 Fields
-( function( $ ){
+( function( $, _ ){
 	'use strict';
 	$(document).ready(function(){
 		$( '.field-select2-simple' ).each(function(){
@@ -37,7 +37,24 @@
 			$select.select2({ width: 200 });
 		});
 	});
-}( jQuery ) );
+}( window.jQuery, window._ ) );
+
+// Tagged Select2 Fields
+( function( $, _ ){
+	'use strict';
+	$(document).ready(function(){
+		$( '.field-select2-tags' ).each(function(){
+			var $select = $(this);
+
+			$select.select2({
+				multiple: true,
+				width: 400,
+				tags: $select.data('tags'),
+				tokenSeparators: [',']
+			});
+		});
+	});
+}( window.jQuery, window._ ) );
 
 // Date Fields
 ( function( $ ){
@@ -182,7 +199,45 @@
 				return;
 			}
 			$field.data( 'post_parent', $field.parents( '.form-table' ).find( '.field-container-post_parent' ).detach() );
-		})
+		});
+	});
+}( window.jQuery, window._ ) );
+
+// Check for checkbox dependecies
+( function( $, _ ){
+	'use strict';
+	$(document).ready(function(){
+		var checkDependency = function( event ){
+			var $box, $dependecyField;
+			if ( _.isNumber( event ) ){
+				$box = $( this );
+				$dependecyField = $( $box.data('fkDepends') );
+			} else {
+				$dependecyField = $( this );
+				$box = $dependecyField.data( 'fkDependent' );
+			}
+
+			var	condition = $box.data('fkCondition'),
+				$placeholder = $dependecyField.data( 'fkPlaceholder' );
+
+			if ( ! $placeholder ){
+				$placeholder = $( "<div>" ).attr( 'id', _.uniqueId( 'fk-dependent-placeholder-' ) );
+				$dependecyField.data( 'fkPlaceholder', $placeholder );
+			}
+			$dependecyField.data( 'fkDependent', $box );
+
+			if ( _.isNumber( event ) ){
+				$dependecyField.on( 'change', checkDependency );
+			}
+
+			if ( $dependecyField.is(':checked') != condition ){
+				$box.after( $placeholder ).detach();
+			} else if ( $placeholder.is(':visible') ) {
+				$placeholder.replaceWith( $dependecyField.data( 'fkDependent' ) );
+			}
+		};
+
+		$( '.fk-field-dependent' ).each( checkDependency );
 	});
 }( window.jQuery, window._ ) );
 

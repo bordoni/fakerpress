@@ -6,7 +6,7 @@ class Post extends Base {
 	public $dependencies = array(
 		'\Faker\Provider\Lorem',
 		'\Faker\Provider\DateTime',
-		'\Faker\Provider\Html',
+		'\Faker\Provider\HTML',
 	);
 
 	public $provider = '\Faker\Provider\WP_Post';

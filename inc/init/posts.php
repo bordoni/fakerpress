@@ -26,6 +26,9 @@ add_action(
 
 			$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_taxonomies', FILTER_SANITIZE_STRING ) ) ) );
 
+			$post_content_use_html = Filter::super( INPUT_POST, 'fakerpress_post_content_use_html', FILTER_SANITIZE_STRING, 'off' ) === 'on';
+			$post_content_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_post_content_html_tags', FILTER_SANITIZE_STRING ) ) );
+
 			$post_parents = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_post_parents', FILTER_SANITIZE_STRING ) ) );
 
 			if ( $quantity === 0 ){
@@ -43,6 +46,7 @@ add_action(
 						'post_status' => array( array( 'publish' ) ),
 						'post_date' => array( $min_date, $max_date ),
 						'post_parent' => array( $post_parents ),
+						'post_content' => array( $post_content_use_html, array( 'elements' => $post_content_html_tags ) ),
 						'post_type' => array( 'post' ),
 						'post_author'   => array( $post_author ),
 						'post_type' => array( $post_types ),
