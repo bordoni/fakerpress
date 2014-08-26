@@ -70,10 +70,10 @@
 				allowClear: true,
 				escapeMarkup: function (m) { return m; },
 				formatSelection: function ( author ){
-					return _.template('<abbr title="<%= user_email %>"><%= display_name %></abbr>')( author )
+					return _.template('<abbr title="<%= data.user_email %>"><%= data.display_name %> : <%= roles %></abbr>')( author )
 				},
 				formatResult: function ( author ){
-					return _.template('<abbr title="<%= user_email %>"><%= display_name %></abbr>')( author )
+					return _.template('<abbr title="<%= data.user_email %>"><%= data.display_name %> : <%= roles %></abbr>')( author )
 				},
 				ajax: {
 					dataType: 'json',
@@ -89,8 +89,8 @@
 					},
 					results: function ( data ) { // parse the results into the format expected by Select2.
 						$.each( data.results, function( k, result ){
-							result.id = result.ID;
-							result.text = result.display_name;
+							result.id = result.data.ID;
+							result.text = result.data.display_name;
 						} );
 						return data;
 					}

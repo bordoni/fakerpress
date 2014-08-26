@@ -174,7 +174,7 @@ add_action(
 			);
 
 			foreach ( $users->results as $result ){
-				$response->results[] = $result->data;
+				$response->results[] = $result;
 			}
 		}
 
