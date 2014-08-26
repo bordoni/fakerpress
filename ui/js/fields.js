@@ -68,11 +68,18 @@
 				minimumInputLength: 2,
 				multiple: true,
 				allowClear: true,
+				escapeMarkup: function (m) { return m; },
+				formatSelection: function ( author ){
+					return _.template('<abbr title="<%= user_email %>"><%= display_name %></abbr>')( author )
+				},
+				formatResult: function ( author ){
+					return _.template('<abbr title="<%= user_email %>"><%= display_name %></abbr>')( author )
+				},
 				ajax: {
 					dataType: 'json',
 					type: 'POST',
 					url: window.ajaxurl,
-					data: function (author, page) {
+					data: function ( author, page ) {
 						return {
 							action: 'fakerpress.search_authors',
 							search: author, // search author
