@@ -81,6 +81,10 @@ add_action(
 			)
 		);
 
+		if ( is_null( $request->post_type ) || empty( $request->post_type ) ){
+			$request->post_type = get_post_types( array( 'public' => true ) );
+		}
+
 		$response->status  = true;
 		$response->message = __( 'Request successful', 'fakerpress' );
 
