@@ -56,6 +56,43 @@
 	});
 }( window.jQuery, window._ ) );
 
+//Author fields 
+( function( $ ){
+	'use strict';
+	$(document).ready(function(){
+		$( '.field-select2-author' ).each(function(){
+			var $select = $(this);
+
+			$select.select2({
+				width: 400,
+				minimumInputLength: 2,
+				multiple: true,
+				allowClear: true,
+				ajax: {
+					dataType: 'json',
+					type: 'POST',
+					url: window.ajaxurl,
+					data: function (author, page) {
+						return {
+							action: 'fakerpress.search_authors',
+							search: author, // search author
+							page_limit: 10,
+							page: page,
+						};
+					},
+					results: function ( data ) { // parse the results into the format expected by Select2.
+						$.each( data.results, function( k, result ){
+							result.id = result.ID;
+							result.text = result.display_name;
+						} );
+						return data;
+					}
+				}
+			});
+		});
+	});
+}( jQuery ) );
+
 // Date Fields
 ( function( $ ){
 	'use strict';
