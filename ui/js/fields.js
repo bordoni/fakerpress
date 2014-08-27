@@ -100,6 +100,36 @@
 	});
 }( jQuery ) );
 
+//Quantity Range Fields
+( function( $ ){
+	'use strict';
+	$(document).ready(function(){
+		$( '.fakerpress_qty_range' ).each(function(){
+			var $minField = $( '.qty-range-min' ),
+				$maxField = $( '.qty-range-max' ),
+				$container = $(this);
+
+				$minField.on({
+					'change keyup': function(e){
+						if ( $.isNumeric( $(this).val() ) ) {
+							$maxField.removeAttr( 'disabled' );
+						} else {
+							$(this).val( '' );
+						}
+					}
+				}),
+				$maxField.on({
+					'change keyup': function(e){
+						if ( $.isNumeric( $(this).val() ) ) {
+						} else {
+							$maxField.val( '' );
+						}
+					}
+				})
+		})
+	});
+}( jQuery ) );
+
 // Date Fields
 ( function( $ ){
 	'use strict';
