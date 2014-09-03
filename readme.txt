@@ -2,7 +2,7 @@
 Contributors:      iryz, bordoni, luancuba
 Tags:              generator, dummy content, lorem ipsun, admin, exemples, testing, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
 Requires at least: 3.7
-Tested up to:      3.9
+Tested up to:      4.0
 Stable tag:        trunk
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
