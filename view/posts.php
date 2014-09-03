@@ -155,7 +155,7 @@ $_json_comment_status_output = array(
 					<th scope="row"><label for="fakerpress_author"><?php _e( 'Author', 'fakerpress' ); ?></label></th>
 					<td>
 						<div id="fakerpress[author]">
-							<input type='hidden' class='field-select2-simple' name='fakerpress_author' data-possibilities='<?php echo json_encode( $_json_users_output ); ?>' />
+							<input type='hidden' class='field-select2-simple field-select2-author' name='fakerpress_authors'/>
 						</div>
 						<p class="description"><?php _e( 'Choose some users to be authors of posts generated.', 'fakerpress' ); ?></p>
 					</td>
