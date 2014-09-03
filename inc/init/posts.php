@@ -157,31 +157,31 @@ add_action(
 		$response->status  = true;
 		$response->message = __( 'Request successful', 'fakerpress' );
 
-		if ( ! empty( $request->search ) ){
-			$users = new \WP_User_Query(
-				array(
-					'search' => "*{$request->search}*",
-					'search_columns' => array(
-						'user_login',
-						'user_nicename',
-						'user_email',
-						'user_url',
-					),
-					'orderby' => 'display_name',
-					'offset'  => $request->page_limit * ( $request->page - 1 ),
-					'number'  => $request->page_limit,
-				)
-			);
+		$query_args = array(
+			'orderby' => 'display_name',
+			'offset'  => $request->page_limit * ( $request->page - 1 ),
+			'number'  => $request->page_limit,
+		);
 
-			foreach ( $users->results as $result ){
-				$response->results[] = $result;
-			}
+		if ( ! empty( $request->search ) ){
+			$query_args['search'] = "*{$request->search}*";
+			$query_args['search_columns'] = array(
+				'user_login',
+				'user_nicename',
+				'user_email',
+				'user_url',
+			);
+		}
+
+		$users = new \WP_User_Query( $query_args );
+
+		foreach ( $users->results as $result ){
+			$response->results[] = $result;
 		}
 
 		if ( empty( $response->results ) || count( $response->results ) < $request->page_limit ){
 			$response->more = false;
 		}
-
 
 		return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
 	}
