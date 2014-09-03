@@ -33,11 +33,11 @@ add_action(
 
 			$post_parents = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_post_parents', FILTER_SANITIZE_STRING ) ) );
 
+			$faker = new Module\Post;
+
 			if ( $qty_min === 0 ){
 				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
 			}
-
-			$faker = new Module\Post;
 
 			if ( !empty( $qty_min ) && !empty( $qty_max ) ){
 				$quantity = $faker->numberBetween( $qty_min, $qty_max );

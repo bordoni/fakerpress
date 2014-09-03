@@ -12,17 +12,27 @@ add_action(
 			}
 			// After this point we are safe to say that we have a good POST request
 
-			$quantity = absint( Filter::super( INPUT_POST, 'fakerpress_qty', FILTER_SANITIZE_NUMBER_INT ) );
+			$qty_min = absint( Filter::super( INPUT_POST, 'fakerpress_qty_min', FILTER_SANITIZE_NUMBER_INT ) );
+
+			$qty_max = absint( Filter::super( INPUT_POST, 'fakerpress_qty_max', FILTER_SANITIZE_NUMBER_INT ) );
 
 			$min_date = Filter::super( INPUT_POST, 'fakerpress_min_date' );
 
 			$max_date = Filter::super( INPUT_POST, 'fakerpress_max_date' );
+			
+			$faker = new Module\Comment;
 
-			if ( $quantity === 0 ){
-				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'comments' ), 'error' );
+			if ( $qty_min === 0 ){
+				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
 			}
 
-			$faker = new Module\Comment;
+			if ( !empty( $qty_min ) && !empty( $qty_max ) ){
+				$quantity = $faker->numberBetween( $qty_min, $qty_max );
+			}
+
+			if ( !empty( $qty_min ) && empty( $qty_max ) ){
+				$quantity = $qty_min;
+			}
 
 			$results = (object) array();
 
