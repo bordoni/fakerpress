@@ -37,6 +37,9 @@ After you are done with your testing it should be easy to delete all the content
 = Generate Random HTML =
 When creating dummy posts what you really want is that the HTML is really random so that you might see bugs that an XML import wouldn't.
 
+= Generate Images in your HTML =
+When you are testing your website images are important, so FakerPress will allow you to output Images to your HTML tests.
+
 = Real Browser data on User Comments =
 For comments our plugin is prepared to generate a real Browser data instead of leaving the field empty.
 
@@ -63,6 +66,13 @@ Great! There are several ways you can get involved to help make FakerPress bette
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
+
+= 0.1.5 =
+* New: Allow post Parent to be chosen on the Admin Form ([#35](https://github.com/iryz/fakerpress/issues/35))
+* New: Now allow Image to be used in HTML, with Placehold.it ([#38](https://github.com/iryz/fakerpress/issues/38))
+* Tweak: Allow users to choose which HTML tags will be used ([#37](https://github.com/iryz/fakerpress/issues/37))
+* Tweak: User Select2 now uses AJAX to prevent bugs on bigger databases ([#43](https://github.com/iryz/fakerpress/issues/43))
+* Tweak: Now you can select a range of items to be randomized, instead of always having to input a single number ([#44](https://github.com/iryz/fakerpress/issues/44))
 
 = 0.1.4 =
 * New: Delete all content created by Fakerpress ([#26](https://github.com/iryz/fakerpress/issues/26))
