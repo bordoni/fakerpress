@@ -65,15 +65,14 @@
 
 			$select.select2({
 				width: 400,
-				minimumInputLength: 2,
 				multiple: true,
 				allowClear: true,
 				escapeMarkup: function (m) { return m; },
 				formatSelection: function ( author ){
-					return _.template('<abbr title="<%= data.user_email %>"><%= data.display_name %> : <%= roles %></abbr>')( author )
+					return _.template('<abbr title="<%= ID %>: <%= data.user_email %>"><%= roles %>: <%= data.display_name %></abbr>')( author )
 				},
 				formatResult: function ( author ){
-					return _.template('<abbr title="<%= data.user_email %>"><%= data.display_name %> : <%= roles %></abbr>')( author )
+					return _.template('<abbr title="<%= ID %>: <%= data.user_email %>"><%= roles %>: <%= data.display_name %></abbr>')( author )
 				},
 				ajax: {
 					dataType: 'json',
