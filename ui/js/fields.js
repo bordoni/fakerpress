@@ -111,16 +111,20 @@
 
 				$minField.on({
 					'change keyup': function(e){
-						if ( $.isNumeric( $(this).val() ) ) {
+						if ( $.isNumeric( $(this).val() ) && $(this).val() > 0 ) {
 							$maxField.removeAttr( 'disabled' );
+							if( $maxField.val() && $(this).val() >= $maxField.val() )
+								$(this).val( '' );
+
 						} else {
 							$(this).val( '' );
 						}
+
 					}
 				}),
 				$maxField.on({
-					'change keyup': function(e){
-						if ( $.isNumeric( $(this).val() ) ) {
+					'change': function(e){
+						if ( $.isNumeric( $(this).val() ) && $(this).val() > $minField.val() ) {
 						} else {
 							$maxField.val( '' );
 						}
