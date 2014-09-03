@@ -21,10 +21,12 @@ foreach ( $taxonomies as $key => $taxonomy ) {
 				<tr>
 					<th scope="row"><label for="fakerpress_qty"><?php _e( 'Quantity', 'fakerpress' ); ?></label></th>
 					<td>
-						<div id="fakerpress[qty]">
-							<input style='width: 90px;' type='number' max='100' min='1' placeholder='<?php esc_attr_e( 'e.g.: 25', 'fakerpress' ); ?>' value='' name='fakerpress_qty' />
+						<div id="fakerpress[qty]" class='fakerpress_qty_range'>
+							<input style='width: 90px;' class='qty-range-min' type='number' max='25' min='1' placeholder='<?php esc_attr_e( 'e.g.: 0', 'fakerpress' ); ?>' value='' name='fakerpress_qty_min' />
+							<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>
+							<input style='width: 90px;' class='qty-range-max' type='number' max='25' min='1' placeholder='<?php esc_attr_e( 'e.g.: 10', 'fakerpress' ); ?>' value='' name='fakerpress_qty_max' disabled/>
 						</div>
-						<p class="description"><?php _e( 'The amount of terms you want to generate on this request', 'fakerpress' ); ?></p>
+						<p class="description"><?php _e( 'The range of terms you want to generate on this request', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
 				<tr>

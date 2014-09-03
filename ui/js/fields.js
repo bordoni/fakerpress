@@ -99,6 +99,40 @@
 	});
 }( jQuery ) );
 
+//Quantity Range Fields
+( function( $ ){
+	'use strict';
+	$(document).ready(function(){
+		$( '.fakerpress_qty_range' ).each(function(){
+			var $minField = $( '.qty-range-min' ),
+				$maxField = $( '.qty-range-max' ),
+				$container = $(this);
+
+				$minField.on({
+					'change keyup': function(e){
+						if ( $.isNumeric( $(this).val() ) && $(this).val() > 0 ) {
+							$maxField.removeAttr( 'disabled' );
+							if( $maxField.val() && $(this).val() >= $maxField.val() )
+								$(this).val( '' );
+
+						} else {
+							$(this).val( '' );
+						}
+
+					}
+				}),
+				$maxField.on({
+					'change': function(e){
+						if ( $.isNumeric( $(this).val() ) && $(this).val() > $minField.val() ) {
+						} else {
+							$maxField.val( '' );
+						}
+					}
+				})
+		})
+	});
+}( jQuery ) );
+
 // Date Fields
 ( function( $ ){
 	'use strict';
