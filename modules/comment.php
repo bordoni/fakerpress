@@ -3,6 +3,12 @@ namespace FakerPress\Module;
 
 class Comment extends Base {
 
+	public $dependencies = array(
+	'\Faker\Provider\Lorem',
+	'\Faker\Provider\DateTime',
+	'\Faker\Provider\HTML',
+	);
+
 	public $provider = '\Faker\Provider\WP_Comment';
 
 	public function save() {
