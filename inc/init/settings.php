@@ -30,7 +30,9 @@ add_action(
 				$query_posts = new \WP_Query(
 					array(
 						'post_type' => 'any',
-						'nopaging' => false,
+						'post_status' => 'any',
+						'nopaging' => true,
+						'fields' => 'ids',
 						// @codingStandardsIgnoreStart | Still have to debug why this happens...
 						'meta_query' => array(
 						// @codingStandardsIgnoreEnd
@@ -42,9 +44,8 @@ add_action(
 						),
 					)
 				);
-				foreach ( $query_posts->posts as $post ){
-					$refs->post[] = absint( $post->ID );
-				}
+
+				$refs->post = array_map( 'absint' , $query_posts->posts );
 
 				$query_comments = new \WP_Comment_Query;
 				$query_comments = $query_comments->query(
@@ -79,7 +80,7 @@ add_action(
 						),
 					)
 				);
-				$refs->user = array_map( 'intval', $query_users->results );
+				$refs->user = array_map( 'absint', $query_users->results );
 
 				foreach ( $refs as $module => $ref ){
 					switch ( $module ) {
