@@ -3,10 +3,11 @@ namespace Faker\Provider;
 
 class WP_Comment extends Base {
 
-	public function comment_content( $comment_content = null, $max_chars = 200 ) {
-		if ( is_null( $comment_content ) ){
-			$comment_content = $this->generator->text( $max_chars );
-			$comment_content = substr( $comment_content, 0, strlen( $comment_content ) - 1 );
+	public function comment_content( $html = true, $args = array() ) {
+		if ( $html === true ){
+			$comment_content = implode( "\n", $this->generator->html_elements( $args ) );
+		} else {
+			$comment_content = implode( "\r\n\r\n", $this->generator->paragraphs( $this->generator->randomDigitNotNull() ) );
 		}
 
 		return $comment_content;

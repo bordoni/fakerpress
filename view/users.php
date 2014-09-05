@@ -3,6 +3,8 @@ namespace FakerPress;
 
 $roles = get_editable_roles();
 
+$_elements = array_merge( \Faker\Provider\HTML::$sets['header'], \Faker\Provider\HTML::$sets['list'], \Faker\Provider\HTML::$sets['block'], \Faker\Provider\HTML::$sets['self_close'] );
+
 $_json_roles_output = array();
 foreach ( $roles as $role_name => $role_data ) {
 	$_json_roles_output[] = array(
@@ -22,11 +24,27 @@ foreach ( $roles as $role_name => $role_data ) {
 					<th scope="row"><label for="fakerpress_qty"><?php _e( 'Quantity', 'fakerpress' ); ?></label></th>
 					<td>
 						<div id="fakerpress[qty]" class='fakerpress_qty_range'>
-							<input style='width: 90px;' class='qty-range-min' type='number' max='25' min='1' placeholder='<?php esc_attr_e( 'e.g.: 0', 'fakerpress' ); ?>' value='' name='fakerpress_qty_min' />
+							<input style='width: 90px;' class='qty-range-min' type='number' max='25' min='1' placeholder='<?php esc_attr_e( 'e.g.: 1', 'fakerpress' ); ?>' value='' name='fakerpress_qty_min' />
 							<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>
 							<input style='width: 90px;' class='qty-range-max' type='number' max='25' min='1' placeholder='<?php esc_attr_e( 'e.g.: 10', 'fakerpress' ); ?>' value='' name='fakerpress_qty_max' disabled/>
 						</div>
 						<p class="description"><?php _e( 'The range of Users you want to generate', 'fakerpress' ); ?></p>
+					</td>
+				</tr>
+				<tr class='fk-field-container field-container-description_use_html'>
+					<th scope="row"><label for="fakerpress_description_use_html"><?php _e( 'Use HTML', 'fakerpress' ); ?></label></th>
+					<td>
+						<input type='checkbox' style="margin-top: -3px;" name='fakerpress_description_use_html' checked />
+						<p style='display: inline-block;' class="description"><?php _e( 'Use HTML on your randomized User Description?', 'fakerpress' ); ?></p>
+					</td>
+				</tr>
+				<tr class='fk-field-container fk-field-dependent' data-fk-depends=".field-container-description_use_html input" data-fk-condition='true'>
+					<th scope="row"><label for="fakerpress_description_html_tags"><?php _e( 'HTML tags', 'fakerpress' ); ?></label></th>
+					<td>
+						<div id="fakerpress[description_html_tags]">
+							<input type='hidden' class='field-select2-tags' name='fakerpress_description_html_tags' value='<?php echo implode( ',', $_elements ); ?>' data-tags='<?php echo json_encode( $_elements ); ?>' />
+						</div>
+						<p class="description"><?php _e( 'Select the group of tags that can be selected to print on the User Description.', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
 				<tr>

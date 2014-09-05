@@ -12,6 +12,9 @@ add_action(
 			}
 			// After this point we are safe to say that we have a good POST request
 
+			$comment_content_use_html = Filter::super( INPUT_POST, 'fakerpress_comment_content_use_html', FILTER_SANITIZE_STRING, 'off' ) === 'on';
+			$comment_content_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_comment_content_html_tags', FILTER_SANITIZE_STRING ) ) );
+
 			$qty_min = absint( Filter::super( INPUT_POST, 'fakerpress_qty_min', FILTER_SANITIZE_NUMBER_INT ) );
 
 			$qty_max = absint( Filter::super( INPUT_POST, 'fakerpress_qty_max', FILTER_SANITIZE_NUMBER_INT ) );
@@ -40,6 +43,7 @@ add_action(
 				$results->all[] = $faker->generate(
 					array(
 						'comment_date' => array( $min_date, $max_date ),
+						'comment_content' => array( $comment_content_use_html, array( 'elements' => $comment_content_html_tags ) ),
 						'user_id' => array( 0 ),
 					)
 				)->save();

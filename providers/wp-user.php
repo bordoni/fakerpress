@@ -75,10 +75,13 @@ class WP_User extends Base {
 		return $last_name;
 	}
 
-	public function description( $description = null, $max_chars = 100 ) {
-		if ( is_null( $description ) ) {
-			$description = $this->generator->text( $max_chars );
+	public function description( $html = true, $args = array() ) {
+		if ( $html === true ){
+			$description = implode( "\n", $this->generator->html_elements( $args ) );
+		} else {
+			$description = implode( "\r\n\r\n", $this->generator->paragraphs( $this->generator->randomDigitNotNull() ) );
 		}
+
 		return $description;
 	}
 

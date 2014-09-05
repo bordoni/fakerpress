@@ -38,6 +38,7 @@ class HTML extends Base {
 			'attr' => array(),
 			'exclude' => array( 'div' ),
 		);
+
 		$args = (object) wp_parse_args( $args, $defaults );
 
 		for ( $i = 0; $i < $args->qty; $i++ ) {

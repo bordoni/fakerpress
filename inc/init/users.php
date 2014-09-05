@@ -16,6 +16,9 @@ add_action(
 
 			$qty_max = absint( Filter::super( INPUT_POST, 'fakerpress_qty_max', FILTER_SANITIZE_NUMBER_INT ) );
 
+			$description_use_html = Filter::super( INPUT_POST, 'fakerpress_description_use_html', FILTER_SANITIZE_STRING, 'off' ) === 'on';
+			$description_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_description_html_tags', FILTER_SANITIZE_STRING ) ) );
+
 			$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_roles', FILTER_SANITIZE_STRING ) ) ) );
 
 			$faker = new Module\User;
@@ -38,6 +41,7 @@ add_action(
 				$results->all[] = $faker->generate(
 					array(
 						'role' => array( $roles ),
+						'description' => array( $description_use_html, array( 'elements' => $description_html_tags ) ),
 					)
 				)->save();
 			}

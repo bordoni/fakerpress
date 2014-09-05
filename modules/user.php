@@ -3,6 +3,13 @@ namespace FakerPress\Module;
 
 class User extends Base {
 
+	public $dependencies = array(
+		'\Faker\Provider\Lorem',
+		'\Faker\Provider\DateTime',
+		'\Faker\Provider\HTML',
+	);
+
+
 	public $provider = '\Faker\Provider\WP_User';
 
 	public function save() {
