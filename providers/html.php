@@ -30,6 +30,18 @@ class HTML extends Base {
 		'wp' => array( '!-- more --' )
 	);
 
+	private function filter_html_comments( $element = '' ){
+		return ! preg_match( '/<?!--(.*?)-->?/i' , $element );
+	}
+
+	private function has_element( $needle = '', $haystack = array() ){
+		$needle = trim( $needle );
+		$filtered = array_filter( $haystack, function( $element ) use ( $needle ){
+			return preg_match( "/<?(!--)? ?({$needle})+ ?(--)?>?/i", $element ) !== 0;
+		} );
+		return count( $filtered ) > 0;
+	}
+
 	public function html_elements( $args = array() ){
 		$html = array();
 
@@ -38,10 +50,14 @@ class HTML extends Base {
 			'elements' => array_merge( self::$sets['header'], self::$sets['list'], self::$sets['block'] ),
 			'attr' => array(),
 			'exclude' => array( 'div' ),
-			'has_more' => false,
+			'allow_html_comments' => false,
 		);
 
 		$args = (object) wp_parse_args( $args, $defaults );
+		$args->did_more_element = false;
+
+		$max_to_more = ( $args->qty / 2 ) + $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
+		$min_to_more = ( $args->qty / 2 ) - $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
 
 		for ( $i = 0; $i < $args->qty; $i++ ) {
 			$exclude = $args->exclude;
@@ -54,18 +70,27 @@ class HTML extends Base {
 					$exclude = array_merge( (array) $exclude, self::$sets['list'] );
 				}
 			}
-			$els[] = $element = Base::randomElement( array_diff( $args->elements, $exclude ) );
+
+			$elements = array_diff( $args->elements, $exclude );
+
+			if ( ! $args->allow_html_comments ){
+				$elements = array_filter( $elements, array( $this, 'filter_html_comments' ) );
+			}
+
+			$els[] = $element = Base::randomElement( $elements );
 
 			$html[] = $this->element( $element, $args->attr );
+
 			if (
-				! $args->has_more &&
+				$this->generator->numberBetween( 0, 100 ) <= 80 &&
+				! $args->did_more_element &&
 				$args->qty > 2 &&
-				in_array( '!-- more --' , $args->elements ) &&
-				$i > ( $args->qty / 2 ) + $this->generator->numberBetween( 0, max( floor( $args->qty / 3 ), 1 ) ) &&
-				$i <= ( $args->qty / 2 ) - $this->generator->numberBetween( 0, max( floor( $args->qty / 3 ), 1 ) )
+				$this->has_element( '!-- more --', $args->elements ) &&
+				$i < $max_to_more &&
+				$i > $min_to_more
 			){
 				$html[] = $this->element( '!-- more --' );
-				$args->has_more = true;
+				$args->did_more_element = true;
 			}
 		}
 
@@ -117,7 +142,7 @@ class HTML extends Base {
 
 	public function element( $name = 'div', $attr = array(), $text = null ){
 		$element = (object) array(
-			'name' => sanitize_html_class( $name ),
+			'name' => $name,
 			'attr' => $attr,
 		);
 
