@@ -16,7 +16,7 @@ class HTML extends Base {
 	}
 
 	static public $sets = array(
-		'self_close' => array( 'img', 'hr' ),
+		'self_close' => array( 'img', 'hr', '!-- more --' ),
 		'header' => array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ),
 		'list' => array( 'ul', 'ol' ),
 		'block' => array( 'div', 'p', 'blockquote' ),
@@ -26,7 +26,8 @@ class HTML extends Base {
 			'abbr', 'cite', 'code', 'em', 'strong',
 			'a', 'bdo', 'br', 'img', 'q', 'span', 'sub', 'sup',
 			'hr',
-		)
+		),
+		'wp' => array( '!-- more --' )
 	);
 
 	public function html_elements( $args = array() ){
@@ -37,6 +38,7 @@ class HTML extends Base {
 			'elements' => array_merge( self::$sets['header'], self::$sets['list'], self::$sets['block'] ),
 			'attr' => array(),
 			'exclude' => array( 'div' ),
+			'has_more' => false,
 		);
 
 		$args = (object) wp_parse_args( $args, $defaults );
@@ -55,6 +57,16 @@ class HTML extends Base {
 			$els[] = $element = Base::randomElement( array_diff( $args->elements, $exclude ) );
 
 			$html[] = $this->element( $element, $args->attr );
+			if (
+				! $args->has_more &&
+				$args->qty > 2 &&
+				in_array( '!-- more --' , $args->elements ) &&
+				$i > ( $args->qty / 2 ) + $this->generator->numberBetween( 0, max( floor( $args->qty / 3 ), 1 ) ) &&
+				$i <= ( $args->qty / 2 ) - $this->generator->numberBetween( 0, max( floor( $args->qty / 3 ), 1 ) )
+			){
+				$html[] = $this->element( '!-- more --' );
+				$args->has_more = true;
+			}
 		}
 
 		return (array) $html;
@@ -109,6 +121,10 @@ class HTML extends Base {
 			'attr' => $attr,
 		);
 
+		if ( empty( $element->name ) ){
+			return false;
+		}
+
 		$element->one_liner = in_array( $element->name, self::$sets['self_close'] );
 
 		$html = array();
@@ -144,7 +160,7 @@ class HTML extends Base {
 			$attributes[] = sprintf( '%s="%s"', $key, esc_attr( $value ) );
 		}
 
-		$html[] = sprintf( '<%s%s%s>', $element->name, ( ! empty( $attributes ) ? ' ' : '' ) . implode( ' ', $attributes ), ( $element->one_liner ? ' /' : '' ) );
+		$html[] = sprintf( '<%s%s>', $element->name, ( ! empty( $attributes ) ? ' ' : '' ) . implode( ' ', $attributes ) );
 
 		if ( ! $element->one_liner ) {
 			if ( ! is_null( $text ) ){
