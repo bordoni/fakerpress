@@ -4,7 +4,7 @@ namespace FakerPress;
 // Mount the carbon values for dates
 $_json_date_selection_output = Dates::get_intervals();
 
-$_elements = array_merge( \Faker\Provider\HTML::$sets['header'], \Faker\Provider\HTML::$sets['list'], \Faker\Provider\HTML::$sets['block'], \Faker\Provider\HTML::$sets['self_close'] );
+$_elements = array_merge( \Faker\Provider\HTML::$sets['header'], \Faker\Provider\HTML::$sets['list'], \Faker\Provider\HTML::$sets['block'] );
 
 ?>
 
