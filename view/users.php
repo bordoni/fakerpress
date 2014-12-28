@@ -28,7 +28,7 @@ foreach ( $roles as $role_name => $role_data ) {
 							<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>
 							<input style='width: 90px;' class='qty-range-max' type='number' max='25' min='1' placeholder='<?php esc_attr_e( 'e.g.: 10', 'fakerpress' ); ?>' value='' name='fakerpress_qty_max' disabled/>
 						</div>
-						<p class="description"><?php _e( 'The range of Users you want to generate', 'fakerpress' ); ?></p>
+						<p class="description"><?php _e( 'How many users should be generated, use both fields to get a randomized number of users within the given range.', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
 				<tr class='fk-field-container field-container-description_use_html'>
@@ -42,7 +42,7 @@ foreach ( $roles as $role_name => $role_data ) {
 					<th scope="row"><label for="fakerpress_description_html_tags"><?php _e( 'HTML tags', 'fakerpress' ); ?></label></th>
 					<td>
 						<div id="fakerpress[description_html_tags]">
-							<input type='hidden' class='field-select2-tags' name='fakerpress_description_html_tags' value='<?php echo implode( ',', $_elements ); ?>' data-tags='<?php echo json_encode( $_elements ); ?>' />
+							<input type='hidden' class='field-select2-tags' name='fakerpress_description_html_tags' value='<?php echo esc_attr( implode( ',', $_elements ) ); ?>' data-tags='<?php echo json_encode( $_elements ); ?>' />
 						</div>
 						<p class="description"><?php _e( 'Select the group of tags that can be selected to print on the User Description.', 'fakerpress' ); ?></p>
 					</td>

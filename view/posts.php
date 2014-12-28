@@ -80,7 +80,7 @@ $_json_comment_status_output = array(
 							<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>
 							<input style='width: 90px;' class='qty-range-max' type='number' min='1' placeholder='<?php esc_attr_e( 'e.g.: 10', 'fakerpress' ); ?>' value='' name='fakerpress_qty_max' disabled/>
 						</div>
-						<p class="description"><?php _e( 'The range of Posts you want to generate', 'fakerpress' ); ?></p>
+						<p class="description"><?php _e( 'How many posts should be generated, use both fields to get a randomized number of posts within the given range.', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
 				<tr class='fk-field-container field-container-post_type'>
@@ -121,7 +121,7 @@ $_json_comment_status_output = array(
 					<th scope="row"><label for="fakerpress_post_content_html_tags"><?php _e( 'HTML tags', 'fakerpress' ); ?></label></th>
 					<td>
 						<div id="fakerpress[post_content_html_tags]">
-							<input type='hidden' class='field-select2-tags' name='fakerpress_post_content_html_tags' value='<?php echo implode( ',', $_elements ); ?>' data-tags='<?php echo json_encode( $_elements ); ?>' />
+							<input type='hidden' class='field-select2-tags' name='fakerpress_post_content_html_tags' value='<?php echo esc_attr( implode( ',', $_elements ) ); ?>' data-tags='<?php echo json_encode( $_elements ); ?>' />
 						</div>
 						<p class="description"><?php _e( 'Select the group of tags that can be selected to print on the Post Content', 'fakerpress' ); ?></p>
 					</td>
@@ -141,8 +141,8 @@ $_json_comment_status_output = array(
 						<div class='fakerpress-range-group'>
 							<select id="fakerpress_interval_date" class='field-date-selection' data-placeholder='<?php esc_attr_e( 'Select an Interval', 'fakerpress' ); ?>' style="margin-right: 5px; margin-top: -4px;">
 								<option></option>;
-								<?php foreach ($_json_date_selection_output as $option) { ?>
-								<option data-min="<?php echo date( 'm/d/Y', strtotime( $option['min'] ) ); ?>" data-max="<?php echo date( 'm/d/Y', strtotime( $option['max'] ) ); ?>" value="<?php echo $option['text']; ?>"><?php echo $option['text']; ?></option>
+								<?php foreach ( $_json_date_selection_output as $option ) { ?>
+								<option data-min="<?php echo esc_attr( date( 'm/d/Y', strtotime( $option['min'] ) ) ); ?>" data-max="<?php echo esc_attr( date( 'm/d/Y', strtotime( $option['max'] ) ) ); ?>" value="<?php echo esc_attr( $option['text'] ); ?>"><?php echo esc_attr( $option['text'] ); ?></option>
 								<?php } ?>
 							</select>
 

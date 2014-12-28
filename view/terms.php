@@ -26,7 +26,7 @@ foreach ( $taxonomies as $key => $taxonomy ) {
 							<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>
 							<input style='width: 90px;' class='qty-range-max' type='number' max='25' min='1' placeholder='<?php esc_attr_e( 'e.g.: 10', 'fakerpress' ); ?>' value='' name='fakerpress_qty_max' disabled/>
 						</div>
-						<p class="description"><?php _e( 'The range of terms you want to generate on this request', 'fakerpress' ); ?></p>
+						<p class="description"><?php _e( 'How many terms should be generated, use both fields to get a randomized number of terms within the given range.', 'fakerpress' ); ?></p>
 					</td>
 				</tr>
 				<tr>
