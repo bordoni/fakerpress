@@ -3,7 +3,7 @@ namespace FakerPress;
 
 $roles = get_editable_roles();
 
-$_elements = array_merge( \Faker\Provider\HTML::$sets['header'], \Faker\Provider\HTML::$sets['list'], \Faker\Provider\HTML::$sets['block'], \Faker\Provider\HTML::$sets['self_close'] );
+$_elements = array_merge( array( 'h3', 'h4', 'h5', 'h6', 'p' ) );
 
 $_json_roles_output = array();
 foreach ( $roles as $role_name => $role_data ) {

@@ -16,7 +16,7 @@ class HTML extends Base {
 	}
 
 	static public $sets = array(
-		'self_close' => array( 'img', 'hr' ),
+		'self_close' => array( 'img', 'hr', '!-- more --' ),
 		'header' => array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ),
 		'list' => array( 'ul', 'ol' ),
 		'block' => array( 'div', 'p', 'blockquote' ),
@@ -26,8 +26,21 @@ class HTML extends Base {
 			'abbr', 'cite', 'code', 'em', 'strong',
 			'a', 'bdo', 'br', 'img', 'q', 'span', 'sub', 'sup',
 			'hr',
-		)
+		),
+		'wp' => array( '!-- more --' )
 	);
+
+	private function filter_html_comments( $element = '' ){
+		return ! preg_match( '/<?!--(.*?)-->?/i' , $element );
+	}
+
+	private function has_element( $needle = '', $haystack = array() ){
+		$needle = trim( $needle );
+		$filtered = array_filter( $haystack, function( $element ) use ( $needle ){
+			return preg_match( "/<?(!--)? ?({$needle})+ ?(--)?>?/i", $element ) !== 0;
+		} );
+		return count( $filtered ) > 0;
+	}
 
 	public function html_elements( $args = array() ){
 		$html = array();
@@ -37,9 +50,14 @@ class HTML extends Base {
 			'elements' => array_merge( self::$sets['header'], self::$sets['list'], self::$sets['block'] ),
 			'attr' => array(),
 			'exclude' => array( 'div' ),
+			'allow_html_comments' => false,
 		);
 
 		$args = (object) wp_parse_args( $args, $defaults );
+		$args->did_more_element = false;
+
+		$max_to_more = ( $args->qty / 2 ) + $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
+		$min_to_more = ( $args->qty / 2 ) - $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
 
 		for ( $i = 0; $i < $args->qty; $i++ ) {
 			$exclude = $args->exclude;
@@ -52,9 +70,28 @@ class HTML extends Base {
 					$exclude = array_merge( (array) $exclude, self::$sets['list'] );
 				}
 			}
-			$els[] = $element = Base::randomElement( array_diff( $args->elements, $exclude ) );
+
+			$elements = array_diff( $args->elements, $exclude );
+
+			if ( ! $args->allow_html_comments ){
+				$elements = array_filter( $elements, array( $this, 'filter_html_comments' ) );
+			}
+
+			$els[] = $element = Base::randomElement( $elements );
 
 			$html[] = $this->element( $element, $args->attr );
+
+			if (
+				$this->generator->numberBetween( 0, 100 ) <= 80 &&
+				! $args->did_more_element &&
+				$args->qty > 2 &&
+				$this->has_element( '!-- more --', $args->elements ) &&
+				$i < $max_to_more &&
+				$i > $min_to_more
+			){
+				$html[] = $this->element( '!-- more --' );
+				$args->did_more_element = true;
+			}
 		}
 
 		return (array) $html;
@@ -105,9 +142,13 @@ class HTML extends Base {
 
 	public function element( $name = 'div', $attr = array(), $text = null ){
 		$element = (object) array(
-			'name' => sanitize_html_class( $name ),
+			'name' => $name,
 			'attr' => $attr,
 		);
+
+		if ( empty( $element->name ) ){
+			return false;
+		}
 
 		$element->one_liner = in_array( $element->name, self::$sets['self_close'] );
 
@@ -144,7 +185,7 @@ class HTML extends Base {
 			$attributes[] = sprintf( '%s="%s"', $key, esc_attr( $value ) );
 		}
 
-		$html[] = sprintf( '<%s%s%s>', $element->name, ( ! empty( $attributes ) ? ' ' : '' ) . implode( ' ', $attributes ), ( $element->one_liner ? ' /' : '' ) );
+		$html[] = sprintf( '<%s%s>', $element->name, ( ! empty( $attributes ) ? ' ' : '' ) . implode( ' ', $attributes ) );
 
 		if ( ! $element->one_liner ) {
 			if ( ! is_null( $text ) ){
