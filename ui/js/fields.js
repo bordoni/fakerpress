@@ -56,7 +56,7 @@
 	});
 }( window.jQuery, window._ ) );
 
-//Author fields 
+//Author fields
 ( function( $ ){
 	'use strict';
 	$(document).ready(function(){
@@ -99,7 +99,7 @@
 	});
 }( jQuery ) );
 
-//Quantity Range Fields
+// Quantity Range Fields
 ( function( $ ){
 	'use strict';
 	$(document).ready(function(){
@@ -120,15 +120,7 @@
 						}
 
 					}
-				}),
-				$maxField.on({
-					'change': function(e){
-						if ( $.isNumeric( $(this).val() ) && $(this).val() > $minField.val() ) {
-						} else {
-							$maxField.val( '' );
-						}
-					}
-				})
+				});
 		})
 	});
 }( jQuery ) );

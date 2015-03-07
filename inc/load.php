@@ -11,7 +11,9 @@ $FakerPress = new Plugin;
 require_once Plugin::path( 'inc/vendor/Faker/src/autoload.php' );
 
 // Include the Carbon class to deal with dates
-require_once Plugin::path( 'inc/vendor/Carbon/Carbon.php' );
+if ( ! class_exists( '\Carbon' ) ){
+	require_once Plugin::path( 'inc/vendor/Carbon/Carbon.php' );
+}
 
 // Include the Carbon class to deal with dates
 require_once Plugin::path( 'classes/dates.php' );

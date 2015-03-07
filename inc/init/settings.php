@@ -52,9 +52,7 @@ add_action(
 			$query_comments = new \WP_Comment_Query;
 			$query_comments = $query_comments->query(
 				array(
-					// @codingStandardsIgnoreStart | Still have to debug why this happens...
 					'meta_query' => array(
-					// @codingStandardsIgnoreEnd
 						array(
 							'key' => apply_filters( 'fakerpress.modules_flag', 'fakerpress_flag' ),
 							'value' => true,
@@ -70,7 +68,6 @@ add_action(
 
 			$query_users = new \WP_User_Query(
 				array(
-					'number' => -1,
 					'fields' => 'ID',
 					'meta_query' => array(
 						array(
