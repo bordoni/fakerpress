@@ -17,7 +17,7 @@ class Term extends Base {
 
 		$term_object = wp_insert_term( $this->params['name'], $this->params['taxonomy'], $args );
 
-		$flagged = get_option( 'fakerpress.module_flag.' . $this->slug , array() );
+		$flagged = get_option( 'fakerpress.module_flag.' . $this->slug, array() );
 
 		// Ensure that this option is an Array by reseting the variable.
 		if ( ! is_array( $flagged ) ){

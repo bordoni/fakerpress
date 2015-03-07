@@ -1,16 +1,16 @@
 <?php
 /**
  * Plugin Name:       FakerPress
- * Plugin URI:        https://github.com/iryz/fakerpress
+ * Plugin URI:        https://github.com/bordoni/fakerpress
  * Description:       FakerPress is a clean way to generate fake data to your WordPress instalation, great for developers who need testing
- * Version:           0.1.5
- * Author:            Iryz
- * Author URI:        http://iryz.org
+ * Version:           0.1.6
+ * Author:            Gustavo Bordoni
+ * Author URI:        http://bordoni.me
  * Text Domain:       fakerpress
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path:       /l10n
- * GitHub Plugin URI: https://github.com/iryz/fakerpress
+ * GitHub Plugin URI: https://github.com/bordoni/fakerpress
  */
 
 // If this file is called directly, abort.

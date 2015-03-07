@@ -6,7 +6,7 @@ use \Carbon\Carbon;
 Class Dates {
 
 	public static function get_intervals(){
-		return apply_filters( 
+		return apply_filters(
 			'fakerpress/date.get_intervals',
 			array(
 				array(
@@ -43,7 +43,7 @@ Class Dates {
 					'id' => 'this year',
 					'text' => esc_attr__( 'This year', 'fakerpress' ),
 					'min' => Carbon::today()->day( 1 )->month( 1 ),
-					'max' =>  Carbon::parse( 'last day of december' ),
+					'max' => Carbon::parse( 'last day of december' ),
 				),
 				array(
 					'id' => 'last 15 days',
