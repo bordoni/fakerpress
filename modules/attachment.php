@@ -41,8 +41,11 @@ class Attachment extends Base {
 		}
 
 		// Generate the metadata for the attachment, and update the database record.
-		$attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
-		wp_update_attachment_metadata( $attach_id, $attach_data );
+		$metas['_wp_attachment_metadata'] = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
+
+		foreach ( $metas as $key => $value ) {
+			update_post_meta( $attach_id, $key, $value );
+		}
 
 		return $attach_id;
 	}

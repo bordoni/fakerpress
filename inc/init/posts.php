@@ -36,6 +36,7 @@ add_action(
 			$featured_image_rate = absint( Filter::super( INPUT_POST, 'fakerpress_featured_image_rate', FILTER_SANITIZE_NUMBER_INT ) );
 
 			$module = new Module\Post;
+			$attach_module = new Module\Attachment;
 
 			if ( 0 === $qty_min ){
 				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
@@ -53,7 +54,6 @@ add_action(
 
 			for ( $i = 0; $i < $quantity; $i++ ) {
 				if ( $module->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
-					$attach_module = new Module\Attachment;
 					$attach_module->param( 'attachment_url', array( 'placeholdit' ) );
 					$attach_module->generate();
 					$attachment_id = $attach_module->save();
