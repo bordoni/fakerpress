@@ -10,8 +10,8 @@ add_action(
 			if ( ! check_admin_referer( $nonce_slug ) ) {
 				return false;
 			}
-			// After this point we are safe to say that we have a good POST request
 
+			// After this point we are safe to say that we have a good POST request
 			$qty_min = absint( Filter::super( INPUT_POST, 'fakerpress_qty_min', FILTER_SANITIZE_NUMBER_INT ) );
 
 			$qty_max = absint( Filter::super( INPUT_POST, 'fakerpress_qty_max', FILTER_SANITIZE_NUMBER_INT ) );
@@ -50,19 +50,14 @@ add_action(
 			$results = (object) array();
 
 			for ( $i = 0; $i < $quantity; $i++ ) {
-				$module->meta( 'test', 'randomLetter' );
-
-				$module->data( array(
-					'tax_input' => array( $taxonomies ),
-					'post_status' => array( array( 'publish' ) ),
-					'post_date' => array( $min_date, $max_date ),
-					'post_parent' => array( $post_parents ),
-					'post_content' => array( $post_content_use_html, array( 'elements' => $post_content_html_tags ) ),
-					'post_type' => array( 'post' ),
-					'post_author'   => array( $post_author ),
-					'post_type' => array( $post_types ),
-					'comment_status' => array( $comment_status ),
-				) );
+				$module->param( 'tax_input', array( $taxonomies ) );
+				$module->param( 'post_status', array( array( 'publish' ) ) );
+				$module->param( 'post_date', array( $min_date, $max_date ) );
+				$module->param( 'post_parent', array( $post_parents ) );
+				$module->param( 'post_content', array( $post_content_use_html, array( 'elements' => $post_content_html_tags ) ) );
+				$module->param( 'post_author', array( $post_author ) );
+				$module->param( 'post_type', array( $post_types ) );
+				$module->param( 'comment_status', array( $comment_status ) );
 
 				$module->generate();
 

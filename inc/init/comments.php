@@ -4,7 +4,7 @@ namespace FakerPress;
 add_action(
 	'fakerpress.view.request.comments',
 	function( $view ) {
-		if ( Admin::$request_method === 'post' && ! empty( $_POST )  ) {
+		if ( 'post' === Admin::$request_method && ! empty( $_POST )  ) {
 			$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
 
 			if ( ! check_admin_referer( $nonce_slug ) ) {
@@ -22,35 +22,35 @@ add_action(
 			$min_date = Filter::super( INPUT_POST, 'fakerpress_min_date' );
 
 			$max_date = Filter::super( INPUT_POST, 'fakerpress_max_date' );
-			
-			$faker = new Module\Comment;
 
-			if ( $qty_min === 0 ){
+			$module = new Module\Comment;
+
+			if ( 0 === $qty_min ){
 				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
 			}
 
-			if ( !empty( $qty_min ) && !empty( $qty_max ) ){
-				$quantity = $faker->numberBetween( $qty_min, $qty_max );
+			if ( ! empty( $qty_min ) && ! empty( $qty_max ) ){
+				$quantity = $module->faker->numberBetween( $qty_min, $qty_max );
 			}
 
-			if ( !empty( $qty_min ) && empty( $qty_max ) ){
+			if ( ! empty( $qty_min ) && empty( $qty_max ) ){
 				$quantity = $qty_min;
 			}
 
 			$results = (object) array();
 
 			for ( $i = 0; $i < $quantity; $i++ ) {
-				$results->all[] = $faker->generate(
-					array(
-						'comment_date' => array( $min_date, $max_date ),
-						'comment_content' => array( $comment_content_use_html, array( 'elements' => $comment_content_html_tags ) ),
-						'user_id' => array( 0 ),
-					)
-				)->save();
+				$module->param( 'comment_date', array( $min_date, $max_date ) );
+				$module->param( 'comment_content', array( $comment_content_use_html, array( 'elements' => $comment_content_html_tags ) ) );
+				$module->param( 'user_id', array( 0 ) );
+
+				$module->generate();
+
+				$results->all[] = $module->save();
 			}
 			$results->success = array_filter( $results->all, 'absint' );
 
-			if ( count( $results->success ) !== 0 ){
+			if ( ! empty( $results->success ) ){
 				return Admin::add_message(
 					sprintf(
 						__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),

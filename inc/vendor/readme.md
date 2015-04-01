@@ -30,4 +30,3 @@ git subtree push --prefix inc/vendor/repoName git@github.com:user/repoName.git m
 ## List of dependencies
 * [Faker](https://github.com/fzaninotto/Faker)
 * [Carbon](https://github.com/briannesbitt/Carbon)
-* [bottomline](https://github.com/maciejczyzewski/bottomline)

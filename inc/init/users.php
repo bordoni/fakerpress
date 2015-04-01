@@ -4,7 +4,7 @@ namespace FakerPress;
 add_action(
 	'fakerpress.view.request.users',
 	function( $view ) {
-		if ( Admin::$request_method === 'post' && ! empty( $_POST )  ) {
+		if ( 'post' === Admin::$request_method && ! empty( $_POST )  ) {
 			$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
 
 			if ( ! check_admin_referer( $nonce_slug ) ) {
@@ -23,15 +23,15 @@ add_action(
 
 			$faker = new Module\User;
 
-			if ( $qty_min === 0 ){
+			if ( 0 === $qty_min ){
 				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
 			}
 
-			if ( !empty( $qty_min ) && !empty( $qty_max ) ){
-				$quantity = $faker->numberBetween( $qty_min, $qty_max );
+			if ( ! empty( $qty_min ) && ! empty( $qty_max ) ){
+				$quantity = $faker->faker->numberBetween( $qty_min, $qty_max );
 			}
 
-			if ( !empty( $qty_min ) && empty( $qty_max ) ){
+			if ( ! empty( $qty_min ) && empty( $qty_max ) ){
 				$quantity = $qty_min;
 			}
 
@@ -47,7 +47,7 @@ add_action(
 			}
 			$results->success = array_filter( $results->all, 'absint' );
 
-			if ( count( $results->success ) !== 0 ){
+			if ( ! empty( $results->success ) ){
 				return Admin::add_message(
 					sprintf(
 						__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),

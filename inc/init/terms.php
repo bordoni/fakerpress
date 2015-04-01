@@ -4,7 +4,7 @@ namespace FakerPress;
 add_action(
 	'fakerpress.view.request.terms',
 	function( $view ) {
-		if ( Admin::$request_method === 'post' && ! empty( $_POST )  ) {
+		if ( 'post' === Admin::$request_method && ! empty( $_POST )  ) {
 			$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
 
 			if ( ! check_admin_referer( $nonce_slug ) ) {
@@ -18,34 +18,32 @@ add_action(
 
 			$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_taxonomies', FILTER_SANITIZE_STRING ) ) ) );
 
-			$faker = new Module\Term;
+			$module = new Module\Term;
 
-			if ( $qty_min === 0 ){
+			if ( 0 === $qty_min ){
 				return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
 			}
 
-			if ( !empty( $qty_min ) && !empty( $qty_max ) ){
-				$quantity = $faker->numberBetween( $qty_min, $qty_max );
+			if ( ! empty( $qty_min ) && ! empty( $qty_max ) ){
+				$quantity = $module->faker->numberBetween( $qty_min, $qty_max );
 			}
 
-			if ( !empty( $qty_min ) && empty( $qty_max ) ){
+			if ( ! empty( $qty_min ) && empty( $qty_max ) ){
 				$quantity = $qty_min;
 			}
 
 			$results = (object) array();
 
 			for ( $i = 0; $i < $quantity; $i++ ) {
-				$result = $faker->generate(
-					array(
-						'taxonomy' => array( $taxonomies )
-					)
-				)->save();
+				$module->param( 'taxonomy', array( $taxonomies ) );
+				$module->generate();
 
-				$results->all[] = $result['term_id'];
+				$results->all[] = $module->save();
 			}
 
+			$results->success = array_filter( $results->all, 'absint' );
 
-			if ( count( $results->all ) !== 0 ){
+			if ( ! empty( $results->success ) ){
 				return Admin::add_message(
 					sprintf(
 						__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),

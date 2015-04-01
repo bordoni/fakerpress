@@ -72,11 +72,24 @@ abstract class Base {
 	final public function save(){
 		do_action( "fakerpress.module.{$this->slug}.pre_save", $this );
 
-		return apply_filters( "fakerpress.module.{$this->slug}.save", false, $this );
+		$params = array();
+		foreach ( $this->params as $param ) {
+			$params[ $param->key ] = $param->value;
+		}
+
+		$metas = false;
+		if ( is_array( $this->meta ) ){
+			$metas = array();
+			foreach ( $this->meta as $meta ) {
+				$metas[ $meta->key ] = $meta->value;
+			}
+		}
+
+		return apply_filters( "fakerpress.module.{$this->slug}.save", false, $params, $metas, $this );
 	}
 
-	protected function apply( $generator, $args = array() ){
-		return call_user_func_array( array( $this->faker, $generator ), ( isset( $args ) ? (array) $args : array() ) );
+	protected function apply( $item ){
+		return call_user_func_array( array( $this->faker, $item->generator ), ( isset( $item->arguments ) ? (array) $item->arguments : array() ) );
 	}
 
 	final public function meta( $key, $generator, $arguments = array() ){
@@ -85,7 +98,7 @@ abstract class Base {
 			return $this;
 		}
 
-		$this->meta[] = (object) array(
+		$this->meta[ $key ] = (object) array(
 			'key' => $key,
 			'generator' => $generator,
 			'arguments' => (array) $arguments,
@@ -94,10 +107,10 @@ abstract class Base {
 		return $this;
 	}
 
-	final public function param( $key, $generator, $arguments = array() ){
-		$this->params[] = (object) array(
+	final public function param( $key, $arguments = array() ){
+		$this->params[ $key ] = (object) array(
 			'key' => $key,
-			'generator' => $generator,
+			'generator' => $key,
 			'arguments' => (array) $arguments,
 		);
 
@@ -110,16 +123,22 @@ abstract class Base {
 	 */
 	public function generate( $args = array() ) {
 		foreach ( $this->faked as $name ) {
-			$this->params[ $name ] = $this->apply( $name, isset( $this->args[ $name ] ) ? $this->args[ $name ] : array() );
+			if ( ! isset( $this->params[ $name ] ) ){
+				$this->params[ $name ] = (object) array(
+					'key' => $name,
+					'generator' => $name,
+					'arguments' => array(),
+				);
+			}
+			$this->params[ $name ]->value = $this->apply( $this->params[ $name ] );
 		}
 
 		if ( is_array( $this->meta ) ){
-			foreach ( $this->meta as &$meta ) {
-				$meta->value = $this->apply( $meta->generator, $meta->arguments );
+			foreach ( $this->meta as $meta ) {
+				$this->meta[ $meta->key ]->value = $this->apply( $meta );
 			}
 		}
 
 		return $this;
 	}
-
 }

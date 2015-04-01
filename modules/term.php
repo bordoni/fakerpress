@@ -7,19 +7,21 @@ class Term extends Base {
 		'\Faker\Provider\Lorem',
 	);
 
+	public $meta = false;
+
 	public $provider = '\Faker\Provider\WP_Term';
 
 	public function init() {
-		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ) );
+		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
 	}
 
-	public function do_save() {
+	public function do_save( $return_val, $params, $metas, $module ){
 		$args = array(
-			'description' => $this->params['description'],
-			'parent' => $this->params['parent_term'],
+			'description' => $params['description'],
+			'parent' => $params['parent_term'],
 		);
 
-		$term_object = wp_insert_term( $this->params['name'], $this->params['taxonomy'], $args );
+		$term_object = wp_insert_term( $params['name'], $params['taxonomy'], $args );
 
 		$flagged = get_option( 'fakerpress.module_flag.' . $this->slug, array() );
 
@@ -28,14 +30,14 @@ class Term extends Base {
 			$flagged = array();
 		}
 
-		if ( ! isset( $flagged[ $this->params['taxonomy'] ] ) || ! is_array( $flagged[ $this->params['taxonomy'] ] ) ){
-			$flagged[ $this->params['taxonomy'] ] = array();
+		if ( ! isset( $flagged[ $params['taxonomy'] ] ) || ! is_array( $flagged[ $params['taxonomy'] ] ) ){
+			$flagged[ $params['taxonomy'] ] = array();
 		}
-		$flagged[ $this->params['taxonomy'] ] = array_merge( $flagged[ $this->params['taxonomy'] ], (array) $term_object['term_id'] );
+		$flagged[ $params['taxonomy'] ] = array_merge( $flagged[ $params['taxonomy'] ], (array) $term_object['term_id'] );
 
 		// When in posts relating is harder so we store in the Options Table
 		update_option( 'fakerpress.module_flag.' . $this->slug, $flagged );
 
-		return $term_object;
+		return $term_object['term_id'];
 	}
 }
