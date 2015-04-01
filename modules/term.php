@@ -9,7 +9,11 @@ class Term extends Base {
 
 	public $provider = '\Faker\Provider\WP_Term';
 
-	public function save() {
+	public function init() {
+		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ) );
+	}
+
+	public function do_save() {
 		$args = array(
 			'description' => $this->params['description'],
 			'parent' => $this->params['parent_term'],

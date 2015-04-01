@@ -12,7 +12,12 @@ class User extends Base {
 
 	public $provider = '\Faker\Provider\WP_User';
 
-	public function save() {
+
+	public function init() {
+		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ) );
+	}
+
+	public function do_save() {
 		$user_id = wp_insert_user( $this->params );
 
 		// Only set role if needed

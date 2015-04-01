@@ -27,6 +27,14 @@ class Plugin {
 	public static $admin = null;
 
 	/**
+	 * A static variable that holds a dinamic instance of the class of the AJAX methods
+	 *
+	 * @since 0.2.0
+	 * @var null|object The dynamic version of this class
+	 */
+	public static $ajax = null;
+
+	/**
 	 * Variable holding the folder name of the plugin
 	 *
 	 * @since 0.1.0

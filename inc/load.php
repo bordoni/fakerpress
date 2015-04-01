@@ -18,11 +18,14 @@ if ( ! class_exists( '\Carbon' ) ){
 // Include the Carbon class to deal with dates
 require_once Plugin::path( 'classes/dates.php' );
 
-// Require our Administration Class
+// Require our Filtering Class
 require_once Plugin::path( 'classes/filter.php' );
 
 // Require our Administration Class
 require_once Plugin::path( 'classes/admin.php' );
+
+// Require our Ajax Class
+require_once Plugin::path( 'classes/ajax.php' );
 
 // Inluding needed providers
 require_once Plugin::path( 'providers/html.php' );
@@ -54,6 +57,7 @@ require_once Plugin::path( 'inc/init/comments.php' );
 // Load the Settings page actions
 require_once Plugin::path( 'inc/init/settings.php' );
 
-// Initialize the main Class of the plugin Administration
+// Initialize the main Class of the plugin Administration and AJAX
 Plugin::$admin = new Admin;
+Plugin::$ajax = new Ajax;
 

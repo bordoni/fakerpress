@@ -16,7 +16,7 @@ class WP_Post extends Base {
 	}
 
 	public function post_content( $html = true, $args = array() ) {
-		if ( $html === true ){
+		if ( true === $html ){
 			$content = implode( "\n", $this->generator->html_elements( $args ) );
 		} else {
 			$content = implode( "\r\n\r\n", $this->generator->paragraphs( $this->generator->randomDigitNotNull() ) );
@@ -62,7 +62,7 @@ class WP_Post extends Base {
 		if ( empty( $haystack ) ){
 			$haystack = get_users(
 				array(
-					'blog_id' => $GLOBALS['blog_id'],
+					'blog_id' => get_current_blog_id(),
 					'count_total' => false,
 					'fields' => 'ID', // When you pass only one field it returns an array of the values
 				)
