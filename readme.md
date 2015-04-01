@@ -5,7 +5,7 @@
 FakerPress is a clean way to generate fake data to your WordPress, great for developers who need testing
 
 **Contributors:** [bordoni](http://profiles.wordpress.org/bordoni), [luancuba](http://profiles.wordpress.org/luancuba)  
-**Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy content), [lorem ipsun](http://wordpress.org/plugins/tags/lorem ipsun), [admin](http://wordpress.org/plugins/tags/admin), [exemples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake data), [random](http://wordpress.org/plugins/tags/random), [developer](http://wordpress.org/plugins/tags/developer), [dev](http://wordpress.org/plugins/tags/dev), [development](http://wordpress.org/plugins/tags/development), [test](http://wordpress.org/plugins/tags/test), [tests](http://wordpress.org/plugins/tags/tests)  
+**Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy content), [lorem ipsun](http://wordpress.org/plugins/tags/lorem ipsun), [admin](http://wordpress.org/plugins/tags/admin), [exemples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [images](http://wordpress.org/plugins/tags/images), [attachments](http://wordpress.org/plugins/tags/attachments), [featured image](http://wordpress.org/plugins/tags/featured image), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake data), [random](http://wordpress.org/plugins/tags/random), [developer](http://wordpress.org/plugins/tags/developer), [dev](http://wordpress.org/plugins/tags/dev), [development](http://wordpress.org/plugins/tags/development), [test](http://wordpress.org/plugins/tags/test), [tests](http://wordpress.org/plugins/tags/tests)  
 **Requires at least:** 3.7  
 **Tested up to:** 4.2  
 **Stable tag:** trunk (master)  
@@ -25,6 +25,7 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 ### Components Included ###
 * Posts
 * Custom Post Types
+* Featured Image
 * Users
 * Tags
 * Categories
@@ -32,6 +33,9 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 
 ### Creating Dummy Content ###
 Normally a WordPress developer will need to perform the task of filling up an empty theme with dummy content, and doing this manually can be really time consuming, the main reasons this plugin was create was to speed up this process.
+
+### Random Featured Images ###
+Create randomly generated attachments as the Featured Images for your WordPress dummy content.
 
 ### Delete the Content Generated ###
 After you are done with your testing it should be easy to delete all the content created using FakerPress, now you will be able to do it.
@@ -67,6 +71,10 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 
 ## Changelog ##
+
+### 0.2.0 ###
+* New: Featured Images is now an Option on our Plugin
+* New: Handling of Post Meta, still under the hood but preparation for the next versions
 
 ### 0.1.6 ###
 * Fix: Prevent Carbon to Fatal error if trying to be included twice ([#50](https://github.com/bordoni/fakerpress/issues/50))

@@ -1,6 +1,6 @@
 === FakerPress ===
 Contributors:      bordoni, luancuba
-Tags:              generator, dummy content, lorem ipsun, admin, exemples, testing, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
+Tags:              generator, dummy content, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
 Requires at least: 3.7
 Tested up to:      4.2
 Stable tag:        trunk
@@ -23,6 +23,7 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 
 * Posts
 * Custom Post Types
+* Featured Image
 * Users
 * Tags
 * Categories
@@ -30,6 +31,9 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 
 = Creating Dummy Content =
 Normally a WordPress developer will need to perform the task of filling up an empty theme with dummy content, and doing this manually can be really time consuming, the main reasons this plugin was create was to speed up this process.
+
+= Random Featured Images =
+Create randomly generated attachments as the Featured Images for your WordPress dummy content.
 
 = Delete the Content Generated =
 After you are done with your testing it should be easy to delete all the content created using FakerPress, now you will be able to do it.
@@ -66,6 +70,10 @@ Great! There are several ways you can get involved to help make FakerPress bette
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
+
+= 0.2.0 =
+* New: Featured Images is now an Option on our Plugin
+* New: Handling of Post Meta, still under the hood but preparation for the next versions
 
 = 0.1.6 =
 * Fix: Prevent Carbon to Fatal error if trying to be included twice ([#50](https://github.com/bordoni/fakerpress/issues/50))
