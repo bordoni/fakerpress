@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="bottomline.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         syntaxCheck="true"
+>
+    <testsuites>
+        <testsuite name="Arrays Test Suite">
+            <file>tests/arrays.php</file>
+        </testsuite>
+        <testsuite name="Chaining Test Suite">
+            <file>tests/chaining.php</file>
+        </testsuite>
+        <testsuite name="Collections Test Suite">
+            <file>tests/collections.php</file>
+        </testsuite>
+        <testsuite name="Functions Test Suite">
+            <file>tests/functions.php</file>
+        </testsuite>
+        <testsuite name="Objects Test Suite">
+            <file>tests/objects.php</file>
+        </testsuite>
+        <testsuite name="Utilities Test Suite">
+            <file>tests/utilities.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>
