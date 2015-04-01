@@ -39,6 +39,11 @@ require_once Plugin::path( 'providers/wp-post.php' );
 require_once Plugin::path( 'modules/post.php' );
 require_once Plugin::path( 'inc/init/posts.php' );
 
+// Require the Attachment module
+require_once Plugin::path( 'providers/wp-attachment.php' );
+require_once Plugin::path( 'modules/attachment.php' );
+// require_once Plugin::path( 'inc/init/posts.php' );
+
 // Require the User module
 require_once Plugin::path( 'providers/wp-user.php' );
 require_once Plugin::path( 'modules/user.php' );

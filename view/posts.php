@@ -136,6 +136,15 @@ $_json_comment_status_output = array(
 					</td>
 				</tr>
 				<tr class='fk-field-container'>
+					<th scope="row"><label for="fakerpress_featured_image_rate"><?php _e( 'Featured Image Rate', 'fakerpress' ); ?></label></th>
+					<td>
+						<div id="fakerpress[featured_image_rate]">
+							<input style='width: 150px;' type='number' min='0' max='100' placeholder='<?php esc_attr_e( 'e.g.: 75', 'fakerpress' ); ?>' value='75' name='fakerpress_featured_image_rate' />
+						</div>
+						<p class="description"><?php _e( 'Percentage of the posts created that will have an Featured Image', 'fakerpress' ); ?></p>
+					</td>
+				</tr>
+				<tr class='fk-field-container'>
 					<th scope="row"><label for="fakerpress_interval_date"><?php _e( 'Date', 'fakerpress' ); ?></label></th>
 					<td>
 						<div class='fakerpress-range-group'>

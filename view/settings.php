@@ -20,6 +20,5 @@ namespace FakerPress;
 				</tr>
 			</tbody>
 		</table>
-
 	</form>
 </div>

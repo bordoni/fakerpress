@@ -76,7 +76,7 @@ class WP_User extends Base {
 	}
 
 	public function description( $html = true, $args = array() ) {
-		if ( $html === true ){
+		if ( true === $html ){
 			$description = implode( "\n", $this->generator->html_elements( $args ) );
 		} else {
 			$description = implode( "\r\n\r\n", $this->generator->paragraphs( $this->generator->randomDigitNotNull() ) );

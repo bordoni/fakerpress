@@ -16,9 +16,9 @@ class PlaceHoldIt extends Base {
 
 		$width = absint( $width );
 		$height = floor( $width / floatval( $ratio ) );
-        $url = "http://placehold.it/{$width}x{$height}/";
+		$url = "http://placehold.it/{$width}x{$height}/";
 
-        return $url;
-    }
+		return $url;
+	}
 
 }

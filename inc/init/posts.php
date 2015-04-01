@@ -33,6 +33,8 @@ add_action(
 
 			$post_parents = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_post_parents', FILTER_SANITIZE_STRING ) ) );
 
+			$featured_image_rate = absint( Filter::super( INPUT_POST, 'fakerpress_featured_image_rate', FILTER_SANITIZE_NUMBER_INT ) );
+
 			$module = new Module\Post;
 
 			if ( 0 === $qty_min ){
@@ -50,6 +52,14 @@ add_action(
 			$results = (object) array();
 
 			for ( $i = 0; $i < $quantity; $i++ ) {
+				if ( $module->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
+					$attach_module = new Module\Attachment;
+					$attach_module->param( 'attachment_url', array( 'placeholdit' ) );
+					$attach_module->generate();
+					$attachment_id = $attach_module->save();
+					$module->meta( '_thumbnail_id', null, array( $attachment_id ) );
+				}
+
 				$module->param( 'tax_input', array( $taxonomies ) );
 				$module->param( 'post_status', array( array( 'publish' ) ) );
 				$module->param( 'post_date', array( $min_date, $max_date ) );

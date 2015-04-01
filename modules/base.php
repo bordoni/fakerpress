@@ -89,6 +89,9 @@ abstract class Base {
 	}
 
 	protected function apply( $item ){
+		if ( ! isset( $item->generator ) ){
+			return reset( $item->arguments );
+		}
 		return call_user_func_array( array( $this->faker, $item->generator ), ( isset( $item->arguments ) ? (array) $item->arguments : array() ) );
 	}
 
@@ -104,7 +107,7 @@ abstract class Base {
 			'arguments' => (array) $arguments,
 		);
 
-		return $this;
+		return $this->meta[ $key ];
 	}
 
 	final public function param( $key, $arguments = array() ){
@@ -114,7 +117,7 @@ abstract class Base {
 			'arguments' => (array) $arguments,
 		);
 
-		return $this;
+		return $this->params[ $key ];
 	}
 
 	/**
