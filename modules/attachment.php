@@ -1,5 +1,6 @@
 <?php
 namespace FakerPress\Module;
+use FakerPress;
 
 class Attachment extends Base {
 

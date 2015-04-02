@@ -1,5 +1,9 @@
 <?php
 namespace FakerPress\Module;
+use FakerPress\Admin;
+use FakerPress\Filter;
+use FakerPress\Plugin;
+
 
 class Post extends Base {
 
@@ -70,15 +74,14 @@ class Post extends Base {
 
 		$featured_image_rate = absint( Filter::super( INPUT_POST, 'fakerpress_featured_image_rate', FILTER_SANITIZE_NUMBER_INT ) );
 
-		$module = Module\Post::instance();
-		$attach_module = Module\Attachment::instance();
+		$attach_module = Attachment::instance();
 
 		if ( 0 === $qty_min ){
 			return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
 		}
 
 		if ( ! empty( $qty_min ) && ! empty( $qty_max ) ){
-			$quantity = $module->faker->numberBetween( $qty_min, $qty_max );
+			$quantity = $this->faker->numberBetween( $qty_min, $qty_max );
 		}
 
 		if ( ! empty( $qty_min ) && empty( $qty_max ) ){
@@ -88,25 +91,25 @@ class Post extends Base {
 		$results = (object) array();
 
 		for ( $i = 0; $i < $quantity; $i++ ) {
-			if ( $module->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
+			if ( $this->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
 				$attach_module->param( 'attachment_url', 'placeholdit' );
 				$attach_module->generate();
 				$attachment_id = $attach_module->save();
-				$module->meta( '_thumbnail_id', null, $attachment_id );
+				$this->meta( '_thumbnail_id', null, $attachment_id );
 			}
 
-			$module->param( 'tax_input', $taxonomies );
-			$module->param( 'post_status', 'publish' );
-			$module->param( 'post_date', $min_date, $max_date );
-			$module->param( 'post_parent', $post_parents );
-			$module->param( 'post_content', $post_content_use_html, array( 'elements' => $post_content_html_tags ) );
-			$module->param( 'post_author', $post_author );
-			$module->param( 'post_type', $post_types );
-			$module->param( 'comment_status', $comment_status );
+			$this->param( 'tax_input', $taxonomies );
+			$this->param( 'post_status', 'publish' );
+			$this->param( 'post_date', $min_date, $max_date );
+			$this->param( 'post_parent', $post_parents );
+			$this->param( 'post_content', $post_content_use_html, array( 'elements' => $post_content_html_tags ) );
+			$this->param( 'post_author', $post_author );
+			$this->param( 'post_type', $post_types );
+			$this->param( 'comment_status', $comment_status );
 
-			$module->generate();
+			$this->generate();
 
-			$results->all[] = $module->save();
+			$results->all[] = $this->save();
 		}
 
 		$results->success = array_filter( $results->all, 'absint' );

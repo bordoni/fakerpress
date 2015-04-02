@@ -1,5 +1,8 @@
 <?php
 namespace FakerPress\Module;
+use FakerPress\Admin;
+use FakerPress\Filter;
+use FakerPress\Plugin;
 
 class User extends Base {
 
@@ -64,14 +67,12 @@ class User extends Base {
 
 		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_roles', FILTER_SANITIZE_STRING ) ) ) );
 
-		$module = Module\User::instance();
-
 		if ( 0 === $qty_min ){
 			return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
 		}
 
 		if ( ! empty( $qty_min ) && ! empty( $qty_max ) ){
-			$quantity = $module->faker->numberBetween( $qty_min, $qty_max );
+			$quantity = $this->faker->numberBetween( $qty_min, $qty_max );
 		}
 
 		if ( ! empty( $qty_min ) && empty( $qty_max ) ){
@@ -81,11 +82,11 @@ class User extends Base {
 		$results = (object) array();
 
 		for ( $i = 0; $i < $quantity; $i++ ) {
-			$module->param( 'role', $roles );
-			$module->param( 'description', $description_use_html, array( 'elements' => $description_html_tags ) );
-			$module->generate();
+			$this->param( 'role', $roles );
+			$this->param( 'description', $description_use_html, array( 'elements' => $description_html_tags ) );
+			$this->generate();
 
-			$results->all[] = $module->save();
+			$results->all[] = $this->save();
 		}
 		$results->success = array_filter( $results->all, 'absint' );
 

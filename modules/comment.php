@@ -1,5 +1,9 @@
 <?php
 namespace FakerPress\Module;
+use FakerPress\Admin;
+use FakerPress\Filter;
+use FakerPress\Plugin;
+
 
 class Comment extends Base {
 
@@ -58,14 +62,12 @@ class Comment extends Base {
 
 		$max_date = Filter::super( INPUT_POST, 'fakerpress_max_date' );
 
-		$module = Module\Comment::instance();
-
 		if ( 0 === $qty_min ){
 			return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
 		}
 
 		if ( ! empty( $qty_min ) && ! empty( $qty_max ) ){
-			$quantity = $module->faker->numberBetween( $qty_min, $qty_max );
+			$quantity = $this->faker->numberBetween( $qty_min, $qty_max );
 		}
 
 		if ( ! empty( $qty_min ) && empty( $qty_max ) ){
@@ -75,13 +77,13 @@ class Comment extends Base {
 		$results = (object) array();
 
 		for ( $i = 0; $i < $quantity; $i++ ) {
-			$module->param( 'comment_date', $min_date, $max_date );
-			$module->param( 'comment_content', $comment_content_use_html, array( 'elements' => $comment_content_html_tags ) );
-			$module->param( 'user_id', 0 );
+			$this->param( 'comment_date', $min_date, $max_date );
+			$this->param( 'comment_content', $comment_content_use_html, array( 'elements' => $comment_content_html_tags ) );
+			$this->param( 'user_id', 0 );
 
-			$module->generate();
+			$this->generate();
 
-			$results->all[] = $module->save();
+			$results->all[] = $this->save();
 		}
 		$results->success = array_filter( $results->all, 'absint' );
 

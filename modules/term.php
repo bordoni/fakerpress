@@ -1,5 +1,9 @@
 <?php
 namespace FakerPress\Module;
+use FakerPress\Admin;
+use FakerPress\Filter;
+use FakerPress\Plugin;
+
 
 class Term extends Base {
 
@@ -65,14 +69,12 @@ class Term extends Base {
 
 		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_taxonomies', FILTER_SANITIZE_STRING ) ) ) );
 
-		$module = Module\Term::instance();
-
 		if ( 0 === $qty_min ){
 			return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
 		}
 
 		if ( ! empty( $qty_min ) && ! empty( $qty_max ) ){
-			$quantity = $module->faker->numberBetween( $qty_min, $qty_max );
+			$quantity = $this->faker->numberBetween( $qty_min, $qty_max );
 		}
 
 		if ( ! empty( $qty_min ) && empty( $qty_max ) ){
@@ -82,10 +84,10 @@ class Term extends Base {
 		$results = (object) array();
 
 		for ( $i = 0; $i < $quantity; $i++ ) {
-			$module->param( 'taxonomy', $taxonomies );
-			$module->generate();
+			$this->param( 'taxonomy', $taxonomies );
+			$this->generate();
 
-			$results->all[] = $module->save();
+			$results->all[] = $this->save();
 		}
 
 		$results->success = array_filter( $results->all, 'absint' );
