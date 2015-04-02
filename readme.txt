@@ -71,6 +71,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
+= 0.2.1 =
+* Fix: User generator now working again (sorry about that)
+
 = 0.2.0 =
 * New: Featured Images is now an Option on our Plugin
 * New: Handling of Post Meta, still under the hood but preparation for the next versions
@@ -105,8 +108,6 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * New: Selection of Terms sampling group for Posts ([#13](https://github.com/bordoni/fakerpress/issues/13))
 * Tweak: Select2 usage to improve fields ([#13](https://github.com/bordoni/fakerpress/issues/13))
 * Fix: `admin_title` been overwritten ([#14](https://github.com/bordoni/fakerpress/issues/14))
-
-**Props**: [bordoni](http://profiles.wordpress.org/bordoni/), [luancuba](http://profiles.wordpress.org/luancuba/),
 
 = 0.1.1 =
 * Fatal Error gerated by a missing file Carbon related fixed
