@@ -12,6 +12,12 @@ class Term extends Base {
 	public $provider = '\Faker\Provider\WP_Term';
 
 	public function init() {
+		$this->page = (object) array(
+			'menu' => esc_attr__( 'Terms', 'fakerpress' ),
+			'title' => esc_attr__( 'Generate Terms', 'fakerpress' ),
+			'view' => 'terms',
+		);
+
 		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
 	}
 
@@ -39,5 +45,60 @@ class Term extends Base {
 		update_option( 'fakerpress.module_flag.' . $this->slug, $flagged );
 
 		return $term_object['term_id'];
+	}
+
+	public function _action_parse_request( $view ) {
+		if ( 'post' !== Admin::$request_method || empty( $_POST ) ) {
+			return false;
+		}
+
+		$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
+
+		if ( ! check_admin_referer( $nonce_slug ) ) {
+			return false;
+		}
+		// After this point we are safe to say that we have a good POST request
+
+		$qty_min = absint( Filter::super( INPUT_POST, 'fakerpress_qty_min', FILTER_SANITIZE_NUMBER_INT ) );
+
+		$qty_max = absint( Filter::super( INPUT_POST, 'fakerpress_qty_max', FILTER_SANITIZE_NUMBER_INT ) );
+
+		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_taxonomies', FILTER_SANITIZE_STRING ) ) ) );
+
+		$module = Module\Term::instance();
+
+		if ( 0 === $qty_min ){
+			return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
+		}
+
+		if ( ! empty( $qty_min ) && ! empty( $qty_max ) ){
+			$quantity = $module->faker->numberBetween( $qty_min, $qty_max );
+		}
+
+		if ( ! empty( $qty_min ) && empty( $qty_max ) ){
+			$quantity = $qty_min;
+		}
+
+		$results = (object) array();
+
+		for ( $i = 0; $i < $quantity; $i++ ) {
+			$module->param( 'taxonomy', $taxonomies );
+			$module->generate();
+
+			$results->all[] = $module->save();
+		}
+
+		$results->success = array_filter( $results->all, 'absint' );
+
+		if ( ! empty( $results->success ) ){
+			return Admin::add_message(
+				sprintf(
+					__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),
+					count( $results->all ),
+					_n( 'term', 'terms', count( $results->all ), 'fakerpress' ),
+					implode( ', ', $results->all )
+				)
+			);
+		}
 	}
 }

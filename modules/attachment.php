@@ -12,6 +12,8 @@ class Attachment extends Base {
 
 	public $provider = '\Faker\Provider\WP_Attachment';
 
+	public $page = false;
+
 	public function init() {
 		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
 	}

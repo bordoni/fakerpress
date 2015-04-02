@@ -86,9 +86,10 @@ Class Admin {
 		);
 
 		// From this point on we are doing hooks!
-
+		add_action( 'init', array( $this, '_action_setup_modules' ) );
 		add_action( 'admin_init', array( $this, '_action_set_admin_view' ) );
 		add_action( 'admin_notices', array( $this, '_action_admin_notices' ) );
+		add_action( 'fakerpress.view.request.settings', array( $this, '_action_setup_settings_page' ) );
 
 		// When trying to add a menu, make bigger than the default to avoid conflicting index further on
 		add_action( 'admin_menu', array( $this, '_action_admin_menu' ), 11 );
@@ -252,7 +253,7 @@ Class Admin {
 	 */
 	public function _action_admin_menu() {
 		foreach ( self::$menus as &$menu ) {
-			if ( $menu->priority === 0 ) {
+			if ( 0 === $menu->priority ) {
 				$menu->hook = add_menu_page( $menu->title, $menu->label, $menu->capability, Plugin::$slug, array( &$this, '_include_settings_page' ), 'none' );
 			} else {
 				$menu->hook = add_submenu_page( Plugin::$slug, $menu->title, $menu->label, $menu->capability, Plugin::$slug . '&view=' . $menu->view, array( &$this, '_include_settings_page' ) );
@@ -278,7 +279,7 @@ Class Admin {
 				'updated-nag',
 			);
 
-			if ( $k === 0 ) {
+			if ( 0 === $k ) {
 				$classes[] = 'first';
 			}
 
@@ -415,7 +416,7 @@ Class Admin {
 			return $admin_title;
 		}
 		$pos = strpos( $admin_title, $title );
-		if ( $pos !== false ) {
+		if ( false !== $pos ) {
 			$admin_title = substr_replace( $admin_title, sprintf( apply_filters( 'fakerpress.admin_title_base', __( '%s on FakerPress', 'fakerpress' ) ), self::$view->title ), $pos, strlen( $title ) );
 		}
 		return $admin_title;
@@ -504,5 +505,126 @@ Class Admin {
 		}
 
 		return esc_attr__( 'Version' ) . ': ' . '<a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::version ) ) ) . '">' . esc_attr( Plugin::version ) . '</a>';
+	}
+
+	public function _action_setup_modules(){
+		if ( ! is_admin() ){
+			return;
+		}
+
+		Module\Post::instance();
+		Module\Attachment::instance();
+		Module\Comment::instance();
+		Module\Term::instance();
+		Module\User::instance();
+	}
+
+	public function _action_setup_settings_page( $view ){
+		if ( 'post' !== Admin::$request_method || empty( $_POST ) ) {
+			return false;
+		}
+
+		$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
+
+		if ( ! check_admin_referer( $nonce_slug ) ) {
+			return false;
+		}
+		// After this point we are safe to say that we have a good POST request
+
+		$erase_intention = is_string( Filter::super( INPUT_POST, 'fakerpress_erase_data', FILTER_SANITIZE_STRING ) );
+		$erase_check     = in_array( strtolower( Filter::super( INPUT_POST, 'fakerpress_erase_check', FILTER_SANITIZE_STRING ) ), array( 'let it go', 'let it go!' ) );
+
+		if ( $erase_intention ){
+			if ( ! $erase_check ){
+				return Admin::add_message( __( 'The verification to erase the data has failed, you have to let it go...', 'fakerpress' ), 'error' );
+			}
+
+			$refs = (object) array(
+				'post' => array(),
+				'term' => get_option( 'fakerpress.module_flag.term', array() ),
+				'comment' => array(),
+				'user' => array(),
+			);
+
+			$query_posts = new \WP_Query(
+				array(
+					'post_type' => 'any',
+					'post_status' => 'any',
+					'nopaging' => true,
+					'posts_per_page' => -1,
+					'fields' => 'ids',
+					'meta_query' => array(
+						array(
+							'key' => apply_filters( 'fakerpress.modules_flag', 'fakerpress_flag' ),
+							'value' => true,
+							'type' => 'BINARY',
+						),
+					),
+				)
+			);
+
+			$refs->post = array_map( 'absint' , $query_posts->posts );
+
+			$query_comments = new \WP_Comment_Query;
+			$query_comments = $query_comments->query(
+				array(
+					'meta_query' => array(
+						array(
+							'key' => apply_filters( 'fakerpress.modules_flag', 'fakerpress_flag' ),
+							'value' => true,
+							'type' => 'BINARY',
+						),
+					),
+				)
+			);
+
+			foreach ( $query_comments as $comment ){
+				$refs->comment[] = absint( $comment->comment_ID );
+			}
+
+			$query_users = new \WP_User_Query(
+				array(
+					'fields' => 'ID',
+					'meta_query' => array(
+						array(
+							'key' => apply_filters( 'fakerpress.modules_flag', 'fakerpress_flag' ),
+							'value' => true,
+							'type' => 'BINARY',
+						),
+					),
+				)
+			);
+			$refs->user = array_map( 'absint', $query_users->results );
+
+			foreach ( $refs as $module => $ref ){
+				switch ( $module ) {
+					case 'post':
+						foreach ( $ref as $post_id ){
+							wp_delete_post( $post_id, true );
+						}
+						break;
+					case 'comment':
+						foreach ( $ref as $comment_id ){
+							wp_delete_comment( $comment_id, true );
+						}
+						break;
+					case 'term':
+						foreach ( $ref as $taxonomy => $terms ){
+							foreach ( $terms as $term ){
+								wp_delete_term( $term, $taxonomy );
+							}
+						}
+						delete_option( 'fakerpress.module_flag.term' );
+						break;
+					case 'user':
+						foreach ( $ref as $user_id ){
+							wp_delete_user( $user_id );
+						}
+						break;
+				}
+			}
+
+			return Admin::add_message( __( 'All data is gone for good.', 'fakerpress' ), 'success' );
+		}
 	}
 }

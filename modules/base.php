@@ -10,8 +10,6 @@ abstract class Base {
 
 	public $faker = null;
 
-	public static $instance = null;
-
 	public $params = array();
 
 	public $meta = array();
@@ -22,13 +20,44 @@ abstract class Base {
 
 	public $provider = null;
 
-	final public function __construct() {
-		$reflection = new \ReflectionClass( get_called_class() );
+	public static $_instances = array();
 
-		$this->slug  = strtolower( $reflection->getShortName() );
+	public static $flag = 'fakerpress_flag';
+
+	public $page = true;
+
+	public $slug = null;
+
+	final public static function instance(){
+		$class_name = get_called_class();
+		$reflection = new \ReflectionClass( $class_name );
+		$slug = strtolower( $reflection->getShortName() );
+
+		if ( ! isset( self::$_instances[ $slug ] ) ) {
+			self::$_instances[ $slug ] = new $class_name;
+		}
+
+		self::$_instances[ $slug ]->slug = $slug;
+		self::$_instances[ $slug ]->params = array();
+		self::$_instances[ $slug ]->meta = array();
+		self::$_instances[ $slug ]->meta( self::$flag, null, 1 );
+
+		return self::$_instances[ $slug ];
+	}
+
+	final public function __construct() {
+		$class_name = get_called_class();
+		$reflection = new \ReflectionClass( $class_name );
+		$slug = strtolower( $reflection->getShortName() );
+
+		if ( isset( self::$_instances[ $slug ] ) ){
+			// Don't create a new one
+			return;
+		}
+
 		$this->faker = \Faker\Factory::create();
 
-		$this->flag = apply_filters( 'fakerpress.modules_flag', 'fakerpress_flag' );
+		self::$flag = apply_filters( 'fakerpress.modules_flag', self::$flag );
 
 		$this->provider = (string) apply_filters( "fakerpress.module.{$this->slug}.provider", $this->provider );
 
@@ -56,7 +85,13 @@ abstract class Base {
 		// Execute a method that can be overwritten by the called class
 		$this->init();
 
-		$this->meta( $this->flag, 'randomElement', array( array( 1 ) ) );
+		// Create a meta with the FakerPress flag, always
+		$this->meta( self::$flag, null, 1 );
+
+		if ( $this->page ){
+			add_action( 'admin_menu', array( $this, '_action_setup_admin_page' ) );
+			add_action( 'fakerpress.view.request.term', array( $this, '_action_parse_request' ) );
+		}
 	}
 
 	/**
@@ -88,6 +123,18 @@ abstract class Base {
 		return apply_filters( "fakerpress.module.{$this->slug}.save", false, $params, $metas, $this );
 	}
 
+	public function _action_setup_admin_page(){
+		if ( ! $this->page ){
+			return;
+		}
+
+		\FakerPress\Admin::add_menu( $this->page->view, $this->page->title, $this->page->menu, 'manage_options', 10 );
+	}
+
+	public function _action_parse_request( $view ){
+		return;
+	}
+
 	protected function apply( $item ){
 		if ( ! isset( $item->generator ) ){
 			return reset( $item->arguments );
@@ -95,11 +142,15 @@ abstract class Base {
 		return call_user_func_array( array( $this->faker, $item->generator ), ( isset( $item->arguments ) ? (array) $item->arguments : array() ) );
 	}
 
-	final public function meta( $key, $generator, $arguments = array() ){
+	final public function meta( $key, $generator = null ){
 		// If there is no meta just leave
 		if ( ! is_array( $this->meta ) ){
-			return $this;
+			return false;
 		}
+		$arguments = func_get_args();
+		// Remove $key and $generator
+		array_shift( $arguments );
+		array_shift( $arguments );
 
 		$this->meta[ $key ] = (object) array(
 			'key' => $key,
@@ -111,6 +162,10 @@ abstract class Base {
 	}
 
 	final public function param( $key, $arguments = array() ){
+		$arguments = func_get_args();
+		// Remove $key
+		array_shift( $arguments );
+
 		$this->params[ $key ] = (object) array(
 			'key' => $key,
 			'generator' => $key,
@@ -124,7 +179,7 @@ abstract class Base {
 	 * Use this method to generate all the needed data
 	 * @return array An array of the data generated
 	 */
-	public function generate( $args = array() ) {
+	final public function generate( $args = array() ) {
 		foreach ( $this->faked as $name ) {
 			if ( ! isset( $this->params[ $name ] ) ){
 				$this->params[ $name ] = (object) array(

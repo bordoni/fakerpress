@@ -15,6 +15,49 @@ class WP_Post extends Base {
 		return $title;
 	}
 
+	public function post_type( $haystack = array() ){
+		if ( empty( $haystack ) ){
+			// Later on we will remove the Attachment rule
+			$haystack = array_diff( get_post_types( array( 'public' => true, 'show_ui' => true ), 'names' ), array( 'attachment' ) );
+		}
+
+		return $this->generator->randomElement( (array) $haystack );
+	}
+
+	public function post_status( $haystack = array( 'draft', 'publish', 'private' ) ){
+		if ( empty( $haystack ) ){
+			$haystack = array_values( get_post_stati() );
+		}
+
+		return $this->generator->randomElement( (array) $haystack );
+	}
+
+	public function post_date( $min = 'now', $max = null ){
+		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+		try {
+			$min = new \Carbon\Carbon( $min );
+		} catch (\Exception $e) {
+			return null;
+		}
+
+		if ( ! is_null( $max ) ){
+			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+			try {
+				$max = new \Carbon\Carbon( $max );
+			} catch (\Exception $e) {
+				return null;
+			}
+		}
+
+		if ( ! is_null( $max ) ) {
+			$selected = $this->generator->dateTimeBetween( (string) $min, (string) $max )->format( 'Y-m-d H:i:s' );
+		} else {
+			$selected = (string) $min;
+		}
+
+		return $selected;
+	}
+
 	public function post_content( $html = true, $args = array() ) {
 		if ( true === $html ){
 			$content = implode( "\n", $this->generator->html_elements( $args ) );
@@ -23,39 +66,6 @@ class WP_Post extends Base {
 		}
 
 		return $content;
-	}
-
-	public function tax_input( $taxonomies = null, $range = array( 1, 6 ) ) {
-		$output = array();
-
-		if ( is_null( $taxonomies ) ){
-			return $output;
-		}
-
-		foreach ( $taxonomies as $taxonomy ){
-			$terms = array_map( 'absint', get_terms( $taxonomy, array( 'fields' => 'ids', 'hide_empty' => false ) ) );
-
-			if ( is_array( $range ) ){
-				$qty = call_user_func_array( array( $this->generator, 'numberBetween' ), $range );
-			} else {
-				$qty = $range;
-			}
-
-			$qty = min( count( $terms ), $qty );
-
-			$output[ $taxonomy ] = $this->generator->randomElements( $terms , $qty );
-		}
-
-		return $output;
-	}
-
-	public function post_type( $haystack = array() ){
-		if ( empty( $haystack ) ){
-			// Later on we will remove the Attachment rule
-			$haystack = array_diff( get_post_types( array( 'public' => true, 'show_ui' => true ), 'names' ), array( 'attachment' ) );
-		}
-
-		return $this->generator->randomElement( (array) $haystack );
 	}
 
 	public function post_author( $haystack = array() ){
@@ -67,14 +77,6 @@ class WP_Post extends Base {
 					'fields' => 'ID', // When you pass only one field it returns an array of the values
 				)
 			);
-		}
-
-		return $this->generator->randomElement( (array) $haystack );
-	}
-
-	public function post_status( $haystack = array() ){
-		if ( empty( $haystack ) ){
-			$haystack = array_values( get_post_stati() );
 		}
 
 		return $this->generator->randomElement( (array) $haystack );
@@ -116,29 +118,29 @@ class WP_Post extends Base {
 		return call_user_func_array( $generator, $args );
 	}
 
-	public function post_date( $min = 'now', $max = null ){
-		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
-		try {
-			$min = new \Carbon\Carbon( $min );
-		} catch (\Exception $e) {
-			return null;
+	public function tax_input( $taxonomies = null, $range = array( 1, 6 ) ) {
+		$output = array();
+
+		if ( is_null( $taxonomies ) ){
+			return $output;
 		}
 
-		if ( ! is_null( $max ) ){
-			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
-			try {
-				$max = new \Carbon\Carbon( $max );
-			} catch (\Exception $e) {
-				return null;
+		foreach ( $taxonomies as $taxonomy ){
+			$terms = array_map( 'absint', get_terms( $taxonomy, array( 'fields' => 'ids', 'hide_empty' => false ) ) );
+
+			if ( is_array( $range ) ){
+				$qty = call_user_func_array( array( $this->generator, 'numberBetween' ), $range );
+			} else {
+				$qty = $range;
 			}
+
+			$qty = min( count( $terms ), $qty );
+
+			$output[ $taxonomy ] = $this->generator->randomElements( $terms , $qty );
 		}
 
-		if ( ! is_null( $max ) ) {
-			$selected = $this->generator->dateTimeBetween( (string) $min, (string) $max )->format( 'Y-m-d H:i:s' );
-		} else {
-			$selected = (string) $min;
-		}
-
-		return $selected;
+		return $output;
 	}
+
+
 }
