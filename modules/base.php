@@ -90,7 +90,7 @@ abstract class Base {
 
 		if ( $this->page ){
 			add_action( 'admin_menu', array( $this, '_action_setup_admin_page' ) );
-			add_action( 'fakerpress.view.request.' . $this->slug, array( $this, '_action_parse_request' ) );
+			add_action( 'fakerpress.view.request.' . $this->page->view, array( $this, '_action_parse_request' ) );
 		}
 	}
 
