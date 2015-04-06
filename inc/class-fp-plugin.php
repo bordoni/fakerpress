@@ -1,6 +1,11 @@
 <?php
 namespace FakerPress;
 
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ){
+	die;
+}
+
 class Plugin {
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.

@@ -1,6 +1,11 @@
 <?php
 namespace FakerPress;
 
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ){
+	die;
+}
+
 use \Carbon\Carbon;
 
 Class Dates {

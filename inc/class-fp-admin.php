@@ -1,6 +1,11 @@
 <?php
 namespace FakerPress;
 
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ){
+	die;
+}
+
 Class Admin {
 	/**
 	 * Variable holding the submenus objects
@@ -628,3 +633,5 @@ Class Admin {
 		}
 	}
 }
+
+return new Admin;

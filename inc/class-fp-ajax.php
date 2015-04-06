@@ -1,6 +1,11 @@
 <?php
 namespace FakerPress;
 
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ){
+	die;
+}
+
 class Ajax {
 
 	public function __construct(){
@@ -160,3 +165,5 @@ class Ajax {
 	}
 
 }
+
+return new Ajax;

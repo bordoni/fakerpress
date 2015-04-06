@@ -1,8 +1,13 @@
 <?php
+namespace FakerPress;
+
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ){
+	die;
+}
 /**
  * @see https://github.com/x-team/wp-stream		We forked this idea from X-Team's Stream Plugin
  */
-namespace FakerPress;
 
 class Filter {
 
