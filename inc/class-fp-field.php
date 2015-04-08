@@ -26,6 +26,12 @@ class Field {
 	public $name;
 
 	/**
+	 * the field's name (also known as it's label)
+	 * @var string
+	 */
+	public $type;
+
+	/**
 	 * the field's attributes
 	 * @var array
 	 */
@@ -41,14 +47,49 @@ class Field {
 	 * field defaults (static)
 	 * @var array
 	 */
-	public $defaults;
+	public static $defaults = array(
+		'type' => 'html',
+		'name' => null,
+		'attributes' => array(),
+		'class' => null,
+		'label' => null,
+		'tooltip' => null,
+		'size' => 'medium',
+		'html' => null,
+		'raw' => false,
+		'error' => false,
+		'value' => null,
+		'options' => null,
+		'conditional' => true,
+		'display_callback' => null,
+		'if_empty' => null,
+		'can_be_empty' => false,
+		'clear_after' => true,
+	);
 
 	/**
 	 * valid field types (static)
 	 * @var array
 	 */
-	public $valid_field_types;
+	public static $valid_field_types = array(
+		'heading',
+		'html',
+		'text',
+		'textarea',
+		'wysiwyg',
+		'radio',
+		'boolean',
+		'checkbox',
+		'dropdown',
+	);
 
+	public static $sanitize = array(
+		'type' => 'esc_attr',
+		'name' => 'esc_attr',
+		'class' => 'sanitize_html_class',
+		'label' => 'wp_kses_post',
+		'tooltip' => 'wp_kses_post',
+	);
 
 	/**
 	 * Class constructor
@@ -59,118 +100,25 @@ class Field {
 	 *
 	 * @return void
 	 */
-	public function __construct( $id, $field, $value = null ) {
-
-		// setup the defaults
-		$this->defaults = array(
-			'type'             => 'html',
-			'name'             => $id,
-			'attributes'       => array(),
-			'class'            => null,
-			'label'            => null,
-			'tooltip'          => null,
-			'size'             => 'medium',
-			'html'             => null,
-			'error'            => false,
-			'value'            => $value,
-			'options'          => null,
-			'conditional'      => true,
-			'display_callback' => null,
-			'if_empty'         => null,
-			'can_be_empty'     => false,
-			'clear_after'      => true,
-		);
-
+	public function __construct( $id, $args, $value = null ) {
 		// a list of valid field types, to prevent screwy behaviour
-		$this->valid_field_types = array(
-			'heading',
-			'html',
-			'text',
-			'textarea',
-			'wysiwyg',
-			'radio',
-			'checkbox_bool',
-			'checkbox_list',
-			'dropdown',
-			'dropdown_chosen',
-			'dropdown_select2',
-			'license_key',
-		);
-
-		$this->valid_field_types = apply_filters( 'tribe_valid_field_types', $this->valid_field_types );
+		self::$valid_types = apply_filters( 'fakerpress/fields-valid_types', self::valid_field_types );
 
 		// parse args with defaults and extract them
-		$args = wp_parse_args( $field, $this->defaults );
+		$this->args = (object) wp_parse_args( $args, self::$defaults );
 
 		// sanitize the values just to be safe
-		$id         = esc_attr( $id );
-		$type       = esc_attr( $args['type'] );
-		$name       = esc_attr( $args['name'] );
-		$class      = sanitize_html_class( $args['class'] );
-		$label      = wp_kses(
-			$args['label'], array(
-				'a'      => array( 'href' => array(), 'title' => array() ),
-				'br'     => array(),
-				'em'     => array(),
-				'strong' => array(),
-				'b'      => array(),
-				'i'      => array(),
-				'u'      => array(),
-				'img'    => array(
-					'title' => array(),
-					'src'   => array(),
-					'alt'   => array()
-				)
-			)
-		);
-		$tooltip    = wp_kses(
-			$args['tooltip'], array(
-				'a'      => array( 'href' => array(), 'title' => array() ),
-				'br'     => array(),
-				'em'     => array(),
-				'strong' => array(),
-				'b'      => array(),
-				'i'      => array(),
-				'u'      => array(),
-				'img'    => array(
-					'title' => array(),
-					'src'   => array(),
-					'alt'   => array()
-				),
-				'code'   => array( 'span' => array() ),
-				'span'   => array()
-			)
-		);
-		$attributes = $args['attributes'];
-		if ( is_array( $attributes ) ) {
-			foreach ( $attributes as $key => &$val ) {
-				$val = esc_attr( $val );
-			}
+		foreach ( self::$sanitize as $key => $method ) {
+			$this->args->{$key} = call_user_func_array( $method, array( $this->args->{$key} ) );
 		}
-		if ( is_array( $args['options'] ) ) {
-			$options = array();
-			foreach ( $args['options'] as $key => $val ) {
-				$options[ $key ] = $val;
-			}
-		} else {
-			$options = $args['options'];
-		}
-		$size             = esc_attr( $args['size'] );
-		$html             = $args['html'];
-		$error            = (bool) $args['error'];
-		$value            = is_array( $value ) ? array_map( 'esc_attr', $value ) : esc_attr( $value );
-		$conditional      = $args['conditional'];
-		$display_callback = $args['display_callback'];
-		$if_empty         = (bool) $args['if_empty'];
-		$can_be_empty     = (bool) $args['can_be_empty'];
-		$clear_after      = (bool) $args['clear_after'];
 
 		// set the ID
-		$this->id = apply_filters( 'tribe_field_id', $id );
+		$this->id = apply_filters( 'fakerpress/field-id', esc_attr( $id ) );
+		$this->type = apply_filters( 'fakerpress/field-type', esc_attr( $this->args->type ) );
+		$this->name = apply_filters( 'fakerpress/field-name', ( ! empty( $this->args->name ) ? esc_attr( $this->args->name ) : esc_attr( $id ) ) );
 
-		// set each instance variable and filter
-		foreach ( $this->defaults as $key => $value ) {
-			$this->{$key} = apply_filters( 'tribe_field_' . $key, $$key, $this->id );
+		if ( in_array( $this->type, self::$valid_types ) ){
+			return;
 		}
 
 		// epicness
@@ -186,24 +134,25 @@ class Field {
 	 * @return void
 	 */
 	public function output() {
-		if ( $this->conditional ) {
+		if ( ! $this->conditional ) {
+			return false;
+		}
 
-			if ( $this->display_callback && is_callable( $this->display_callback ) ) {
+		if ( $this->args->callback && is_callable( $this->args->callback ) ) {
 
-				// if there's a callback, run it
-				call_user_func( $this->display_callback );
+			// if there's a callback, run it
+			call_user_func( $this->args->callback );
 
-			} elseif ( in_array( $this->type, $this->valid_field_types ) ) {
+		} elseif ( in_array( $this->type, $this->valid_field_types ) ) {
 
-				// the specified type exists, run the appropriate method
-				$field = call_user_func( array( $this, $this->type ) );
+			// the specified type exists, run the appropriate method
+			$field = call_user_func( array( $this, $this->args->type ) );
 
-				// filter the output
-				$field = apply_filters( 'tribe_field_output_' . $this->type, $field, $this->id, $this );
-				echo wp_kses_post( apply_filters( 'tribe_field_output_' . $this->type . '_' . $this->id, $field, $this->id, $this ) );
-			} else {
-				return false;
-			}
+			// filter the output
+			$field = apply_filters( 'fakerpress/field-output-' . $this->type, $field, $this->id, $this );
+			echo wp_kses_post( apply_filters( 'fakerpress/field-output-' . $this->type . '_' . $this->id, $field, $this->id, $this ) );
+		} else {
+			return false;
 		}
 	}
 
@@ -340,7 +289,7 @@ class Field {
 	 * @return string the field
 	 */
 	public function html() {
-		$field = $this->do_fieldLabel();
+		$field = $this->label();
 		$field .= $this->html;
 
 		return $field;
@@ -420,7 +369,7 @@ class Field {
 			foreach ( $this->options as $option_id => $title ) {
 				$field .= '<label title="' . esc_attr( $title ) . '">';
 				$field .= '<input type="radio"';
-				$field .= $this->do_fieldName();
+				$field .= $this->get_name();
 				$field .= ' value="' . esc_attr( $option_id ) . '" ' . checked( $this->value, $option_id, false ) . '/>';
 				$field .= $title;
 				$field .= '</label>';
@@ -439,11 +388,10 @@ class Field {
 	 *
 	 * @return string the field
 	 */
-	public function checkbox_list() {
-		$field = $this->do_fieldStart();
-		$field .= $this->do_fieldLabel();
-		$field .= $this->do_fieldDivStart();
-
+	public function checkbox() {
+		$field = $this->start();
+		$field .= $this->label();
+		$field .= $this->wrap_start();
 		if ( ! is_array( $this->value ) ) {
 			if ( ! empty( $this->value ) ) {
 				$this->value = array( $this->value );
@@ -456,7 +404,7 @@ class Field {
 			foreach ( $this->options as $option_id => $title ) {
 				$field .= '<label title="' . esc_attr( $title ) . '">';
 				$field .= '<input type="checkbox"';
-				$field .= $this->do_fieldName( true );
+				$field .= $this->get_name( true );
 				$field .= ' value="' . esc_attr( $option_id ) . '" ' . checked( in_array( $option_id, $this->value ), true, false ) . '/>';
 				$field .= $title;
 				$field .= '</label>';
@@ -464,8 +412,8 @@ class Field {
 		} else {
 			$field .= '<span class="tribe-error">' . __( 'No checkbox options specified', 'tribe-events-calendar' ) . '</span>';
 		}
-		$field .= $this->do_fieldDivEnd();
-		$field .= $this->do_fieldEnd();
+		$field .= $this->wrap_end();
+		$field .= $this->end();
 
 		return $field;
 	}
@@ -475,18 +423,18 @@ class Field {
 	 *
 	 * @return string the field
 	 */
-	public function checkbox_bool() {
-		$field = $this->do_fieldStart();
-		$field .= $this->do_fieldLabel();
-		$field .= $this->do_fieldDivStart();
+	public function boolean() {
+		$field = $this->start();
+		$field .= $this->label();
+		$field .= $this->wrap_start();
 		$field .= '<input type="checkbox"';
-		$field .= $this->do_fieldName();
+		$field .= $this->get_name();
 		$field .= ' value="1" ' . checked( $this->value, true, false );
-		$field .= $this->do_fieldAttributes();
+		$field .= $this->attributes();
 		$field .= '/>';
-		$field .= $this->doScreenReaderLabel();
-		$field .= $this->do_fieldDivEnd();
-		$field .= $this->do_fieldEnd();
+		$field .= $this->screenreader();
+		$field .= $this->wrap_end();
+		$field .= $this->end();
 
 		return $field;
 	}
@@ -497,12 +445,12 @@ class Field {
 	 * @return string the field
 	 */
 	public function dropdown() {
-		$field = $this->do_fieldStart();
-		$field .= $this->do_fieldLabel();
-		$field .= $this->do_fieldDivStart();
+		$field = $this->start();
+		$field .= $this->label();
+		$field .= $this->wrap_start();
 		if ( is_array( $this->options ) && ! empty( $this->options ) ) {
 			$field .= '<select';
-			$field .= $this->do_fieldName();
+			$field .= $this->get_name();
 			$field .= '>';
 			foreach ( $this->options as $option_id => $title ) {
 				$field .= '<option value="' . esc_attr( $option_id ) . '"';
@@ -514,40 +462,14 @@ class Field {
 				$field .= '>' . esc_html( $title ) . '</option>';
 			}
 			$field .= '</select>';
-			$field .= $this->doScreenReaderLabel();
+			$field .= $this->screenreader();
 		} elseif ( $this->if_empty ) {
 			$field .= '<span class="empty-field">' . (string) $this->if_empty . '</span>';
 		} else {
 			$field .= '<span class="tribe-error">' . __( 'No select options specified', 'tribe-events-calendar' ) . '</span>';
 		}
-		$field .= $this->do_fieldDivEnd();
-		$field .= $this->do_fieldEnd();
-
-		return $field;
-	}
-
-	/**
-	 * generate a chosen dropdown field - the same as the
-	 * regular dropdown but wrapped so it can have the
-	 * right css class applied to it
-	 *
-	 * @return string the field
-	 */
-	public function dropdown_chosen() {
-		$field = $this->dropdown();
-
-		return $field;
-	}
-
-	/**
-	 * generate a select2 dropdown field - the same as the
-	 * regular dropdown but wrapped so it can have the
-	 * right css class applied to it
-	 *
-	 * @return string the field
-	 */
-	public function dropdown_select2() {
-		$field = $this->dropdown();
+		$field .= $this->wrap_end();
+		$field .= $this->end();
 
 		return $field;
 	}
