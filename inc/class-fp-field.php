@@ -51,27 +51,27 @@ class Field {
 		'type' => 'html',
 		'name' => null,
 		'attributes' => array(),
-		'class' => null,
+		'actions' => array(),
 		'label' => null,
 		'tooltip' => null,
 		'size' => 'medium',
 		'html' => null,
 		'raw' => false,
-		'error' => false,
 		'value' => null,
 		'options' => null,
 		'conditional' => true,
-		'display_callback' => null,
+		'callback' => null,
 		'if_empty' => null,
 		'can_be_empty' => false,
-		'clear_after' => true,
+		'structure' => 'table',
+		'after' => null,
 	);
 
 	/**
 	 * valid field types (static)
 	 * @var array
 	 */
-	public static $valid_field_types = array(
+	public static $valid_types = array(
 		'heading',
 		'html',
 		'text',
@@ -86,7 +86,6 @@ class Field {
 	public static $sanitize = array(
 		'type' => 'esc_attr',
 		'name' => 'esc_attr',
-		'class' => 'sanitize_html_class',
 		'label' => 'wp_kses_post',
 		'tooltip' => 'wp_kses_post',
 	);
@@ -100,9 +99,9 @@ class Field {
 	 *
 	 * @return void
 	 */
-	public function __construct( $id, $args, $value = null ) {
+	public function __construct( $id, $args ) {
 		// a list of valid field types, to prevent screwy behaviour
-		self::$valid_types = apply_filters( 'fakerpress/fields-valid_types', self::valid_field_types );
+		self::$valid_types = apply_filters( 'fakerpress/fields-valid_types', self::$valid_types );
 
 		// parse args with defaults and extract them
 		$this->args = (object) wp_parse_args( $args, self::$defaults );
@@ -113,17 +112,20 @@ class Field {
 		}
 
 		// set the ID
-		$this->id = apply_filters( 'fakerpress/field-id', esc_attr( $id ) );
-		$this->type = apply_filters( 'fakerpress/field-type', esc_attr( $this->args->type ) );
-		$this->name = apply_filters( 'fakerpress/field-name', ( ! empty( $this->args->name ) ? esc_attr( $this->args->name ) : esc_attr( $id ) ) );
+		$this->id = apply_filters( 'fakerpress/field-id', esc_attr( $id ), $this );
+		$this->type = apply_filters( 'fakerpress/field-type', esc_attr( $this->args->type ), $this );
+		$this->name = apply_filters( 'fakerpress/field-name', ( ! empty( $this->args->name ) ? esc_attr( $this->args->name ) : esc_attr( $id ) ), $this );
+		$this->value = $this->args->value;
+		$this->attributes = $this->args->attributes;
 
-		if ( in_array( $this->type, self::$valid_types ) ){
+		unset( $this->args->name, $this->args->type, $this->args->value, $this->args->attributes );
+
+		// Default Error Structure
+		$this->error = false;
+
+		if ( ! in_array( $this->type, self::$valid_types ) ){
 			return;
 		}
-
-		// epicness
-		$this->output();
-
 	}
 
 	/**
@@ -133,24 +135,27 @@ class Field {
 	 *
 	 * @return void
 	 */
-	public function output() {
-		if ( ! $this->conditional ) {
+	public function output( $print = false ) {
+		if ( ! $this->args->conditional ) {
 			return false;
 		}
 
 		if ( $this->args->callback && is_callable( $this->args->callback ) ) {
-
 			// if there's a callback, run it
 			call_user_func( $this->args->callback );
-
-		} elseif ( in_array( $this->type, $this->valid_field_types ) ) {
-
+		} elseif ( in_array( $this->type, self::$valid_types ) ) {
 			// the specified type exists, run the appropriate method
-			$field = call_user_func( array( $this, $this->args->type ) );
+			$field = call_user_func_array( array( $this, $this->type ), array( $this->name, $this->value, $this->attributes ) );
 
 			// filter the output
-			$field = apply_filters( 'fakerpress/field-output-' . $this->type, $field, $this->id, $this );
-			echo wp_kses_post( apply_filters( 'fakerpress/field-output-' . $this->type . '_' . $this->id, $field, $this->id, $this ) );
+			$field = apply_filters( 'fakerpress/field-output-' . $this->type, $field, $this );
+			$field = apply_filters( 'fakerpress/field-output-' . $this->type . '_' . $this->id, $field, $this );
+
+			if ( $print ){
+				echo balanceTags( $field );
+			} else {
+				return $field;
+			}
 		} else {
 			return false;
 		}
@@ -162,14 +167,23 @@ class Field {
 	 * @return string the field start
 	 */
 	public function start() {
-		$return = '<fieldset id="tribe-field-' . $this->id . '"';
-		$return .= ' class="tribe-field tribe-field-' . $this->type;
-		$return .= ( $this->error ) ? ' tribe-error' : '';
-		$return .= ( $this->size ) ? ' tribe-size-' . $this->size : '';
-		$return .= ( $this->class ) ? ' ' . $this->class . '"' : '"';
-		$return .= '>';
+		$classes = array( 'fp-field', 'fp-field-' . $this->type );
 
-		return apply_filters( 'fakerpress/field-start', $return, $this->id, $this->type, $this->error, $this->class, $this );
+		if ( ! empty( $this->args->fieldset ) && is_array( $this->args->fieldset ) ){
+			$classes += array_map( '', $this->args->fieldset );
+		}
+
+		if ( ! empty( $this->args->size ) ){
+			$classes[] = 'fp-size-' . $this->args->size;
+		}
+
+		if ( is_wp_error( $this->error ) ){
+			$classes[] = 'fp-error';
+		}
+
+		$return = '<tr id="' . $this->id( true ) . '" class="' . implode( ' ', $classes ) . '">';
+
+		return apply_filters( 'fakerpress/field-start', $return, $this );
 	}
 
 	/**
@@ -178,10 +192,9 @@ class Field {
 	 * @return string the field end
 	 */
 	public function end() {
-		$return = '</fieldset>';
-		$return .= ( $this->clear_after ) ? '<div class="clear"></div>' : '';
+		$return = '</tr>';
 
-		return apply_filters( 'fakerpress/field-end', $return, $this->id, $this );
+		return apply_filters( 'fakerpress/field-end', $return, $this );
 	}
 
 	/**
@@ -190,12 +203,24 @@ class Field {
 	 * @return string the field label
 	 */
 	public function label() {
-		$return = '';
-		if ( $this->label ) {
-			$return = '<legend class="tribe-field-label">' . $this->label . '</legend>';
+		$html = '<th scope="row">';
+		$html .= $this->tooltip();
+
+		if ( isset( $this->args->label ) && false !== $this->args->label ) {
+			$html .= '<label class="fp-field-label" for="' . $this->id() . '">' . $this->args->label . '</label>';
 		}
 
-		return apply_filters( 'fakerpress/field-label', $return, $this->label, $this );
+		$html .= '</th>';
+
+		return apply_filters( 'fakerpress/field-label', $html, $this );
+	}
+
+	public function name(){
+		return 'fakerpress[' . $this->name . ']';
+	}
+
+	public function id( $container = false ){
+		return 'fakerpress-field-' . $this->id . ( $container ? '-container' : '' );
 	}
 
 	/**
@@ -204,9 +229,19 @@ class Field {
 	 * @return string the field div start
 	 */
 	public function wrap_start() {
-		$return = '<div class="tribe-field-wrap">';
+		$html = '<td>';
+		$html .= '<fieldset class="fp-field-wrap">';
 
-		return apply_filters( 'fakerpress/field-wrap_start', $return, $this );
+		return apply_filters( 'fakerpress/field-wrap_start', $html, $this );
+	}
+
+	public function actions(){
+		$html = '';
+		foreach ( $this->args->actions as $action => $label ) {
+			$html .= get_submit_button( $label, 'primary', 'fakerpress[actions][' . $action . ']', false );
+		}
+
+		return apply_filters( 'fakerpress/field-actions', $html, $this );
 	}
 
 	/**
@@ -215,10 +250,21 @@ class Field {
 	 * @return string the field div end
 	 */
 	public function wrap_end() {
-		$return = $this->tooltip();
-		$return .= '</div>';
+		$html = $this->actions();
+		$html .= '</fieldset>';
+		$html .= $this->description();
+		$html .= '</td>';
 
-		return apply_filters( 'fakerpress/field-wrap_end', $return, $this );
+		return apply_filters( 'fakerpress/field-wrap_end', $html, $this );
+	}
+
+	public function description(){
+		$html = '';
+		if ( ! empty( $this->args->description ) ) {
+			$html .= '<p class="fp-field-description">' . $this->args->description . '</p>';;
+		}
+
+		return apply_filters( 'fakerpress/field-description', $html, $this );
 	}
 
 	/**
@@ -227,12 +273,12 @@ class Field {
 	 * @return string the field tooltip
 	 */
 	public function tooltip() {
-		$return = '';
-		if ( $this->tooltip ) {
-			$return = '<p class="tooltip description">' . $this->tooltip . '</p>';
+		$html = '';
+		if ( ! empty( $this->args->tooltip ) ) {
+			$html = '<p class="tooltip description">' . $this->args->tooltip . '</p>';
 		}
 
-		return apply_filters( 'fakerpress/field-tooltip', $return, $this->tooltip, $this );
+		return apply_filters( 'fakerpress/field-tooltip', $html, $this );
 	}
 
 	/**
@@ -241,12 +287,12 @@ class Field {
 	 * @return string the screen reader label
 	 */
 	public function screenreader() {
-		$return = '';
-		if ( $this->tooltip ) {
-			$return = '<label class="screen-reader-text">' . $this->tooltip . '</label>';
+		$html = '';
+		if ( ! empty( $this->args->tooltip ) ) {
+			$html = '<label class="screen-reader-text">' . $this->args->tooltip . '</label>';
 		}
 
-		return apply_filters( 'fakerpress/field-screenreader', $return, $this->tooltip, $this );
+		return apply_filters( 'fakerpress/field-screenreader', $html, $this );
 	}
 
 	/**
@@ -255,21 +301,17 @@ class Field {
 	 * @return string
 	 **/
 	public function attributes() {
-		$return = '';
+		$html = '';
+
+		$this->attributes['id'] = $this->id();
+		$this->attributes['name'] = $this->name();
 		if ( ! empty( $this->attributes ) ) {
 			foreach ( $this->attributes as $key => $value ) {
-				if ( 'name' === $key ){
-					if ( $this->multiple ){
-						$value .= '[]';
-					}
-					$return .= ' ' . $key . '="' . $value . '"';
-				} else {
-					$return .= ' ' . $key . '="' . $value . '"';
-				}
+				$html .= ' ' . $key . '="' . $value . '"';
 			}
 		}
 
-		return apply_filters( 'fakerpress/field-attributes', $return, $this->name, $this );
+		return apply_filters( 'fakerpress/field-attributes', $html, $this->name, $this );
 	}
 
 	/**
@@ -301,7 +343,12 @@ class Field {
 	 *
 	 * @return string the field
 	 */
-	public function text() {
+	public function text( $name, $value = null, $attributes ) {
+		$defaults = array(
+			'type' => 'text',
+		);
+		$this->attributes = wp_parse_args( $this->attributes, $defaults );
+
 		$field = $this->start();
 		$field .= $this->label();
 		$field .= $this->wrap_start();

@@ -1,0 +1,92 @@
+/* = Settings Screen
+=============================================*/
+.__fakerpress {
+
+}
+
+.__fakerpress .fp-field-wrap {
+
+}
+
+.__fakerpress .fp-field-description {
+	margin: 4px 1px 5px;
+	color: #666;
+	font-style: italic;
+}
+
+.__fakerpress .fp-field-radio label,
+.__fakerpress .fp-field-checkbox_list label {
+	display: block;
+	margin: 5px 0;
+}
+
+.__fakerpress .fp-field-radio label input,
+.__fakerpress .fp-field-checkbox_list label input {
+	margin-right: 5px;
+}
+
+.__fakerpress .fp-field-wrap h3 {
+	margin-bottom: 10px;
+	background-color: #f9f9f9;
+	padding: 6px 0 6px 12px;
+}
+
+.__fakerpress .fp-field-wrap h3 ~ h3 {
+	margin-top: 2.25em;
+}
+
+.__fakerpress .fp-field-wrap h3 + p {
+	margin: 0 0 10px;
+	padding-left: 12px;
+}
+
+.__fakerpress .fp-field-textarea.fp-size-small textarea {
+	width: 180px;
+	height: 60px;
+}
+
+.__fakerpress .fp-field-textarea.fp-size-medium textarea {
+	width: 300px;
+	height: 80px;
+}
+
+.__fakerpress .fp-field-textarea.fp-size-large textarea {
+	width: 450px;
+	height: 120px;
+}
+
+.__fakerpress .fp-size-small input[type="text"] {
+	width: 10em;
+}
+
+.__fakerpress .fp-size-medium input[type="text"] {
+	width: 25em
+}
+
+.__fakerpress .fp-size-large input[type="text"] {
+	width: 35em;
+}
+
+.__fakerpress .fp-field-dropdown.fp-size-small select {
+	width: 100px;
+}
+
+.__fakerpress .fp-field-dropdown.fp-size-medium select {
+	width: 300px;
+}
+
+.__fakerpress .fp-field-dropdown.fp-size-large select {
+	width: 450px;
+}
+
+.__fakerpress .fp-field-dropdown_chosen.fp-size-small select {
+	width: 100px;
+}
+
+.__fakerpress .fp-field-dropdown_chosen.fp-size-medium select {
+	width: 200px;
+}
+
+.__fakerpress .fp-field-dropdown_chosen.fp-size-large select {
+	width: 300px;
+}

@@ -27,7 +27,7 @@ require_once Plugin::path( 'inc/class-fp-dates.php' );
 require_once Plugin::path( 'inc/class-fp-filter.php' );
 
 // Require our Field Class
-// require_once Plugin::path( 'inc/class-fp-field.php' );
+require_once Plugin::path( 'inc/class-fp-field.php' );
 
 // Inluding needed providers
 require_once Plugin::path( 'providers/html.php' );
