@@ -36,6 +36,7 @@ $fields[] = new Field(
 		'label' => __( 'Post Type', 'fakerpress' ),
 		'description' => __( 'Sampling group of Post Types', 'fakerpress' ),
 		'attributes' => array(
+			'value' => 'post',
 			'data-possibilities' => $_json_post_types_output,
 		),
 	)
@@ -63,6 +64,7 @@ $fields[] = new Field(
 		'label' => __( 'Comments Status', 'fakerpress' ),
 		'description' => __( 'Sampling group of options for the comment status of the posts', 'fakerpress' ),
 		'attributes' => array(
+			'value' => 'open',
 			'data-possibilities' => array(
 				array(
 					'id' => 'open',
@@ -121,6 +123,7 @@ $fields[] = new Field(
 		'label' => __( 'Taxonomies', 'fakerpress' ),
 		'description' => __( 'From which taxonomies the related terms should be selected', 'fakerpress' ),
 		'attributes' => array(
+			'value' => 'post_tag, category',
 			'data-possibilities' => $_json_taxonomies_output,
 		),
 	)
