@@ -2,7 +2,7 @@
 ( function( $, _ ){
 	'use strict';
 	$(document).ready(function(){
-		$( '.field-select2-simple' ).each(function(){
+		$( '.fp-field-select2-mutiple' ).each(function(){
 			var $select = $(this);
 
 			$select.select2({
@@ -32,10 +32,13 @@
 			$( this ).data( 'value', data ).attr( 'data-value', JSON.stringify( data ) );
 		} );
 
-		$( '.field-date-selection' ).each(function(){
+		$( '.fp-field-select2' ).each(function(){
 			var $select = $(this);
-			$select.select2({ width: 200 });
-		});
+
+			$select.select2({
+				width: 200,
+			});
+		})
 	});
 }( window.jQuery, window._ ) );
 
@@ -103,25 +106,25 @@
 ( function( $ ){
 	'use strict';
 	$(document).ready(function(){
-		$( '.fakerpress_qty_range' ).each(function(){
+		$( '.fp-field-range-container' ).each(function(){
 			var $minField = $( '.qty-range-min' ),
 				$maxField = $( '.qty-range-max' ),
 				$container = $(this);
 
-				$minField.on({
-					'change keyup': function(e){
-						if ( $.isNumeric( $(this).val() ) && $(this).val() > 0 ) {
-							$maxField.removeAttr( 'disabled' );
-							if( $maxField.val() && $(this).val() >= $maxField.val() )
-								$(this).val( '' );
-
-						} else {
+			$minField.on({
+				'change keyup': function(e){
+					if ( $.isNumeric( $(this).val() ) && $(this).val() > 0 ) {
+						$maxField.removeAttr( 'disabled' );
+						if( $maxField.val() && $(this).val() >= $maxField.val() )
 							$(this).val( '' );
-						}
 
+					} else {
+						$(this).val( '' );
 					}
-				});
-		})
+
+				}
+			});
+		});
 	});
 }( jQuery ) );
 
@@ -129,36 +132,39 @@
 ( function( $ ){
 	'use strict';
 	$(document).ready(function(){
-		$( '.field-datepicker' ).datepicker( {
-			constrainInput: false
-		} );
-
-		var $min = $( '.field-min-date' ),
-			$max = $( '.field-max-date' ),
-			$intervals = $('.fakerpress-range-group').each(function(){
+		var $datepickers = $( '.fp-field-datepicker' ).datepicker( {
+				constrainInput: false
+			} ),
+			$min = $datepickers.filter( '[data-type="min"]' ),
+			$max = $datepickers.filter( '[data-type="max"]' ),
+			$intervals = $('.fp-field-interval').each(function(){
 				var $interval = $(this).on({
 					'change': function(e){
 						var $this = $( this ),
-							$minField = $interval.find( '.field-min-date' ),
-							$maxField = $interval.find( '.field-max-date' ),
+							$minField = $interval.parents( '.fp-field-wrap' ).find( '[data-type="min"]' ),
+							$maxField = $interval.parents( '.fp-field-wrap' ).find( '[data-type="max"]' ),
 							min = $this.find(':selected').data('min'),
 							max = $this.find(':selected').data('max');
 
-						$minField.datepicker( 'option', 'maxDate', min ).val( min );
-						$maxField.datepicker( 'option', 'minDate', max ).val( max );
+						$minField.val( min ).trigger( 'change' );
+						$maxField.val( max ).trigger( 'change' );
 					}
-				})
-			})
+				});
+			});
+
 		$min.on({
 			'change': function(e){
-				$( this ).next( $max ).datepicker( 'option', 'minDate', $( this ).val() );
+				$min.parents( '.fp-field-wrap' ).find( '[data-type="max"]' ).datepicker( 'option', 'minDate', $( this ).val() ).datepicker( 'refresh' );
+				$datepickers.datepicker( 'refresh' );
 			}
-		}),
+		});
+
 		$max.on({
 			'change': function(e){
-				$( this ).next( $min ).datepicker( 'option', 'maxDate', $( this ).val() );
+				$max.parents( '.fp-field-wrap' ).find( '[data-type="min"]' ).datepicker( 'option', 'maxDate', $( this ).val() ).datepicker( 'refresh' );
+				$datepickers.datepicker( 'refresh' );
 			}
-		})
+		});
 	});
 }( jQuery ) );
 
@@ -207,7 +213,7 @@
 ( function( $, _ ){
 	'use strict';
 	$(document).ready(function(){
-		$( '.field-select2-posts' ).each(function(){
+		$( '.fp-field-select2-posts' ).each(function(){
 			var $select = $(this);
 			$select.select2({
 				width: 400,
@@ -252,7 +258,7 @@
 ( function( $, _ ){
 	'use strict';
 	$(document).ready(function(){
-		$( '.field-post_type' ).on( 'change', function( event ){
+		$( '.fp-field-post_type' ).on( 'change', function( event ){
 			var $field = $(this),
 				$field_PostType = $field.parents( '.form-table' ).find( '.field-container-post_parent' );
 
@@ -280,20 +286,20 @@
 			var $box, $dependecyField;
 			if ( _.isNumber( event ) ){
 				$box = $( this );
-				$dependecyField = $( $box.data('fkDepends') );
+				$dependecyField = $( $box.data('fpDepends') );
 			} else {
 				$dependecyField = $( this );
-				$box = $dependecyField.data( 'fkDependent' );
+				$box = $dependecyField.data( 'fpDependent' );
 			}
 
-			var	condition = $box.data('fkCondition'),
-				$placeholder = $dependecyField.data( 'fkPlaceholder' );
+			var	condition = $box.data('fpCondition'),
+				$placeholder = $dependecyField.data( 'fpPlaceholder' );
 
 			if ( ! $placeholder ){
-				$placeholder = $( "<div>" ).attr( 'id', _.uniqueId( 'fk-dependent-placeholder-' ) );
-				$dependecyField.data( 'fkPlaceholder', $placeholder );
+				$placeholder = $( "<div>" ).attr( 'id', _.uniqueId( 'fp-dependent-placeholder-' ) );
+				$dependecyField.data( 'fpPlaceholder', $placeholder );
 			}
-			$dependecyField.data( 'fkDependent', $box );
+			$dependecyField.data( 'fpDependent', $box );
 
 			if ( _.isNumber( event ) ){
 				$dependecyField.on( 'change', checkDependency );
@@ -302,11 +308,11 @@
 			if ( $dependecyField.is(':checked') != condition ){
 				$box.after( $placeholder ).detach();
 			} else if ( $placeholder.is(':visible') ) {
-				$placeholder.replaceWith( $dependecyField.data( 'fkDependent' ) );
+				$placeholder.replaceWith( $dependecyField.data( 'fpDependent' ) );
 			}
 		};
 
-		$( '.fk-field-dependent' ).each( checkDependency );
+		$( '.fp-field-dependent' ).each( checkDependency );
 	});
 }( window.jQuery, window._ ) );
 

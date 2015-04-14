@@ -81,6 +81,8 @@ class Field {
 		'boolean',
 		'checkbox',
 		'dropdown',
+		'range',
+		'interval',
 	);
 
 	public static $sanitize = array(
@@ -167,7 +169,7 @@ class Field {
 	 * @return string the field start
 	 */
 	public function start() {
-		$classes = array( 'fp-field', 'fp-field-' . $this->type );
+		$classes = array( 'fp-field', 'fp-field-' . $this->type . '-container' );
 
 		if ( ! empty( $this->args->fieldset ) && is_array( $this->args->fieldset ) ){
 			$classes += array_map( '', $this->args->fieldset );
@@ -215,12 +217,19 @@ class Field {
 		return apply_filters( 'fakerpress/field-label', $html, $this );
 	}
 
-	public function name(){
-		return 'fakerpress[' . $this->name . ']';
+	public function name( $indexes = array() ){
+		if ( empty( $indexes ) ){
+			$indexes = (array) $this->name;
+		}
+		return 'fakerpress[' . implode( '][', $indexes ) . ']';
 	}
 
 	public function id( $container = false ){
 		return 'fakerpress-field-' . $this->id . ( $container ? '-container' : '' );
+	}
+
+	public function is_multiple(){
+		return (bool) ( isset( $this->args->multiple ) && $this->args->multiple ? true : false );
 	}
 
 	/**
@@ -300,13 +309,31 @@ class Field {
 	 *
 	 * @return string
 	 **/
-	public function attributes() {
+	public function attributes( $attributes = null ) {
 		$html = '';
+		$defaults = array(
+			'id' => $this->id(),
+			'name' => $this->name(),
+		);
 
-		$this->attributes['id'] = $this->id();
-		$this->attributes['name'] = $this->name();
-		if ( ! empty( $this->attributes ) ) {
-			foreach ( $this->attributes as $key => $value ) {
+		if ( is_null( $attributes ) ){
+			$attributes = $this->attributes;
+		}
+		$attributes = wp_parse_args( $attributes, $defaults );
+
+		if ( ! empty( $attributes ) ) {
+			foreach ( $attributes as $key => $value ) {
+				if ( is_array( $value ) || is_object( $value ) ){
+					if ( 'class' !== $key ){
+						$value = htmlspecialchars( json_encode( $value ), ENT_QUOTES, 'UTF-8' );
+					} else {
+						$value = implode( ' ', $value );
+					}
+				} elseif ( false === $value ){
+					$html .= ' ' . $key;
+					continue;
+				}
+
 				$html .= ' ' . $key . '="' . $value . '"';
 			}
 		}
@@ -347,12 +374,52 @@ class Field {
 		$defaults = array(
 			'type' => 'text',
 		);
-		$this->attributes = wp_parse_args( $this->attributes, $defaults );
 
 		$field = $this->start();
 		$field .= $this->label();
 		$field .= $this->wrap_start();
-		$field .= '<input' . $this->attributes() . '/>';
+		$field .= '<input' . $this->attributes( wp_parse_args( $attributes, $defaults ) ) . '/>';
+		$field .= $this->screenreader();
+		$field .= $this->wrap_end();
+		$field .= $this->end();
+
+		return $field;
+	}
+
+
+	/**
+	 * generate a simple text field
+	 *
+	 * @return string the field
+	 */
+	public function range( $name, $value = null, $attributes ) {
+		$min_attr = array(
+			'name' => $this->name( array( 'qty', 'min' ) ),
+			'type' => 'number',
+			'max' => 25,
+			'min' => 1,
+			'style' => 'width: 90px;',
+			'class' => array( 'qty-range-min' ),
+			'placeholder' => esc_attr__( 'e.g.: 3', 'fakerpress' ),
+		);
+
+		$max_attr = array(
+			'name' => $this->name( array( 'qty', 'max' ) ),
+			'type' => 'number',
+			'max' => 25,
+			'min' => 1,
+			'style' => 'width: 90px;',
+			'disabled' => false,
+			'class' => array( 'qty-range-max' ),
+			'placeholder' => esc_attr__( 'e.g.: 10', 'fakerpress' ),
+		);
+
+		$field = $this->start();
+		$field .= $this->label();
+		$field .= $this->wrap_start();
+		$field .= '<input' . $this->attributes( $min_attr ) . '/>';
+		$field .= '<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
+		$field .= '<input' . $this->attributes( $max_attr ) . '/>';
 		$field .= $this->screenreader();
 		$field .= $this->wrap_end();
 		$field .= $this->end();
@@ -365,7 +432,7 @@ class Field {
 	 *
 	 * @return string the field
 	 */
-	public function textarea() {
+	public function textarea( $name, $value = null, $attributes ) {
 		$field = $this->start();
 		$field .= $this->label();
 		$field .= $this->wrap_start();
@@ -384,7 +451,7 @@ class Field {
 	 *
 	 * @return string the field
 	 */
-	public function wysiwyg() {
+	public function wysiwyg( $name, $value = null, $attributes ) {
 		$settings = array(
 			'teeny'   => true,
 			'wpautop' => true,
@@ -408,7 +475,7 @@ class Field {
 	 *
 	 * @return string the field
 	 */
-	public function radio() {
+	public function radio( $name, $value = null, $attributes ) {
 		$field = $this->start();
 		$field .= $this->label();
 		$field .= $this->wrap_start();
@@ -435,7 +502,7 @@ class Field {
 	 *
 	 * @return string the field
 	 */
-	public function checkbox() {
+	public function checkbox( $name, $value = null, $attributes ) {
 		$field = $this->start();
 		$field .= $this->label();
 		$field .= $this->wrap_start();
@@ -470,15 +537,23 @@ class Field {
 	 *
 	 * @return string the field
 	 */
-	public function boolean() {
+	public function boolean( $name, $value = null, $attributes ) {
+		$args = array(
+			'type' => 'checkbox',
+			'value' => 1,
+		);
+
+		if ( $value ){
+			$args['checked'] = false;
+		}
+
 		$field = $this->start();
 		$field .= $this->label();
 		$field .= $this->wrap_start();
-		$field .= '<input type="checkbox"';
-		$field .= $this->get_name();
-		$field .= ' value="1" ' . checked( $this->value, true, false );
-		$field .= $this->attributes();
-		$field .= '/>';
+		$field .= '<input ' . $this->attributes( $args ) . '/>';
+		if ( ! empty( $this->args->info ) ){
+			$field .= '<label class="fp-field-label" for="' . $this->id() . '">' . $this->args->info . '</label>';
+		}
 		$field .= $this->screenreader();
 		$field .= $this->wrap_end();
 		$field .= $this->end();
@@ -491,30 +566,67 @@ class Field {
 	 *
 	 * @return string the field
 	 */
-	public function dropdown() {
+	public function dropdown( $name, $value = null, $attributes ) {
 		$field = $this->start();
 		$field .= $this->label();
 		$field .= $this->wrap_start();
-		if ( is_array( $this->options ) && ! empty( $this->options ) ) {
-			$field .= '<select';
-			$field .= $this->get_name();
-			$field .= '>';
-			foreach ( $this->options as $option_id => $title ) {
-				$field .= '<option value="' . esc_attr( $option_id ) . '"';
-				if ( is_array( $this->value ) ) {
-					$field .= isset( $this->value[0] ) ? selected( $this->value[0], $option_id, false ) : '';
-				} else {
-					$field .= selected( $this->value, $option_id, false );
-				}
-				$field .= '>' . esc_html( $title ) . '</option>';
-			}
-			$field .= '</select>';
-			$field .= $this->screenreader();
-		} elseif ( $this->if_empty ) {
-			$field .= '<span class="empty-field">' . (string) $this->if_empty . '</span>';
+
+		if ( $this->is_multiple() ){
+			$defaults = array(
+				'type' => 'hidden',
+				'class' => 'fp-field-select2-mutiple',
+				'value' => $value,
+			);
+			$field .= '<input ' . $this->attributes( wp_parse_args( $attributes, $defaults ) ) . ' />';
 		} else {
-			$field .= '<span class="tribe-error">' . __( 'No select options specified', 'tribe-events-calendar' ) . '</span>';
+
 		}
+
+		$field .= $this->wrap_end();
+		$field .= $this->end();
+
+		return $field;
+	}
+
+	public function interval( $name, $value = null, $attributes ) {
+		$min_attr = array(
+			'id' => $this->id() . '-min',
+			'name' => $this->name( array( 'date', 'min' ) ),
+			'type' => 'text',
+			'style' => 'width: 150px;',
+			'class' => array( 'fp-field-datepicker' ),
+			'data-type' => 'min',
+			'placeholder' => esc_attr__( 'mm/dd/yyyy', 'fakerpress' ),
+		);
+
+		$max_attr = array(
+			'id' => $this->id() . '-max',
+			'name' => $this->name( array( 'date', 'max' ) ),
+			'type' => 'text',
+			'style' => 'width: 150px;',
+			'class' => array( 'fp-field-datepicker' ),
+			'data-type' => 'max',
+			'placeholder' => esc_attr__( 'mm/dd/yyyy', 'fakerpress' ),
+		);
+
+		$field = $this->start();
+		$field .= $this->label();
+		$field .= $this->wrap_start();
+
+		$field .= '<select id="fakerpress_interval_date" class="fp-field-interval fp-field-select2" data-placeholder="' . esc_attr__( 'Select an Interval', 'fakerpress' ) . '" style="margin-right: 5px; margin-top: -4px;">';
+		$field .= '<option></option>';
+
+		$_json_date_selection_output = Dates::get_intervals();
+		foreach ( $_json_date_selection_output as $option ) {
+			$field .= '<option data-min="' . esc_attr( date( 'm/d/Y', strtotime( $option['min'] ) ) ) . '" data-max="' . esc_attr( date( 'm/d/Y', strtotime( $option['max'] ) ) ) . '" value="' . esc_attr( $option['text'] ) . '">' . esc_attr( $option['text'] ) . '</option>';
+		}
+		$field .= '</select>';
+
+		$field .= '<input' . $this->attributes( $min_attr ) . '/>';
+		$field .= '<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
+		$field .= '<input' . $this->attributes( $max_attr ) . '/>';
+
+		$field .= $this->screenreader();
 		$field .= $this->wrap_end();
 		$field .= $this->end();
 

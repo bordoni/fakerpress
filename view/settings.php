@@ -23,11 +23,7 @@ $fields[] = new Field(
 		<?php wp_nonce_field( Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' ) ); ?>
 		<table class="form-table" style="display: table;">
 			<tbody>
-<?php
-foreach ( $fields as $field ) {
-	$field->output( true );
-}
-?>
+				<?php foreach ( $fields as $field ) { $field->output( true ); } ?>
 			</tbody>
 		</table>
 	</form>

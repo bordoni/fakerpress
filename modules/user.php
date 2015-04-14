@@ -57,15 +57,13 @@ class User extends Base {
 			return false;
 		}
 		// After this point we are safe to say that we have a good POST request
+		$qty_min = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'min' ), FILTER_SANITIZE_NUMBER_INT ) );
+		$qty_max = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'max' ), FILTER_SANITIZE_NUMBER_INT ) );
 
-		$qty_min = absint( Filter::super( INPUT_POST, 'fakerpress_qty_min', FILTER_SANITIZE_NUMBER_INT ) );
+		$description_use_html = Filter::super( INPUT_POST, array( 'fakerpress', 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
+		$description_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
-		$qty_max = absint( Filter::super( INPUT_POST, 'fakerpress_qty_max', FILTER_SANITIZE_NUMBER_INT ) );
-
-		$description_use_html = Filter::super( INPUT_POST, 'fakerpress_description_use_html', FILTER_SANITIZE_STRING, 'off' ) === 'on';
-		$description_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_description_html_tags', FILTER_SANITIZE_STRING ) ) );
-
-		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_roles', FILTER_SANITIZE_STRING ) ) ) );
+		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'roles' ), FILTER_SANITIZE_STRING ) ) ) );
 
 		if ( 0 === $qty_min ){
 			return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );

@@ -51,21 +51,18 @@ class Post extends Base {
 		}
 
 		// After this point we are safe to say that we have a good POST request
-		$qty_min = absint( Filter::super( INPUT_POST, 'fakerpress_qty_min', FILTER_SANITIZE_NUMBER_INT ) );
+		$qty_min = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'min' ), FILTER_SANITIZE_NUMBER_INT ) );
+		$qty_max = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'max' ), FILTER_SANITIZE_NUMBER_INT ) );
 
-		$qty_max = absint( Filter::super( INPUT_POST, 'fakerpress_qty_max', FILTER_SANITIZE_NUMBER_INT ) );
+		$comment_status = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'comment_status' ), FILTER_SANITIZE_STRING ) ) );
 
-		$comment_status = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_comment_status', FILTER_SANITIZE_STRING ) ) );
+		$post_author = array_intersect( get_users( array( 'fields' => 'ID' ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'author' ) ) ) ) );
 
-		$post_author = array_intersect( get_users( array( 'fields' => 'ID' ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_author' ) ) ) );
+		$min_date = Filter::super( INPUT_POST, array( 'fakerpress', 'date', 'min' ) );
+		$max_date = Filter::super( INPUT_POST, array( 'fakerpress', 'date', 'max' ) );
 
-		$min_date = Filter::super( INPUT_POST, 'fakerpress_min_date' );
-
-		$max_date = Filter::super( INPUT_POST, 'fakerpress_max_date' );
-
-		$post_types = array_intersect( get_post_types( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_post_types', FILTER_SANITIZE_STRING ) ) ) );
-
-		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_taxonomies', FILTER_SANITIZE_STRING ) ) ) );
+		$post_types = array_intersect( get_post_types( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'post_types' ), FILTER_SANITIZE_STRING ) ) ) );
+		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
 
 		$post_content_use_html = Filter::super( INPUT_POST, 'fakerpress_post_content_use_html', FILTER_SANITIZE_STRING, 'off' ) === 'on';
 		$post_content_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_post_content_html_tags', FILTER_SANITIZE_STRING ) ) );

@@ -51,16 +51,14 @@ class Comment extends Base {
 		}
 		// After this point we are safe to say that we have a good POST request
 
-		$comment_content_use_html = Filter::super( INPUT_POST, 'fakerpress_comment_content_use_html', FILTER_SANITIZE_STRING, 'off' ) === 'on';
-		$comment_content_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, 'fakerpress_comment_content_html_tags', FILTER_SANITIZE_STRING ) ) );
+		$qty_min = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'min' ), FILTER_SANITIZE_NUMBER_INT ) );
+		$qty_max = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'max' ), FILTER_SANITIZE_NUMBER_INT ) );
 
-		$qty_min = absint( Filter::super( INPUT_POST, 'fakerpress_qty_min', FILTER_SANITIZE_NUMBER_INT ) );
+		$comment_content_use_html = Filter::super( INPUT_POST, array( 'fakerpress', 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
+		$comment_content_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
-		$qty_max = absint( Filter::super( INPUT_POST, 'fakerpress_qty_max', FILTER_SANITIZE_NUMBER_INT ) );
-
-		$min_date = Filter::super( INPUT_POST, 'fakerpress_min_date' );
-
-		$max_date = Filter::super( INPUT_POST, 'fakerpress_max_date' );
+		$min_date = Filter::super( INPUT_POST, array( 'fakerpress', 'date', 'min' ) );
+		$max_date = Filter::super( INPUT_POST, array( 'fakerpress', 'date', 'max' ) );
 
 		if ( 0 === $qty_min ){
 			return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );

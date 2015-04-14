@@ -536,6 +536,7 @@ Class Admin {
 		if ( ! check_admin_referer( $nonce_slug ) ) {
 			return false;
 		}
+
 		// After this point we are safe to say that we have a good POST request
 		$erase_intention = is_string( Filter::super( INPUT_POST, array( 'fakerpress', 'actions', 'delete' ), FILTER_SANITIZE_STRING ) );
 		$erase_check     = in_array( strtolower( Filter::super( INPUT_POST, array( 'fakerpress', 'erase_phrase' ), FILTER_SANITIZE_STRING ) ), array( 'let it go', 'let it go!' ) );
