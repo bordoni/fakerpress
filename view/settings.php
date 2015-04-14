@@ -15,6 +15,32 @@ $fields[] = new Field(
 	)
 );
 
+$fields[] = new Field(
+	'heading-500px',
+	array(
+		'type' => 'heading',
+		'label' => __( 'API: <i>500px', 'fakerpress' ),
+		'actions' => array(
+			'delete' => __( 'Delete!', 'fakerpress' ),
+		),
+	)
+);
+$fields[] = new Field(
+	'500px-key',
+	array(
+		'type' => 'text',
+		'label' => __( 'Customer Key', 'fakerpress' ),
+		'description' => __( 'Your application Customer Key from 500px', 'fakerpress' ),
+		'attributes' => array(
+			'placeholder' => __( 'E.g.: fU3TlASxi2uL76TcP5PAd946fYGZTVsfle6v13No', 'fakerpress' ),
+			'value' => Plugin::get( array( '500px', 'key' ) ),
+		),
+		'actions' => array(
+			'save_500px' => __( 'Save', 'fakerpress' ),
+		),
+	)
+);
+
 ?>
 <div class='wrap __fakerpress'>
 	<h2><?php echo esc_attr( Admin::$view->title ); ?></h2>

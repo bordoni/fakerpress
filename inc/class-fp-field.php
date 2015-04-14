@@ -232,18 +232,6 @@ class Field {
 		return (bool) ( isset( $this->args->multiple ) && $this->args->multiple ? true : false );
 	}
 
-	/**
-	 * returns the field's div start
-	 *
-	 * @return string the field div start
-	 */
-	public function wrap_start() {
-		$html = '<td>';
-		$html .= '<fieldset class="fp-field-wrap">';
-
-		return apply_filters( 'fakerpress/field-wrap_start', $html, $this );
-	}
-
 	public function actions(){
 		$html = '';
 		foreach ( $this->args->actions as $action => $label ) {
@@ -254,16 +242,37 @@ class Field {
 	}
 
 	/**
+	 * returns the field's div start
+	 *
+	 * @return string the field div start
+	 */
+	public function wrap_start() {
+		if ( 'heading' === $this->type ){
+			$html = '<th colspan="2" class="fp-field-wrap">';
+		} else {
+			$html = '<td>';
+			$html .= '<fieldset class="fp-field-wrap">';
+		}
+
+		return apply_filters( 'fakerpress/field-wrap_start', $html, $this );
+	}
+
+	/**
 	 * returns the field's div end
 	 *
 	 * @return string the field div end
 	 */
 	public function wrap_end() {
-		$html = $this->actions();
-		$html .= '</fieldset>';
-		$html .= $this->description();
-		$html .= '</td>';
-
+		$html = '';
+		if ( 'heading' === $this->type ){
+			$html .= $this->description();
+			$html .= '</th>';
+		} else {
+			$html .= $this->actions();
+			$html .= '</fieldset>';
+			$html .= $this->description();
+			$html .= '</td>';
+		}
 		return apply_filters( 'fakerpress/field-wrap_end', $html, $this );
 	}
 
@@ -347,7 +356,13 @@ class Field {
 	 * @return string the field
 	 */
 	public function heading() {
-		$field = '<h3>' . $this->label . '</h3>';
+
+		$field = $this->start();
+		$field .= $this->wrap_start();
+		$field .= '<h3>' . $this->args->label . '</h3>';
+		$field .= $this->screenreader();
+		$field .= $this->wrap_end();
+		$field .= $this->end();
 
 		return $field;
 	}

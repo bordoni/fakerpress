@@ -4,6 +4,10 @@
 
 }
 
+.__fakerpress .form-table {
+	max-width: 940px;
+}
+
 .__fakerpress .fp-field-wrap {
 
 }
@@ -26,9 +30,9 @@
 }
 
 .__fakerpress .fp-field-wrap h3 {
-	margin-bottom: 10px;
+	margin: 0 0 10px -22px;
 	background-color: #f9f9f9;
-	padding: 6px 0 6px 12px;
+	padding: 6px 0 6px 22px;
 }
 
 .__fakerpress .fp-field-wrap h3 ~ h3 {

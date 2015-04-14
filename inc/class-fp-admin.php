@@ -537,6 +537,18 @@ Class Admin {
 			return false;
 		}
 
+		$save_500px = is_string( Filter::super( INPUT_POST, array( 'fakerpress', 'actions', 'save_500px' ), FILTER_SANITIZE_STRING ) );
+
+		if ( $save_500px ){
+			$opts = array(
+				'key' => Filter::super( INPUT_POST, array( 'fakerpress', '500px-key' ), FILTER_SANITIZE_STRING ),
+			);
+
+			Plugin::update( array( '500px' ), $opts );
+
+			return Admin::add_message( __( 'Updated 500px Customer Application settings', 'fakerpress' ), 'success' );
+		}
+
 		// After this point we are safe to say that we have a good POST request
 		$erase_intention = is_string( Filter::super( INPUT_POST, array( 'fakerpress', 'actions', 'delete' ), FILTER_SANITIZE_STRING ) );
 		$erase_check     = in_array( strtolower( Filter::super( INPUT_POST, array( 'fakerpress', 'erase_phrase' ), FILTER_SANITIZE_STRING ) ), array( 'let it go', 'let it go!' ) );
