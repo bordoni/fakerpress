@@ -93,6 +93,7 @@ Class Admin {
 		// From this point on we are doing hooks!
 		add_action( 'init', array( $this, '_action_setup_modules' ) );
 		add_action( 'admin_init', array( $this, '_action_set_admin_view' ) );
+		add_action( 'admin_body_class', array( $this, '_filter_body_class' ) );
 		add_action( 'admin_notices', array( $this, '_action_admin_notices' ) );
 		add_action( 'fakerpress.view.request.settings', array( $this, '_action_setup_settings_page' ) );
 
@@ -512,6 +513,15 @@ Class Admin {
 		}
 
 		return esc_attr__( 'Version' ) . ': ' . '<a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::version ) ) ) . '">' . esc_attr( Plugin::version ) . '</a>';
+	}
+
+	public function _filter_body_class( $classes ){
+		$more = array(
+			$classes,
+			'__fakerpress',
+		);
+
+		return implode( ' ', $more );
 	}
 
 	public function _action_setup_modules(){

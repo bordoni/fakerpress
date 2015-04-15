@@ -233,10 +233,11 @@ class Field {
 	}
 
 	public function actions(){
-		$html = '';
+		$html = '<div class="fk-actions">';
 		foreach ( $this->args->actions as $action => $label ) {
 			$html .= get_submit_button( $label, 'primary', 'fakerpress[actions][' . $action . ']', false );
 		}
+		$html .= '</div>';
 
 		return apply_filters( 'fakerpress/field-actions', $html, $this );
 	}

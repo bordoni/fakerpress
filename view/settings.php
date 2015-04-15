@@ -42,7 +42,7 @@ $fields[] = new Field(
 );
 
 ?>
-<div class='wrap __fakerpress'>
+<div class='wrap'>
 	<h2><?php echo esc_attr( Admin::$view->title ); ?></h2>
 
 	<form method='post'>
