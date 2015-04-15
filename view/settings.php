@@ -30,7 +30,7 @@ $fields[] = new Field(
 	array(
 		'type' => 'text',
 		'label' => __( 'Customer Key', 'fakerpress' ),
-		'description' => __( 'Your application Customer Key from 500px', 'fakerpress' ),
+		'description' => __( 'Application Customer Key — <a href="https://500px.com/settings/applications" target="_blank">500px Applications</a>', 'fakerpress' ),
 		'attributes' => array(
 			'placeholder' => __( 'E.g.: fU3TlASxi2uL76TcP5PAd946fYGZTVsfle6v13No', 'fakerpress' ),
 			'value' => Plugin::get( array( '500px', 'key' ) ),
