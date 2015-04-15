@@ -9,6 +9,7 @@ class Attachment extends Base {
 		'\Faker\Provider\DateTime',
 		'\Faker\Provider\HTML',
 		'\Faker\Provider\PlaceHoldIt',
+		'\Faker\Provider\Image500px',
 	);
 
 	public $provider = '\Faker\Provider\WP_Attachment';

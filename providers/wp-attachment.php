@@ -16,13 +16,16 @@ class WP_Attachment extends Base {
 			'width' => array( 200, 640 ),
 			'ratio' => 1.25,
 		),
+		'500px' => array()
 	);
 
-	public function attachment_url( $type = 'placeholdit', $args = array() ){
+	public function attachment_url( $type = '500px', $args = array() ){
 		$args = wp_parse_args( $args, self::$type_defaults[ $type ] );
 
 		if ( 'placeholdit' === $type ){
 			$url = call_user_func_array( array( $this->generator, 'placeholdit' ), (array) $args );
+		} elseif ( '500px' === $type ){
+			$url = call_user_func_array( array( $this->generator, 'image_500px' ), (array) $args );
 		}
 
 		return $url;

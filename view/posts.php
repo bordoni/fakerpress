@@ -144,6 +144,33 @@ $fields[] = new Field(
 	)
 );
 
+$_image_providers[] = array(
+	'id' => 'placeholdit',
+	'text' => 'Placehold.it',
+);
+
+if ( Plugin::get( array( '500px', 'key' ), false ) ){
+	$_image_providers[] = array(
+		'id' => '500px',
+		'text' => '500px',
+	);
+}
+
+
+$fields[] = new Field(
+	'images_origin',
+	array(
+		'type' => 'dropdown',
+		'multiple' => true,
+		'label' => __( 'Image Providers', 'fakerpress' ),
+		'description' => __( 'Which image services will the generator use?', 'fakerpress' ),
+		'attributes' => array(
+			'value' => implode( ',', wp_list_pluck( $_image_providers, 'id' ) ),
+			'data-possibilities' => $_image_providers,
+		),
+	)
+);
+
 // Mount the options for Users
 $users = get_users(
 	array(
