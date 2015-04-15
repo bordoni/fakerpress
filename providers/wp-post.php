@@ -118,25 +118,67 @@ class WP_Post extends Base {
 		return call_user_func_array( $generator, $args );
 	}
 
-	public function tax_input( $taxonomies = null, $range = array( 1, 6 ) ) {
+	public function tax_input( $taxonomies = null ) {
 		$output = array();
-
 		if ( is_null( $taxonomies ) ){
 			return $output;
 		}
 
+		// The percentage of change in which the terms will be applied
+		$rates = apply_filters( 'fakerpress/provider/WP_Post/tax_input.rates', array(
+			'category' => 50,
+			'post_tag' => 45,
+			'__default' => 35,
+		) );
+
+		// The amount of terms that might have, provide a number for exact and array( int, int ) to range
+		$ranges = apply_filters( 'fakerpress/provider/WP_Post/tax_input.ranges', array(
+			'category' => array( 1, 3 ),
+			'post_tag' => array( 0, 15 ),
+			'__default' => array( 0, 3 )
+		) );
+
 		foreach ( $taxonomies as $taxonomy ){
+			// Get all the term ids
 			$terms = array_map( 'absint', get_terms( $taxonomy, array( 'fields' => 'ids', 'hide_empty' => false ) ) );
 
-			if ( is_array( $range ) ){
-				$qty = call_user_func_array( array( $this->generator, 'numberBetween' ), $range );
-			} else {
-				$qty = $range;
+			$range = (array) ( isset( $ranges[ $taxonomy ] ) ? $ranges[ $taxonomy ] : $ranges['__default'] );
+			$qty_min = min( (array) $range );
+			$rate = ( isset( $rates[ $taxonomy ] ) ? $rates[ $taxonomy ] : $rates['__default'] );
+
+			// Turn a range into a number
+			$qty = ( is_array( $range ) ? call_user_func_array( array( $this->generator, 'numberBetween' ), $range ) : $range );
+
+			// Only check if not 0
+			if ( 0 !== $qty ){
+				$qty = min( count( $terms ), $qty );
 			}
 
-			$qty = min( count( $terms ), $qty );
+			// Select the elements based on range
+			$elements = $this->generator->randomElements( $terms , $qty );
+			$tax_input = array();
 
-			$output[ $taxonomy ] = $this->generator->randomElements( $terms , $qty );
+			foreach ( $elements as $term_id ) {
+				// Apply the rate
+				if ( $this->generator->numberBetween( 0, 100 ) <= absint( $rate ) ){
+					$tax_input[] = $term_id;
+				}
+			}
+
+			// If the number of elements is equals 1 and minimum is 1 then apply any
+			if ( count( $tax_input ) < $qty_min ){
+				$_elements = $terms;
+				for ( $i = count( $tax_input ); $i < $qty_min; $i++ ) {
+					$selected = $this->generator->randomElement( $_elements );
+					$tax_input[] = $selected;
+
+					// Make elements unique
+					$selected_key = array_search( $selected, $_elements );
+					unset( $_elements[ $selected_key ] );
+				}
+			}
+
+			$output[ $taxonomy ] = $tax_input;
 		}
 
 		return $output;
