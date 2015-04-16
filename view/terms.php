@@ -2,9 +2,9 @@
 namespace FakerPress;
 
 $fields[] = new Field(
+	'range',
 	'qty',
 	array(
-		'type' => 'range',
 		'label' => __( 'Quantity', 'fakerpress' ),
 		'description' => __( 'How many terms should be generated, use both fields to get a randomized number of terms within the given range.', 'fakerpress' ),
 	)
@@ -21,15 +21,15 @@ foreach ( $taxonomies as $key => $taxonomy ) {
 }
 
 $fields[] = new Field(
-	'taxonomies',
+	'dropdown',
 	array(
-		'type' => 'dropdown',
+		'id' => 'taxonomies',
 		'multiple' => true,
+		'options' => $_json_taxonomies_output,
+	),
+	array(
 		'label' => __( 'Taxonomies', 'fakerpress' ),
 		'description' => __( 'Group of taxonomies that the terms will be created within', 'fakerpress' ),
-		'attributes' => array(
-			'data-possibilities' => $_json_taxonomies_output,
-		),
 	)
 );
 

@@ -60,17 +60,18 @@
 	'use strict';
 	$(document).ready(function(){
 		$( '.fp-type-range-container' ).each(function(){
-			var $minField = $( '.fp-qty-range-min' ),
-				$maxField = $( '.fp-qty-range-max' ),
-				$container = $(this);
+			var $container = $(this),
+				$minField = $container.find( '.fp-type-number[data-type="min"]' ),
+				$maxField = $container.find( '.fp-type-number[data-type="max"]' );
 
 			$minField.on({
 				'change keyup': function(e){
 					if ( $.isNumeric( $(this).val() ) && $(this).val() > 0 ) {
 						$maxField.removeAttr( 'disabled' );
-						if( $maxField.val() && $(this).val() >= $maxField.val() )
-							$(this).val( '' );
 
+						if ( $maxField.val() && $(this).val() >= $maxField.val() ){
+							$(this).val( '' );
+						}
 					} else {
 						$(this).val( '' );
 					}

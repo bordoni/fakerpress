@@ -50,27 +50,28 @@ class Field {
 		// 'wysiwyg',
 		'radio',
 		'checkbox',
+		'raw',
 	);
 
 
 	public function __construct( $type, $field, $container = array() ) {
-		if ( is_scalar( $field ) ){
-			return;
-		}
-
-		// a list of valid field types, to prevent screwy behaviour
-		self::$valid_types = apply_filters( self::plugin . '/fields/valid_types', self::$valid_types );
-
 		// Default Error Structure
 		$this->error = false;
 
 		// Non Valid types are just set to Raw
-		if ( ! in_array( $type, self::$valid_types ) ){
+		if ( ! self::is_valid_type( $type ) ){
 			$type = 'raw';
 		}
 
-		// Setup the Container if required
-		$this->field = (object) $field;
+		if ( is_string( $field ) ){
+			$this->field = (object) array(
+				'id' => $field,
+			);
+		} else {
+			// Setup the Container if required
+			$this->field = (object) $field;
+		}
+
 		$container = (object) wp_parse_args( $container, self::$default_container );
 
 		// set the ID
@@ -254,6 +255,11 @@ class Field {
 	/******************
 	 * Static methods *
 	 ******************/
+
+	public static function is_valid_type( $type = false ){
+		// a list of valid field types, to prevent screwy behaviour
+		return in_array( $type, apply_filters( self::plugin . '/fields/valid_types', self::$valid_types ) );
+	}
 
 	public static function name( $indexes = array() ){
 		return self::plugin . '[' . implode( '][', (array) $indexes ) . ']';
@@ -610,6 +616,7 @@ class Field {
 		$min->_id[] = 'min';
 		$min->_name[] = 'min';
 		$min->type = 'number';
+		$min->{'data-type'} = 'min';
 		$min->max = 25;
 		$min->min = 1;
 		$min->class = array();
@@ -618,6 +625,7 @@ class Field {
 		$max = clone $field;
 		$max->_id[] = 'max';
 		$max->_name[] = 'max';
+		$max->{'data-type'} = 'max';
 		$max->type = 'number';
 		$max->max = 25;
 		$max->min = 1;
@@ -741,6 +749,31 @@ class Field {
 			return implode( "\r\n", $field );
 		} else {
 			return $field;
+		}
+	}
+
+	public static function type_raw( $field, $container = null, $output = 'string' ) {
+		$field = self::parse( $field, $container );
+		if ( is_scalar( $field ) ){
+			return false;
+		}
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->start();
+		}
+
+		if ( ! empty( $field->html ) ){
+			$html[] = $field->html;
+		}
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->end();
+		}
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
 		}
 	}
 

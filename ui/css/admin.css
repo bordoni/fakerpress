@@ -49,6 +49,10 @@
 	transition: 0.05s border-color ease-in-out;
 }
 
+.__fakerpress .fp-field-container .dashicon-date {
+	height: 26px;
+}
+
 .__fakerpress .form-table {
 	max-width: 940px;
 }
@@ -60,6 +64,10 @@
 .__fakerpress .fp-actions {
 	display: inline-block;
 	padding-left: 10px;
+}
+
+.__fakerpress .fp-actions input {
+	margin-top: -1px;
 }
 
 .__fakerpress .fp-field-description {

@@ -2,44 +2,46 @@
 namespace FakerPress;
 
 $fields[] = new Field(
+	'range',
 	'qty',
 	array(
-		'type' => 'range',
 		'label' => __( 'Quantity', 'fakerpress' ),
 		'description' => __( 'How many comments should be generated, use both fields to get a randomized number of comments within the given range.', 'fakerpress' ),
 	)
 );
 
 $fields[] = new Field(
-	'use_html',
+	'checkbox',
 	array(
-		'type' => 'boolean',
-		'label' => __( 'Use HTML', 'fakerpress' ),
-		'info' => __( 'Use HTML on your randomized comment content?', 'fakerpress' ),
+		'id' => 'use_html',
 		'value' => 1,
+		'options' => __( 'Use HTML on your randomized comment content?', 'fakerpress' ),
+	),
+	array(
+		'label' => __( 'Use HTML', 'fakerpress' ),
 	)
 );
 
 $_elements = array_merge( \Faker\Provider\HTML::$sets['header'], \Faker\Provider\HTML::$sets['list'], \Faker\Provider\HTML::$sets['block'] );
 $fields[] = new Field(
-	'html_tags',
+	'dropdown',
 	array(
-		'type' => 'dropdown',
+		'id' => 'html_tags',
 		'multiple' => true,
+		'data-options' => $_elements,
+		'data-tags' => true,
+		'value' => implode( ',', $_elements ),
+	),
+	array(
 		'label' => __( 'HTML tags', 'fakerpress' ),
 		'description' => __( 'Select the group of tags that can be selected to print on the Comment Content.', 'fakerpress' ),
-		'attributes' => array(
-			'class' => 'field-select2-tags',
-			'data-tags' => $_elements,
-		),
-		'value' => implode( ',', $_elements ),
 	)
 );
 
 $fields[] = new Field(
+	'interval',
 	'interval_date',
 	array(
-		'type' => 'interval',
 		'label' => __( 'Date', 'fakerpress' ),
 		'description' => __( 'Choose the range for the posts dates.', 'fakerpress' ),
 	)
