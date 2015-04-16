@@ -21,17 +21,14 @@
 .__fakerpress input[type="url"],
 .__fakerpress input[type="week"],
 .__fakerpress select {
-	line-height: inherit;
-	height: 29px;
+	padding: 4px 5px 3px;
 }
 
-.__fakerpress input[type="number"]{
-	line-height: 25px;
+.__fakerpress input[type="number"] {
+
 }
 
-.__fakerpress .select2-container-multi .select2-choices .select2-search-choice {
-	margin: 5px 0 0 5px;
-}
+.__fakerpress input::-webkit-input-placeholder { line-height: normal; }
 
 .__fakerpress .select2-container-multi .select2-choices {
 	border: 1px solid #ddd;
@@ -52,7 +49,7 @@
 	line-height: 28px;
 }
 
-.__fakerpress .fk-actions {
+.__fakerpress .fp-actions {
 	display: inline-block;
 	padding-left: 10px;
 }
@@ -104,15 +101,15 @@
 	height: 120px;
 }
 
-.__fakerpress .fp-size-small input[type="text"] {
+.__fakerpress .fp-size-small[type="text"] {
 	width: 10em;
 }
 
-.__fakerpress .fp-size-medium input[type="text"] {
+.__fakerpress .fp-size-medium[type="text"] {
 	width: 25em
 }
 
-.__fakerpress .fp-size-large input[type="text"] {
+.__fakerpress .fp-size-large[type="text"] {
 	width: 35em;
 }
 

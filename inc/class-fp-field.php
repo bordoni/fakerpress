@@ -6,152 +6,127 @@ if ( ! defined( 'WPINC' ) ){
 	die;
 }
 
-/**
- * helper class that creates fields for use in Settings, MetaBoxes, Users, anywhere.
- * Instantiate it whenever you need a field
- *
- */
 class Field {
 
-	/**
-	 * the field's id
-	 * @var string
-	 */
+	const plugin = 'fakerpress';
+	const abbr = 'fp';
+
+	public static function abbr( $str = '' ){
+		return self::abbr . '-' . $str;
+	}
+
+	public $type = 'raw';
+
 	public $id;
 
-	/**
-	 * the field's name (also known as it's label)
-	 * @var string
-	 */
-	public $name;
+	public $field;
 
-	/**
-	 * the field's name (also known as it's label)
-	 * @var string
-	 */
-	public $type;
+	public $container;
 
-	/**
-	 * the field's attributes
-	 * @var array
-	 */
-	public $attributes;
+	public $has_container = true;
 
-	/**
-	 * the field's arguments
-	 * @var array
-	 */
-	public $args;
+	public $has_wrap = true;
 
-	/**
-	 * field defaults (static)
-	 * @var array
-	 */
-	public static $defaults = array(
-		'type' => 'html',
-		'name' => null,
-		'attributes' => array(),
-		'actions' => array(),
-		'label' => null,
-		'tooltip' => null,
+	public $has_label = true;
+
+
+	public static $default_field = array(
+		'id' => '__doe__',
+		'name' => array(),
+		'value' => '',
+		'options' => array(),
 		'size' => 'medium',
-		'html' => null,
-		'raw' => false,
-		'value' => null,
-		'options' => null,
 		'conditional' => true,
 		'callback' => null,
-		'if_empty' => null,
-		'can_be_empty' => false,
-		'structure' => 'table',
-		'after' => null,
 	);
 
-	/**
-	 * valid field types (static)
-	 * @var array
-	 */
+	public static $default_container = array(
+		'label' => '',
+		'description' => '',
+		'attributes' => array(),
+		'actions' => array(),
+	);
+
 	public static $valid_types = array(
 		'heading',
-		'html',
+		'input',
 		'text',
-		'textarea',
-		'wysiwyg',
-		'radio',
-		'boolean',
-		'checkbox',
 		'dropdown',
 		'range',
 		'interval',
+		// 'html',
+		// 'textarea',
+		// 'wysiwyg',
+		'radio',
+		'checkbox',
 	);
 
-	public static $sanitize = array(
-		'type' => 'esc_attr',
-		'name' => 'esc_attr',
-		'label' => 'wp_kses_post',
-		'tooltip' => 'wp_kses_post',
-	);
 
-	/**
-	 * Class constructor
-	 *
-	 * @param string     $id    the field id
-	 * @param array      $field the field settings
-	 * @param null|mixed $value the field's current value
-	 *
-	 * @return void
-	 */
-	public function __construct( $id, $args ) {
+	public function __construct( $type, $field, $container = array() ) {
+		// Setup the Container if required
+		$container = (object) wp_parse_args( $container, self::$default_container );
+
 		// a list of valid field types, to prevent screwy behaviour
-		self::$valid_types = apply_filters( 'fakerpress/fields-valid_types', self::$valid_types );
-
-		// parse args with defaults and extract them
-		$this->args = (object) wp_parse_args( $args, self::$defaults );
-
-		// sanitize the values just to be safe
-		foreach ( self::$sanitize as $key => $method ) {
-			$this->args->{$key} = call_user_func_array( $method, array( $this->args->{$key} ) );
-		}
-
-		// set the ID
-		$this->id = apply_filters( 'fakerpress/field-id', esc_attr( $id ), $this );
-		$this->type = apply_filters( 'fakerpress/field-type', esc_attr( $this->args->type ), $this );
-		$this->name = apply_filters( 'fakerpress/field-name', ( ! empty( $this->args->name ) ? esc_attr( $this->args->name ) : esc_attr( $id ) ), $this );
-		$this->value = $this->args->value;
-		$this->attributes = $this->args->attributes;
-
-		unset( $this->args->name, $this->args->type, $this->args->value, $this->args->attributes );
+		self::$valid_types = apply_filters( self::plugin . '/fields/valid_types', self::$valid_types );
 
 		// Default Error Structure
 		$this->error = false;
 
+		// parse args with defaults and extract them
+		if ( ! is_scalar( $field ) ){
+			$this->field = (object) wp_parse_args( $field, self::$default_field );
+		} else {
+			return;
+		}
+
+		// set the ID
+		$this->type = apply_filters( self::plugin . '/fields/field-type', esc_attr( $type ), $this );
+
+		$this->id = apply_filters( self::plugin . '/fields/field-id', esc_attr( $this->field->id ), $this );
+
+		$this->callback = null;
+		$this->conditional = true;
+
+		$this->field->id = self::id( $this->id );
+		$this->field->name = self::name( ( ! empty( $this->field->name ) ? $this->field->name : $this->id ) );
+		$this->field->type = $this->type;
+		if ( ! empty( $this->field->class ) ){
+			$this->field->class = (array) $this->field->class;
+		}
+		$this->field->class[] = 'field';
+		$this->field->class[] = 'type-' . $this->type;
+
+		if ( ! empty( $this->field->size ) ){
+			$this->field->class[] = 'size-' . $this->field->size;
+		}
+
+		$this->label = $container->label;
+		$this->description = $container->description;
+		$this->actions = $container->actions;
+
+		unset( $this->field->callback, $this->field->conditional, $this->field->size );
+
 		if ( ! in_array( $this->type, self::$valid_types ) ){
 			return;
 		}
+
 	}
 
-	/**
-	 * Determines how to handle this field's creation
-	 * either calls a callback function or runs this class' course of action
-	 * logs an error if it fails
-	 *
-	 * @return void
-	 */
 	public function output( $print = false ) {
-		if ( ! $this->args->conditional ) {
+		if ( ! $this->conditional ) {
 			return false;
 		}
 
-		if ( $this->args->callback && is_callable( $this->args->callback ) ) {
+		if ( $this->callback && is_callable( $this->callback ) ) {
 			// if there's a callback, run it
-			call_user_func( $this->args->callback );
+			call_user_func( $this->callback );
 		} elseif ( in_array( $this->type, self::$valid_types ) ) {
 			// the specified type exists, run the appropriate method
-			$field = call_user_func_array( array( $this, $this->type ), array( $this->name, $this->value, $this->attributes ) );
+			$field = call_user_func_array( array( __CLASS__, 'type_' . $this->type ), array( $this->field, $this, 'string', array() ) );
 
 			// filter the output
-			$field = apply_filters( 'fakerpress/field-output-' . $this->type, $field, $this );
-			$field = apply_filters( 'fakerpress/field-output-' . $this->type . '_' . $this->id, $field, $this );
+			$field = apply_filters( self::plugin . '/fields/field-output-' . $this->type, $field, $this );
+			$field = apply_filters( self::plugin . '/fields/field-output-' . $this->type . '_' . $this->id, $field, $this );
 
 			if ( $print ){
 				echo balanceTags( $field );
@@ -163,311 +138,493 @@ class Field {
 		}
 	}
 
-	/**
-	 * returns the field's start
-	 *
-	 * @return string the field start
-	 */
-	public function start() {
-		$classes = array( 'fp-field', 'fp-field-' . $this->type . '-container' );
+	public static function name( $indexes = array() ){
+		return self::plugin . '[' . implode( '][', (array) $indexes ) . ']';
+	}
 
-		if ( ! empty( $this->args->fieldset ) && is_array( $this->args->fieldset ) ){
-			$classes += array_map( '', $this->args->fieldset );
+	public static function id( $id, $container = false ){
+		return self::plugin . '-field-' . $id . ( $container ? '-container' : '' );
+	}
+
+	public static function attr( $attributes = array(), $html = array() ) {
+		if ( is_scalar( $attributes ) ){
+			return null;
 		}
 
-		if ( ! empty( $this->args->size ) ){
-			$classes[] = 'fp-size-' . $this->args->size;
+		$defaults = array();
+		$attributes = wp_parse_args( (array) $attributes, $defaults );
+
+		foreach ( $attributes as $key => $value ) {
+			if ( is_null( $value ) || false === $value ){
+				continue;
+			}
+
+			if ( 'class' === $key && ! is_array( $value ) ){
+				$value = (array) $value;
+			}
+
+			$attr = $key;
+
+			if ( ! is_scalar( $value ) ) {
+				if ( 'class' === $key ){
+					$value = array_map( array( __CLASS__, 'abbr' ), (array) $value );
+					$value = array_map( 'sanitize_html_class', $value );
+					$value = implode( ' ', $value );
+				} else {
+					$value = htmlspecialchars( json_encode( $value ), ENT_QUOTES, 'UTF-8' );
+				}
+			}
+			if ( ! is_bool( $value ) || true !== $value ){
+				$attr .= '="' . $value . '"';
+			}
+
+			$html[ $key ] = $attr;
 		}
+
+		return ' ' . implode( ' ', $html );
+	}
+
+	public function start( $output = 'string', $html = array() ) {
+		$html[] = $this->start_container();
+		if ( $this->has_label ){
+			$html[] = $this->label();
+		}
+		$html[] = $this->start_wrap();
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
+	}
+
+	public function end( $output = 'string', $html = array() ) {
+		$html[] = $this->end_wrap();
+		$html[] = $this->end_container();
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
+	}
+
+	public function start_container( $output = 'string', $html = array() ) {
+		$classes = array( 'field-container', 'type-' . $this->type . '-container' );
 
 		if ( is_wp_error( $this->error ) ){
-			$classes[] = 'fp-error';
+			$classes[] = 'error';
 		}
 
-		$return = '<tr id="' . $this->id( true ) . '" class="' . implode( ' ', $classes ) . '">';
+		$classes = array_map( array( __CLASS__, 'abbr' ) , $classes );
 
-		return apply_filters( 'fakerpress/field-start', $return, $this );
-	}
+		$html[] = '<tr id="' . self::id( $this->id, true ) . '" class="' . implode( ' ', $classes ) . '">';
 
-	/**
-	 * returns the field's end
-	 *
-	 * @return string the field end
-	 */
-	public function end() {
-		$return = '</tr>';
-
-		return apply_filters( 'fakerpress/field-end', $return, $this );
-	}
-
-	/**
-	 * returns the field's label
-	 *
-	 * @return string the field label
-	 */
-	public function label() {
-		$html = '<th scope="row">';
-		$html .= $this->tooltip();
-
-		if ( isset( $this->args->label ) && false !== $this->args->label ) {
-			$html .= '<label class="fp-field-label" for="' . $this->id() . '">' . $this->args->label . '</label>';
-		}
-
-		$html .= '</th>';
-
-		return apply_filters( 'fakerpress/field-label', $html, $this );
-	}
-
-	public function name( $indexes = array() ){
-		if ( empty( $indexes ) ){
-			$indexes = (array) $this->name;
-		}
-		return 'fakerpress[' . implode( '][', $indexes ) . ']';
-	}
-
-	public function id( $container = false ){
-		return 'fakerpress-field-' . $this->id . ( $container ? '-container' : '' );
-	}
-
-	public function is_multiple(){
-		return (bool) ( isset( $this->args->multiple ) && $this->args->multiple ? true : false );
-	}
-
-	public function actions(){
-		$html = '<div class="fk-actions">';
-		foreach ( $this->args->actions as $action => $label ) {
-			$html .= get_submit_button( $label, 'primary', 'fakerpress[actions][' . $action . ']', false );
-		}
-		$html .= '</div>';
-
-		return apply_filters( 'fakerpress/field-actions', $html, $this );
-	}
-
-	/**
-	 * returns the field's div start
-	 *
-	 * @return string the field div start
-	 */
-	public function wrap_start() {
-		if ( 'heading' === $this->type ){
-			$html = '<th colspan="2" class="fp-field-wrap">';
+		$html = apply_filters( self::plugin . '/fields/field-start', $html, $this );
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
 		} else {
-			$html = '<td>';
-			$html .= '<fieldset class="fp-field-wrap">';
+			return $html;
 		}
-
-		return apply_filters( 'fakerpress/field-wrap_start', $html, $this );
 	}
 
-	/**
-	 * returns the field's div end
-	 *
-	 * @return string the field div end
-	 */
-	public function wrap_end() {
-		$html = '';
-		if ( 'heading' === $this->type ){
-			$html .= $this->description();
-			$html .= '</th>';
+	public function end_container( $output = 'string', $html = array() ) {
+		$html[] = '</tr>';
+
+		$html = apply_filters( self::plugin . '/fields/field-end', $html, $this );
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
 		} else {
-			$html .= $this->actions();
-			$html .= '</fieldset>';
-			$html .= $this->description();
-			$html .= '</td>';
+			return $html;
 		}
-		return apply_filters( 'fakerpress/field-wrap_end', $html, $this );
 	}
 
-	public function description(){
-		$html = '';
-		if ( ! empty( $this->args->description ) ) {
-			$html .= '<p class="fp-field-description">' . $this->args->description . '</p>';;
+	public function start_wrap( $output = 'string', $html = array() ) {
+		if ( 'heading' === $this->type ){
+			$html[] = '<th colspan="2" class="' . self::abbr( 'field-wrap' ) . '">';
+		} else {
+			$html[] = '<td>';
+			$html[] = '<fieldset class="' . self::abbr( 'field-wrap' ) . '">';
 		}
 
-		return apply_filters( 'fakerpress/field-description', $html, $this );
+		$html = apply_filters( self::plugin . '/fields/field-wrap_start', $html, $this );
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
 	}
 
-	/**
-	 * returns the field's tooltip/description
-	 *
-	 * @return string the field tooltip
-	 */
-	public function tooltip() {
-		$html = '';
-		if ( ! empty( $this->args->tooltip ) ) {
-			$html = '<p class="tooltip description">' . $this->args->tooltip . '</p>';
+	public function end_wrap( $output = 'string', $html = array() ) {
+		if ( 'heading' === $this->type ){
+			$html[] = $this->description();
+			$html[] = '</th>';
+		} else {
+			$html[] = $this->actions();
+			$html[] = '</fieldset>';
+			$html[] = $this->description();
+			$html[] = '</td>';
 		}
 
-		return apply_filters( 'fakerpress/field-tooltip', $html, $this );
+		$html = apply_filters( self::plugin . '/fields/field-wrap_end', $html, $this );
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
 	}
 
-	/**
-	 * returns the screen reader label
-	 *
-	 * @return string the screen reader label
-	 */
-	public function screenreader() {
-		$html = '';
-		if ( ! empty( $this->args->tooltip ) ) {
-			$html = '<label class="screen-reader-text">' . $this->args->tooltip . '</label>';
+	public function label( $output = 'string', $html = array() ) {
+		$html[] = '<th scope="row">';
+
+		if ( isset( $this->label ) && false !== $this->label ) {
+			$html[] = '<label class="' . self::abbr( 'field-label' ) . '" for="' . self::id( $this->id ) . '">' . $this->label . '</label>';
 		}
 
-		return apply_filters( 'fakerpress/field-screenreader', $html, $this );
+		$html[] = '</th>';
+
+		$html = apply_filters( self::plugin . '/fields/field-label', $html, $this );
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
 	}
 
-	/**
-	 * Return a string of attributes for the field
-	 *
-	 * @return string
-	 **/
-	public function attributes( $attributes = null ) {
-		$html = '';
-		$defaults = array(
-			'id' => $this->id(),
-			'name' => $this->name(),
-		);
-
-		if ( is_null( $attributes ) ){
-			$attributes = $this->attributes;
+	public function actions( $output = 'string', $html = array() ) {
+		$html[] = '<div class="' . self::abbr( 'actions' ) . '">';
+		foreach ( $this->actions as $action => $label ) {
+			$html[] = get_submit_button( $label, 'primary', self::plugin . '[actions][' . $action . ']', false );
 		}
-		$attributes = wp_parse_args( $attributes, $defaults );
+		$html[] = '</div>';
 
-		if ( ! empty( $attributes ) ) {
-			foreach ( $attributes as $key => $value ) {
-				if ( is_array( $value ) || is_object( $value ) ){
-					if ( 'class' !== $key ){
-						$value = htmlspecialchars( json_encode( $value ), ENT_QUOTES, 'UTF-8' );
-					} else {
-						$value = implode( ' ', $value );
-					}
-				} elseif ( false === $value ){
-					$html .= ' ' . $key;
-					continue;
-				}
+		$html = apply_filters( self::plugin . '/fields/field-actions', $html, $this );
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
+	}
 
-				$html .= ' ' . $key . '="' . $value . '"';
-			}
+	public function description( $output = 'string', $html = array() ) {
+		if ( ! empty( $this->description ) ) {
+			$html[] = '<p class="' . self::abbr( 'field-description' ) . '">' . $this->description . '</p>';;
 		}
 
-		return apply_filters( 'fakerpress/field-attributes', $html, $this->name, $this );
+		$html = apply_filters( self::plugin . '/fields/field-description', $html, $this );
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
 	}
 
-	/**
-	 * generate a heading field
-	 *
-	 * @return string the field
-	 */
-	public function heading() {
+	/*****************
+	 * Field Methods *
+	 *****************/
 
-		$field = $this->start();
-		$field .= $this->wrap_start();
-		$field .= '<h3>' . $this->args->label . '</h3>';
-		$field .= $this->screenreader();
-		$field .= $this->wrap_end();
-		$field .= $this->end();
+	public static function type_input( $field, $container = null, $output = 'string', $html = array() ) {
+		if ( is_scalar( $field ) ){
+			return null;
+		}
 
-		return $field;
+		$field = (object) $field;
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->start();
+		}
+
+		$html[] = '<input' . self::attr( $field ) . '/>';
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->end();
+		}
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
 	}
 
-	/**
-	 * generate an html field
-	 *
-	 * @return string the field
-	 */
-	public function html() {
-		$field = $this->label();
-		$field .= $this->html;
+	public static function type_heading( $field, $container = null, $output = 'string', $html = array() ) {
+		if ( is_scalar( $field ) ){
+			return false;
+		}
 
-		return $field;
+		if ( ! is_a( $container, __CLASS__ ) ){
+			$container = (object) array(
+				'field' => array(
+					'title' => '',
+				),
+			);
+			$container->has_label = false;
+
+			$field = wp_parse_args( $field, $container->field );
+		}
+		$field = (object) $field;
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->start();
+		}
+
+		$html[] = '<h3>' . $field->title . '</h3>';
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->end();
+		}
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
+
 	}
 
+	public static function type_text( $field, $container = null, $output = 'string', $html = array() ) {
+		if ( is_scalar( $field ) ){
+			return false;
+		}
 
-	/**
-	 * generate a simple text field
-	 *
-	 * @return string the field
-	 */
-	public function text( $name, $value = null, $attributes ) {
-		$defaults = array(
-			'type' => 'text',
-		);
+		if ( ! is_a( $container, __CLASS__ ) ){
+			$container = (object) array(
+				'field' => array(
+					'type' => 'text',
+				),
+			);
+			$field = wp_parse_args( $field, $container->field );
+		}
+		$field = (object) $field;
 
-		$field = $this->start();
-		$field .= $this->label();
-		$field .= $this->wrap_start();
-		$field .= '<input' . $this->attributes( wp_parse_args( $attributes, $defaults ) ) . '/>';
-		$field .= $this->screenreader();
-		$field .= $this->wrap_end();
-		$field .= $this->end();
+		$html = self::type_input( $field, $container, 'array', array() );
 
-		return $field;
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
 	}
 
-
-	/**
-	 * generate a simple text field
-	 *
-	 * @return string the field
-	 */
-	public function range( $name, $value = null, $attributes ) {
+	public static function type_range( $field, $container = null, $output = 'string', $html = array() ) {
 		$min_attr = array(
-			'name' => $this->name( array( 'qty', 'min' ) ),
+			'name' => self::name( array( 'qty', 'min' ) ),
 			'type' => 'number',
 			'max' => 25,
 			'min' => 1,
 			'style' => 'width: 90px;',
 			'class' => array( 'qty-range-min' ),
-			'placeholder' => esc_attr__( 'e.g.: 3', 'fakerpress' ),
+			'placeholder' => esc_attr__( 'e.g.: 3', self::plugin ),
 		);
 
 		$max_attr = array(
-			'name' => $this->name( array( 'qty', 'max' ) ),
+			'name' => self::name( array( 'qty', 'min' ) ),
 			'type' => 'number',
 			'max' => 25,
 			'min' => 1,
 			'style' => 'width: 90px;',
 			'disabled' => false,
 			'class' => array( 'qty-range-max' ),
-			'placeholder' => esc_attr__( 'e.g.: 10', 'fakerpress' ),
+			'placeholder' => esc_attr__( 'e.g.: 10', self::plugin ),
 		);
 
-		$field = $this->start();
-		$field .= $this->label();
-		$field .= $this->wrap_start();
-		$field .= '<input' . $this->attributes( $min_attr ) . '/>';
-		$field .= '<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
-		$field .= '<input' . $this->attributes( $max_attr ) . '/>';
-		$field .= $this->screenreader();
-		$field .= $this->wrap_end();
-		$field .= $this->end();
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->start();
+		}
 
-		return $field;
+		$html[] = '<input' . self::attr( $min_attr ) . '/>';
+		$html[] = '<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
+		$html[] = '<input' . self::attr( $max_attr ) . '/>';
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->end();
+		}
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
 	}
 
-	/**
-	 * generate a textarea field
-	 *
-	 * @return string the field
-	 */
-	public function textarea( $name, $value = null, $attributes ) {
-		$field = $this->start();
-		$field .= $this->label();
-		$field .= $this->wrap_start();
-		$field .= '<textarea' . $this->attributes() . '>';
-		$field .= esc_html( stripslashes( $this->value ) );
-		$field .= '</textarea>';
-		$field .= $this->screenreader();
-		$field .= $this->wrap_end();
-		$field .= $this->end();
+	public static function type_radio( $field, $container = null, $output = 'string', $html = array() ) {
+		if ( is_scalar( $field ) ){
+			return false;
+		}
 
-		return $field;
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->start();
+		}
+
+		$field = (object) $field;
+		$field->type = 'radio';
+		$field->options = (array) $field->options;
+
+		foreach ( $field->options as $value => $label ) {
+			$checkbox = clone $field;
+			$radio->value = $value;
+
+			$html[] = self::type_input( $radio, null, 'string', array() );
+			$html[] = '<label class="' . self::abbr( 'field-label' ) . '" for="' . $field->id . '">' . $label . '</label>';
+		}
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->end();
+		}
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
 	}
 
-	/**
-	 * generate a wp_editor field
-	 *
-	 * @return string the field
-	 */
-	public function wysiwyg( $name, $value = null, $attributes ) {
+	public static function type_checkbox( $field, $container = null, $output = 'string', $html = array() ) {
+		if ( is_scalar( $field ) ){
+			return false;
+		}
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->start();
+		}
+
+		$field = (object) $field;
+		$field->type = 'checkbox';
+		if ( ! is_array( $field->options ) ){
+			$field->options = array(
+				1 => $field->options,
+			);
+		}
+
+		foreach ( $field->options as $value => $label ) {
+			$checkbox = clone $field;
+			$checkbox->id .= '-' . sanitize_html_class( $value );
+			$checkbox->value = $value;
+
+			if ( isset( $field->value ) && $field->value === $checkbox->value ){
+				$checkbox->checked = true;
+			}
+
+			$html[] = self::type_input( $checkbox, null, 'string', array() );
+			$html[] = '<label class="' . self::abbr( 'field-label' ) . '" for="' . $checkbox->id . '">' . $label . '</label>';
+		}
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->end();
+		}
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
+	}
+
+	public static function type_dropdown( $field, $container = null, $output = 'string', $html = array() ) {
+		if ( is_scalar( $field ) ){
+			return false;
+		}
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->start();
+		}
+
+		$field = (object) $field;
+
+		if ( isset( $field->multiple ) && $field->multiple ){
+			$field->type = 'hidden';
+
+			$html[] = self::type_input( $field, null, 'string', array() );
+		} else {
+			$html[] = '<select' . self::attr( $field ) . '>';
+			$html[] = '<option></option>';
+
+			foreach ( $field->options as $option ) {
+				$html[] = '<option' . self::attr( $option ) . '>' . esc_attr( $option['text'] ) . '</option>';
+			}
+			$html[] = '</select>';
+		}
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->end();
+		}
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
+	}
+
+	public static function type_interval( $field, $container = null, $output = 'string', $html = array() ) {
+		$min_attr = array(
+			'id' => self::id( 'min' ),
+			'name' => self::name( array( 'date', 'min' ) ),
+			'type' => 'text',
+			'style' => 'width: 150px;',
+			'class' => array( 'type-datepicker' ),
+			'data-type' => 'min',
+			'placeholder' => esc_attr__( 'mm/dd/yyyy', self::plugin ),
+		);
+
+		$max_attr = array(
+			'id' => self::id( 'max' ),
+			'name' => self::name( array( 'date', 'max' ) ),
+			'type' => 'text',
+			'style' => 'width: 150px;',
+			'class' => array( 'type-datepicker' ),
+			'data-type' => 'max',
+			'placeholder' => esc_attr__( 'mm/dd/yyyy', self::plugin ),
+		);
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->start();
+		}
+
+		$interval = array(
+			'class' => array( 'type-interval', 'type-dropdown' ),
+			'value' => '',
+			'options' => Dates::get_intervals(),
+		);
+
+		$html[] = self::type_dropdown( $interval, null, 'string' );
+		$html[] = '<input' . self::attr( $min_attr ) . '/>';
+		$html[] = '<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
+		$html[] = '<input' . self::attr( $max_attr ) . '/>';
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->end();
+		}
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
+	}
+
+	public static function type_textarea( $field, $container = null, $output = 'string' ) {
+		if ( is_array( $container ) ){
+			$field[] = $this->start_container();
+			$field[] = $this->label();
+			$field[] = $this->start_wrap();
+		}
+
+		$field[] = '<textarea' . $this->attr() . '>' . esc_html( stripslashes( $this->value ) ) . '</textarea>';
+
+		if ( is_array( $container ) ){
+			$field[] = $this->end_wrap();
+			$field[] = $this->end_container();
+		}
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $field );
+		} else {
+			return $field;
+		}
+	}
+
+	public static function type_wysiwyg( $field, $container = null, $output = 'string' ) {
 		$settings = array(
 			'teeny'   => true,
 			'wpautop' => true,
@@ -475,179 +632,25 @@ class Field {
 		ob_start();
 		wp_editor( html_entity_decode( ( $this->value ) ), $this->name, $settings );
 		$editor = ob_get_clean();
-		$field  = $this->start();
-		$field .= $this->label();
-		$field .= $this->wrap_start();
-		$field .= $editor;
-		$field .= $this->screenreader();
-		$field .= $this->wrap_end();
-		$field .= $this->end();
 
-		return $field;
-	}
+		if ( is_array( $container ) ){
+			$field[] = $this->start_container();
+			$field[] = $this->label();
+			$field[] = $this->start_wrap();
+		}
 
-	/**
-	 * generate a radio button field
-	 *
-	 * @return string the field
-	 */
-	public function radio( $name, $value = null, $attributes ) {
-		$field = $this->start();
-		$field .= $this->label();
-		$field .= $this->wrap_start();
-		if ( is_array( $this->options ) ) {
-			foreach ( $this->options as $option_id => $title ) {
-				$field .= '<label title="' . esc_attr( $title ) . '">';
-				$field .= '<input type="radio"';
-				$field .= $this->get_name();
-				$field .= ' value="' . esc_attr( $option_id ) . '" ' . checked( $this->value, $option_id, false ) . '/>';
-				$field .= $title;
-				$field .= '</label>';
-			}
+		$field[] = $editor;
+
+		if ( is_array( $container ) ){
+			$field[] = $this->end_wrap();
+			$field[] = $this->end_container();
+		}
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $field );
 		} else {
-			$field .= '<span class="tribe-error">' . __( 'No radio options specified', 'tribe-events-calendar' ) . '</span>';
+			return $field;
 		}
-		$field .= $this->wrap_end();
-		$field .= $this->end();
-
-		return $field;
-	}
-
-	/**
-	 * generate a checkbox_list field
-	 *
-	 * @return string the field
-	 */
-	public function checkbox( $name, $value = null, $attributes ) {
-		$field = $this->start();
-		$field .= $this->label();
-		$field .= $this->wrap_start();
-		if ( ! is_array( $this->value ) ) {
-			if ( ! empty( $this->value ) ) {
-				$this->value = array( $this->value );
-			} else {
-				$this->value = array();
-			}
-		}
-
-		if ( is_array( $this->options ) ) {
-			foreach ( $this->options as $option_id => $title ) {
-				$field .= '<label title="' . esc_attr( $title ) . '">';
-				$field .= '<input type="checkbox"';
-				$field .= $this->get_name( true );
-				$field .= ' value="' . esc_attr( $option_id ) . '" ' . checked( in_array( $option_id, $this->value ), true, false ) . '/>';
-				$field .= $title;
-				$field .= '</label>';
-			}
-		} else {
-			$field .= '<span class="tribe-error">' . __( 'No checkbox options specified', 'tribe-events-calendar' ) . '</span>';
-		}
-		$field .= $this->wrap_end();
-		$field .= $this->end();
-
-		return $field;
-	}
-
-	/**
-	 * generate a boolean checkbox field
-	 *
-	 * @return string the field
-	 */
-	public function boolean( $name, $value = null, $attributes ) {
-		$args = array(
-			'type' => 'checkbox',
-			'value' => 1,
-		);
-
-		if ( $value ){
-			$args['checked'] = false;
-		}
-
-		$field = $this->start();
-		$field .= $this->label();
-		$field .= $this->wrap_start();
-		$field .= '<input ' . $this->attributes( $args ) . '/>';
-		if ( ! empty( $this->args->info ) ){
-			$field .= '<label class="fp-field-label" for="' . $this->id() . '">' . $this->args->info . '</label>';
-		}
-		$field .= $this->screenreader();
-		$field .= $this->wrap_end();
-		$field .= $this->end();
-
-		return $field;
-	}
-
-	/**
-	 * generate a dropdown field
-	 *
-	 * @return string the field
-	 */
-	public function dropdown( $name, $value = null, $attributes ) {
-		$field = $this->start();
-		$field .= $this->label();
-		$field .= $this->wrap_start();
-
-		if ( $this->is_multiple() ){
-			$defaults = array(
-				'type' => 'hidden',
-				'class' => 'fp-field-select2-mutiple',
-				'value' => $value,
-			);
-			$field .= '<input ' . $this->attributes( wp_parse_args( $attributes, $defaults ) ) . ' />';
-		} else {
-
-		}
-
-		$field .= $this->wrap_end();
-		$field .= $this->end();
-
-		return $field;
-	}
-
-	public function interval( $name, $value = null, $attributes ) {
-		$min_attr = array(
-			'id' => $this->id() . '-min',
-			'name' => $this->name( array( 'date', 'min' ) ),
-			'type' => 'text',
-			'style' => 'width: 150px;',
-			'class' => array( 'fp-field-datepicker' ),
-			'data-type' => 'min',
-			'placeholder' => esc_attr__( 'mm/dd/yyyy', 'fakerpress' ),
-		);
-
-		$max_attr = array(
-			'id' => $this->id() . '-max',
-			'name' => $this->name( array( 'date', 'max' ) ),
-			'type' => 'text',
-			'style' => 'width: 150px;',
-			'class' => array( 'fp-field-datepicker' ),
-			'data-type' => 'max',
-			'placeholder' => esc_attr__( 'mm/dd/yyyy', 'fakerpress' ),
-		);
-
-		$field = $this->start();
-		$field .= $this->label();
-		$field .= $this->wrap_start();
-
-		$field .= '<select id="fakerpress_interval_date" class="fp-field-interval fp-field-select2" data-placeholder="' . esc_attr__( 'Select an Interval', 'fakerpress' ) . '" style="margin-right: 5px; margin-top: -4px;">';
-		$field .= '<option></option>';
-
-		$_json_date_selection_output = Dates::get_intervals();
-		foreach ( $_json_date_selection_output as $option ) {
-			$field .= '<option data-min="' . esc_attr( date( 'm/d/Y', strtotime( $option['min'] ) ) ) . '" data-max="' . esc_attr( date( 'm/d/Y', strtotime( $option['max'] ) ) ) . '" value="' . esc_attr( $option['text'] ) . '">' . esc_attr( $option['text'] ) . '</option>';
-		}
-		$field .= '</select>';
-
-		$field .= '<input' . $this->attributes( $min_attr ) . '/>';
-		$field .= '<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
-		$field .= '<input' . $this->attributes( $max_attr ) . '/>';
-
-		$field .= $this->screenreader();
-		$field .= $this->wrap_end();
-		$field .= $this->end();
-
-		return $field;
 	}
 
 } // end class
-

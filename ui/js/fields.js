@@ -2,19 +2,39 @@
 ( function( $, _ ){
 	'use strict';
 	$(document).ready(function(){
-		$( '.fp-field-select2-mutiple' ).each(function(){
-			var $select = $(this);
+		var $elements = $( '.fp-type-dropdown' );
+		$elements.each(function(){
+			var $select = $(this),
+				args = {
+					width: 420
+				};
 
-			$select.select2({
-				multiple: true,
-				width: 400,
-				data: function(){
-					return { 'results': $select.data( 'possibilities' ) };
+			if ( $select.is( '[multiple]' ) ){
+				args.multiple = true;
+
+				if ( ! $select.is( '[data-tags]' ) ){
+					args.data = function(){
+						return { 'results': $select.data( 'options' ) };
+					};
 				}
-			});
+			} else {
+				args.width = 200;
+			}
+
+			if ( $select.is( '[data-tags]' ) ){
+				args.tags = $select.data( 'options' );
+				args.tokenSeparators = [','];
+			}
+
+			$select.select2( args );
 		})
 		.on( 'change', function( event ) {
-			var data = $( this ).data( 'value' );
+			var $select = $(this),
+				data = $( this ).data( 'value' );
+
+			if ( ! $select.is( '[multiple]' ) ){
+				return;
+			}
 
 			if ( event.added ){
 				if ( _.isArray( data ) ) {
@@ -29,86 +49,19 @@
 					data = [];
 				}
 			}
-			$( this ).data( 'value', data ).attr( 'data-value', JSON.stringify( data ) );
+			$select.data( 'value', data ).attr( 'data-value', JSON.stringify( data ) );
 		} );
 
-		$( '.fp-field-select2' ).each(function(){
-			var $select = $(this);
-
-			$select.select2({
-				width: 200,
-			});
-		})
 	});
 }( window.jQuery, window._ ) );
-
-// Tagged Select2 Fields
-( function( $, _ ){
-	'use strict';
-	$(document).ready(function(){
-		$( '.field-select2-tags' ).each(function(){
-			var $select = $(this);
-
-			$select.select2({
-				multiple: true,
-				width: 400,
-				tags: $select.data('tags'),
-				tokenSeparators: [',']
-			});
-		});
-	});
-}( window.jQuery, window._ ) );
-
-//Author fields
-( function( $ ){
-	'use strict';
-	$(document).ready(function(){
-		$( '.field-select2-author' ).each(function(){
-			var $select = $(this);
-
-			$select.select2({
-				width: 400,
-				multiple: true,
-				allowClear: true,
-				escapeMarkup: function (m) { return m; },
-				formatSelection: function ( author ){
-					return _.template('<abbr title="<%= ID %>: <%= data.user_email %>"><%= roles %>: <%= data.display_name %></abbr>')( author )
-				},
-				formatResult: function ( author ){
-					return _.template('<abbr title="<%= ID %>: <%= data.user_email %>"><%= roles %>: <%= data.display_name %></abbr>')( author )
-				},
-				ajax: {
-					dataType: 'json',
-					type: 'POST',
-					url: window.ajaxurl,
-					data: function ( author, page ) {
-						return {
-							action: 'fakerpress.search_authors',
-							search: author, // search author
-							page_limit: 10,
-							page: page,
-						};
-					},
-					results: function ( data ) { // parse the results into the format expected by Select2.
-						$.each( data.results, function( k, result ){
-							result.id = result.data.ID;
-							result.text = result.data.display_name;
-						} );
-						return data;
-					}
-				}
-			});
-		});
-	});
-}( jQuery ) );
 
 // Quantity Range Fields
 ( function( $ ){
 	'use strict';
 	$(document).ready(function(){
-		$( '.fp-field-range-container' ).each(function(){
-			var $minField = $( '.qty-range-min' ),
-				$maxField = $( '.qty-range-max' ),
+		$( '.fp-type-range-container' ).each(function(){
+			var $minField = $( '.fp-qty-range-min' ),
+				$maxField = $( '.fp-qty-range-max' ),
 				$container = $(this);
 
 			$minField.on({
@@ -132,7 +85,7 @@
 ( function( $ ){
 	'use strict';
 	$(document).ready(function(){
-		var $datepickers = $( '.fp-field-datepicker' ).datepicker( {
+		var $datepickers = $( '.fp-type-datepicker' ).datepicker( {
 				constrainInput: false
 			} ),
 			$min = $datepickers.filter( '[data-type="min"]' ),
@@ -167,6 +120,8 @@
 		});
 	});
 }( jQuery ) );
+
+/*
 
 // Terms Fields
 ( function( $, _ ){
@@ -208,6 +163,49 @@
 		});
 	});
 }( jQuery, _ ) );
+
+// Author fields
+( function( $ ){
+	'use strict';
+	$(document).ready(function(){
+		$( '.field-select2-author' ).each(function(){
+			var $select = $(this);
+
+			$select.select2({
+				width: 400,
+				multiple: true,
+				allowClear: true,
+				escapeMarkup: function (m) { return m; },
+				formatSelection: function ( author ){
+					return _.template('<abbr title="<%= ID %>: <%= data.user_email %>"><%= roles %>: <%= data.display_name %></abbr>')( author )
+				},
+				formatResult: function ( author ){
+					return _.template('<abbr title="<%= ID %>: <%= data.user_email %>"><%= roles %>: <%= data.display_name %></abbr>')( author )
+				},
+				ajax: {
+					dataType: 'json',
+					type: 'POST',
+					url: window.ajaxurl,
+					data: function ( author, page ) {
+						return {
+							action: 'fakerpress.search_authors',
+							search: author, // search author
+							page_limit: 10,
+							page: page,
+						};
+					},
+					results: function ( data ) { // parse the results into the format expected by Select2.
+						$.each( data.results, function( k, result ){
+							result.id = result.data.ID;
+							result.text = result.data.display_name;
+						} );
+						return data;
+					}
+				}
+			});
+		});
+	});
+}( jQuery ) );
 
 // Post Query for Select2
 ( function( $, _ ){
@@ -316,3 +314,4 @@
 	});
 }( window.jQuery, window._ ) );
 
+*/
