@@ -133,14 +133,13 @@ $fields[] = new Field(
 );
 
 $fields[] = new Field(
-	'text',
+	'number',
 	array(
 		'id' => 'featured_image_rate',
 		'placeholder' => __( 'e.g.: 75', 'fakerpress' ),
 		'min' => 0,
 		'max' => 100,
 		'value' => 75,
-		'size' => 'small',
 	),
 	array(
 		'label' => __( 'Featured Image Rate', 'fakerpress' ),

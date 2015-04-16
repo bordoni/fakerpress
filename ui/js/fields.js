@@ -85,39 +85,43 @@
 ( function( $ ){
 	'use strict';
 	$(document).ready(function(){
-		var $datepickers = $( '.fp-type-datepicker' ).datepicker( {
-				constrainInput: false
-			} ),
-			$min = $datepickers.filter( '[data-type="min"]' ),
-			$max = $datepickers.filter( '[data-type="max"]' ),
-			$intervals = $('.fp-field-interval').each(function(){
-				var $interval = $(this).on({
-					'change': function(e){
-						var $this = $( this ),
-							$minField = $interval.parents( '.fp-field-wrap' ).find( '[data-type="min"]' ),
-							$maxField = $interval.parents( '.fp-field-wrap' ).find( '[data-type="max"]' ),
-							min = $this.find(':selected').data('min'),
-							max = $this.find(':selected').data('max');
+		var $datepickers = $( '.fp-type-date' ).datepicker( {
+			constrainInput: false,
+			dateFormat: 'yy-mm-dd',
+		} );
 
-						$minField.val( min ).trigger( 'change' );
-						$maxField.val( max ).trigger( 'change' );
-					}
-				});
+		$( '.fp-type-interval-container' ).each( function(){
+			var $container = $( this ),
+				$interval = $container.find( '.fp-type-dropdown' ),
+				$min = $container.find( '[data-type="min"]' ),
+				$max = $container.find( '[data-type="max"]' );
+
+			$interval.on({
+				'change': function(e){
+					var $selected = $interval.find(':selected'),
+						min = $selected.attr('min'),
+						max = $selected.attr('max');
+
+					$min.datepicker( 'setDate', min );
+					$max.datepicker( 'setDate', max );
+				}
 			});
 
-		$min.on({
-			'change': function(e){
-				$min.parents( '.fp-field-wrap' ).find( '[data-type="max"]' ).datepicker( 'option', 'minDate', $( this ).val() ).datepicker( 'refresh' );
-				$datepickers.datepicker( 'refresh' );
-			}
-		});
+			$min.on({
+				'change': function(e){
+					$min.parents( '.fp-field-wrap' ).find( '[data-type="max"]' ).datepicker( 'option', 'minDate', $( this ).val() ).datepicker( 'refresh' );
+					$datepickers.datepicker( 'refresh' );
+				}
+			});
 
-		$max.on({
-			'change': function(e){
-				$max.parents( '.fp-field-wrap' ).find( '[data-type="min"]' ).datepicker( 'option', 'maxDate', $( this ).val() ).datepicker( 'refresh' );
-				$datepickers.datepicker( 'refresh' );
-			}
-		});
+			$max.on({
+				'change': function(e){
+					$max.parents( '.fp-field-wrap' ).find( '[data-type="min"]' ).datepicker( 'option', 'maxDate', $( this ).val() ).datepicker( 'refresh' );
+					$datepickers.datepicker( 'refresh' );
+				}
+			});
+
+		} );
 	});
 }( jQuery ) );
 
