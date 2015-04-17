@@ -57,8 +57,8 @@ class Comment extends Base {
 		$comment_content_use_html = Filter::super( INPUT_POST, array( 'fakerpress', 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
 		$comment_content_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
-		$min_date = Filter::super( INPUT_POST, array( 'fakerpress', 'date', 'min' ) );
-		$max_date = Filter::super( INPUT_POST, array( 'fakerpress', 'date', 'max' ) );
+		$min_date = Filter::super( INPUT_POST, array( 'fakerpress', 'interval_date', 'min' ) );
+		$max_date = Filter::super( INPUT_POST, array( 'fakerpress', 'interval_date', 'max' ) );
 
 		if ( 0 === $qty_min ){
 			return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );

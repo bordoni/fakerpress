@@ -58,13 +58,13 @@ class Post extends Base {
 
 		$post_author = array_intersect( get_users( array( 'fields' => 'ID' ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'author' ) ) ) ) );
 
-		$min_date = Filter::super( INPUT_POST, array( 'fakerpress', 'date', 'min' ) );
-		$max_date = Filter::super( INPUT_POST, array( 'fakerpress', 'date', 'max' ) );
+		$min_date = Filter::super( INPUT_POST, array( 'fakerpress', 'interval_date', 'min' ) );
+		$max_date = Filter::super( INPUT_POST, array( 'fakerpress', 'interval_date', 'max' ) );
 
 		$post_types = array_intersect( get_post_types( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'post_types' ), FILTER_SANITIZE_STRING ) ) ) );
 		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
 
-		$post_content_use_html = Filter::super( INPUT_POST, array( 'fakerpress', 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
+		$post_content_use_html = Filter::super( INPUT_POST, array( 'fakerpress', 'use_html' ), FILTER_SANITIZE_NUMBER_INT, 0 ) === 1;
 		$post_content_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
 		$post_parents = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'post_parent' ), FILTER_SANITIZE_STRING ) ) );
