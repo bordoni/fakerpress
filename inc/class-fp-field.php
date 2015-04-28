@@ -203,18 +203,6 @@ class Field {
 
 	public static function end_table( $container, $output = 'string', $html = array() ) {
 		$html[] = '</tbody>';
-		if ( ! empty( $container->heads ) ){
-			$html[] = '<tfoot>';
-			foreach ( $container->heads as $head ) {
-				$_html = '';
-				if ( ! empty( $head['html'] ) ){
-					$_html = $head['html'];
-					unset( $head['html'] );
-				}
-				$html[] = '<th' . self::attr( $head ) . '>' . $_html . '</th>';
-			}
-			$html[] = '</tfoot>';
-		}
 		$html[] = '</table>';
 
 		$html = apply_filters( self::plugin . '/fields/field-end_table', $html, $container );
@@ -397,6 +385,9 @@ class Field {
 			if ( ! is_scalar( $value ) ) {
 				if ( 'class' === $key ){
 					$value = array_map( array( __CLASS__, 'abbr' ), (array) $value );
+					if ( in_array( 'fp-type-button', $value ) ){
+						$value[] = 'button';
+					}
 					$value = array_map( 'sanitize_html_class', $value );
 					$value = implode( ' ', $value );
 				} else {
@@ -582,6 +573,10 @@ class Field {
 		}
 	}
 
+	public static function type_button( $field, $container = null, $output = 'string', $html = array() ) {
+		return self::type_input( $field, $container, $output, $html );
+	}
+
 	public static function type_number( $field, $container = null, $output = 'string', $html = array() ) {
 		return self::type_input( $field, $container, $output, $html );
 	}
@@ -762,6 +757,21 @@ class Field {
 			return false;
 		}
 
+		$remove = clone $field;
+		$remove->_id[] = 'remove';
+		$remove->_name[] = 'remove';
+		$remove->type = 'button';
+		$remove->value = '&minus;';
+		$remove->class = array( 'action-remove' );
+
+		$duplicate = clone $field;
+		$duplicate->_id[] = 'duplicate';
+		$duplicate->_name[] = 'duplicate';
+		$duplicate->type = 'button';
+		$duplicate->deactive = true;
+		$duplicate->value = '&plus;';
+		$duplicate->class = array( 'action-duplicate' );
+
 		$table = clone $container;
 		$table->blocks = array( 'heading', 'table' );
 		$table->heads = array(
@@ -778,11 +788,11 @@ class Field {
 				'html' => '',
 			),
 			array(
+				'html' => self::type_button( $remove, null, 'string' ) . self::type_button( $duplicate, null, 'string' ),
 				'style' => 'width: 10px;',
 				'class' => 'actions-table',
 			),
 		);
-
 		$blocks = array(
 			array(
 				'html' => '',

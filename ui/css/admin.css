@@ -32,32 +32,50 @@
 
 
 .__fakerpress .fp-table-meta {
-  border: 0 none;
-  border-spacing: 0;
-  border-radius: 0;
-  table-layout: auto;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  clear: both;
+	border: 0 none;
+	border-spacing: 0;
+	border-radius: 0;
+	table-layout: auto;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	clear: both;
 
-  border: #DFDFDF solid 1px;
-  background: #F9F9F9;
+	border: #DFDFDF solid 1px;
+	background: #F9F9F9;
 }
 
 .__fakerpress .fp-table-meta > thead th {
-  background: #fff;
-  border-color: #F4F4F4;
-  border-style: solid;
-  border-width: 0 0 1px 1px;
-  padding: 2px;
-  position: relative;
-  vertical-align: top;
-  text-align: left;
-  color: #333333;
-  font-size: 14px;
-  line-height: 1.4em;
-  font-weight: normal;
+	background: #fff;
+	border-color: #F4F4F4;
+	border-style: solid;
+	border-width: 0 0 1px 1px;
+	padding: 2px;
+	position: relative;
+	vertical-align: top;
+	text-align: left;
+	color: #333333;
+	font-size: 14px;
+	line-height: 1.4em;
+	font-weight: normal;
+	position: relative;
+}
+
+.__fakerpress .fp-action-duplicate,
+.__fakerpress .fp-action-remove {
+	position: absolute;
+	left: 3px;
+	top: 10px;
+	width: 22px;
+	height: 22px;
+	line-height: 20px;
+	padding: 0;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+.__fakerpress .fp-action-duplicate {
+	top: 35px;
 }
 
 .__fakerpress .fp-table-meta > tbody > tr {
@@ -103,7 +121,8 @@
   color: #666;
 }
 .__fakerpress .fp-table-meta > tbody > tr > td.fp-order-table + td {
-  border-left-color: #DFDFDF;
+  border-left-color: #ddd;
+  padding-left: 20px;
 }
 .__fakerpress .fp-table-meta .fp-order-table-spacer,
 .__fakerpress .fp-table-meta .fp-remove-table-spacer {
