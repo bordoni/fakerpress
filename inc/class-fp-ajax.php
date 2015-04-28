@@ -9,7 +9,7 @@ if ( ! defined( 'WPINC' ) ){
 class Ajax {
 
 	public function __construct(){
-		add_action( 'wp_ajax_' . Plugin::$slug . '.query_posts', array( __CLASS__, 'query_posts' ) );
+		add_action( 'wp_ajax_' . Plugin::$slug . '.select2-WP_Query', array( __CLASS__, 'query_posts' ) );
 		add_action( 'wp_ajax_' . Plugin::$slug . '.search_authors', array( __CLASS__, 'search_authors' ) );
 		add_action( 'wp_ajax_' . Plugin::$slug . '.search_term', array( __CLASS__, 'search_terms' ) );
 	}

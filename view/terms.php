@@ -25,7 +25,7 @@ $fields[] = new Field(
 	array(
 		'id' => 'taxonomies',
 		'multiple' => true,
-		'options' => $_json_taxonomies_output,
+		'data-options' => $_json_taxonomies_output,
 	),
 	array(
 		'label' => __( 'Taxonomies', 'fakerpress' ),

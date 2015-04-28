@@ -13,6 +13,17 @@ $fields[] = new Field(
 	)
 );
 
+$fields[] = new Field(
+	'interval',
+	array(
+		'id' => 'interval_date',
+	),
+	array(
+		'label' => __( 'Date', 'fakerpress' ),
+		'description' => __( 'Choose the range for the posts dates.', 'fakerpress' ),
+	)
+);
+
 // Mount the options for post_types
 $post_types = get_post_types( array( 'public' => true ), 'object' );
 
@@ -49,7 +60,7 @@ $fields[] = new Field(
 	array(
 		'id' => 'post_parent',
 		'multiple' => true,
-		'data-options' => $_json_post_types_output,
+		'data-source' => 'WP_Query',
 	),
 	array(
 		'label' => __( 'Parents', 'fakerpress' ),
@@ -205,15 +216,18 @@ $fields[] = new Field(
 );
 
 $fields[] = new Field(
-	'interval',
+	'meta',
 	array(
-		'id' => 'interval_date',
+		'id' => 'meta',
+		'duplicate' => true,
 	),
 	array(
-		'label' => __( 'Date', 'fakerpress' ),
-		'description' => __( 'Choose the range for the posts dates.', 'fakerpress' ),
+		'label' => __( 'Meta Field Rules', 'fakerpress' ),
+		'description' => __( 'Use the fields below to configure a set of rules for your generated Posts', 'fakerpress' ),
 	)
 );
+
+
 ?>
 <div class='wrap'>
 	<h2><?php echo esc_attr( Admin::$view->title ); ?></h2>

@@ -17,6 +17,7 @@
 						return { 'results': $select.data( 'options' ) };
 					};
 				}
+
 			} else {
 				args.width = 200;
 			}
@@ -26,6 +27,50 @@
 				args.tokenSeparators = [','];
 			}
 
+			if ( $select.is( '[data-source]' ) ){
+				var source = $select.data( 'source' );
+
+				args.data = { results: [] };
+				args.allowClear = true;
+
+				args.escapeMarkup = function (m) {
+					return m;
+				};
+
+				args.formatSelection = function ( post ){
+					return _.template('<abbr title="<%= post_title %>"><%= post_type.labels.singular_name %>: <%= ID %></abbr>')( post )
+				};
+				args.formatResult = function ( post ){
+					return _.template('<abbr title="<%= post_title %>"><%= post_type.labels.singular_name %>: <%= ID %></abbr>')( post )
+				};
+
+				args.ajax = { // instead of writing the function to execute the request we use Select2's convenient helper
+					dataType: 'json',
+					type: 'POST',
+					url: window.ajaxurl,
+					data: function (search, page) {
+						var post_types = _.intersection( $( '#fakerpress-field-post_types' ).val().split( ',' ), _.pluck( _.where( $( '#fakerpress-field-post_types' ).data( 'options' ), { hierarchical: true } ) , 'id' ) );
+
+						return {
+							action: 'fakerpress.select2-' + source,
+							query: {
+								s: search,
+								posts_per_page: 10,
+								paged: page,
+								post_type: post_types
+							}
+						};
+					},
+					results: function ( data ) { // parse the results into the format expected by Select2.
+						$.each( data.results, function( k, result ){
+							result.id = result.ID;
+						} );
+						return data;
+					}
+				};
+
+			}
+
 			$select.select2( args );
 		})
 		.on( 'change', function( event ) {
@@ -33,6 +78,9 @@
 				data = $( this ).data( 'value' );
 
 			if ( ! $select.is( '[multiple]' ) ){
+				return;
+			}
+			if ( ! $select.is( '[data-source]' ) ){
 				return;
 			}
 
@@ -256,30 +304,6 @@
 		});
 	});
 }( jQuery, _ ) );
-
-// Check if Post Type is hierarchical
-( function( $, _ ){
-	'use strict';
-	$(document).ready(function(){
-		$( '.fp-field-post_type' ).on( 'change', function( event ){
-			var $field = $(this),
-				$field_PostType = $field.parents( '.form-table' ).find( '.field-container-post_parent' );
-
-			if ( ! _.isUndefined( event.added ) && event.added.hierarchical === true && $field_PostType.length === 0 ){
-				$field.parents( '.field-container-post_type' ).after( $field.data( 'post_parent' ) );
-			} else if ( ! _.isUndefined( event.removed ) && event.removed.hierarchical === true && $field_PostType.length !== 0 ){
-				$field.data( 'post_parent', $field_PostType.detach() );
-			}
-		} ).each(function(){
-			var $field = $(this);
-
-			if ( ! $field.hasClass( 'select2-offscreen' ) ){
-				return;
-			}
-			$field.data( 'post_parent', $field.parents( '.form-table' ).find( '.field-container-post_parent' ).detach() );
-		});
-	});
-}( window.jQuery, window._ ) );
 
 // Check for checkbox dependecies
 ( function( $, _ ){
