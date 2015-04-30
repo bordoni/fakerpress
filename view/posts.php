@@ -17,6 +17,7 @@ $fields[] = new Field(
 	'interval',
 	array(
 		'id' => 'interval_date',
+		'value' => 'yesterday',
 	),
 	array(
 		'label' => __( 'Date', 'fakerpress' ),
@@ -148,6 +149,7 @@ $fields[] = new Field(
 	)
 );
 
+/* This comes back as a Meta Field Template
 $fields[] = new Field(
 	'number',
 	array(
@@ -189,6 +191,7 @@ $fields[] = new Field(
 		'description' => __( 'Which image services will the generator use?', 'fakerpress' ),
 	)
 );
+*/
 
 // Mount the options for Users
 $users = get_users(

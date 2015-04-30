@@ -733,6 +733,15 @@ class Field {
 			$content[] = '<option></option>';
 			foreach ( $field->options as $option ) {
 				$option = (array) $option;
+
+				if ( ! isset( $option['value'] ) && isset( $option['id'] ) ){
+					$option['value'] = $option['id'];
+				} elseif ( ! isset( $option['value'] ) && isset( $option['ID'] ) ){
+					$option['value'] = $option['ID'];
+				} elseif ( ! isset( $option['value'] ) ) {
+					$option['value'] = false;
+				}
+
 				if ( isset( $field->value ) && $field->value === $option['value'] ){
 					$option['selected'] = true;
 				}
@@ -978,11 +987,10 @@ class Field {
 				$range->type = 'range';
 				$range->class = array();
 				$range->label = __( 'Range of possible numbers', self::plugin );
-				$range->min = 0;
-				$range->max = 9;
+				$range->_min = 0;
+				$range->_max = 9;
 
 				$html[] = self::wrapper( self::type_range( $range, null, 'string' ), $range );
-				$html[] = self::wrapper( self::type_number( $default->separator, null, 'string' ), $default->separator );
 				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1056,8 +1064,13 @@ class Field {
 				$text->value = 'paragraphs';
 				$text->class = array();
 
+				$separator = clone $default->separator;
+				$separator->value = '\n';
+				$separator->label = __( 'Separator <b space>&mdash;</b> New Line: "\n"', self::plugin );
+
 				$html[] = self::wrapper( self::type_dropdown( $text, null, 'string' ), $text );
 				$html[] = self::wrapper( self::type_range( $default->qty, null, 'string' ), $default->qty );
+				$html[] = self::wrapper( self::type_text( $separator, null, 'string' ), $separator );
 				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1080,6 +1093,7 @@ class Field {
 				$elements->label = __( 'HTML Tags, without &lt; or &gt;', self::plugin );
 
 				$html[] = self::wrapper( self::type_dropdown( $elements, null, 'string' ), $elements );
+				$html[] = self::wrapper( self::type_range( $default->qty, null, 'string' ), $default->qty );
 				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1396,6 +1410,7 @@ class Field {
 		$min->_name[] = 'min';
 		$min->type = 'date';
 		$min->{'data-type'} = 'min';
+		$min->value = '';
 		$min->class = array();
 		$min->placeholder = esc_attr__( 'yyyy-mm-dd', self::plugin );
 
@@ -1405,6 +1420,7 @@ class Field {
 		$max->type = 'date';
 		$max->{'data-type'} = 'max';
 		$max->class = array();
+		$max->value = '';
 		$max->placeholder = esc_attr__( 'yyyy-mm-dd', self::plugin );
 
 		$interval = clone $field;

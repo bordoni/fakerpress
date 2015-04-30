@@ -529,6 +529,7 @@ Class Admin {
 			return;
 		}
 
+		Module\Meta::instance();
 		Module\Post::instance();
 		Module\Attachment::instance();
 		Module\Comment::instance();

@@ -39,8 +39,10 @@ abstract class Base {
 
 		self::$_instances[ $slug ]->slug = $slug;
 		self::$_instances[ $slug ]->params = array();
-		self::$_instances[ $slug ]->meta = array();
-		self::$_instances[ $slug ]->meta( self::$flag, null, 1 );
+
+		if ( is_array( self::$_instances[ $slug ]->meta ) ){
+			self::$_instances[ $slug ]->meta( self::$flag, null, 1 );
+		}
 
 		return self::$_instances[ $slug ];
 	}
@@ -65,22 +67,29 @@ abstract class Base {
 		$this->dependencies = (array) apply_filters( "fakerpress.module.{$this->slug}.dependencies", $this->dependencies );
 
 		// We need to merge the Provider to the Dependecies, so everything is loaded
-		$providers = array_merge( $this->dependencies, (array) $this->provider );
+		if ( ! empty( $this->provider ) ){
+			$providers = array_merge( $this->dependencies, (array) $this->provider );
+		} else {
+			$providers = $this->dependencies;
+		}
+
 		foreach ( $providers as $provider_class ) {
 			$provider = new $provider_class( $this->faker );
 			$this->faker->addProvider( $provider );
 		}
 
-		// Create a Reflection of the Provider class to discover all the methods that will fake an Argument
-		$provider_reflection = new \ReflectionClass( $this->provider );
-		$provider_methods    = $provider_reflection->getMethods();
+		if ( ! empty( $this->provider ) ){
+			// Create a Reflection of the Provider class to discover all the methods that will fake an Argument
+			$provider_reflection = new \ReflectionClass( $this->provider );
+			$provider_methods    = $provider_reflection->getMethods();
 
-		// Loop and verify which methods are will be faked on `generate`
-		foreach ( $provider_methods as $method ) {
-			if ( $provider_reflection->getName() !== $method->class ){
-				continue;
+			// Loop and verify which methods are will be faked on `generate`
+			foreach ( $provider_methods as $method ) {
+				if ( $provider_reflection->getName() !== $method->class ){
+					continue;
+				}
+				$this->faked[] = $method->name;
 			}
-			$this->faked[] = $method->name;
 		}
 
 		// Execute a method that can be overwritten by the called class
@@ -109,8 +118,12 @@ abstract class Base {
 		do_action( "fakerpress.module.{$this->slug}.pre_save", $this );
 
 		$params = array();
-		foreach ( $this->params as $param ) {
-			$params[ $param->key ] = $param->value;
+		foreach ( $this->params as $key => $param ) {
+			if ( is_object( $param ) ){
+				$params[ $param->key ] = $param->value;
+			} else {
+				$params[ $key ] = $param;
+			}
 		}
 
 		$metas = false;
@@ -180,7 +193,7 @@ abstract class Base {
 	 * Use this method to generate all the needed data
 	 * @return array An array of the data generated
 	 */
-	final public function generate( $args = array() ) {
+	final public function generate() {
 		foreach ( $this->faked as $name ) {
 			if ( ! isset( $this->params[ $name ] ) ){
 				$this->params[ $name ] = (object) array(

@@ -215,7 +215,7 @@ window.fakerpress.fields.range = function( $, _ ){
 
 		$minField.on({
 			'change keyup': function(e){
-				if ( $.isNumeric( $(this).val() ) && $(this).val() > 0 ) {
+				if ( $.isNumeric( $(this).val() ) ) {
 					$maxField.removeAttr( 'disabled' );
 
 					if ( $maxField.val() && $(this).val() >= $maxField.val() ){
@@ -249,17 +249,6 @@ window.fakerpress.fields.dates = function( $, _ ){
 		}
 		$container.addClass( window.fakerpress.ready_class );
 
-		$interval.on({
-			'change': function(e){
-				var $selected = $interval.find(':selected'),
-					min = $selected.attr('min'),
-					max = $selected.attr('max');
-
-				$min.datepicker( 'setDate', min );
-				$max.datepicker( 'setDate', max );
-			}
-		});
-
 		$min.on({
 			'change': function(e){
 				$min.parents( '.fp-field-wrap' ).find( '[data-type="max"]' ).datepicker( 'option', 'minDate', $( this ).val() ).datepicker( 'refresh' );
@@ -274,6 +263,16 @@ window.fakerpress.fields.dates = function( $, _ ){
 			}
 		});
 
+		$interval.on({
+			'change': function(e){
+				var $selected = $interval.find(':selected'),
+					min = $selected.attr('min'),
+					max = $selected.attr('max');
+
+				$min.datepicker( 'setDate', min );
+				$max.datepicker( 'setDate', max );
+			}
+		}).trigger( 'change' );
 	} );
 };
 
@@ -324,9 +323,13 @@ window.fakerpress.fields.dates = function( $, _ ){
 
 				// If there is just one meta, disable the remove button
 				if ( 1 === $metas.length && ! $metas.eq( 0 ).find( _meta_type ).select2( 'val' ) ){
-					$metas.eq( 0 ).find( _remove ).prop( 'disabled', true );
+					$metas.eq( 0 )
+						.find( _remove ).prop( 'disabled', true )
+						.end().find( _meta_name ).prop( 'required', false );
 				} else {
-					$metas.find( _remove ).prop( 'disabled', false );
+					$metas
+						.find( _remove ).prop( 'disabled', false )
+						.end().find( _meta_name ).prop( 'required', true );
 				}
 
 				// Regenerate Order Index
@@ -438,12 +441,13 @@ window.fakerpress.fields.dates = function( $, _ ){
 			$container.on( 'click', _remove, [], function( event ){
 				var $button = $( this ),
 					$meta = $button.parents( _meta ),
-					$type = $meta.find( _meta_type );
-
+					$type = $meta.find( _meta_type ),
+					$name = $meta.find( _meta_name );
 
 				// Prevent remove when there is just one meta
 				if ( 1 === $metas.length ){
 					$type.select2( 'val', '' );
+					$name.val( '' );
 				} else {
 					// Remove the Meta where the remove was clicked
 					$meta.remove();
