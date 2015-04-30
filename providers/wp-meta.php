@@ -105,6 +105,23 @@ class WP_Meta extends Base {
 		return implode( "\n" , $value );
 	}
 
+	public function meta_type_wp_query( $query, $weight = 50 ) {
+		$weight = $weight / 100;
+
+		$args = wp_parse_args( $query, array() );
+		$args['fields'] = 'ids';
+
+		$query = new \WP_Query( $args );
+
+		if ( ! $query->have_posts() ){
+			return null;
+		}
+
+		$value = $this->generator->optional( $weight, null )->randomElement( (array) $query->posts );
+
+		return $value;
+	}
+
 	public function meta_type_lexify( $template, $weight = 50 ) {
 		$weight = $weight / 100;
 
@@ -125,6 +142,241 @@ class WP_Meta extends Base {
 		$weight = $weight / 100;
 
 		$value = $this->generator->optional( $weight, null )->regexify( (string) $template );
+
+		return $value;
+	}
+
+	public function meta_type_timezone( $weight = 50 ) {
+		$weight = $weight / 100;
+
+		$value = $this->generator->optional( $weight, null )->timezone;
+
+		return $value;
+	}
+
+	public function meta_type_company( $template, $weight = 50 ) {
+		$weight = $weight / 100;
+
+		$template = explode( '|', $template );
+
+		$tags = array(
+			'suffix',
+			'company',
+			'bs',
+			'catch_phrase',
+		);
+
+		$text = array();
+
+		foreach ( $template as $key => $tag ) {
+			preg_match( '|^\{\% *([^\ ]*) *\%\}$|i', $tag, $_parsed );
+			if ( ! empty( $_parsed ) ){
+				list( $element, $term ) = $_parsed;
+				switch ( $term ) {
+					case 'suffix':
+						$text[] = $this->generator->companySuffix;
+						break;
+					case 'company':
+						$text[] = $this->generator->company;
+						break;
+					case 'bs':
+						$text[] = $this->generator->bs;
+						break;
+					case 'catch_phrase':
+						$text[] = $this->generator->catchPhrase;
+						break;
+				}
+			} else {
+				$text[] = ( empty( $tag ) ? ' ' : $tag );
+			}
+		}
+
+		$value = $this->generator->optional( $weight, null )->randomElement( (array) implode( '', $text ) );
+
+		return $value;
+	}
+
+	public function meta_type_person( $template, $gender = 'female', $weight = 50 ) {
+		$weight = $weight / 100;
+
+		$template = explode( '|', $template );
+
+		$tags = array(
+			'title',
+			'first_name',
+			'last_name',
+			'suffix',
+		);
+
+		$text = array();
+
+		foreach ( $template as $key => $tag ) {
+			preg_match( '|^\{\% *([^\ ]*) *\%\}$|i', $tag, $_parsed );
+			if ( ! empty( $_parsed ) ){
+				list( $element, $term ) = $_parsed;
+				switch ( $term ) {
+					case 'title':
+						$text[] = $this->generator->title( $gender );
+						break;
+					case 'first_name':
+						$text[] = $this->generator->firstName( $gender );
+						break;
+					case 'last_name':
+						$text[] = $this->generator->lastName;
+						break;
+					case 'suffix':
+						$text[] = $this->generator->suffix;
+						break;
+				}
+			} else {
+				$text[] = ( empty( $tag ) ? ' ' : $tag );
+			}
+		}
+
+		$value = $this->generator->optional( $weight, null )->randomElement( (array) implode( '', $text ) );
+
+		return $value;
+	}
+
+	public function meta_type_geo( $template, $weight = 50 ) {
+		$weight = $weight / 100;
+		$template = explode( '|', $template );
+		$tags = array(
+			'country',
+			'city_prefix',
+			'city_suffix',
+			'city',
+			'state',
+			'state_abbr',
+			'address',
+			'secondary_address',
+			'building_number',
+			'street_name',
+			'street_address',
+			'postalcode',
+			'latitude',
+			'longitude',
+		);
+
+		$text = array();
+
+		foreach ( $template as $key => $tag ) {
+			preg_match( '|^\{\% *([^\ ]*) *\%\}$|i', $tag, $_parsed );
+			if ( ! empty( $_parsed ) ){
+				list( $element, $term ) = $_parsed;
+				switch ( $term ) {
+					case 'country':
+						$text[] = $this->generator->country;
+						break;
+					case 'city_prefix':
+						$text[] = $this->generator->cityPrefix;
+						break;
+					case 'city_suffix':
+						$text[] = $this->generator->citySuffix;
+						break;
+					case 'city':
+						$text[] = $this->generator->city;
+						break;
+					case 'state':
+						$text[] = $this->generator->state;
+						break;
+					case 'state_abbr':
+						$text[] = $this->generator->stateAbbr;
+						break;
+					case 'address':
+						$text[] = $this->generator->address;
+						break;
+					case 'secondary_address':
+						$text[] = $this->generator->secondaryAddress;
+						break;
+					case 'building_number':
+						$text[] = $this->generator->buildingNumber;
+						break;
+					case 'street_name':
+						$text[] = $this->generator->streetName;
+						break;
+					case 'street_address':
+						$text[] = $this->generator->streetAddress;
+						break;
+					case 'postalcode':
+						$text[] = $this->generator->postcode;
+						break;
+					case 'latitude':
+						$text[] = $this->generator->latitude;
+						break;
+					case 'longitude':
+						$text[] = $this->generator->longitude;
+						break;
+				}
+			} else {
+				$text[] = ( empty( $tag ) ? ' ' : $tag );
+			}
+		}
+
+		$value = $this->generator->optional( $weight, null )->randomElement( (array) implode( '', $text ) );
+
+		return $value;
+	}
+
+	public function meta_type_date( $interval, $format = 'Y-m-d H:i:s', $weight = 50 ) {
+		$weight = $weight / 100;
+
+		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+		try {
+			$min = new \Carbon\Carbon( $interval['min'] );
+			$possible_max = new \Carbon\Carbon( 'now' );
+		} catch ( \Exception $e ) {
+			return null;
+		}
+
+		if ( ! is_null( $interval['max'] ) ){
+			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+			try {
+				$max = new \Carbon\Carbon( $interval['max'] );
+			} catch (\Exception $e) {
+				return null;
+			}
+		}
+
+		if ( ! is_null( $max ) ) {
+			$selected = $this->generator->dateTimeBetween( (string) $min, (string) $max )->format( $format );
+		} else {
+			$selected = $this->generator->dateTimeBetween( (string) $min, (string) $possible_max )->format( $format );
+		}
+
+		$value = $this->generator->optional( $weight, null )->randomElement( (array) $selected );
+
+		return $value;
+	}
+
+	public function meta_type_ip( $weight = 50 ) {
+		$weight = $weight / 100;
+
+		$value = $this->generator->optional( $weight, null )->ipv4;
+
+		return $value;
+	}
+
+	public function meta_type_domain( $weight = 50 ) {
+		$weight = $weight / 100;
+
+		$value = $this->generator->optional( $weight, null )->domainName;
+
+		return $value;
+	}
+
+	public function meta_type_email( $weight = 50 ) {
+		$weight = $weight / 100;
+
+		$value = $this->generator->optional( $weight, null )->email;
+
+		return $value;
+	}
+
+	public function meta_type_user_agent( $weight = 50 ) {
+		$weight = $weight / 100;
+
+		$value = $this->generator->optional( $weight, null )->userAgent;
 
 		return $value;
 	}

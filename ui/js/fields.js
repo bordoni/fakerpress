@@ -50,6 +50,7 @@ window.fakerpress.fields.dropdown = function( $, _ ){
 			} else {
 				args.tokenSeparators = $select.data( 'separator' );
 			}
+			args.separator = $select.data( 'separator' );
 
 			// Define the regular Exp based on
 			args.regexSeparatorElements = [ '^(' ];
@@ -428,7 +429,9 @@ window.fakerpress.fields.dates = function( $, _ ){
 					$clone = $meta.clone();
 
 				$clone
-					.find( '.fp-type-dropdown' ).removeClass( 'select2-offscreen' )
+					.find( _meta_type ).select2( 'val', '' )
+					.end().find( _meta_name ).val( '' )
+					.end().find( '.fp-type-dropdown' ).removeClass( 'select2-offscreen' )
 					.filter( '.select2-container' ).remove();
 
 				// Append the new Meta to the Wrap

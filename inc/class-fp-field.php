@@ -407,6 +407,10 @@ class Field {
 				continue;
 			}
 
+			if ( 'label' === $key ){
+				continue;
+			}
+
 			if ( '_' === substr( $key, 0, 1 ) ){
 				$key = substr_replace( $key, 'data-', 0, 1 );
 			}
@@ -997,6 +1001,26 @@ class Field {
 			},
 		);
 
+		$types->wp_query = array(
+			'value' => 'wp_query',
+			'text' => __( 'WP_Query', self::plugin ),
+			'template' => function( $field, $type ) use ( $default ){
+				$query = clone $field;
+				$query->_id = array( 'meta', 'query' );
+				$query->_name = array( 'meta', 'query' );
+				$query->type = 'text';
+				$query->class = array();
+				$query->size = 'large';
+				$query->placeholder = __( 'category=2&posts_per_page=10', self::plugin );
+				$query->label = __( 'Uses <a href="http://codex.wordpress.org/Class_Reference/WP_Query" target="_blank">WP_Query</a>', self::plugin );
+
+				$html[] = self::wrapper( self::type_text( $query, null, 'string' ), $query );
+				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+
+				return implode( "\r\n", $html );
+			},
+		);
+
 		$types->elements = array(
 			'value' => 'elements',
 			'text' => __( 'Elements', self::plugin ),
@@ -1186,7 +1210,7 @@ class Field {
 					),
 				);
 				$template->value = 'title,first_name,last_name,suffix';
-				$template->value = '{% title %}|{% first_name %}|{% last_name|{% suffix %}';
+				$template->value = '{% title %}|{% first_name %}|{% last_name %}|{% suffix %}';
 				$template->{'data-separator'} = '|';
 				$template->class = array();
 				$template->label = __( 'Name Template', self::plugin );
@@ -1216,7 +1240,7 @@ class Field {
 			},
 		);
 
-		$types->address = array(
+		$types->geo = array(
 			'value' => 'geo',
 			'text' => __( 'Geo Information', self::plugin ),
 			'template' => function( $field, $type ) use ( $default ){
@@ -1324,7 +1348,7 @@ class Field {
 						'value' => '{% suffix %}',
 					),
 				);
-				$template->value = '{% suffix %}|{% Company %}';
+				$template->value = '{% company %}|&nbsp;|{% suffix %}';
 				$template->{'data-separator'} = '|';
 				$template->class = array();
 				$template->label = __( 'Company Format', self::plugin );
@@ -1346,7 +1370,26 @@ class Field {
 				$template->type = 'interval';
 				$template->class = array();
 
+				$format = clone $field;
+				$format->_id = array( 'meta', 'format' );
+				$format->_name = array( 'meta', 'format' );
+				$format->type = 'text';
+				$format->class = array();
+				$format->value = 'Y-m-d H:i:s';
+				$format->label = __( 'Date Format <b space>&mdash;</b> See <a href="http://php.net/manual/function.date.php" target="_blank">PHP Date</a>', self::plugin );
+
 				$html[] = self::wrapper( self::type_interval( $template, null, 'string' ), $template );
+				$html[] = self::wrapper( self::type_text( $format, null, 'string' ), $format );
+				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+
+				return implode( "\r\n", $html );
+			},
+		);
+
+		$types->timezone = array(
+			'value' => 'timezone',
+			'text' => __( 'TimeZone', self::plugin ),
+			'template' => function( $field, $type ) use ( $default ){
 				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1424,8 +1467,8 @@ class Field {
 		$max->placeholder = esc_attr__( 'yyyy-mm-dd', self::plugin );
 
 		$interval = clone $field;
-		$interval->_id[] = 'interval';
-		$interval->_name[] = 'interval';
+		$interval->_id[] = 'name';
+		$interval->_name[] = 'name';
 		$interval->type = 'dropdown';
 		$interval->class = array();
 		$interval->{'data-placeholder'} = esc_attr__( 'Select an Interval', self::plugin );
