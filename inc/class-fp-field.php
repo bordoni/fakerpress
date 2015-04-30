@@ -33,6 +33,10 @@ class Field {
 		'attributes' => array(),
 		'actions' => array(),
 		'heads' => array(),
+		'class' => array(),
+		'wrap' => array(
+			'class' => array()
+		),
 		'blocks' => array( 'label', 'fields', 'description', 'actions' ),
 	);
 
@@ -88,6 +92,8 @@ class Field {
 		$this->description = $container->description;
 		$this->actions = $container->actions;
 		$this->blocks = $container->blocks;
+		$this->class = $container->class;
+		$this->wrap = $container->wrap;
 	}
 
 	public function output( $print = false ) {
@@ -214,16 +220,20 @@ class Field {
 	}
 
 	public static function start_container( $container, $output = 'string', $html = array() ) {
-		$classes = array( 'field-container', 'type-' . $container->type . '-container' );
+		if ( ! is_array( $container->class ) ){
+			$container->class = (array) $container->class;
+		}
+		$container->class[] = 'field-container';
+		$container->class[] = 'type-' . $container->type . '-container';
 
 		if ( is_wp_error( $container->error ) ){
-			$classes[] = 'error';
+			$container->class[] = 'error';
 		}
 
-		$classes = array_map( array( __CLASS__, 'abbr' ) , $classes );
+		$container->class = array_map( array( __CLASS__, 'abbr' ) , $container->class );
 
 		if ( ! in_array( 'table' , $container->blocks ) ){
-			$html[] = '<tr id="' . self::id( $container->id, true ) . '" class="' . implode( ' ', $classes ) . '">';
+			$html[] = '<tr id="' . self::id( $container->id, true ) . '" class="' . implode( ' ', $container->class ) . '">';
 		}
 
 		$html = apply_filters( self::plugin . '/fields/field-start_container', $html, $container );
@@ -247,12 +257,37 @@ class Field {
 		}
 	}
 
+	public static function wrapper( $content = array(), $field = array(), $output = 'string' ){
+		$attributes = (object) array();
+		$attributes->class[] = 'field-wrap';
+		$attributes->class[] = 'type-' . $field->type . '-wrap';
+
+		$html = array();
+		if ( ! empty( $content ) ){
+			$html[] = '<fieldset' . self::attr( $attributes ) . '>';
+			$html[] = implode( "\r\n", (array) $content );
+			if ( ! empty( $field->label ) ){
+				$html[] = '<label class="' . self::abbr( 'internal-label' ) . '">' . $field->label . '</label>';
+			}
+			$html[] = '</fieldset>';
+		}
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
+	}
+
 	public static function start_wrap( $container, $output = 'string', $html = array() ) {
+		$container->wrap['class'][] = 'field-wrap';
+		$container->wrap['class'][] = 'type-' . $container->type . '-wrap';
 		if ( in_array( 'fields', $container->blocks ) ){
 			$html[] = '<td colspan="1">';
-			$html[] = '<fieldset class="' . self::abbr( 'field-wrap' ) . '">';
+			$html[] = '<fieldset' . self::attr( $container->wrap ) . '>';
 		} elseif ( ! in_array( 'table' , $container->blocks ) ) {
-			$html[] = '<td colspan="2" class="' . self::abbr( 'field-wrap' ) . '">';
+			$container->wrap['colspan'] = 2;
+			$html[] = '<td' . self::attr( $container->wrap ) . '>';
 		}
 
 		$html = apply_filters( self::plugin . '/fields/field-start_wrap', $html, $container );
@@ -288,13 +323,13 @@ class Field {
 	}
 
 	public static function label( $container, $output = 'string', $html = array() ) {
-		$html[] = '<' . ( 'meta' === $container->type ? 'td' : 'th' ) . ' scope="row" colspan="1">';
+		$html[] = '<' . ( false !== strpos(  $container->type, 'meta' ) ? 'td' : 'th' ) . ' scope="row" colspan="1">';
 
 		if ( isset( $container->label ) && false !== $container->label ) {
 			$html[] = '<label class="' . self::abbr( 'field-label' ) . '" for="' . self::id( $container->id ) . '">' . $container->label . '</label>';
 		}
 
-		$html[] = '</' . ( 'meta' === $container->type ? 'td' : 'th' ) . '>';
+		$html[] = '</' . ( false !== strpos(  $container->type, 'meta' ) ? 'td' : 'th' ) . '>';
 
 		$html = apply_filters( self::plugin . '/fields/field-label', $html, $container );
 		if ( 'string' === $output ){
@@ -689,6 +724,7 @@ class Field {
 			$content[] = '<select' . self::attr( $field ) . '>';
 			$content[] = '<option></option>';
 			foreach ( $field->options as $option ) {
+				$option = (array) $option;
 				$content[] = '<option' . self::attr( $option ) . '>' . esc_attr( $option['text'] ) . '</option>';
 			}
 			$content[] = '</select>';
@@ -718,8 +754,7 @@ class Field {
 		$min->_name[] = 'min';
 		$min->type = 'number';
 		$min->{'data-type'} = 'min';
-		$min->max = 25;
-		$min->min = 1;
+		$min->min = 0;
 		$min->class = array();
 		$min->placeholder = esc_attr__( 'e.g.: 3', self::plugin );
 
@@ -728,8 +763,7 @@ class Field {
 		$max->_name[] = 'max';
 		$max->{'data-type'} = 'max';
 		$max->type = 'number';
-		$max->max = 25;
-		$max->min = 1;
+		$max->min = 0;
 		$max->class = array();
 		$max->disabled = true;
 		$max->placeholder = esc_attr__( 'e.g.: 12', self::plugin );
@@ -757,6 +791,14 @@ class Field {
 			return false;
 		}
 
+		$index = clone $field;
+		$index->_id[] = 'index';
+		$index->_name[] = 'index';
+		$index->type = 'button';
+		$index->value = '1';
+		$index->disabled = true;
+		$index->class = array( 'action-order' );
+
 		$remove = clone $field;
 		$remove->_id[] = 'remove';
 		$remove->_name[] = 'remove';
@@ -776,20 +818,19 @@ class Field {
 		$table->blocks = array( 'heading', 'table' );
 		$table->heads = array(
 			array(
-				'style' => 'width: 10px;',
 				'class' => 'order-table',
+				'html' => self::type_button( $index, null, 'string' ),
+			),
+			array(
+				'class' => 'label-table',
 				'html' => '',
 			),
 			array(
-				'style' => 'width: 85px;',
-				'html' => '',
-			),
-			array(
+				'class' => 'fields-table',
 				'html' => '',
 			),
 			array(
 				'html' => self::type_button( $remove, null, 'string' ) . self::type_button( $duplicate, null, 'string' ),
-				'style' => 'width: 10px;',
 				'class' => 'actions-table',
 			),
 		);
@@ -807,49 +848,46 @@ class Field {
 
 		$meta_type = clone $container;
 		$meta_type->id[] = 'type';
+		$meta_type->type .= '_type';
 		$meta_type->label = __( 'Type', self::plugin );
 		$meta_type->description = __( 'Select a type of the Meta Field', self::plugin );
+		$meta_type->class = array( 'meta_type-container' );
 		$meta_type->blocks = $blocks;
 
 		$meta_name = clone $container;
 		$meta_name->id[] = 'name';
+		$meta_name->type .= '_name';
 		$meta_name->label = __( 'Name', self::plugin );
 		$meta_name->description = __( 'Select the name for Meta Field', self::plugin );
+		$meta_name->class = array( 'meta_name-container' );
 		$meta_name->blocks = $blocks;
 
-		$meta_value = clone $container;
-		$meta_value->id[] = 'value';
-		$meta_value->label = __( 'Configuration', self::plugin );
-		$meta_value->description = __( '', self::plugin );
-		$meta_value->blocks = $blocks;
+		$meta_conf = clone $container;
+		$meta_conf->id[] = 'conf';
+		$meta_name->type .= '_conf';
+		$meta_conf->label = __( 'Configuration', self::plugin );
+		$meta_conf->description = __( '', self::plugin );
+		$meta_conf->class = array( 'meta_conf-container' );
+		$meta_conf->blocks = $blocks;
 
 		$type = clone $field;
 		$type->_id[] = 'type';
 		$type->_name[] = 'type';
 		$type->type = 'dropdown';
-		$type->options = apply_filters( self::plugin . '/fields/meta_types', array(
-			array(
-				'value' => 'digit',
-				'text' => __( 'Digit', self::plugin ),
-			),
-			array(
-				'value' => 'range',
-				'text' => __( 'Range of Numbers', self::plugin ),
-			),
-		) );
-		$type->class = array();
+		$type->options = self::get_meta_types();
+		$type->class = array( 'meta_type' );
 		$type->placeholder = esc_attr__( 'Select a Field type', self::plugin );
 
 		$name = clone $field;
 		$name->_id[] = 'name';
 		$name->_name[] = 'name';
 		$name->type = 'text';
-		$name->class = array();
+		$name->class = array( 'meta_name' );
 		$name->placeholder = esc_attr__( 'Newborn Meta needs a Name, E.g.: _new_image', self::plugin );
 
 		$content[] = $meta_type->build( self::type_dropdown( $type, null, 'string' ) );
 		$content[] = $meta_name->build( self::type_text( $name, null, 'string' ) );
-		$content[] = $meta_value->build( '' );
+		$content[] = $meta_conf->build( '' );
 
 		$content = $table->build( $content );
 
@@ -859,11 +897,226 @@ class Field {
 			$html = $content;
 		}
 
+		foreach ( $type->options as $key => $ftype ) {
+			$is_callable = ( isset( $ftype->template ) && is_callable( $ftype->template ) );
+			$html[] = '<script type="text/html" data-rel="' . self::id( $container->id, true ) . '" class="' . self::abbr( 'template-' . $ftype->value ) . '"' . ( $is_callable ? ' data-callable' : '' ) . '>';
+			if ( $is_callable ){
+				$html[] = call_user_func_array( $ftype->template, array( $field, $ftype ) );
+			}
+			$html[] = '</script>';
+		}
+
 		if ( 'string' === $output ){
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
 		}
+	}
+
+	public static function get_meta_types(){
+		$types = (object) array();
+
+		$types->numbers = array(
+			'value' => 'numbers',
+			'text' => __( 'Number', self::plugin ),
+			'template' => function( $field, $type ){
+				$min = clone $field;
+				$min->_id = array( 'meta', 'number' );
+				$min->_name = array( 'meta', 'number' );
+				$min->type = 'range';
+				$min->class = array();
+
+				$html[] = self::wrapper( self::type_range( $min, null, 'string' ), $min );
+
+				return implode( "\r\n", $html );
+			},
+		);
+
+		$types->elements = array(
+			'value' => 'elements',
+			'text' => __( 'Elements', self::plugin ),
+			'template' => function( $field, $type ){
+				$tags = clone $field;
+				$tags->_id = array( 'meta', 'elements' );
+				$tags->_name = array( 'meta', 'elements' );
+				$tags->type = 'dropdown';
+				$tags->multiple = true;
+				$tags->{'data-options'} = array();
+				$tags->{'data-tags'} = true;
+				$tags->class = array();
+				$tags->placeholder = __( 'Type all possible elements (Comma-Separated)', self::plugin );
+				$tags->label = __( '', self::plugin );
+
+				$qty = clone $field;
+				$qty->_id = array( 'meta', 'qty' );
+				$qty->_name = array( 'meta', 'qty' );
+				$qty->type = 'range';
+				$qty->class = array();
+				$qty->label = __( 'Quantity', self::plugin );
+
+				$weight = clone $field;
+				$weight->_id = array( 'meta', 'weight' );
+				$weight->_name = array( 'meta', 'weight' );
+				$weight->type = 'number';
+				$weight->class = array();
+				$weight->min = 0;
+				$weight->max = 100;
+				$weight->placeholder = __( 'Eg: 55', self::plugin );
+				$weight->label = __( 'Weight', self::plugin );
+
+				$html[] = self::wrapper( self::type_dropdown( $tags, null, 'string' ), $tags );
+				$html[] = self::wrapper( self::type_range( $qty, null, 'string' ), $qty );
+				$html[] = self::wrapper( self::type_number( $weight, null, 'string' ), $weight );
+
+				return implode( "\r\n", $html );
+			},
+		);
+
+		$types->letter = array(
+			'value' => 'letter',
+			'text' => __( 'Letter', self::plugin ),
+			'template' => function( $field, $type ){
+				$weight = clone $field;
+				$weight->_id = array( 'meta', 'weight' );
+				$weight->_name = array( 'meta', 'weight' );
+				$weight->type = 'number';
+				$weight->class = array();
+				$weight->min = 0;
+				$weight->max = 100;
+				$weight->placeholder = __( 'Eg: 55', self::plugin );
+				$weight->label = __( 'Weight', self::plugin );
+
+				$html[] = self::wrapper( self::type_number( $weight, null, 'string' ), $weight );
+
+				return implode( "\r\n", $html );
+			},
+		);
+
+		$types->words = array(
+			'value' => 'words',
+			'text' => __( 'Words', self::plugin ),
+			'template' => function( $field, $type ){
+				$qty = clone $field;
+				$qty->_id = array( 'meta', 'qty' );
+				$qty->_name = array( 'meta', 'qty' );
+				$qty->type = 'range';
+				$qty->class = array();
+				$qty->label = __( 'Quantity', self::plugin );
+
+				$weight = clone $field;
+				$weight->_id = array( 'meta', 'weight' );
+				$weight->_name = array( 'meta', 'weight' );
+				$weight->type = 'number';
+				$weight->class = array();
+				$weight->min = 0;
+				$weight->max = 100;
+				$weight->placeholder = __( 'Eg: 55', self::plugin );
+				$weight->label = __( 'Weight', self::plugin );
+
+				$html[] = self::wrapper( self::type_range( $qty, null, 'string' ), $qty );
+				$html[] = self::wrapper( self::type_number( $weight, null, 'string' ), $weight );
+
+				return implode( "\r\n", $html );
+			},
+		);
+
+		$types->senteces = array(
+			'value' => 'senteces',
+			'text' => __( 'Sentences', self::plugin ),
+			'template' => function( $field, $type ){
+				$qty = clone $field;
+				$qty->_id = array( 'meta', 'qty' );
+				$qty->_name = array( 'meta', 'qty' );
+				$qty->type = 'range';
+				$qty->class = array();
+				$qty->label = __( 'Quantity', self::plugin );
+
+				$weight = clone $field;
+				$weight->_id = array( 'meta', 'weight' );
+				$weight->_name = array( 'meta', 'weight' );
+				$weight->type = 'number';
+				$weight->class = array();
+				$weight->min = 0;
+				$weight->max = 100;
+				$weight->placeholder = __( 'Eg: 55', self::plugin );
+				$weight->label = __( 'Weight', self::plugin );
+
+				$html[] = self::wrapper( self::type_range( $qty, null, 'string' ), $qty );
+				$html[] = self::wrapper( self::type_number( $weight, null, 'string' ), $weight );
+
+				return implode( "\r\n", $html );
+			},
+		);
+
+		$types->text = array(
+			'value' => 'text',
+			'text' => __( 'Text', self::plugin ),
+		);
+
+		$types->html = array(
+			'value' => 'html',
+			'text' => __( 'HTML', self::plugin ),
+		);
+
+		$types->lexify = array(
+			'value' => 'lexify',
+			'text' => __( 'Lexify', self::plugin ),
+		);
+
+		$types->asciify = array(
+			'value' => 'asciify',
+			'text' => __( 'Asciify', self::plugin ),
+		);
+
+		$types->regexify = array(
+			'value' => 'regexify',
+			'text' => __( 'Regexify', self::plugin ),
+		);
+
+		$types->person = array(
+			'value' => 'person',
+			'text' => __( 'Person', self::plugin ),
+		);
+
+		$types->address = array(
+			'value' => 'address',
+			'text' => __( 'Address', self::plugin ),
+		);
+
+		$types->phone = array(
+			'value' => 'phone',
+			'text' => __( 'Phone', self::plugin ),
+		);
+
+		$types->date = array(
+			'value' => 'date',
+			'text' => __( 'Date', self::plugin ),
+		);
+
+		$types->email = array(
+			'value' => 'email',
+			'text' => __( 'Email', self::plugin ),
+		);
+
+		$types->domain = array(
+			'value' => 'domain',
+			'text' => __( 'Domain', self::plugin ),
+		);
+
+		$types->ip = array(
+			'value' => 'ip',
+			'text' => __( 'IP', self::plugin ),
+		);
+
+		$types->user_agent = array(
+			'value' => 'user_agent',
+			'text' => __( 'Browser User Agent', self::plugin ),
+		);
+		foreach ( $types as $key => $type ) {
+			$types->{$key} = (object) $type;
+		}
+
+		return apply_filters( self::plugin . '/fields/meta_types', $types );
 	}
 
 	public static function type_interval( $field, $container = null, $output = 'string', $html = array() ) {
@@ -914,7 +1167,7 @@ class Field {
 		}
 	}
 
-	public static function type_raw( $field, $container = null, $output = 'string' ) {
+	public static function type_raw( $field, $container = null, $output = 'string', $html = array() ) {
 		$field = self::parse( $field, $container );
 		if ( is_scalar( $field ) ){
 			return false;

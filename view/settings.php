@@ -31,8 +31,8 @@ $fields[] = new Field(
 		'value' => Plugin::get( array( '500px', 'key' ) ),
 	),
 	array(
-		'label' => __( 'Customer Key', 'fakerpress' ),
-		'description' => __( 'Application Customer Key — <a href="https://500px.com/settings/applications" target="_blank">500px Applications</a>', 'fakerpress' ),
+		'label' => __( 'Consumer Key', 'fakerpress' ),
+		'description' => __( 'Application Consumer Key — <a href="https://500px.com/settings/applications" target="_blank">500px Applications</a>', 'fakerpress' ),
 		'actions' => array(
 			'save_500px' => __( 'Save', 'fakerpress' ),
 		),
