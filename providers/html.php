@@ -46,7 +46,7 @@ class HTML extends Base {
 		$html = array();
 
 		$defaults = array(
-			'qty' => Base::randomNumber( 5, 25 ),
+			'qty' => Base::numberBetween( 5, 25 ),
 			'elements' => array_merge( self::$sets['header'], self::$sets['list'], self::$sets['block'] ),
 			'attr' => array(),
 			'exclude' => array( 'div' ),
@@ -66,7 +66,7 @@ class HTML extends Base {
 				// This one is to exclude header elements from apearing one after the other, or in the end of the string
 				if ( in_array( $element, self::$sets['header'] ) || $args->qty - 1 === $i ){
 					$exclude = array_merge( (array) $exclude, self::$sets['header'] );
-				} elseif ( $i > 1 && ( in_array( $els[$i - 1], self::$sets['list'] ) || in_array( $els[$i - 2], self::$sets['list'] ) ) ) {
+				} elseif ( $i > 1 && ( in_array( $els[ $i - 1 ], self::$sets['list'] ) || in_array( $els[ $i - 2 ], self::$sets['list'] ) ) ) {
 					$exclude = array_merge( (array) $exclude, self::$sets['list'] );
 				}
 			}
@@ -81,14 +81,7 @@ class HTML extends Base {
 
 			$html[] = $this->element( $element, $args->attr );
 
-			if (
-				$this->generator->numberBetween( 0, 100 ) <= 80 &&
-				! $args->did_more_element &&
-				$args->qty > 2 &&
-				$this->has_element( '!-- more --', $args->elements ) &&
-				$i < $max_to_more &&
-				$i > $min_to_more
-			){
+			if ( $this->generator->numberBetween( 0, 100 ) <= 80 && ! $args->did_more_element && $args->qty > 2 && $this->has_element( '!-- more --', $args->elements ) && $i < $max_to_more &&	$i > $min_to_more ){
 				$html[] = $this->element( '!-- more --' );
 				$args->did_more_element = true;
 			}
@@ -103,17 +96,17 @@ class HTML extends Base {
 		$sentences   = array();
 
 		for ( $i = 0; $i < $total_words; $i++ ) {
-			$group    = Base::randomNumber( 1, Base::randomNumber( 3, 9 ) );
+			$group    = Base::numberBetween( 1, Base::numberBetween( 3, 9 ) );
 			$sentence = array();
 
 			for ( $k = 0 ; $k < $group; $k++ ) {
 				$index = $i + $k;
 
-				if ( ! isset( $words[$index] ) ){
+				if ( ! isset( $words[ $index ] ) ){
 					break;
 				}
 
-				$sentence[] = $words[$index];
+				$sentence[] = $words[ $index ];
 
 			}
 			$i += $k;
@@ -121,19 +114,19 @@ class HTML extends Base {
 			$sentences[] = implode( ' ', $sentence );
 		}
 
-		$qty = $max - Base::randomNumber( 0, $max );
+		$qty = $max - Base::numberBetween( 0, $max );
 
-		if ( $qty === 0 ){
+		if ( 0 === $qty ){
 			return $text;
 		}
 
 		$indexes = floor( count( $sentences ) / $qty );
 
 		for ( $i = 0; $i < $qty; $i++ ) {
-			$index = ( $indexes * $i ) + Base::randomNumber( 0, $indexes );
+			$index = ( $indexes * $i ) + Base::numberBetween( 0, $indexes );
 
-			if ( isset( $sentences[$index] ) ){
-				$sentences[$index] = $this->element( $element, array(), $sentences[$index] );
+			if ( isset( $sentences[ $index ] ) ){
+				$sentences[ $index ] = $this->element( $element, array(), $sentences[ $index ] );
 			}
 		}
 
@@ -154,16 +147,16 @@ class HTML extends Base {
 
 		$html = array();
 
-		if ( $element->name === 'a' ){
+		if ( 'a' === $element->name ){
 			if ( ! isset( $element->attr['title'] ) ) {
-				$element->attr['title'] = Lorem::sentence( Base::randomNumber( 1, Base::randomNumber( 3, 9 ) ) );
+				$element->attr['title'] = Lorem::sentence( Base::numberBetween( 1, Base::numberBetween( 3, 9 ) ) );
 			}
 			if ( ! isset( $element->attr['href'] ) ) {
 				$element->attr['href'] = $this->generator->url();
 			}
 		}
 
-		if ( $element->name === 'img' ){
+		if ( 'img' === $element->name ){
 			if ( ! isset( $element->attr['class'] ) ) {
 				if ( $this->generator->randomDigit() > 4 ){
 					$element->attr['class'][] = $this->generator->randomElement( array( 'aligncenter', 'alignleft', 'alignright' ) );
@@ -172,7 +165,7 @@ class HTML extends Base {
 			}
 
 			if ( ! isset( $element->attr['alt'] ) ) {
-				$element->attr['alt'] = Lorem::sentence( Base::randomNumber( 1, Base::randomNumber( 3, 9 ) ) );
+				$element->attr['alt'] = Lorem::sentence( Base::numberBetween( 1, Base::numberBetween( 3, 9 ) ) );
 			}
 
 			if ( ! isset( $element->attr['src'] ) ) {
@@ -191,20 +184,20 @@ class HTML extends Base {
 			if ( ! is_null( $text ) ){
 				$html[] = $text;
 			} elseif ( in_array( $element->name, self::$sets['inline'] ) ){
-				$text   = Lorem::text( Base::randomNumber( 5, 25 ) );
+				$text   = Lorem::text( Base::numberBetween( 5, 25 ) );
 				$html[] = substr( $text, 0, strlen( $text ) - 1 );
 			} elseif ( in_array( $element->name, self::$sets['item'] ) ){
-				$text   = Lorem::text( Base::randomNumber( 10, 60 ) );
+				$text   = Lorem::text( Base::numberBetween( 10, 60 ) );
 				$html[] = substr( $text, 0, strlen( $text ) - 1 );
 			} elseif ( in_array( $element->name, self::$sets['list'] ) ){
-				for ( $i = 0; $i < Base::randomNumber( 1, 15 ); $i++ ) {
+				for ( $i = 0; $i < Base::numberBetween( 1, 15 ); $i++ ) {
 					$html[] = $this->element( 'li' );
 				}
 			} elseif ( in_array( $element->name, self::$sets['header'] ) ){
-				$text   = Lorem::text( Base::randomNumber( 60, 200 ) );
+				$text   = Lorem::text( Base::numberBetween( 60, 200 ) );
 				$html[] = substr( $text, 0, strlen( $text ) - 1 );
 			} else {
-				$html[] = $this->random_apply_element( 'a', Base::randomNumber( 0, 10 ), Lorem::paragraph( Base::randomNumber( 2, 40 ) ) );
+				$html[] = $this->random_apply_element( 'a', Base::numberBetween( 0, 10 ), Lorem::paragraph( Base::numberBetween( 2, 40 ) ) );
 			}
 
 			$html[] = sprintf( '</%s>', $element->name );
