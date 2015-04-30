@@ -1285,31 +1285,98 @@ class Field {
 		$types->phone = array(
 			'value' => 'company',
 			'text' => __( 'Company', self::plugin ),
+			'template' => function( $field, $type ) use ( $default ){
+				$template = clone $field;
+				$template->_id = array( 'meta', 'template' );
+				$template->_name = array( 'meta', 'template' );
+				$template->type = 'dropdown';
+				$template->multiple = true;
+				$template->{'data-tags'} = true;
+				$template->{'data-options'} = array(
+					array(
+						'text' => __( 'Catch Phrase', self::plugin ),
+						'value' => '{% catch_phrase %}',
+					),
+					array(
+						'text' => __( 'BS', self::plugin ),
+						'value' => '{% bs %}',
+					),
+					array(
+						'text' => __( 'Company', self::plugin ),
+						'value' => '{% company %}',
+					),
+					array(
+						'text' => __( 'Suffix', self::plugin ),
+						'value' => '{% suffix %}',
+					),
+				);
+				$template->value = '{% suffix %}|{% Company %}';
+				$template->{'data-separator'} = '|';
+				$template->class = array();
+				$template->label = __( 'Company Format', self::plugin );
+
+				$html[] = self::wrapper( self::type_dropdown( $template, null, 'string' ), $template );
+				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+
+				return implode( "\r\n", $html );
+			},
 		);
 
 		$types->date = array(
 			'value' => 'date',
 			'text' => __( 'Date', self::plugin ),
+			'template' => function( $field, $type ) use ( $default ){
+				$template = clone $field;
+				$template->_id = array( 'meta', 'interval' );
+				$template->_name = array( 'meta', 'interval' );
+				$template->type = 'interval';
+				$template->class = array();
+
+				$html[] = self::wrapper( self::type_interval( $template, null, 'string' ), $template );
+				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+
+				return implode( "\r\n", $html );
+			},
 		);
 
 		$types->email = array(
 			'value' => 'email',
 			'text' => __( 'Email', self::plugin ),
+			'template' => function( $field, $type ) use ( $default ){
+				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+
+				return implode( "\r\n", $html );
+			},
 		);
 
 		$types->domain = array(
 			'value' => 'domain',
 			'text' => __( 'Domain', self::plugin ),
+			'template' => function( $field, $type ) use ( $default ){
+				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+
+				return implode( "\r\n", $html );
+			},
 		);
 
 		$types->ip = array(
 			'value' => 'ip',
 			'text' => __( 'IP', self::plugin ),
+			'template' => function( $field, $type ) use ( $default ){
+				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+
+				return implode( "\r\n", $html );
+			},
 		);
 
 		$types->user_agent = array(
 			'value' => 'user_agent',
 			'text' => __( 'Browser User Agent', self::plugin ),
+			'template' => function( $field, $type ) use ( $default ){
+				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+
+				return implode( "\r\n", $html );
+			},
 		);
 		foreach ( $types as $key => $type ) {
 			$types->{$key} = (object) $type;
