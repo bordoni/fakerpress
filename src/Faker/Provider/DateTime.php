@@ -4,7 +4,7 @@ namespace Faker\Provider;
 
 class DateTime extends \Faker\Provider\Base
 {
-    protected static $century = array('I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XX1');
+    protected static $century = array('I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI');
 
     protected static function getMaxTimestamp($max = 'now')
     {
@@ -23,6 +23,7 @@ class DateTime extends \Faker\Provider\Base
      * Get a timestamp between January 1, 1970 and now
      *
      * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @return int
      *
      * @example 1061306726
      */
@@ -34,7 +35,7 @@ class DateTime extends \Faker\Provider\Base
     /**
      * Get a datetime object for a date between January 1, 1970 and now
      *
-     * @param  \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
      * @example DateTime('2005-08-16 20:39:21')
      * @return \DateTime
      */
@@ -46,7 +47,7 @@ class DateTime extends \Faker\Provider\Base
     /**
      * Get a datetime object for a date between January 1, 001 and now
      *
-     * @param  \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
      * @example DateTime('1265-03-22 21:15:52')
      * @return \DateTime
      */
@@ -59,6 +60,7 @@ class DateTime extends \Faker\Provider\Base
      * get a date string formatted with ISO8601
      *
      * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @return string
      * @example '2003-10-21T16:05:52+0000'
      */
     public static function iso8601($max = 'now')
@@ -71,6 +73,7 @@ class DateTime extends \Faker\Provider\Base
      *
      * @param string               $format
      * @param \DateTime|int|string $max    maximum timestamp used as random end limit, default to "now"
+     * @return string
      * @example '2008-11-27'
      */
     public static function date($format = 'Y-m-d', $max = 'now')
@@ -83,6 +86,7 @@ class DateTime extends \Faker\Provider\Base
      *
      * @param string               $format
      * @param \DateTime|int|string $max    maximum timestamp used as random end limit, default to "now"
+     * @return string
      * @example '15:02:34'
      */
     public static function time($format = 'H:i:s', $max = 'now')
@@ -94,8 +98,8 @@ class DateTime extends \Faker\Provider\Base
      * Get a DateTime object based on a random date between two given dates.
      * Accepts date strings that can be recognized by strtotime().
      *
-     * @param  string    $startDate Defaults to 30 years ago
-     * @param  string    $endDate   Defaults to "now"
+     * @param string $startDate Defaults to 30 years ago
+     * @param string $endDate   Defaults to "now"
      * @example DateTime('1999-02-02 11:42:52')
      * @return \DateTime
      */
@@ -117,7 +121,7 @@ class DateTime extends \Faker\Provider\Base
     }
 
     /**
-     * @param  \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
      * @example DateTime('1964-04-04 11:02:02')
      * @return \DateTime
      */
@@ -127,7 +131,7 @@ class DateTime extends \Faker\Provider\Base
     }
 
     /**
-     * @param  \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
      * @example DateTime('2010-03-10 05:18:58')
      * @return \DateTime
      */
@@ -137,7 +141,7 @@ class DateTime extends \Faker\Provider\Base
     }
 
     /**
-     * @param  \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
      * @example DateTime('2011-09-19 09:24:37')
      * @return \DateTime
      */
@@ -147,7 +151,7 @@ class DateTime extends \Faker\Provider\Base
     }
 
     /**
-     * @param  \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
      * @example DateTime('2011-10-05 12:51:46')
      * @return \DateTime
      */
@@ -158,6 +162,7 @@ class DateTime extends \Faker\Provider\Base
 
     /**
      * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @return string
      * @example 'am'
      */
     public static function amPm($max = 'now')
@@ -167,6 +172,7 @@ class DateTime extends \Faker\Provider\Base
 
     /**
      * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @return string
      * @example '22'
      */
     public static function dayOfMonth($max = 'now')
@@ -176,6 +182,7 @@ class DateTime extends \Faker\Provider\Base
 
     /**
      * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @return string
      * @example 'Tuesday'
      */
     public static function dayOfWeek($max = 'now')
@@ -185,6 +192,7 @@ class DateTime extends \Faker\Provider\Base
 
     /**
      * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @return string
      * @example '7'
      */
     public static function month($max = 'now')
@@ -194,6 +202,7 @@ class DateTime extends \Faker\Provider\Base
 
     /**
      * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @return string
      * @example 'September'
      */
     public static function monthName($max = 'now')
@@ -203,6 +212,7 @@ class DateTime extends \Faker\Provider\Base
 
     /**
      * @param \DateTime|int|string $max maximum timestamp used as random end limit, default to "now"
+     * @return int
      * @example 1673
      */
     public static function year($max = 'now')
@@ -211,6 +221,7 @@ class DateTime extends \Faker\Provider\Base
     }
 
     /**
+     * @return string
      * @example 'XVII'
      */
     public static function century()
@@ -219,6 +230,7 @@ class DateTime extends \Faker\Provider\Base
     }
 
     /**
+     * @return string
      * @example 'Europe/Paris'
      */
     public static function timezone()

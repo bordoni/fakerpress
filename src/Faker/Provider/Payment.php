@@ -2,6 +2,8 @@
 
 namespace Faker\Provider;
 
+use Faker\Calculator\Luhn;
+
 class Payment extends Base
 {
     public static $expirationDateFormat = "m/y";
@@ -15,38 +17,38 @@ class Payment extends Base
     // see http://en.wikipedia.org/wiki/Bank_card_number for a reference of existing prefixes
     protected static $cardParams = array(
         'Visa' => array(
-            "4539#########",
-            "4539############",
-            "4556#########",
-            "4556############",
-            "4916#########",
-            "4916############",
-            "4532#########",
-            "4532############",
-            "4929#########",
-            "4929############",
-            "40240071#####",
-            "40240071########",
-            "4485#########",
-            "4485############",
-            "4716#########",
-            "4716############",
-            "4############",
-            "4###############"
+            "4539########",
+            "4539###########",
+            "4556########",
+            "4556###########",
+            "4916########",
+            "4916###########",
+            "4532########",
+            "4532###########",
+            "4929########",
+            "4929###########",
+            "40240071####",
+            "40240071#######",
+            "4485########",
+            "4485###########",
+            "4716########",
+            "4716###########",
+            "4###########",
+            "4##############"
         ),
         'MasterCard' => array(
-            "51##############",
-            "52##############",
-            "53##############",
-            "54##############",
-            "55##############"
+            "51#############",
+            "52#############",
+            "53#############",
+            "54#############",
+            "55#############"
         ),
         'American Express' => array(
-            "34#############",
-            "37#############"
+            "34############",
+            "37############"
         ),
         'Discover Card' => array(
-            "6011############"
+            "6011###########"
         ),
     );
 
@@ -133,6 +135,7 @@ class Payment extends Base
      * @param string  $type      Supporting any of 'Visa', 'MasterCard', 'Amercian Express', and 'Discover'
      * @param boolean $formatted Set to true if the output string should contain one separator every 4 digits
      * @param string  $separator Separator string for formatting card number. Defaults to dash (-).
+     * @return string
      *
      * @example '4485480221084675'
      */
@@ -144,13 +147,14 @@ class Payment extends Base
         $mask = static::randomElement(static::$cardParams[$type]);
 
         $number = static::numerify($mask);
+        $number .= Luhn::computeCheckDigit($number);
 
         if ($formatted) {
             $p1 = substr($number, 0, 4);
             $p2 = substr($number, 4, 4);
             $p3 = substr($number, 8, 4);
             $p4 = substr($number, 12);
-            $number = $p1 .$separator . $p2 . $separator . $p3 . $separator . $p4;
+            $number = $p1 . $separator . $p2 . $separator . $p3 . $separator . $p4;
         }
 
         return $number;
@@ -158,6 +162,7 @@ class Payment extends Base
 
     /**
      * @param boolean $valid True (by default) to get a valid expiration date, false to get a maybe valid date
+     * @return \DateTime
      * @example 04/13
      */
     public function creditCardExpirationDate($valid = true)
@@ -172,6 +177,7 @@ class Payment extends Base
     /**
      * @param boolean $valid                True (by default) to get a valid expiration date, false to get a maybe valid date
      * @param string  $expirationDateFormat
+     * @return string
      * @example '04/13'
      */
     public function creditCardExpirationDateString($valid = true, $expirationDateFormat = null)
@@ -181,7 +187,7 @@ class Payment extends Base
 
     /**
      * @param  boolean $valid True (by default) to get a valid expiration date, false to get a maybe valid date
-     * @return array()
+     * @return array
      */
     public function creditCardDetails($valid = true)
     {
@@ -197,6 +203,7 @@ class Payment extends Base
 
     /**
      * International Bank Account Number (IBAN)
+     *
      * @link http://en.wikipedia.org/wiki/International_Bank_Account_Number
      * @param  string  $countryCode ISO 3166-1 alpha-2 country code
      * @param  string  $prefix      for generating bank account number of a specific bank
@@ -267,6 +274,7 @@ class Payment extends Base
 
     /**
      * Calculates a checksum for the national bank and branch code part in the IBAN.
+     *
      * @param  string $iban        randomly generated $iban
      * @param  string $countryCode ISO 3166-1 alpha-2 country code
      * @return string IBAN with one character altered to a proper checksum
@@ -274,5 +282,17 @@ class Payment extends Base
     protected static function addBankCodeChecksum($iban, $countryCode = '')
     {
         return $iban;
+    }
+
+    /**
+     * Return the String of a SWIFT/BIC number
+     *
+     * @example 'RZTIAT22263'
+     * @link    http://en.wikipedia.org/wiki/ISO_9362
+     * @return  string Swift/Bic number
+     */
+    public static function swiftBicNumber()
+    {
+        return self::regexify("^([A-Z]){4}([A-Z]){2}([0-9A-Z]){2}([0-9A-Z]{3})?$");
     }
 }
