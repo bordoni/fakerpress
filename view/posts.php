@@ -95,7 +95,12 @@ $fields[] = new Field(
 	'checkbox',
 	array(
 		'id' => 'use_html',
-		'options' => __( 'Use HTML on your randomized post content?', 'fakerpress' ),
+		'options' => array(
+			array(
+				'text' => __( 'Use HTML on your randomized post content?', 'fakerpress' ),
+				'value' => 1,
+			),
+		),
 		'value' => 1,
 	),
 	array(

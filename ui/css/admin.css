@@ -198,6 +198,11 @@
 	color: #888;
 }
 
+.__fakerpress .fp-internal-label b[spacer] {
+	font-size: 15px;
+	padding: 0 3px;
+}
+
 .__fakerpress .fp-field-wrap + .fp-field-wrap {
 	margin-top: 8px;
 }

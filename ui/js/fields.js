@@ -10,7 +10,20 @@ window.fakerpress.fieldName = function( pieces ){
 };
 
 window.fakerpress.fieldId = function( pieces ){
-	return this.plugin + '-' + pieces.join( '-' );
+	return this.plugin + '-field-' + pieces.join( '-' );
+};
+
+window.fakerpress.searchId = function ( e ) {
+	var id = null;
+
+	if ( 'undefined' !== typeof e.id ){
+		id = e.id;
+	} else if ( 'undefined' !== typeof e.ID ){
+		id = e.ID;
+	} else if ( 'undefined' !== typeof e.value ){
+		id = e.value;
+	}
+	return e == undefined ? null : id;
 };
 
 // Select2 Fields
@@ -32,13 +45,77 @@ window.fakerpress.fields.dropdown = function( $, _ ){
 				};
 			}
 
+			if ( ! _.isArray( $select.data( 'separator' ) ) ){
+				args.tokenSeparators = [ $select.data( 'separator' ) ];
+			} else {
+				args.tokenSeparators = $select.data( 'separator' );
+			}
+
+			// Define the regular Exp based on
+			args.regexSeparatorElements = [ '^(' ];
+			args.regexSplitElements = [ '(?:' ];
+			$.each( args.tokenSeparators, function ( i, token ){
+				args.regexSeparatorElements.push( '[^' + token + ']+' );
+				args.regexSplitElements.push( '[' + token + ']' );
+			} );
+			args.regexSeparatorElements.push( ')$' );
+			args.regexSplitElements.push( ')' );
+
+			args.regexSeparatorString = args.regexSeparatorElements.join( '' )
+			args.regexSplitString = args.regexSplitElements.join( '' )
+
+			args.regexToken = new RegExp( args.regexSeparatorString, 'ig');
+			args.regexSplit = new RegExp( args.regexSplitString, 'ig');
+
+			args.id = window.fakerpress.searchId;
+
 		} else {
 			args.width = 200;
 		}
 
+		args.matcher = function( term, text ) {
+			var result = text.toUpperCase().indexOf( term.toUpperCase() ) == 0;
+
+			if ( ! result && 'undefined' !== typeof args.tags ){
+				var possible = _.where( args.tags, { text: text } );
+				if ( args.tags.length > 0  && _.isObject( possible ) ){
+					var test_value = window.fakerpress.searchId( possible[0] );
+					result = test_value.toUpperCase().indexOf( term.toUpperCase() ) == 0;
+				}
+			}
+
+			return result;
+		};
+
 		if ( $select.is( '[data-tags]' ) ){
 			args.tags = $select.data( 'options' );
-			args.tokenSeparators = [','];
+
+			args.initSelection = function ( element, callback ) {
+				var data = [];
+				$( element.val().split( args.regexSplit ) ).each( function () {
+					var obj = { id: this, text: this };
+					if ( args.tags.length > 0  && _.isObject( args.tags[0] ) ){
+						var _obj = _.where( args.tags, { value: this } );
+						if ( _obj.length > 0 ){
+							obj = _obj[0];
+							obj = {
+								id: obj.value,
+								text: obj.text,
+							};
+						}
+					}
+
+					data.push( obj );
+
+				} );
+				callback( data );
+			};
+
+			args.createSearchChoice = function(term, data) {
+				if ( term.match( args.regexToken ) ){
+					return { id: term, text: term };
+				}
+			};
 
 			if ( 0 === args.tags.length ){
 				args.formatNoMatches = function(  ){
@@ -46,6 +123,7 @@ window.fakerpress.fields.dropdown = function( $, _ ){
 				};
 			}
 		}
+
 
 		if ( $select.is( '[data-source]' ) ){
 			var source = $select.data( 'source' );
@@ -210,7 +288,7 @@ window.fakerpress.fields.dates = function( $, _ ){
 ( function( $, _ ){
 	'use strict';
 	$( document ).ready( function(){
-		var $meta_containers = $( '.form-table tbody' ).children( '.fp-type-meta-container' ).each( function(){
+		var $meta_containers = $( 'form' ).children( '.form-table' ).children( 'tbody' ).children( '.fp-type-meta-container' ).each( function(){
 			var $container = $( this ),
 				_wrap = '.fp-field-wrap',
 				$wrap = $container.children( _wrap ),
@@ -230,6 +308,9 @@ window.fakerpress.fields.dates = function( $, _ ){
 				_remove = '.fp-action-remove',
 				_order = '.fp-action-order',
 
+				_label = '.fp-field-label',
+				_internal_label = '.fp-internal-label',
+
 				_fields = '.fp-field';
 
 			$container.on( 'meta', [], function( event ){
@@ -237,16 +318,16 @@ window.fakerpress.fields.dates = function( $, _ ){
 				$metas = $wrap.children( _meta );
 				$container.data( 'metas', $metas );
 
+				$.each( window.fakerpress.fields, function( key, callback ){
+					callback( window.jQuery, window._ );
+				} );
+
 				// If there is just one meta, disable the remove button
-				if ( 1 === $metas.length ){
+				if ( 1 === $metas.length && ! $metas.eq( 0 ).find( _meta_type ).select2( 'val' ) ){
 					$metas.eq( 0 ).find( _remove ).prop( 'disabled', true );
 				} else {
 					$metas.find( _remove ).prop( 'disabled', false );
 				}
-
-				$.each( window.fakerpress.fields, function( key, callback ){
-					callback( window.jQuery, window._ );
-				} );
 
 				// Regenerate Order Index
 				$metas.each( function( index ){
@@ -254,7 +335,7 @@ window.fakerpress.fields.dates = function( $, _ ){
 						$index = $meta.find( _order ),
 
 						$type = $meta.find( _meta_type ),
-						type = $type.filter( '.select2-offscreen' ).val(),
+						type = $type.select2( 'val' ),
 						$name = $meta.find( _meta_name ),
 						name = $name.val(),
 
@@ -271,10 +352,17 @@ window.fakerpress.fields.dates = function( $, _ ){
 
 					$fields.each( function(  ){
 						var $field = $( this ),
+							$label = $field.next( _label ),
+							$internal_label = $field.next( _internal_label ),
 							__name = $field.data( 'name' ),
 							__id = $field.data( 'id' ),
 							id = [],
 							name = [];
+
+						// If didn't find a label inside of the parent element
+						if ( 0 === $label.length ){
+							$label = $field.parents( _wrap ).eq(0).find( _label );
+						}
 
 						_.each( __id, function( value, key, list ) {
 							id.push( value );
@@ -292,6 +380,8 @@ window.fakerpress.fields.dates = function( $, _ ){
 
 						if ( 0 !== id.length ){
 							$field.attr( 'id', window.fakerpress.fieldId( id ) );
+							$label.attr( 'for', window.fakerpress.fieldId( id ) );
+							$internal_label.attr( 'for', window.fakerpress.fieldId( id ) );
 						}
 
 						if ( 0 !== name.length ){
@@ -347,15 +437,17 @@ window.fakerpress.fields.dates = function( $, _ ){
 
 			$container.on( 'click', _remove, [], function( event ){
 				var $button = $( this ),
-					$meta = $button.parents( _meta );
+					$meta = $button.parents( _meta ),
+					$type = $meta.find( _meta_type );
+
 
 				// Prevent remove when there is just one meta
 				if ( 1 === $metas.length ){
-					return;
+					$type.select2( 'val', '' );
+				} else {
+					// Remove the Meta where the remove was clicked
+					$meta.remove();
 				}
-
-				// Remove the Meta where the remove was clicked
-				$meta.remove();
 
 				// Update all the required information
 				$container.trigger( 'meta' );

@@ -15,7 +15,12 @@ $fields[] = new Field(
 	array(
 		'id' => 'use_html',
 		'value' => 1,
-		'options' => __( 'Use HTML on your randomized comment content?', 'fakerpress' ),
+		'options' => array(
+			array(
+				'text' => __( 'Use HTML on your randomized comment content?', 'fakerpress' ),
+				'value' => 1,
+			),
+		),
 	),
 	array(
 		'label' => __( 'Use HTML', 'fakerpress' ),
