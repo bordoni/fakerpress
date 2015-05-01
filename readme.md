@@ -25,6 +25,7 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 ### Components Included ###
 * Posts
 * Custom Post Types
+* Meta Data
 * Featured Image
 * Users
 * Tags
@@ -36,6 +37,9 @@ Normally a WordPress developer will need to perform the task of filling up an em
 
 ### Random Featured Images ###
 Create randomly generated attachments as the Featured Images for your WordPress dummy content.
+
+### Create random Meta Information ###
+WordPress has Meta for Users, Posts and Comments, FakerPress will allow you to generate custom dummy meta for all three, with *19 types of Data*
 
 ### Delete the Content Generated ###
 After you are done with your testing it should be easy to delete all the content created using FakerPress, now you will be able to do it.
@@ -55,6 +59,27 @@ For creating and assigning the terms you will have a much better tool that will 
 ### Real random User profiles ###
 If you fill up your WordPress with any data for the user profiles you might not catch an edge case, this plugin will fill up the fields with data that will really matter in the tests.
 
+### Types of Meta Included ###
+* Number
+* WP_Query
+* Elements
+* Letter
+* Words
+* Text
+* HTML
+* Lexify
+* Asciify
+* Regexify
+* Person
+* Geo Information
+* Company
+* Date
+* TimeZone
+* Email
+* Domain
+* IP
+* Browser User Agent
+
 ### Languages ###
 * English
 * Portuguese (Brazil)
@@ -72,38 +97,41 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
-### 0.2.2 on 15 of April, 2015 ###
+### 0.3.0 &mdash; 1 of May, 2015 ###
+* New: Now you will be able to generate Custom dummy Meta for your Posts, Users and Comments
+
+### 0.2.2 &mdash; 15 of April, 2015 ###
 * New: 500px as a Image provider ( You will need a Customer App Key )
 * Tweak: New formula for Taxonomy randomization for Posts ( with new filters )
 
-### 0.2.1 on 02 of April, 2015 ###
+### 0.2.1 &mdash; 02 of April, 2015 ###
 * Fix: User generator now working again (sorry about that)
 
-### 0.2.0 on 01 of April, 2015 ###
+### 0.2.0 &mdash; 01 of April, 2015 ###
 * New: Featured Images is now an Option on our Plugin
 * New: Handling of Post Meta, still under the hood but preparation for the next versions
 
-### 0.1.6 on 07 of March, 2015 ###
+### 0.1.6 &mdash; 07 of March, 2015 ###
 * Fix: Prevent Carbon to Fatal error if trying to be included twice ([#50](https://github.com/bordoni/fakerpress/issues/50))
 * Tweak: Better checking for the content flag when deleting
 
-### 0.1.5 on 03 September, 2014 ###
+### 0.1.5 &mdash; 03 September, 2014 ###
 * New: Allow post Parent to be chosen on the Admin Form ([#35](https://github.com/bordoni/fakerpress/issues/35))
 * New: Now allow Image to be used in HTML, with Placehold.it ([#38](https://github.com/bordoni/fakerpress/issues/38))
 * Tweak: Allow users to choose which HTML tags will be used ([#37](https://github.com/bordoni/fakerpress/issues/37))
 * Tweak: User Select2 now uses AJAX to prevent bugs on bigger databases ([#43](https://github.com/bordoni/fakerpress/issues/43))
 * Tweak: Now you can select a range of items to be randomized, instead of always having to input a single number ([#44](https://github.com/bordoni/fakerpress/issues/44))
 
-### 0.1.4 on 15 of August, 2014 ###
+### 0.1.4 &mdash; 15 of August, 2014 ###
 * New: Delete all content created by Fakerpress ([#26](https://github.com/bordoni/fakerpress/issues/26))
 * New: Allow users to control `comment_status` on Posts ([#26](https://github.com/bordoni/fakerpress/issues/26))
 * New: Predefined interval set of dates ([#21](https://github.com/bordoni/fakerpress/issues/21))
 * Tweak: Prevent the user from selecting a bad combination of date fields ([#20](https://github.com/bordoni/fakerpress/issues/20))
 
-### 0.1.3 on 25 of June, 2014 ###
+### 0.1.3 &mdash; 25 of June, 2014 ###
 * Fixing a problem where the UI folder was not included in the final version
 
-### 0.1.2 on 24 of June, 2014 ###
+### 0.1.2 &mdash; 24 of June, 2014 ###
 * New: Admin messages for all pages ([#10](https://github.com/bordoni/fakerpress/issues/10))
 * New: Select Date range for Comments and Posts ([#11](https://github.com/bordoni/fakerpress/issues/11))
 * New: Select Author sampling group for Posts ([#11](https://github.com/bordoni/fakerpress/issues/11))
@@ -114,10 +142,10 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Tweak: Select2 usage to improve fields ([#13](https://github.com/bordoni/fakerpress/issues/13))
 * Fix: `admin_title` been overwritten ([#14](https://github.com/bordoni/fakerpress/issues/14))
 
-### 0.1.1 on 17 of June, 2014 ###
+### 0.1.1 &mdash; 17 of June, 2014 ###
 * Fatal Error gerated by a missing file Carbon related fixed
 
-### 0.1.0 on 17 of June, 2014 ###
+### 0.1.0 &mdash; 17 of June, 2014 ###
 * First initial concept of using [Faker](https://github.com/fzaninotto/Faker) to gerenate data on WordPress
 
 
