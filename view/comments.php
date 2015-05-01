@@ -52,6 +52,16 @@ $fields[] = new Field(
 	)
 );
 
+$fields[] = new Field(
+	'meta',
+	array(
+		'id' => 'meta',
+	),
+	array(
+		'label' => __( 'Meta Field Rules', 'fakerpress' ),
+		'description' => __( 'Use the fields below to configure a set of rules for your generated Comments', 'fakerpress' ),
+	)
+);
 /*
 <tr class='fk-field-container fk-field-dependent' data-fk-depends=".field-container-comment_content_use_html input" data-fk-condition='true'>
  */

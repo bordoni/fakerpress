@@ -66,6 +66,16 @@ $fields[] = new Field(
 	)
 );
 
+$fields[] = new Field(
+	'meta',
+	array(
+		'id' => 'meta',
+	),
+	array(
+		'label' => __( 'Meta Field Rules', 'fakerpress' ),
+		'description' => __( 'Use the fields below to configure a set of rules for your generated users', 'fakerpress' ),
+	)
+);
 ?>
 <div class='wrap'>
 	<h2><?php echo esc_attr( Admin::$view->title ); ?></h2>

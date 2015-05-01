@@ -57,6 +57,8 @@ class User extends Base {
 			return false;
 		}
 		// After this point we are safe to say that we have a good POST request
+		$meta_module = Meta::instance();
+
 		$qty_min = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'min' ), FILTER_SANITIZE_NUMBER_INT ) );
 		$qty_max = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'max' ), FILTER_SANITIZE_NUMBER_INT ) );
 
@@ -64,6 +66,7 @@ class User extends Base {
 		$description_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
 		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'roles' ), FILTER_SANITIZE_STRING ) ) ) );
+		$metas = Filter::super( INPUT_POST, array( 'fakerpress', 'meta' ), FILTER_UNSAFE_RAW );
 
 		if ( 0 === $qty_min ){
 			return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
@@ -84,7 +87,14 @@ class User extends Base {
 			$this->param( 'description', $description_use_html, array( 'elements' => $description_html_tags ) );
 			$this->generate();
 
-			$results->all[] = $this->save();
+			$user_id = $this->save();
+
+			if ( $user_id && is_numeric( $user_id ) ){
+				foreach ( $metas as $meta_index => $meta ) {
+					$meta_module->object( $user_id, 'user' )->build( $meta['type'], $meta['name'], $meta )->save();
+				}
+			}
+			$results->all[] = $user_id;
 		}
 		$results->success = array_filter( $results->all, 'absint' );
 

@@ -69,10 +69,8 @@ class Post extends Base {
 
 		$post_parents = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'post_parent' ), FILTER_SANITIZE_STRING ) ) );
 
-		/*
 		$featured_image_rate = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'featured_image_rate' ), FILTER_SANITIZE_NUMBER_INT ) );
 		$images_origin = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'images_origin' ), FILTER_SANITIZE_STRING ) ) );
-		*/
 
 		$metas = Filter::super( INPUT_POST, array( 'fakerpress', 'meta' ), FILTER_UNSAFE_RAW );
 
@@ -94,12 +92,12 @@ class Post extends Base {
 		$results = (object) array();
 
 		for ( $i = 0; $i < $quantity; $i++ ) {
-			// if ( $this->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
-			// 	$attach_module->param( 'attachment_url', $this->faker->randomElement( $images_origin ) );
-			// 	$attach_module->generate();
-			// 	$attachment_id = $attach_module->save();
-			// 	$this->meta( '_thumbnail_id', null, $attachment_id );
-			// }
+			if ( $this->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
+				$attach_module->param( 'attachment_url', $this->faker->randomElement( $images_origin ) );
+				$attach_module->generate();
+				$attachment_id = $attach_module->save();
+				$this->meta( '_thumbnail_id', null, $attachment_id );
+			}
 
 			$this->param( 'tax_input', $taxonomies );
 			$this->param( 'post_status', 'publish' );

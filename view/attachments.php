@@ -94,30 +94,7 @@ $fields[] = new Field(
 	)
 );
 
-$taxonomies = get_taxonomies( array( 'public' => true ), 'object' );
-
-$_json_taxonomies_output = array();
-foreach ( $taxonomies as $key => $taxonomy ) {
-	$_json_taxonomies_output[] = array(
-		'id' => $taxonomy->name,
-		'text' => $taxonomy->labels->name,
-	);
-}
-
-$fields[] = new Field(
-	'dropdown',
-	array(
-		'id' => 'taxonomies',
-		'multiple' => true,
-		'value' => 'post_tag, category',
-		'data-options' => $_json_taxonomies_output,
-	),
-	array(
-		'label' => __( 'Taxonomies', 'fakerpress' ),
-		'description' => __( 'From which taxonomies the related terms should be selected', 'fakerpress' ),
-	)
-);
-
+/* This comes back as a Meta Field Template
 $fields[] = new Field(
 	'number',
 	array(
@@ -145,6 +122,7 @@ if ( Plugin::get( array( '500px', 'key' ), false ) ){
 	);
 }
 
+
 $fields[] = new Field(
 	'dropdown',
 	array(
@@ -158,6 +136,7 @@ $fields[] = new Field(
 		'description' => __( 'Which image services will the generator use?', 'fakerpress' ),
 	)
 );
+*/
 
 // Mount the options for Users
 $users = get_users(
@@ -193,6 +172,7 @@ $fields[] = new Field(
 	'meta',
 	array(
 		'id' => 'meta',
+		'duplicate' => true,
 	),
 	array(
 		'label' => __( 'Meta Field Rules', 'fakerpress' ),
