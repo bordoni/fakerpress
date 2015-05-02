@@ -96,7 +96,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
-= 0.3.1 &mdash; 1 of May, 2015 =
+= 0.3.1 &mdash; 2 of May, 2015 =
 * Fix: Date Meta Field is now working as expected
 * Fix: Empty meta fields don't throw Fatal Errors anymore &mdash; Thanks [Jeffrey Carandang](https://profiles.wordpress.org/phpbits/)
 
