@@ -234,9 +234,17 @@ window.fakerpress.fields.range = function( $, _ ){
 // Date Fields
 window.fakerpress.fields.dates = function( $, _ ){
 	'use strict';
-	var $datepickers = $( '.fp-type-date' ).not( '.hasDatepicker' ).datepicker( {
-		constrainInput: false,
-		dateFormat: 'yy-mm-dd',
+	$( 'body' ).on( 'focus', '.fp-type-date', function() {
+		var $field = $( this );
+
+		if ( $field.hasClass( 'hasDatepicker' ) ){
+			return;
+		}
+
+		$field.datepicker( {
+			constrainInput: false,
+			dateFormat: 'yy-mm-dd',
+		} );
 	} );
 
 	$( '.fp-type-interval-wrap' ).each( function(){
@@ -253,14 +261,14 @@ window.fakerpress.fields.dates = function( $, _ ){
 		$min.on({
 			'change': function(e){
 				$min.parents( '.fp-field-wrap' ).find( '[data-type="max"]' ).datepicker( 'option', 'minDate', $( this ).val() ).datepicker( 'refresh' );
-				$datepickers.datepicker( 'refresh' );
+				$( '.fp-type-date.hasDatepicker' ).datepicker( 'refresh' );
 			}
 		});
 
 		$max.on({
 			'change': function(e){
 				$max.parents( '.fp-field-wrap' ).find( '[data-type="min"]' ).datepicker( 'option', 'maxDate', $( this ).val() ).datepicker( 'refresh' );
-				$datepickers.datepicker( 'refresh' );
+				$( '.fp-type-date.hasDatepicker' ).datepicker( 'refresh' );
 			}
 		});
 
@@ -431,6 +439,7 @@ window.fakerpress.fields.dates = function( $, _ ){
 				$clone
 					.find( _meta_type ).select2( 'val', '' )
 					.end().find( _meta_name ).val( '' )
+					.end().find( '.fp-type-date' ).removeClass( 'hasDatepicker' )
 					.end().find( '.fp-type-dropdown' ).removeClass( 'select2-offscreen' )
 					.filter( '.select2-container' ).remove();
 
