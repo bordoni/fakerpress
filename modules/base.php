@@ -114,7 +114,7 @@ abstract class Base {
 	 * Use this method to save the fake data to the database
 	 * @return int|bool|WP_Error Should return an error, or the $wpdb->insert_id or bool for the state
 	 */
-	final public function save(){
+	final public function save( $reset = true ){
 		do_action( "fakerpress.module.{$this->slug}.pre_save", $this );
 
 		$params = array();
@@ -134,7 +134,22 @@ abstract class Base {
 			}
 		}
 
-		return apply_filters( "fakerpress.module.{$this->slug}.save", false, $params, $metas, $this );
+		$response = apply_filters( "fakerpress.module.{$this->slug}.save", false, $params, $metas, $this );
+
+		if ( $reset ){
+			$this->reset();
+		}
+
+		return $response;
+	}
+
+	public function reset(){
+		$this->params = array();
+		$this->metas = array();
+
+		// This needs to move away from here
+		$this->object_id = 0;
+		$this->object_name = 'post';
 	}
 
 	public function _action_setup_admin_page(){

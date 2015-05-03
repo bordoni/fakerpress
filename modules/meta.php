@@ -50,7 +50,7 @@ class Meta extends Base {
 
 		unset( $args['name'], $args['type'] );
 
-		if ( is_callable( array( $this->faker, 'meta_type_' . $type ) ) && method_exists( $this->faker, 'meta_type_' . $type ) ){
+		if ( is_callable( array( $this->faker, 'meta_type_' . $type ) ) ){
 			$this->params['meta_value'] = call_user_func_array( array( $this->faker, 'meta_type_' . $type ), $args );
 		} else {
 			$this->params['meta_value'] = reset( $args );
