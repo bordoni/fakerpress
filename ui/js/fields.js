@@ -26,6 +26,55 @@ window.fakerpress.searchId = function ( e ) {
 	return e == undefined ? null : id;
 };
 
+
+// Date Fields
+window.fakerpress.fields.dates = function( $, _ ){
+	'use strict';
+	var datepicker_args = {
+			after: ['attr'],
+			constrainInput: false,
+			dateFormat: 'yy-mm-dd',
+		};
+
+	$( '.fp-type-date' ).not( '.hasDatepicker' ).datepicker( datepicker_args );
+	$( '.fp-type-interval-wrap' ).each( function(){
+		var $container = $( this ),
+			$interval = $container.find( '.fp-type-dropdown' ),
+			$min = $container.find( '[data-type="min"]' ),
+			$max = $container.find( '[data-type="max"]' );
+
+		if ( $container.hasClass( window.fakerpress.ready_class ) ){
+			return;
+		}
+		$container.addClass( window.fakerpress.ready_class );
+
+		$min.on({
+			'change': function(e){
+				$min.parents( '.fp-field-wrap' ).find( '[data-type="max"]' ).datepicker( 'option', 'minDate', $( this ).val() ).datepicker( 'refresh' );
+				$( '.fp-type-date.hasDatepicker' ).datepicker( 'refresh' );
+			}
+		});
+
+		$max.on({
+			'change': function(e){
+				$max.parents( '.fp-field-wrap' ).find( '[data-type="min"]' ).datepicker( 'option', 'maxDate', $( this ).val() ).datepicker( 'refresh' );
+				$( '.fp-type-date.hasDatepicker' ).datepicker( 'refresh' );
+			}
+		});
+
+		$interval.on({
+			'change': function(e){
+				var $selected = $interval.find(':selected'),
+					min = $selected.attr('min'),
+					max = $selected.attr('max');
+
+				$min.datepicker( 'setDate', min );
+				$max.datepicker( 'setDate', max );
+			}
+		}).trigger( 'change' );
+	} );
+};
+
 // Select2 Fields
 window.fakerpress.fields.dropdown = function( $, _ ){
 	'use strict';
@@ -231,60 +280,6 @@ window.fakerpress.fields.range = function( $, _ ){
 	});
 };
 
-// Date Fields
-window.fakerpress.fields.dates = function( $, _ ){
-	'use strict';
-	$( 'body' ).on( 'focus', '.fp-type-date', function() {
-		var $field = $( this );
-
-		if ( $field.hasClass( 'hasDatepicker' ) ){
-			return;
-		}
-
-		$field.datepicker( {
-			constrainInput: false,
-			dateFormat: 'yy-mm-dd',
-		} );
-	} );
-
-	$( '.fp-type-interval-wrap' ).each( function(){
-		var $container = $( this ),
-			$interval = $container.find( '.fp-type-dropdown' ),
-			$min = $container.find( '[data-type="min"]' ),
-			$max = $container.find( '[data-type="max"]' );
-
-		if ( $container.hasClass( window.fakerpress.ready_class ) ){
-			return;
-		}
-		$container.addClass( window.fakerpress.ready_class );
-
-		$min.on({
-			'change': function(e){
-				$min.parents( '.fp-field-wrap' ).find( '[data-type="max"]' ).datepicker( 'option', 'minDate', $( this ).val() ).datepicker( 'refresh' );
-				$( '.fp-type-date.hasDatepicker' ).datepicker( 'refresh' );
-			}
-		});
-
-		$max.on({
-			'change': function(e){
-				$max.parents( '.fp-field-wrap' ).find( '[data-type="min"]' ).datepicker( 'option', 'maxDate', $( this ).val() ).datepicker( 'refresh' );
-				$( '.fp-type-date.hasDatepicker' ).datepicker( 'refresh' );
-			}
-		});
-
-		$interval.on({
-			'change': function(e){
-				var $selected = $interval.find(':selected'),
-					min = $selected.attr('min'),
-					max = $selected.attr('max');
-
-				$min.datepicker( 'setDate', min );
-				$max.datepicker( 'setDate', max );
-			}
-		}).trigger( 'change' );
-	} );
-};
-
 ( function( $ ){
 	$( document ).ready( function(){
 		$.each( window.fakerpress.fields, function( key, callback ){
@@ -326,10 +321,6 @@ window.fakerpress.fields.dates = function( $, _ ){
 				$metas = $wrap.children( _meta );
 				$container.data( 'metas', $metas );
 
-				$.each( window.fakerpress.fields, function( key, callback ){
-					callback( window.jQuery, window._ );
-				} );
-
 				// If there is just one meta, disable the remove button
 				if ( 1 === $metas.length && ! $metas.eq( 0 ).find( _meta_type ).select2( 'val' ) ){
 					$metas.eq( 0 )
@@ -357,7 +348,6 @@ window.fakerpress.fields.dates = function( $, _ ){
 						$fields = $meta.find( _fields ),
 
 						$template = $( '.fp-template-' + type ).filter( '[data-rel="' + $container.attr( 'id' ) + '"]' ).filter( '[data-callable]' );
-
 
 					// Change the index first
 					$index.val( index + 1 );
@@ -409,6 +399,11 @@ window.fakerpress.fields.dates = function( $, _ ){
 						$conf_container.show();
 					}
 				} );
+
+				$.each( window.fakerpress.fields, function( key, callback ){
+					callback( window.jQuery, window._ );
+				} );
+
 			} ).trigger( 'meta' );
 
 			$container.on( 'change', _meta_type, [], function( event ){
