@@ -46,6 +46,17 @@ class Meta extends Base {
 	}
 
 	public function build( $type, $name, $args = array() ){
+		$this->params['meta_key'] = null;
+		$this->params['meta_value'] = null;
+
+		if ( empty( $type ) ){
+			return $this;
+		}
+
+		if ( empty( $name ) ){
+			return $this;
+		}
+
 		$this->params['meta_key'] = $name;
 
 		unset( $args['name'], $args['type'] );
