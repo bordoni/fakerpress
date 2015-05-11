@@ -27,3 +27,5 @@ desktop.ini
 
 # Project #
 ###########
+node_modules
+tmp
