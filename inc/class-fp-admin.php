@@ -347,8 +347,8 @@ Class Admin {
 		wp_register_script( 'fakerpress.select2', Plugin::url( 'ui/vendor/select2/select2.min.js' ), array( 'jquery' ), '3.5.0', true );
 
 		// Register DatePicker Skins
-		wp_register_style( 'jquery-ui', '//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css', array(), '1.10.1', 'screen' );
-		wp_register_style( 'fakerpress.datepicker', Plugin::url( 'ui/css/datepicker.css' ), array( 'jquery-ui' ), Plugin::version, 'screen' );
+		wp_register_style( 'fakerpress.jquery-ui', Plugin::url( 'ui/css/jquery-ui.css' ), array(), '1.10.1', 'screen' );
+		wp_register_style( 'fakerpress.datepicker', Plugin::url( 'ui/css/datepicker.css' ), array( 'fakerpress.jquery-ui' ), Plugin::version, 'screen' );
 
 		// Enqueue DatePicker Skins
 		wp_enqueue_style( 'fakerpress.datepicker' );
