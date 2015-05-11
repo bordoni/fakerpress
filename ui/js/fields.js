@@ -347,7 +347,14 @@ window.fakerpress.fields.range = function( $, _ ){
 						$conf_container = $meta.find( _meta_conf_container ),
 						$fields = $meta.find( _fields ),
 
-						$template = $( '.fp-template-' + type ).filter( '[data-rel="' + $container.attr( 'id' ) + '"]' ).filter( '[data-callable]' );
+						$template;
+
+					// Before constructing the Type Object check if it's a jQuery element (Select2 bug)
+					if ( type instanceof jQuery ){
+						type = type.val();
+					}
+					$template = $( '.fp-template-' + type ).filter( '[data-rel="' + $container.attr( 'id' ) + '"]' ).filter( '[data-callable]' );
+
 
 					// Change the index first
 					$index.val( index + 1 );
