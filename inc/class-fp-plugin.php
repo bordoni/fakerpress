@@ -63,6 +63,15 @@ class Plugin {
 	 */
 	public static $_file = __FP_FILE__;
 
+
+	/**
+	 * The Plugin external website base domain
+	 *
+	 * @since 0.3.2
+	 * @var string
+	 */
+	public static $_ext_domain = 'http://fakerpress.com';
+
 	/**
 	 * Return a Path relative to the plugin root
 	 *
@@ -112,6 +121,19 @@ class Plugin {
 		$args = wp_parse_args( $args, $defaults );
 
 		return add_query_arg( $args, admin_url( 'admin.php' ) ) . ( $hash !== false ? "#{$hash}" : '' );
+	}
+
+	/**
+	 * Returns a URL for the external project website
+	 *
+	 * @since 0.3.2
+	 * @param  string $path Hash for the admin URL
+	 * @uses esc_url_raw
+	 *
+	 * @return string         The url the external website with the appended $path
+	 */
+	public static function ext_site_url( $path = '/' ) {
+		return esc_url_raw( self::$_ext_domain . ( ! empty( $path ) ? $path : '/' ), array( 'http', 'https' ) );
 	}
 
 	/**

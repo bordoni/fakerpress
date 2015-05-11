@@ -512,7 +512,10 @@ Class Admin {
 			return $text;
 		}
 
-		return esc_attr__( 'Version' ) . ': ' . '<a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::version ) ) ) . '">' . esc_attr( Plugin::version ) . '</a>';
+		$translate = sprintf( '<a class="fp-translations-link" href="%s" title="%s"><span class="dashicons dashicons-translation"></span></a>', Plugin::ext_site_url( '/r/translate' ), esc_attr__( 'Help us with Translations for the FakerPress project', 'fakerpress' ) );
+		$version = esc_attr__( 'Version' ) . ': ' . '<a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::version ) ) ) . '">' . esc_attr( Plugin::version ) . '</a>';
+
+		return $translate . $version;
 	}
 
 	public function _filter_body_class( $classes ){

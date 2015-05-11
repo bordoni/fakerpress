@@ -1,5 +1,13 @@
 /* = Settings Screen
 =============================================*/
+.fp-translations-link {
+	margin-right: 10px;
+}
+
+.fp-translations-link:hover {
+	text-decoration: none!important;
+}
+
 .__fakerpress {
 
 }
