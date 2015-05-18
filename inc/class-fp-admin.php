@@ -259,6 +259,10 @@ Class Admin {
 	 */
 	public function _action_admin_menu() {
 		foreach ( self::$menus as &$menu ) {
+			if ( ! current_user_can( $menu->capability ) ){
+				continue;
+			}
+
 			if ( 0 === $menu->priority ) {
 				$menu->hook = add_menu_page( $menu->title, $menu->label, $menu->capability, Plugin::$slug, array( &$this, '_include_settings_page' ), 'none' );
 			} else {
@@ -267,7 +271,9 @@ Class Admin {
 		}
 
 		// Change the Default Submenu for FakerPress menus
-		$GLOBALS['submenu'][ Plugin::$slug ][0][0] = esc_attr__( 'Settings', 'FakerPress' );
+		if ( ! empty( $GLOBALS['submenu'][ Plugin::$slug ] ) ){
+			$GLOBALS['submenu'][ Plugin::$slug ][0][0] = esc_attr__( 'Settings', 'FakerPress' );
+		}
 	}
 
 	/**
