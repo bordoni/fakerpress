@@ -1,13 +1,13 @@
 === FakerPress ===
 Contributors:      bordoni, luancuba
-Tags:              generator, dummy content, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
+Tags:              generator, dummy content, dummy data, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
 Requires at least: 3.7
 Tested up to:      4.2
 Stable tag:        trunk
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 
-FakerPress is a clean way to generate fake data to your WordPress, great for developers who need testing
+FakerPress is a clean way to generate fake and dummy content to your WordPress, great for developers who need testing
 
 == Description ==
 
