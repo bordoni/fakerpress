@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       FakerPress
- * Plugin URI:        https://github.com/bordoni/fakerpress
+ * Plugin URI:        https://fakerpress.com
  * Description:       FakerPress is a clean way to generate fake data to your WordPress instalation, great for developers who need testing
  * Version:           0.3.2
  * Author:            Gustavo Bordoni

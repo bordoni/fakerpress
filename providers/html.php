@@ -16,7 +16,7 @@ class HTML extends Base {
 	}
 
 	static public $sets = array(
-		'self_close' => array( 'img', 'hr', '!-- more --' ),
+		'self_close' => array( 'img', 'hr', '!--more--' ),
 		'header' => array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ),
 		'list' => array( 'ul', 'ol' ),
 		'block' => array( 'div', 'p', 'blockquote' ),
@@ -27,7 +27,7 @@ class HTML extends Base {
 			'a', 'bdo', 'br', 'img', 'q', 'span', 'sub', 'sup',
 			'hr',
 		),
-		'wp' => array( '!-- more --' )
+		'wp' => array( '!--more--' )
 	);
 
 	private function filter_html_comments( $element = '' ){
@@ -81,8 +81,8 @@ class HTML extends Base {
 
 			$html[] = $this->element( $element, $args->attr );
 
-			if ( $this->generator->numberBetween( 0, 100 ) <= 80 && ! $args->did_more_element && $args->qty > 2 && $this->has_element( '!-- more --', $args->elements ) && $i < $max_to_more &&	$i > $min_to_more ){
-				$html[] = $this->element( '!-- more --' );
+			if ( $this->generator->numberBetween( 0, 100 ) <= 80 && ! $args->did_more_element && $args->qty > 2 && $this->has_element( '!--more--', $args->elements ) && $i < $max_to_more &&	$i > $min_to_more ){
+				$html[] = $this->element( '!--more--' );
 				$args->did_more_element = true;
 			}
 		}
