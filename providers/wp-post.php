@@ -32,28 +32,35 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function post_date( $min = 'now', $max = null ){
+	public function post_date( $interval = 'now' ){
+		$format = 'Y-m-d H:i:s';
+		$interval = (array) $interval;
+
 		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 		try {
-			$min = new \Carbon\Carbon( $min );
+			$min = new \Carbon\Carbon( array_shift( $interval ) );
 		} catch ( \Exception $e ) {
-			return null;
+			$min = ( new \Carbon\Carbon( 'today' ) )->startOfDay();
 		}
 
-		if ( ! is_null( $max ) ){
+		if ( ! empty( $interval ) ){
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = new \Carbon\Carbon( $max );
-			} catch (\Exception $e) {
-				return null;
-			}
+				$max = new \Carbon\Carbon( array_shift( $interval ) );
+			} catch ( \Exception $e ) {}
 		}
 
-		if ( ! is_null( $max ) ) {
-			$selected = $this->generator->dateTimeBetween( (string) $min, (string) $max )->format( 'Y-m-d H:i:s' );
-		} else {
-			$selected = (string) $min;
+		if ( ! isset( $max ) ) {
+			$max = new \Carbon\Carbon( 'now' );
 		}
+
+		// If max has no Time set it to the end of the day
+		$max_has_time = ! empty( array_filter( array( $max->hour, $max->minute, $max->second ) ) );
+		if ( ! $max_has_time ){
+			$max = $max->endOfDay();
+		}
+
+		$selected = $this->generator->dateTimeBetween( (string) $min, (string) $max )->format( $format );
 
 		return $selected;
 	}

@@ -101,7 +101,7 @@ class Post extends Base {
 
 			$this->param( 'tax_input', $taxonomies );
 			$this->param( 'post_status', 'publish' );
-			$this->param( 'post_date', $min_date, $max_date );
+			$this->param( 'post_date', array( $min_date, $max_date ) );
 			$this->param( 'post_parent', $post_parents );
 			$this->param( 'post_content', $post_content_use_html, array( 'elements' => $post_content_html_tags ) );
 			$this->param( 'post_author', $post_author );

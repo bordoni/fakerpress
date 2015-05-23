@@ -319,30 +319,33 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_date( $interval, $format = 'Y-m-d H:i:s', $weight = 50 ) {
-		$weight = $weight / 100;
+		$interval = (array) $interval;
 
 		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 		try {
-			$min = new \Carbon\Carbon( $interval['min'] );
-			$possible_max = new \Carbon\Carbon( 'now' );
+			$min = new \Carbon\Carbon( array_shift( $interval ) );
 		} catch ( \Exception $e ) {
-			return null;
+			$min = ( new \Carbon\Carbon( 'today' ) )->startOfDay();
 		}
 
-		if ( ! is_null( $interval['max'] ) ){
+		if ( ! empty( $interval ) ){
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = new \Carbon\Carbon( $interval['max'] );
-			} catch (\Exception $e) {
-				return null;
-			}
+				$max = new \Carbon\Carbon( array_shift( $interval ) );
+			} catch ( \Exception $e ) {}
 		}
 
-		if ( ! is_null( $max ) ) {
-			$selected = $this->generator->dateTimeBetween( (string) $min, (string) $max )->format( $format );
-		} else {
-			$selected = $this->generator->dateTimeBetween( (string) $min, (string) $possible_max )->format( $format );
+		if ( ! isset( $max ) ) {
+			$max = new \Carbon\Carbon( 'now' );
 		}
+
+		// If max has no Time set it to the end of the day
+		$max_has_time = ! empty( array_filter( array( $max->hour, $max->minute, $max->second ) ) );
+		if ( ! $max_has_time ){
+			$max = $max->endOfDay();
+		}
+
+		$selected = $this->generator->dateTimeBetween( (string) $min, (string) $max )->format( $format );
 
 		$value = $this->generator->optional( $weight, null )->randomElement( (array) $selected );
 
