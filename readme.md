@@ -4,7 +4,7 @@
 ![Banner](assets/banner-1544x500.png)
 FakerPress is a clean way to generate fake and dummy content to your WordPress, great for developers who need testing
 
-**Contributors:** [bordoni](http://profiles.wordpress.org/bordoni), [luancuba](http://profiles.wordpress.org/luancuba)  
+**Contributors:** [bordoni](http://profiles.wordpress.org/bordoni)  
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy content), [dummy data](http://wordpress.org/plugins/tags/dummy data), [lorem ipsun](http://wordpress.org/plugins/tags/lorem ipsun), [admin](http://wordpress.org/plugins/tags/admin), [exemples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [images](http://wordpress.org/plugins/tags/images), [attachments](http://wordpress.org/plugins/tags/attachments), [featured image](http://wordpress.org/plugins/tags/featured image), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake data), [random](http://wordpress.org/plugins/tags/random), [developer](http://wordpress.org/plugins/tags/developer), [dev](http://wordpress.org/plugins/tags/dev), [development](http://wordpress.org/plugins/tags/development), [test](http://wordpress.org/plugins/tags/test), [tests](http://wordpress.org/plugins/tags/tests)  
 **Requires at least:** 3.7  
 **Tested up to:** 4.2  
@@ -86,6 +86,7 @@ If you fill up your WordPress with any data for the user profiles you might not 
 * English
 * Portuguese (Brazil)
 * Portuguese (Portugal)
+* Chinese
 
 ### See room for improvement? ###
 Great! There are several ways you can get involved to help make FakerPress better:
@@ -100,7 +101,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 ## Changelog ##
 
 ### 0.3.2 &mdash; 25 of May, 2015 ###
-* Fix: A few JavaScript/jQuery tweeks for better Select2 Handling
+* New: Including LoremPixel as a Image Provider &mdash; Thanks [examinedliving](https://github.com/examinedliving)
+* Fix: A few JavaScript/jQuery tweeks for better Select2 Handling on Dates
 * Fix: Intervals now have a better Handling for non-timed Strings &mdash; Thanks [alfiemx_](https://profiles.wordpress.org/alfiemx_)
 * Fix: Better verification of Carbon inclusion &mdash; Thanks [Frankie Jarrett ](https://profiles.wordpress.org/fjarrett/)
 

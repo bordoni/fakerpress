@@ -1,5 +1,5 @@
 === FakerPress ===
-Contributors:      bordoni, luancuba
+Contributors:      bordoni
 Tags:              generator, dummy content, dummy data, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
 Requires at least: 3.7
 Tested up to:      4.2
@@ -85,6 +85,7 @@ If you fill up your WordPress with any data for the user profiles you might not 
 * English
 * Portuguese (Brazil)
 * Portuguese (Portugal)
+* Chinese
 
 = See room for improvement? =
 
@@ -99,7 +100,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 == Changelog ==
 
 = 0.3.2 &mdash; 25 of May, 2015 =
-* Fix: A few JavaScript/jQuery tweeks for better Select2 Handling
+* New: Including LoremPixel as a Image Provider &mdash; Thanks [examinedliving](https://github.com/examinedliving)
+* Fix: A few JavaScript/jQuery tweeks for better Select2 Handling on Dates
 * Fix: Intervals now have a better Handling for non-timed Strings &mdash; Thanks [alfiemx_](https://profiles.wordpress.org/alfiemx_)
 * Fix: Better verification of Carbon inclusion &mdash; Thanks [Frankie Jarrett ](https://profiles.wordpress.org/fjarrett/)
 
