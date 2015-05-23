@@ -98,6 +98,11 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
+= 0.3.2 &mdash; 25 of May, 2015 =
+* Fix: A few JavaScript/jQuery tweeks for better Select2 Handling
+* Fix: Intervals now have a better Handling for non-timed Strings &mdash; Thanks [alfiemx_](https://profiles.wordpress.org/alfiemx_)
+* Fix: Better verification of Carbon inclusion &mdash; Thanks [Frankie Jarrett ](https://profiles.wordpress.org/fjarrett/)
+
 = 0.3.1 &mdash; 2 of May, 2015 =
 * Fix: Date Meta Field is now working as expected
 * Fix: Empty meta fields don't throw Fatal Errors anymore &mdash; Thanks [Jeffrey Carandang](https://profiles.wordpress.org/phpbits/)
