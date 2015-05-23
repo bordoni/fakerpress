@@ -31,6 +31,7 @@ require_once Plugin::path( 'inc/class-fp-field.php' );
 
 // Inluding needed providers
 require_once Plugin::path( 'providers/html.php' );
+require_once Plugin::path( 'providers/image/lorempixel.php' );
 require_once Plugin::path( 'providers/image/placeholdit.php' );
 require_once Plugin::path( 'providers/image/500px.php' );
 require_once Plugin::path( 'providers/text/base.php' );
