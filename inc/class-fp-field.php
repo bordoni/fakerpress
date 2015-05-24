@@ -945,6 +945,9 @@ class Field {
 	}
 
 	public static function get_meta_types(){
+		// For PHP 5.3 to work
+		$self = $this;
+
 		$types = (object) array();
 
 		$default = (object) array(
@@ -984,18 +987,18 @@ class Field {
 		$types->numbers = array(
 			'value' => 'numbers',
 			'text' => __( 'Number', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 				$range = clone $field;
 				$range->_id = array( 'meta', 'number' );
 				$range->_name = array( 'meta', 'number' );
 				$range->type = 'range';
 				$range->class = array();
-				$range->label = __( 'Range of possible numbers', self::plugin );
+				$range->label = __( 'Range of possible numbers', $self::plugin );
 				$range->_min = 0;
 				$range->_max = 9;
 
-				$html[] = self::wrapper( self::type_range( $range, null, 'string' ), $range );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_range( $range, null, 'string' ), $range );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1004,18 +1007,18 @@ class Field {
 		$types->wp_query = array(
 			'value' => 'wp_query',
 			'text' => __( 'WP_Query', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 				$query = clone $field;
 				$query->_id = array( 'meta', 'query' );
 				$query->_name = array( 'meta', 'query' );
 				$query->type = 'text';
 				$query->class = array();
 				$query->size = 'large';
-				$query->placeholder = __( 'category=2&posts_per_page=10', self::plugin );
-				$query->label = __( 'Uses <a href="http://codex.wordpress.org/Class_Reference/WP_Query" target="_blank">WP_Query</a>', self::plugin );
+				$query->placeholder = __( 'category=2&posts_per_page=10', $self::plugin );
+				$query->label = __( 'Uses <a href="http://codex.wordpress.org/Class_Reference/WP_Query" target="_blank">WP_Query</a>', $self::plugin );
 
-				$html[] = self::wrapper( self::type_text( $query, null, 'string' ), $query );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_text( $query, null, 'string' ), $query );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1024,7 +1027,7 @@ class Field {
 		$types->elements = array(
 			'value' => 'elements',
 			'text' => __( 'Elements', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 				$tags = clone $field;
 				$tags->_id = array( 'meta', 'elements' );
 				$tags->_name = array( 'meta', 'elements' );
@@ -1033,13 +1036,13 @@ class Field {
 				$tags->{'data-options'} = array();
 				$tags->{'data-tags'} = true;
 				$tags->class = array();
-				$tags->placeholder = __( 'Type all possible elements (Tab or Return)', self::plugin );
-				$tags->label = __( '', self::plugin );
+				$tags->placeholder = __( 'Type all possible elements (Tab or Return)', $self::plugin );
+				$tags->label = __( '', $self::plugin );
 
-				$html[] = self::wrapper( self::type_dropdown( $tags, null, 'string' ), $tags );
-				$html[] = self::wrapper( self::type_range( $default->qty, null, 'string' ), $default->qty );
-				$html[] = self::wrapper( self::type_text( $default->separator, null, 'string' ), $default->separator );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_dropdown( $tags, null, 'string' ), $tags );
+				$html[] = $self::wrapper( $self::type_range( $default->qty, null, 'string' ), $default->qty );
+				$html[] = $self::wrapper( $self::type_text( $default->separator, null, 'string' ), $default->separator );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1048,8 +1051,8 @@ class Field {
 		$types->letter = array(
 			'value' => 'letter',
 			'text' => __( 'Letter', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+			'template' => function( $field, $type ) use ( $default, $self ){
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1058,10 +1061,10 @@ class Field {
 		$types->words = array(
 			'value' => 'words',
 			'text' => __( 'Words', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 
-				$html[] = self::wrapper( self::type_range( $default->qty, null, 'string' ), $default->qty );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_range( $default->qty, null, 'string' ), $default->qty );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1070,18 +1073,18 @@ class Field {
 		$types->text = array(
 			'value' => 'text',
 			'text' => __( 'Text', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 				$text = clone $field;
 				$text->_id = array( 'meta', 'text_type' );
 				$text->_name = array( 'meta', 'text_type' );
 				$text->type = 'dropdown';
 				$text->options = array(
 					array(
-						'text' => __( 'Sentences', self::plugin ),
+						'text' => __( 'Sentences', $self::plugin ),
 						'value' => 'sentences',
 					),
 					array(
-						'text' => __( 'Paragraphs', self::plugin ),
+						'text' => __( 'Paragraphs', $self::plugin ),
 						'value' => 'paragraphs',
 					),
 				);
@@ -1090,12 +1093,12 @@ class Field {
 
 				$separator = clone $default->separator;
 				$separator->value = '\n';
-				$separator->label = __( 'Separator <b space>&mdash;</b> New Line: "\n"', self::plugin );
+				$separator->label = __( 'Separator <b space>&mdash;</b> New Line: "\n"', $self::plugin );
 
-				$html[] = self::wrapper( self::type_dropdown( $text, null, 'string' ), $text );
-				$html[] = self::wrapper( self::type_range( $default->qty, null, 'string' ), $default->qty );
-				$html[] = self::wrapper( self::type_text( $separator, null, 'string' ), $separator );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_dropdown( $text, null, 'string' ), $text );
+				$html[] = $self::wrapper( $self::type_range( $default->qty, null, 'string' ), $default->qty );
+				$html[] = $self::wrapper( $self::type_text( $separator, null, 'string' ), $separator );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1104,7 +1107,7 @@ class Field {
 		$types->html = array(
 			'value' => 'html',
 			'text' => __( 'HTML', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 				$elements = clone $field;
 				$elements->_id = array( 'meta', 'elements' );
 				$elements->_name = array( 'meta', 'elements' );
@@ -1114,11 +1117,11 @@ class Field {
 				$elements->{'data-options'} = array_merge( \Faker\Provider\HTML::$sets['header'], \Faker\Provider\HTML::$sets['list'], \Faker\Provider\HTML::$sets['block'], \Faker\Provider\HTML::$sets['self_close'] );
 				$elements->value = implode( ',', $elements->{'data-options'} );
 				$elements->class = array();
-				$elements->label = __( 'HTML Tags, without &lt; or &gt;', self::plugin );
+				$elements->label = __( 'HTML Tags, without &lt; or &gt;', $self::plugin );
 
-				$html[] = self::wrapper( self::type_dropdown( $elements, null, 'string' ), $elements );
-				$html[] = self::wrapper( self::type_range( $default->qty, null, 'string' ), $default->qty );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_dropdown( $elements, null, 'string' ), $elements );
+				$html[] = $self::wrapper( $self::type_range( $default->qty, null, 'string' ), $default->qty );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1127,17 +1130,17 @@ class Field {
 		$types->lexify = array(
 			'value' => 'lexify',
 			'text' => __( 'Lexify', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 				$template = clone $field;
 				$template->_id = array( 'meta', 'template' );
 				$template->_name = array( 'meta', 'template' );
 				$template->type = 'text';
 				$template->class = array();
-				$template->placeholder = __( 'E.g.: John ##??', self::plugin );
-				$template->label = __( 'John ##?? <b spacer>&raquo;</b> John 29ze', self::plugin );
+				$template->placeholder = __( 'E.g.: John ##??', $self::plugin );
+				$template->label = __( 'John ##?? <b spacer>&raquo;</b> John 29ze', $self::plugin );
 
-				$html[] = self::wrapper( self::type_text( $template, null, 'string' ), $template );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_text( $template, null, 'string' ), $template );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1146,17 +1149,17 @@ class Field {
 		$types->asciify = array(
 			'value' => 'asciify',
 			'text' => __( 'Asciify', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 				$template = clone $field;
 				$template->_id = array( 'meta', 'template' );
 				$template->_name = array( 'meta', 'template' );
 				$template->type = 'text';
 				$template->class = array();
-				$template->placeholder = __( 'E.g.: John ****', self::plugin );
-				$template->label = __( 'John **** <b spacer>&raquo;</b> John r9"+', self::plugin );
+				$template->placeholder = __( 'E.g.: John ****', $self::plugin );
+				$template->label = __( 'John **** <b spacer>&raquo;</b> John r9"+', $self::plugin );
 
-				$html[] = self::wrapper( self::type_text( $template, null, 'string' ), $template );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_text( $template, null, 'string' ), $template );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1165,17 +1168,17 @@ class Field {
 		$types->regexify = array(
 			'value' => 'regexify',
 			'text' => __( 'Regexify', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 				$template = clone $field;
 				$template->_id = array( 'meta', 'template' );
 				$template->_name = array( 'meta', 'template' );
 				$template->type = 'text';
 				$template->class = array();
-				$template->placeholder = __( 'E.g.: [A-Z0-9._%+-]+@[A-Z0-9.-]', self::plugin );
-				$template->label = __( '[A-Z0-9._%+-]+@[A-Z0-9.-] <b spacer>&raquo;</b> sm0@y8k96a', self::plugin );
+				$template->placeholder = __( 'E.g.: [A-Z0-9._%+-]+@[A-Z0-9.-]', $self::plugin );
+				$template->label = __( '[A-Z0-9._%+-]+@[A-Z0-9.-] <b spacer>&raquo;</b> sm0@y8k96a', $self::plugin );
 
-				$html[] = self::wrapper( self::type_text( $template, null, 'string' ), $template );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_text( $template, null, 'string' ), $template );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1184,7 +1187,7 @@ class Field {
 		$types->person = array(
 			'value' => 'person',
 			'text' => __( 'Person', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 				$template = clone $field;
 				$template->_id = array( 'meta', 'template' );
 				$template->_name = array( 'meta', 'template' );
@@ -1193,19 +1196,19 @@ class Field {
 				$template->{'data-tags'} = true;
 				$template->{'data-options'} = array(
 					array(
-						'text' => __( 'Title', self::plugin ),
+						'text' => __( 'Title', $self::plugin ),
 						'value' => '{% title %}',
 					),
 					array(
-						'text' => __( 'First Name', self::plugin ),
+						'text' => __( 'First Name', $self::plugin ),
 						'value' => '{% first_name %}',
 					),
 					array(
-						'text' => __( 'Last Name', self::plugin ),
+						'text' => __( 'Last Name', $self::plugin ),
 						'value' => '{% last_name %}',
 					),
 					array(
-						'text' => __( 'Suffix', self::plugin ),
+						'text' => __( 'Suffix', $self::plugin ),
 						'value' => '{% suffix %}',
 					),
 				);
@@ -1213,7 +1216,7 @@ class Field {
 				$template->value = '{% title %}|{% first_name %}|{% last_name %}|{% suffix %}';
 				$template->{'data-separator'} = '|';
 				$template->class = array();
-				$template->label = __( 'Name Template', self::plugin );
+				$template->label = __( 'Name Template', $self::plugin );
 
 				$gender = clone $field;
 				$gender->_id = array( 'meta', 'gender' );
@@ -1221,20 +1224,20 @@ class Field {
 				$gender->type = 'radio';
 				$gender->options = array(
 					array(
-						'text' => __( 'Male', self::plugin ),
+						'text' => __( 'Male', $self::plugin ),
 						'value' => 'male',
 					),
 					array(
-						'text' => __( 'Female', self::plugin ),
+						'text' => __( 'Female', $self::plugin ),
 						'value' => 'female',
 					),
 				);
 				$gender->value = 'female';
 				$gender->class = array();
 
-				$html[] = self::wrapper( self::type_dropdown( $template, null, 'string' ), $template );
-				$html[] = self::wrapper( self::type_radio( $gender, null, 'string' ), $gender );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_dropdown( $template, null, 'string' ), $template );
+				$html[] = $self::wrapper( $self::type_radio( $gender, null, 'string' ), $gender );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1243,7 +1246,7 @@ class Field {
 		$types->geo = array(
 			'value' => 'geo',
 			'text' => __( 'Geo Information', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 				$template = clone $field;
 				$template->_id = array( 'meta', 'template' );
 				$template->_name = array( 'meta', 'template' );
@@ -1252,69 +1255,69 @@ class Field {
 				$template->{'data-tags'} = true;
 				$template->{'data-options'} = array(
 					array(
-						'text' => __( 'Country', self::plugin ),
+						'text' => __( 'Country', $self::plugin ),
 						'value' => '{% country %}',
 					),
 					array(
-						'text' => __( 'City Prefix', self::plugin ),
+						'text' => __( 'City Prefix', $self::plugin ),
 						'value' => '{% city_prefix %}',
 					),
 					array(
-						'text' => __( 'City Suffix', self::plugin ),
+						'text' => __( 'City Suffix', $self::plugin ),
 						'value' => '{% city_suffix %}',
 					),
 					array(
-						'text' => __( 'City', self::plugin ),
+						'text' => __( 'City', $self::plugin ),
 						'value' => '{% city %}',
 					),
 					array(
-						'text' => __( 'State', self::plugin ),
+						'text' => __( 'State', $self::plugin ),
 						'value' => '{% state %}',
 					),
 					array(
-						'text' => __( 'State Abbr', self::plugin ),
+						'text' => __( 'State Abbr', $self::plugin ),
 						'value' => '{% state_abbr %}',
 					),
 					array(
-						'text' => __( 'Address', self::plugin ),
+						'text' => __( 'Address', $self::plugin ),
 						'value' => '{% address %}',
 					),
 					array(
-						'text' => __( 'Secondary Address', self::plugin ),
+						'text' => __( 'Secondary Address', $self::plugin ),
 						'value' => '{% secondary_address %}',
 					),
 					array(
-						'text' => __( 'Building Number', self::plugin ),
+						'text' => __( 'Building Number', $self::plugin ),
 						'value' => '{% building_number %}',
 					),
 					array(
-						'text' => __( 'Street Name', self::plugin ),
+						'text' => __( 'Street Name', $self::plugin ),
 						'value' => '{% street_name %}',
 					),
 					array(
-						'text' => __( 'Street Address', self::plugin ),
+						'text' => __( 'Street Address', $self::plugin ),
 						'value' => '{% street_address %}',
 					),
 					array(
-						'text' => __( 'Postal Code', self::plugin ),
+						'text' => __( 'Postal Code', $self::plugin ),
 						'value' => '{% postalcode %}',
 					),
 					array(
-						'text' => __( 'Latitude', self::plugin ),
+						'text' => __( 'Latitude', $self::plugin ),
 						'value' => '{% latitude %}',
 					),
 					array(
-						'text' => __( 'Longitude', self::plugin ),
+						'text' => __( 'Longitude', $self::plugin ),
 						'value' => '{% longitude %}',
 					),
 				);
 				$template->value = '{% latitude %}|,|{% longitude %}';
 				$template->{'data-separator'} = '|';
 				$template->class = array();
-				$template->label = __( 'Address Format', self::plugin );
+				$template->label = __( 'Address Format', $self::plugin );
 
-				$html[] = self::wrapper( self::type_dropdown( $template, null, 'string' ), $template );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_dropdown( $template, null, 'string' ), $template );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1323,7 +1326,7 @@ class Field {
 		$types->phone = array(
 			'value' => 'company',
 			'text' => __( 'Company', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 				$template = clone $field;
 				$template->_id = array( 'meta', 'template' );
 				$template->_name = array( 'meta', 'template' );
@@ -1332,29 +1335,29 @@ class Field {
 				$template->{'data-tags'} = true;
 				$template->{'data-options'} = array(
 					array(
-						'text' => __( 'Catch Phrase', self::plugin ),
+						'text' => __( 'Catch Phrase', $self::plugin ),
 						'value' => '{% catch_phrase %}',
 					),
 					array(
-						'text' => __( 'BS', self::plugin ),
+						'text' => __( 'BS', $self::plugin ),
 						'value' => '{% bs %}',
 					),
 					array(
-						'text' => __( 'Company', self::plugin ),
+						'text' => __( 'Company', $self::plugin ),
 						'value' => '{% company %}',
 					),
 					array(
-						'text' => __( 'Suffix', self::plugin ),
+						'text' => __( 'Suffix', $self::plugin ),
 						'value' => '{% suffix %}',
 					),
 				);
 				$template->value = '{% company %}|&nbsp;|{% suffix %}';
 				$template->{'data-separator'} = '|';
 				$template->class = array();
-				$template->label = __( 'Company Format', self::plugin );
+				$template->label = __( 'Company Format', $self::plugin );
 
-				$html[] = self::wrapper( self::type_dropdown( $template, null, 'string' ), $template );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_dropdown( $template, null, 'string' ), $template );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1363,7 +1366,7 @@ class Field {
 		$types->date = array(
 			'value' => 'date',
 			'text' => __( 'Date', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default, $self ){
 				$template = clone $field;
 				$template->_id = array( 'meta', 'interval' );
 				$template->_name = array( 'meta', 'interval' );
@@ -1376,11 +1379,11 @@ class Field {
 				$format->type = 'text';
 				$format->class = array();
 				$format->value = 'Y-m-d H:i:s';
-				$format->label = __( 'Date Format <b space>&mdash;</b> See <a href="http://php.net/manual/function.date.php" target="_blank">PHP Date</a>', self::plugin );
+				$format->label = __( 'Date Format <b space>&mdash;</b> See <a href="http://php.net/manual/function.date.php" target="_blank">PHP Date</a>', $self::plugin );
 
-				$html[] = self::wrapper( self::type_interval( $template, null, 'string' ), $template );
-				$html[] = self::wrapper( self::type_text( $format, null, 'string' ), $format );
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+				$html[] = $self::wrapper( $self::type_interval( $template, null, 'string' ), $template );
+				$html[] = $self::wrapper( $self::type_text( $format, null, 'string' ), $format );
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1389,8 +1392,8 @@ class Field {
 		$types->timezone = array(
 			'value' => 'timezone',
 			'text' => __( 'TimeZone', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+			'template' => function( $field, $type ) use ( $default, $self ){
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1399,8 +1402,8 @@ class Field {
 		$types->email = array(
 			'value' => 'email',
 			'text' => __( 'Email', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+			'template' => function( $field, $type ) use ( $default, $self ){
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1409,8 +1412,8 @@ class Field {
 		$types->domain = array(
 			'value' => 'domain',
 			'text' => __( 'Domain', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+			'template' => function( $field, $type ) use ( $default, $self ){
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1419,8 +1422,8 @@ class Field {
 		$types->ip = array(
 			'value' => 'ip',
 			'text' => __( 'IP', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+			'template' => function( $field, $type ) use ( $default, $self ){
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},
@@ -1429,8 +1432,8 @@ class Field {
 		$types->user_agent = array(
 			'value' => 'user_agent',
 			'text' => __( 'Browser User Agent', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
-				$html[] = self::wrapper( self::type_number( $default->weight, null, 'string' ), $default->weight );
+			'template' => function( $field, $type ) use ( $default, $self ){
+				$html[] = $self::wrapper( $self::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
 			},

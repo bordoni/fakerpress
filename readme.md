@@ -104,7 +104,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * New: Including LoremPixel as a Image Provider &mdash; Thanks [examinedliving](https://github.com/examinedliving)
 * Fix: A few JavaScript/jQuery tweeks for better Select2 Handling on Dates
 * Fix: Intervals now have a better Handling for non-timed Strings &mdash; Thanks [alfiemx_](https://profiles.wordpress.org/alfiemx_)
-* Fix: Better verification of Carbon inclusion &mdash; Thanks [Frankie Jarrett ](https://profiles.wordpress.org/fjarrett/)
+* Fix: Better verification of Carbon inclusion &mdash; Thanks [Frankie Jarrett](https://profiles.wordpress.org/fjarrett/)
+* Fix: Closures now using self variables better, prevents Fatal Error &mdash; Thanks [fccoelho7](https://profiles.wordpress.org/fccoelho7/)
 
 ### 0.3.1 &mdash; 2 of May, 2015 ###
 * Fix: Date Meta Field is now working as expected
