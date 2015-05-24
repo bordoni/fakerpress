@@ -341,7 +341,8 @@ class WP_Meta extends Base {
 		}
 
 		// If max has no Time set it to the end of the day
-		$max_has_time = ! empty( array_filter( array( $max->hour, $max->minute, $max->second ) ) );
+		$max_has_time = array_filter( array( $max->hour, $max->minute, $max->second ) );
+		$max_has_time = ! empty( $max_has_time );
 		if ( ! $max_has_time ){
 			$max = $max->endOfDay();
 		}
