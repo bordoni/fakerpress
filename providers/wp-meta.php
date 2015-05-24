@@ -325,7 +325,8 @@ class WP_Meta extends Base {
 		try {
 			$min = new \Carbon\Carbon( array_shift( $interval ) );
 		} catch ( \Exception $e ) {
-			$min = ( new \Carbon\Carbon( 'today' ) )->startOfDay();
+			$min = new \Carbon\Carbon( 'today' );
+			$min = $min->startOfDay();
 		}
 
 		if ( ! empty( $interval ) ){
