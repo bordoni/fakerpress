@@ -86,7 +86,7 @@ If you fill up your WordPress with any data for the user profiles you might not 
 * Portuguese (pt_BR) &mdash; [Luan Cuba](https://profiles.wordpress.org/luancuba/)
 * Chinese (zh_CH) &mdash; [xnces](https://www.transifex.com/accounts/profile/xnces/)
 
-> Can you help us translate FakerPress? Get on board on our [Transifex project page](https://www.transifex.com/projects/p/fakerpress/)
+> Want to help us translate FakerPress? Get on board on our [Transifex project](https://www.transifex.com/projects/p/fakerpress/)
 
 = See room for improvement? =
 
