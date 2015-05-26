@@ -13,6 +13,9 @@ class HTML extends Base {
 
 		$provider = new PlaceHoldIt( $this->generator );
 		$this->generator->addProvider( $provider );
+
+		$provider = new LoremPixel( $this->generator );
+		$this->generator->addProvider( $provider );
 	}
 
 	static public $sets = array(
@@ -90,6 +93,26 @@ class HTML extends Base {
 		return (array) $html;
 	}
 
+	private function html_element_img( $element, $sources = array( 'lorempixel', 'placeholdit' ) ){
+		if ( ! isset( $element->attr['class'] ) ) {
+			$element->attr['class'][] = $this->generator->optional( 0.4, null )->randomElement( array( 'aligncenter', 'alignleft', 'alignright' ) );
+			$element->attr['class'] = array_filter( $element->attr['class'] );
+			$element->attr['class'] = implode( ' ', $element->attr['class'] );
+		}
+
+		if ( ! isset( $element->attr['alt'] ) ) {
+			$element->attr['alt'] = rtrim( $this->generator->optional( 0.7, null )->sentence( Base::randomDigitNotNull() ), '.' );
+		}
+
+		if ( ! isset( $element->attr['src'] ) ) {
+			$element->attr['src'] = call_user_func_array( array( $this->generator, $this->generator->randomElement( $sources ) ), array() );
+		}
+
+		$element->attr = array_filter( $element->attr );
+
+		return $element;
+	}
+
 	public function random_apply_element( $element = 'a', $max = 5, $text = null ){
 		$words       = explode( ' ', $text );
 		$total_words = count( $words );
@@ -157,20 +180,7 @@ class HTML extends Base {
 		}
 
 		if ( 'img' === $element->name ){
-			if ( ! isset( $element->attr['class'] ) ) {
-				if ( $this->generator->randomDigit() > 4 ){
-					$element->attr['class'][] = $this->generator->randomElement( array( 'aligncenter', 'alignleft', 'alignright' ) );
-					$element->attr['class'] = implode( ' ', $element->attr['class'] );
-				}
-			}
-
-			if ( ! isset( $element->attr['alt'] ) ) {
-				$element->attr['alt'] = Lorem::sentence( Base::numberBetween( 1, Base::numberBetween( 3, 9 ) ) );
-			}
-
-			if ( ! isset( $element->attr['src'] ) ) {
-				$element->attr['src'] = $this->generator->placeholdit();
-			}
+			$element = $this->html_element_img( $element, array( 'placeholdit', 'lorempixel' ) );
 		}
 
 		$attributes = array();
