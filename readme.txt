@@ -17,7 +17,7 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 
 > **Note: This plugin requires PHP 5.3 or higher to be activated.**
 
-[**Checkout our GitHub Repository**](http://fakerpress/r/github)
+[**Checkout our GitHub Repository**](http://fakerpress.com/r/github)
 
 ---
 
