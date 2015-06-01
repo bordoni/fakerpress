@@ -101,6 +101,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
+### 0.4.0 &mdash; _Not Released_ ###
+* Tweak: Our menus and submenus no longer require JavaScript to work
+
 ### 0.3.2 &mdash; 25 of May, 2015 ###
 * New: Including LoremPixel as a Image Provider &mdash; Thanks [examinedliving](https://github.com/examinedliving)
 * Fix: A few JavaScript/jQuery tweeks for better Select2 Handling on Dates
