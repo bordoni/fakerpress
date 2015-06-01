@@ -179,11 +179,11 @@ Class Admin {
 	}
 
 	/**
-	 * [_action_set_admin_view description]
+	 * Creates the whole view inside of the FakerPress Administration object
 	 *
 	 * @since 0.1.0
 	 *
-	 * @return [type] [description]
+	 * @return void
 	 */
 	public function _action_set_admin_view(){
 		if ( ! self::$in_plugin ){
@@ -221,6 +221,16 @@ Class Admin {
 	}
 
 
+	/**
+	 * Filter the `$submenu_file` global right before WordPress builds the Administration Menu
+	 *
+	 * Note: This has nothing to do with `$parent_file`, this is the closest to `_wp_menu_output` execution we can get
+	 *
+	 * @since  0.4.0
+	 *
+	 * @param  string $parent_file This doesn't Matter
+	 * @return string              We never touch this variable
+	 */
 	public function _filter_parent_file( $parent_file ){
 		if ( ! self::$in_plugin ){
 			return $parent_file;
