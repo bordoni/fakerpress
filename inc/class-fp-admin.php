@@ -97,9 +97,11 @@ Class Admin {
 		add_action( 'admin_notices', array( $this, '_action_admin_notices' ) );
 		add_action( 'fakerpress.view.request.settings', array( $this, '_action_setup_settings_page' ) );
 
+		// Setup the Submenu using an PHP action based on View
+		add_filter( 'parent_file', array( $this, '_filter_parent_file' ) );
+
 		// When trying to add a menu, make bigger than the default to avoid conflicting index further on
 		add_action( 'admin_menu', array( $this, '_action_admin_menu' ), 11 );
-		add_action( 'fakerpress.view.start', array( $this, '_action_current_menu_js' ) );
 
 		// Creating information for the plugin pages footer
 		add_filter( 'admin_footer_text', array( $this, '_filter_admin_footer_text' ) );
@@ -177,44 +179,6 @@ Class Admin {
 	}
 
 	/**
-	 * [_action_current_menu_js description]
-	 * @param  [type] $view [description]
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return [type]       [description]
-	 */
-	public function _action_current_menu_js( $view ) {
-		?>
-		<script>
-			(function($){
-				'use strict';
-				var fp = typeof FakerPress === 'object' ? window.FakerPress : {};
-
-				fp.view = {
-					name: '<?php echo esc_attr( $view->slug ); ?>',
-					default: '<?php echo esc_attr( self::$menus[0]->view ); ?>'
-				};
-
-				fp.menu = {
-					$container: $('#toplevel_page_fakerpress')
-				};
-
-				fp.menu.$main = fp.menu.$container.children('a');
-				fp.menu.$items = fp.menu.$container.children('.wp-submenu').children('li').not('.wp-submenu-head');
-				fp.menu.$current = fp.menu.$items.filter('.current');
-
-				if ( fp.view.default !== fp.view.name ){
-					fp.menu.$current = fp.menu.$items.children('a').filter('[href="admin.php?page=fakerpress&view=' + fp.view.name + '"]');
-					fp.menu.$items.filter('.current').removeClass('current');
-					fp.menu.$current.parent().addClass('current');
-				}
-			}(jQuery));
-		</script>
-		<?php
-	}
-
-	/**
 	 * [_action_set_admin_view description]
 	 *
 	 * @since 0.1.0
@@ -239,6 +203,15 @@ Class Admin {
 
 		// Define the path for the view we
 		$view->path = Plugin::path( "view/{$view->slug}.php" );
+		$view->menu = null;
+
+		// Define Menu when possible
+		foreach ( self::$menus as &$menu ) {
+			if ( $menu->view !== $view->slug ){
+				continue;
+			}
+			$view->menu = $menu;
+		}
 
 		// Set the Admin::$view
 		self::$view = apply_filters( 'fakerpress.view', $view );
@@ -246,6 +219,24 @@ Class Admin {
 		do_action( 'fakerpress.view.request', self::$view );
 		do_action( 'fakerpress.view.request.' . self::$view->slug , self::$view );
 	}
+
+
+	public function _filter_parent_file( $parent_file ){
+		if ( ! self::$in_plugin ){
+			return $parent_file;
+		}
+		global $submenu_file;
+
+		if (
+			( is_null( self::$view->menu ) && 'error' !== self::$view->slug ) ||
+			( 'error' === self::$view->slug || 0 !== self::$view->menu->priority )
+		){
+			$submenu_file = Plugin::$slug . '&view=' . self::$view->slug;
+		}
+
+		return $parent_file;
+	}
+
 
 	/**
 	 * Method triggered to add the menu to WordPress administration
