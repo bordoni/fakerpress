@@ -137,6 +137,6 @@ Please use the [git flow for pull requests](#git-flow) and follow [WordPress Cod
    git push origin <topic-branch-name>
    ```
 
-7. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/) (with a clear title and description) to the `develop` branch.
+7. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/) (with a clear title and description) to the `master` branch.
 
 **IMPORTANT**: By submitting a patch, you agree to allow the project owner to license your work under the [GPL v2 license](http://www.gnu.org/licenses/gpl-2.0.html).
