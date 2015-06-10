@@ -92,13 +92,6 @@ class Post extends Base {
 		$results = (object) array();
 
 		for ( $i = 0; $i < $quantity; $i++ ) {
-			if ( $this->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
-				$attach_module->param( 'attachment_url', $this->faker->randomElement( $images_origin ) );
-				$attach_module->generate();
-				$attachment_id = $attach_module->save();
-				$this->meta( '_thumbnail_id', null, $attachment_id );
-			}
-
 			$this->param( 'tax_input', $taxonomies );
 			$this->param( 'post_status', 'publish' );
 			$this->param( 'post_date', array( $min_date, $max_date ) );
@@ -114,6 +107,15 @@ class Post extends Base {
 			if ( $post_id && is_numeric( $post_id ) ){
 				foreach ( $metas as $meta_index => $meta ) {
 					$meta_module->object( $post_id )->build( $meta['type'], $meta['name'], $meta )->save();
+				}
+
+				if ( $this->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
+					$attach_module->param( 'attachment_url', $this->faker->randomElement( $images_origin ) );
+					$attach_module->param( 'post_parent', $post_id, 1 );
+					$attach_module->generate();
+					$attachment_id = $attach_module->save();
+
+					$meta_module->object( $post_id )->build( 'raw', '_thumbnail_id', array( 100, $attachment_id, 0 ) )->save();
 				}
 			}
 

@@ -91,8 +91,8 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function post_parent( $haystack = array(), $rate = 70 ){
-		return $this->generator->numberBetween( 0, 100 ) < absint( $rate ) ? 0 : $this->generator->randomElement( (array) $haystack );
+	public function post_parent( $haystack = array(), $weight = 0.7 ){
+		return $this->generator->optional( $weight, 0 )->randomElement( (array) $haystack );
 	}
 
 	public function ping_status( $haystack = array() ){
