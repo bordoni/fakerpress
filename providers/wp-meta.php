@@ -386,4 +386,13 @@ class WP_Meta extends Base {
 		return $value;
 	}
 
+	public function meta_type_raw( $weight = 100, $value = null, $default = null ) {
+		if ( $weight >= $this->generator->numberBetween( 0, 100 ) ) {
+			return $value;
+		} else {
+			return $default;
+		}
+
+	}
+
 }

@@ -111,11 +111,11 @@ class Post extends Base {
 
 				if ( $this->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
 					$attach_module->param( 'attachment_url', $this->faker->randomElement( $images_origin ) );
-					$attach_module->param( 'post_parent', $post_id );
+					$attach_module->param( 'post_parent', $post_id, 1 );
 					$attach_module->generate();
 					$attachment_id = $attach_module->save();
 
-					$meta_module->object( $post_id )->build( 'raw', '_thumbnail_id', $attachment_id )->save();
+					$meta_module->object( $post_id )->build( 'raw', '_thumbnail_id', array( 100, $attachment_id, 0 ) )->save();
 				}
 			}
 
