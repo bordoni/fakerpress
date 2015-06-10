@@ -101,8 +101,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
-### 0.3.3 &mdash; 09 of June, 2015 ###
+### 0.3.3 &mdash; 10 of June, 2015 ###
 * Tweak: Our menus and submenus no longer require JavaScript to work
+* Tweak: Featured Images now are linked to the post using the `post_parent` column &mdash; Reported by [Bruno DC](https://profiles.wordpress.org/decarvalho_bruno)
 * Fix: Dates on Meta fields are fully working again &mdash; Thanks [Ethan Clevenger](https://profiles.wordpress.org/eclev91)
 
 ### 0.3.2 &mdash; 25 of May, 2015 ###
