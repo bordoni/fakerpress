@@ -5,6 +5,7 @@ window.fakerpress.fields = {};
 window.fakerpress.ready_class = 'fp-js-ready';
 window.fakerpress.plugin = 'fakerpress';
 window.fakerpress.abbr = 'fp';
+
 window.fakerpress.fieldName = function( pieces ){
 	return this.plugin + '[' + pieces.join( '][' ) + ']';
 };

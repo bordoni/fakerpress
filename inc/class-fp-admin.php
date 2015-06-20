@@ -347,6 +347,7 @@ Class Admin {
 
 		// Register the plugin JS files
 		wp_register_script( 'fakerpress.fields', Plugin::url( 'ui/js/fields.js' ), array( 'jquery', 'underscore', 'fakerpress.select2', 'jquery-ui-datepicker' ), Plugin::version, true );
+		wp_register_script( 'fakerpress.module', Plugin::url( 'ui/js/module.js' ), array( 'jquery', 'underscore' ), Plugin::version, true );
 
 		// Register Vendor Select2
 		wp_register_style( 'fakerpress.select2', Plugin::url( 'ui/vendor/select2/select2.css' ), array(), '3.5.0', 'screen' );
@@ -366,7 +367,10 @@ Class Admin {
 
 		// Enqueue Vendor Select2
 		wp_enqueue_style( 'fakerpress.select2-wordpress' );
+
+		// Enqueue JS for the plugin
 		wp_enqueue_script( 'fakerpress.fields' );
+		wp_enqueue_script( 'fakerpress.module' );
 	}
 
 	/**

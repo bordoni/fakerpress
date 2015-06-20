@@ -80,7 +80,7 @@ $fields[] = new Field(
 <div class='wrap'>
 	<h2><?php echo esc_attr( Admin::$view->title ); ?></h2>
 
-	<form method='post'>
+	<form method='post' class='fp-module-generator'>
 		<?php wp_nonce_field( Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' ) ); ?>
 		<table class="form-table" style="display: table;">
 			<tbody>
