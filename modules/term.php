@@ -32,6 +32,9 @@ class Term extends Base {
 		);
 
 		$term_object = wp_insert_term( $params['name'], $params['taxonomy'], $args );
+		if ( is_wp_error( $term_object ) ) {
+			return false;
+		}
 
 		$flagged = get_option( 'fakerpress.module_flag.' . $this->slug, array() );
 
