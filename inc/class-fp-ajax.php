@@ -8,13 +8,77 @@ if ( ! defined( 'WPINC' ) ){
 
 class Ajax {
 
-	public function __construct(){
+	public function __construct() {
 		add_action( 'wp_ajax_' . Plugin::$slug . '.select2-WP_Query', array( __CLASS__, 'query_posts' ) );
 		add_action( 'wp_ajax_' . Plugin::$slug . '.search_authors', array( __CLASS__, 'search_authors' ) );
 		add_action( 'wp_ajax_' . Plugin::$slug . '.search_term', array( __CLASS__, 'search_terms' ) );
+		add_action( 'wp_ajax_' . Plugin::$slug . '.module_generate', array( __CLASS__, 'module_generate' ) );
 	}
 
-	public static function search_terms( $request = null ){
+	public static function module_generate( $request = null ) {
+		$response = (object) array(
+			'status' => false,
+			'message' => __( 'Your request has failed', 'fakerpress' ),
+		);
+
+		if ( ( ! Admin::$is_ajax && is_null( $request ) ) || ! is_user_logged_in() ){
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
+
+		$view = Filter::super( INPUT_POST, array( Plugin::$slug, 'view' ), FILTER_SANITIZE_STRING );
+		$nonce_slug = Plugin::$slug . '.request.' . $view;
+
+		if ( ! check_admin_referer( $nonce_slug ) ) {
+			$response->message = __( 'Security fail, refresh the page and try again!', 'fakerpress' );
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
+
+		// Here we have a Secure Call
+		$module_class_name = '\FakerPress\Module\\' . rtrim( ucfirst( $view ), 's' );
+		$module = call_user_func_array( array( $module_class_name, 'instance' ), array() );
+
+		$response->allowed = $module->get_amount_allowed();
+		$response->offset = absint( Filter::super( INPUT_POST, array( 'offset' ), FILTER_UNSAFE_RAW ) );
+		$qty = $response->total = absint( Filter::super( INPUT_POST, array( 'total' ), FILTER_UNSAFE_RAW ) );
+
+		if ( ! $response->total ){
+			$qty = Filter::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
+
+			if ( is_array( $qty ) ) {
+				$min = absint( $qty['min'] );
+				$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
+				$qty = $module->faker->numberBetween( $min, $max );
+			}
+			$response->total = $qty;
+		}
+
+		if ( $qty > $response->allowed ){
+			$response->is_capped = true;
+			$qty = $response->allowed;
+
+			if ( $response->total < $response->offset + $response->allowed ) {
+				$qty += $response->total - ( $response->offset + $response->allowed );
+				$response->is_capped = false;
+			}
+		} else {
+			$response->is_capped = false;
+		}
+
+		$results = $module->parse_request( $qty, Filter::super( INPUT_POST, array( Plugin::$slug ), FILTER_UNSAFE_RAW ) );
+		$response->offset += $qty;
+
+		if ( is_string( $results ) ){
+			$response->message = $results;
+		} else {
+			$response->status = true;
+			$response->message = implode( ', ', array_map( array( $module, 'format_link' ), $results ) );
+			$response->results = $results;
+		}
+
+		return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+	}
+
+	public static function search_terms( $request = null ) {
 		$response = (object) array(
 			'status' => false,
 			'message' => __( 'Your request has failed', 'fakerpress' ),
@@ -71,7 +135,7 @@ class Ajax {
 		return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
 	}
 
-	public static function query_posts( $request = null ){
+	public static function query_posts( $request = null ) {
 		$response = (object) array(
 			'status' => false,
 			'message' => __( 'Your request has failed', 'fakerpress' ),
@@ -111,7 +175,7 @@ class Ajax {
 		return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
 	}
 
-	public static function search_authors( $request = null ){
+	public static function search_authors( $request = null ) {
 		$response = (object) array(
 			'status' => false,
 			'message' => __( 'Your request has failed', 'fakerpress' ),

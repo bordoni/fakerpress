@@ -25,7 +25,7 @@ class Post extends Base {
 		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
 	}
 
-	public function do_save( $return_val, $params, $metas, $module ){
+	public function do_save( $return_val, $params, $metas, $module ) {
 		$post_id = wp_insert_post( $params );
 
 		if ( ! is_numeric( $post_id ) ){
@@ -39,63 +39,51 @@ class Post extends Base {
 		return $post_id;
 	}
 
-	public function _action_parse_request( $view ){
-		if ( 'post' !== Admin::$request_method || empty( $_POST ) ) {
-			return false;
+	public function format_link( $id ) {
+		return '<a href="' . esc_url( get_edit_post_link( $id ) ) . '">' . absint( $id ) . '</a>';
+	}
+
+	public function parse_request( $qty, $request = array() ) {
+		if ( is_null( $qty ) ) {
+			$qty = Filter::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
+			$min = absint( $qty['min'] );
+			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
+			$qty = $this->faker->numberBetween( $min, $max );
 		}
 
-		$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
-
-		if ( ! check_admin_referer( $nonce_slug ) ) {
-			return false;
+		if ( 0 === $qty ){
+			return esc_attr__( 'Zero is not a good number of posts to fake...', 'fakerpress' );
 		}
 
-		// After this point we are safe to say that we have a good POST request
-		$qty_min = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'min' ), FILTER_SANITIZE_NUMBER_INT ) );
-		$qty_max = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'max' ), FILTER_SANITIZE_NUMBER_INT ) );
+		$comment_status = array_map( 'trim', explode( ',', Filter::super( $request, array( 'comment_status' ), FILTER_SANITIZE_STRING ) ) );
 
-		$comment_status = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'comment_status' ), FILTER_SANITIZE_STRING ) ) );
+		$post_author = array_intersect( get_users( array( 'fields' => 'ID' ) ), array_map( 'trim', explode( ',', Filter::super( $request, array( 'author' ) ) ) ) );
 
-		$post_author = array_intersect( get_users( array( 'fields' => 'ID' ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'author' ) ) ) ) );
+		$min_date = Filter::super( $request, array( 'interval_date', 'min' ) );
+		$max_date = Filter::super( $request, array( 'interval_date', 'max' ) );
 
-		$min_date = Filter::super( INPUT_POST, array( 'fakerpress', 'interval_date', 'min' ) );
-		$max_date = Filter::super( INPUT_POST, array( 'fakerpress', 'interval_date', 'max' ) );
+		$post_types = array_intersect( get_post_types( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( $request, array( 'post_types' ), FILTER_SANITIZE_STRING ) ) ) );
+		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( $request, array( 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
 
-		$post_types = array_intersect( get_post_types( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'post_types' ), FILTER_SANITIZE_STRING ) ) ) );
-		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
+		$post_content_use_html = Filter::super( $request, array( 'use_html' ), FILTER_SANITIZE_NUMBER_INT, 0 ) === 1;
+		$post_content_html_tags = array_map( 'trim', explode( ',', Filter::super( $request, array( 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
-		$post_content_use_html = Filter::super( INPUT_POST, array( 'fakerpress', 'use_html' ), FILTER_SANITIZE_NUMBER_INT, 0 ) === 1;
-		$post_content_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
+		$post_parents = array_map( 'trim', explode( ',', Filter::super( $request, array( 'post_parent' ), FILTER_SANITIZE_STRING ) ) );
 
-		$post_parents = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'post_parent' ), FILTER_SANITIZE_STRING ) ) );
+		$featured_image_rate = absint( Filter::super( $request, array( 'featured_image_rate' ), FILTER_SANITIZE_NUMBER_INT ) );
+		$images_origin = array_map( 'trim', explode( ',', Filter::super( $request, array( 'images_origin' ), FILTER_SANITIZE_STRING ) ) );
 
-		$featured_image_rate = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'featured_image_rate' ), FILTER_SANITIZE_NUMBER_INT ) );
-		$images_origin = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'images_origin' ), FILTER_SANITIZE_STRING ) ) );
-
-		$metas = Filter::super( INPUT_POST, array( 'fakerpress', 'meta' ), FILTER_UNSAFE_RAW );
+		$metas = Filter::super( $request, array( 'meta' ), FILTER_UNSAFE_RAW );
 
 		$attach_module = Attachment::instance();
 		$meta_module = Meta::instance();
 
-		if ( 0 === $qty_min ){
-			return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
-		}
+		$results = array();
 
-		if ( ! empty( $qty_min ) && ! empty( $qty_max ) ){
-			$quantity = $this->faker->numberBetween( $qty_min, $qty_max );
-		}
-
-		if ( ! empty( $qty_min ) && empty( $qty_max ) ){
-			$quantity = $qty_min;
-		}
-
-		$results = (object) array();
-
-		for ( $i = 0; $i < $quantity; $i++ ) {
+		for ( $i = 0; $i < $qty; $i++ ) {
 			if ( $this->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
 				$attach_module->param( 'attachment_url', $this->faker->randomElement( $images_origin ) );
-				$attach_module->generate();
-				$attachment_id = $attach_module->save();
+				$attachment_id = $attach_module->generate()->save();
 				$this->meta( '_thumbnail_id', null, $attachment_id );
 			}
 
@@ -108,8 +96,7 @@ class Post extends Base {
 			$this->param( 'post_type', $post_types );
 			$this->param( 'comment_status', $comment_status );
 
-			$this->generate();
-			$post_id = $this->save();
+			$post_id = $this->generate()->save();
 
 			if ( $post_id && is_numeric( $post_id ) ){
 				foreach ( $metas as $meta_index => $meta ) {
@@ -117,26 +104,35 @@ class Post extends Base {
 				}
 			}
 
-			$results->all[] = $post_id;
+			$results[] = $post_id;
 		}
 
-		$results->success = array_filter( $results->all, 'absint' );
+		$results = array_filter( (array) $results, 'absint' );
 
-		if ( ! empty( $results->success ) ){
+		return $results;
+	}
+
+	public function _action_parse_request( $view ) {
+		if ( 'post' !== Admin::$request_method || empty( $_POST ) ) {
+			return false;
+		}
+
+		$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
+
+		if ( ! check_admin_referer( $nonce_slug ) ) {
+			return false;
+		}
+
+		// After this point we are safe to say that we have a good POST request
+		$results = $this->parse_request( null, Filter::super( INPUT_POST, array( Plugin::$slug ), FILTER_UNSAFE_RAW ) );
+
+		if ( ! empty( $results ) ){
 			return Admin::add_message(
 				sprintf(
 					__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),
-					count( $results->success ),
-					_n( 'post', 'posts', count( $results->success ), 'fakerpress' ),
-					implode(
-						', ',
-						array_map(
-							function ( $id ){
-								return '<a href="' . esc_url( get_edit_post_link( $id ) ) . '">' . absint( $id ) . '</a>';
-							},
-							$results->success
-						)
-					)
+					count( $results ),
+					_n( 'post', 'posts', count( $results ), 'fakerpress' ),
+					implode( ', ', array_map( array( $this, 'format_link' ), $results ) )
 				)
 			);
 		}

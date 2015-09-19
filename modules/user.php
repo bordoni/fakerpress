@@ -24,7 +24,11 @@ class User extends Base {
 		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
 	}
 
-	public function do_save( $return_val, $params, $metas, $module ){
+	public function format_link( $id ) {
+		return '<a href="' . esc_url( get_edit_user_link( $id ) ) . '">' . absint( $id ) . '</a>';
+	}
+
+	public function do_save( $return_val, $params, $metas, $module ) {
 		$user_id = wp_insert_user( $params );
 
 		if ( ! is_numeric( $user_id ) ){
@@ -46,43 +50,29 @@ class User extends Base {
 		return $user_id;
 	}
 
-	public function _action_parse_request( $view ){
-		if ( 'post' !== Admin::$request_method || empty( $_POST ) ) {
-			return false;
+	public function parse_request( $qty, $request = array() ) {
+		if ( is_null( $qty ) ) {
+			$qty = Filter::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
+			$min = absint( $qty['min'] );
+			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
+			$qty = $this->faker->numberBetween( $min, $max );
 		}
 
-		$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
-
-		if ( ! check_admin_referer( $nonce_slug ) ) {
-			return false;
+		if ( 0 === $qty ){
+			return esc_attr__( 'Zero is not a good number of users to fake...', 'fakerpress' );
 		}
-		// After this point we are safe to say that we have a good POST request
+
 		$meta_module = Meta::instance();
 
-		$qty_min = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'min' ), FILTER_SANITIZE_NUMBER_INT ) );
-		$qty_max = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'max' ), FILTER_SANITIZE_NUMBER_INT ) );
+		$description_use_html = Filter::super( $request, array( 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
+		$description_html_tags = array_map( 'trim', explode( ',', Filter::super( $request, array( 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
-		$description_use_html = Filter::super( INPUT_POST, array( 'fakerpress', 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
-		$description_html_tags = array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
+		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', Filter::super( $request, array( 'roles' ), FILTER_SANITIZE_STRING ) ) ) );
+		$metas = Filter::super( $request, array( 'meta' ), FILTER_UNSAFE_RAW );
 
-		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'roles' ), FILTER_SANITIZE_STRING ) ) ) );
-		$metas = Filter::super( INPUT_POST, array( 'fakerpress', 'meta' ), FILTER_UNSAFE_RAW );
+		$results = array();
 
-		if ( 0 === $qty_min ){
-			return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
-		}
-
-		if ( ! empty( $qty_min ) && ! empty( $qty_max ) ){
-			$quantity = $this->faker->numberBetween( $qty_min, $qty_max );
-		}
-
-		if ( ! empty( $qty_min ) && empty( $qty_max ) ){
-			$quantity = $qty_min;
-		}
-
-		$results = (object) array();
-
-		for ( $i = 0; $i < $quantity; $i++ ) {
+		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->param( 'role', $roles );
 			$this->param( 'description', $description_use_html, array( 'elements' => $description_html_tags ) );
 			$this->generate();
@@ -94,17 +84,34 @@ class User extends Base {
 					$meta_module->object( $user_id, 'user' )->build( $meta['type'], $meta['name'], $meta )->save();
 				}
 			}
-			$results->all[] = $user_id;
+			$results[] = $user_id;
 		}
-		$results->success = array_filter( $results->all, 'absint' );
+		$results = array_filter( $results, 'absint' );
 
-		if ( ! empty( $results->success ) ){
+		return $results;
+	}
+
+	public function _action_parse_request( $view ) {
+		if ( 'post' !== Admin::$request_method || empty( $_POST ) ) {
+			return false;
+		}
+
+		$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
+
+		if ( ! check_admin_referer( $nonce_slug ) ) {
+			return false;
+		}
+
+		// After this point we are safe to say that we have a good POST request
+		$results = $this->parse_request( null, Filter::super( INPUT_POST, array( Plugin::$slug ), FILTER_UNSAFE_RAW ) );
+
+		if ( ! empty( $results ) ){
 			return Admin::add_message(
 				sprintf(
 					__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),
-					count( $results->success ),
-					_n( 'user', 'users', count( $results->success ), 'fakerpress' ),
-					implode( ', ', $results->success )
+					count( $results ),
+					_n( 'user', 'users', count( $results ), 'fakerpress' ),
+					implode( ', ', array_map( array( $this, 'format_link' ), $results ) )
 				)
 			);
 		}

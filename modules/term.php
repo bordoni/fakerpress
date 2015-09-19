@@ -25,7 +25,11 @@ class Term extends Base {
 		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
 	}
 
-	public function do_save( $return_val, $params, $metas, $module ){
+	public function format_link( $id ) {
+		return absint( $id );
+	}
+
+	public function do_save( $return_val, $params, $metas, $module ) {
 		$args = array(
 			'description' => $params['description'],
 			'parent' => $params['parent_term'],
@@ -51,6 +55,32 @@ class Term extends Base {
 		return $term_object['term_id'];
 	}
 
+	public function parse_request( $qty, $request = array() ) {
+		if ( is_null( $qty ) ) {
+			$qty = Filter::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
+			$min = absint( $qty['min'] );
+			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
+			$qty = $this->faker->numberBetween( $min, $max );
+		}
+
+		if ( 0 === $qty ){
+			return esc_attr__( 'Zero is not a good number of terms to fake...', 'fakerpress' );
+		}
+
+		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( $request, array( 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
+
+		for ( $i = 0; $i < $qty; $i++ ) {
+			$this->param( 'taxonomy', $taxonomies );
+			$this->generate();
+
+			$results[] = $this->save();
+		}
+
+		$results = array_filter( (array) $results, 'absint' );
+
+		return $results;
+	}
+
 	public function _action_parse_request( $view ) {
 		if ( 'post' !== Admin::$request_method || empty( $_POST ) ) {
 			return false;
@@ -63,43 +93,20 @@ class Term extends Base {
 		}
 
 		// After this point we are safe to say that we have a good POST request
-		$qty_min = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'min' ), FILTER_SANITIZE_NUMBER_INT ) );
-		$qty_max = absint( Filter::super( INPUT_POST, array( 'fakerpress', 'qty', 'max' ), FILTER_SANITIZE_NUMBER_INT ) );
+		$results = $this->parse_request( null, Filter::super( INPUT_POST, array( Plugin::$slug ), FILTER_UNSAFE_RAW ) );
 
-		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( INPUT_POST, array( 'fakerpress', 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
-
-		if ( 0 === $qty_min ){
-			return Admin::add_message( sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' ), 'error' );
-		}
-
-		if ( ! empty( $qty_min ) && ! empty( $qty_max ) ){
-			$quantity = $this->faker->numberBetween( $qty_min, $qty_max );
-		}
-
-		if ( ! empty( $qty_min ) && empty( $qty_max ) ){
-			$quantity = $qty_min;
-		}
-
-		$results = (object) array();
-
-		for ( $i = 0; $i < $quantity; $i++ ) {
-			$this->param( 'taxonomy', $taxonomies );
-			$this->generate();
-
-			$results->all[] = $this->save();
-		}
-
-		$results->success = array_filter( $results->all, 'absint' );
-
-		if ( ! empty( $results->success ) ){
+		if ( is_string( $results ) ) {
+			return Admin::add_message( $results, 'error' );
+		} else {
 			return Admin::add_message(
 				sprintf(
 					__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),
-					count( $results->all ),
-					_n( 'term', 'terms', count( $results->all ), 'fakerpress' ),
-					implode( ', ', $results->all )
+					count( $results ),
+					_n( 'term', 'terms', count( $results ), 'fakerpress' ),
+					implode( ', ', array_map( array( $this, 'format_link' ), $results ) )
 				)
 			);
 		}
+
 	}
 }

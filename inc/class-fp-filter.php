@@ -5,9 +5,6 @@ namespace FakerPress;
 if ( ! defined( 'WPINC' ) ){
 	die;
 }
-/**
- * @see https://github.com/x-team/wp-stream		We forked this idea from X-Team's Stream Plugin
- */
 
 class Filter {
 
@@ -37,7 +34,11 @@ class Filter {
 		FILTER_UNSAFE_RAW                  => null,
 	);
 
-	public static function search( $variable = null, $indexes = array() ) {
+	public function __construct() {
+
+	}
+
+	public static function search( $variable = null, $indexes = array(), $default = null ) {
 		if ( is_object( $variable ) ){
 			$variable = (array) $variable;
 		}
@@ -50,7 +51,7 @@ class Filter {
 			if ( is_array( $variable ) && isset( $variable[ $index ] ) ){
 				$variable = $variable[ $index ];
 			} else {
-				$variable = null;
+				$variable = $default;
 				break;
 			}
 		}
@@ -58,7 +59,7 @@ class Filter {
 		return $variable;
 	}
 
-	public static function super( $type, $variable, $filter = null, $options = array() ) {
+	public static function super( $type, $variable, $filter = null, $default = null ) {
 		$super = null;
 
 		switch ( $type ) {
@@ -77,6 +78,12 @@ class Filter {
 			case INPUT_SERVER :
 				$super = $_SERVER;
 				break;
+			default:
+				// Setting the Super
+				if ( is_array( $type ) ){
+					$super = $type;
+				}
+				break;
 		}
 
 		if ( is_null( $super ) ) {
@@ -84,53 +91,27 @@ class Filter {
 		}
 
 		$var = self::search( $super, $variable );
-		$var = self::filter( $var, $filter, $options );
+		$var = self::filter( $var, $filter, $default );
 
 		return $var;
 	}
 
-	public static function filter( $var, $filter = null, $options = array() ) {
-		// Default filter is a sanitizer, not validator
-		$filter_type = 'sanitizer';
-
-		// Default value when there is none
-		$default = ( array_key_exists( 'default', (array) $options ) ? $options['default'] : $options );
-		if ( 'validator' === $filter_type && false === $var ) {
-			$var = empty( $options ) ? false : $default;
-		} elseif ( 'sanitizer' === $filter_type && null === $var ) {
-			$var = empty( $options ) ? null : $default;
+	public static function filter( $var = null, $filter = null, $default = null ) {
+		if ( is_null( $var ) ){
+			$var = $default;
 		}
 
-		// Only filter value if it is not null
-		if ( isset( $var ) && $filter && FILTER_DEFAULT !== $filter ) {
-			if ( ! isset( self::$filter_callbacks[ $filter ] ) ) {
-				throw new \Exception( __( 'Filter not supported.', 'fakerpress' ) );
-			}
-
-			$filter_callback = self::$filter_callbacks[ $filter ];
-			$result          = call_user_func( $filter_callback, $var );
-
-			// filter_var / filter_input treats validation/sanitization filters the same
-			// they both return output and change the var value, this shouldn't be the case here.
-			// We'll do a boolean check on validation function, and let sanitizers change the value
-			$filter_type = ( $filter < 500 ) ? 'validator' : 'sanitizer';
-			if ( 'validator' === $filter_type ) { // Validation functions
-				if ( ! $result ) {
-					$var = false;
-				}
-			} else { // Santization functions
-				$var = $result;
-			}
+		if ( ! array_key_exists( $filter, self::$filter_callbacks ) ) {
+			return $default;
 		}
 
-		// Detect FILTER_REQUIRE_ARRAY flag
-		if ( isset( $var ) && is_int( $options ) && FILTER_REQUIRE_ARRAY === $options ) {
-			if ( ! is_array( $var ) ) {
-				$var = ( 'validator' === $filter_type ) ? false : null;
-			}
+		$filter_callback = self::$filter_callbacks[ $filter ];
+
+		if ( FILTER_UNSAFE_RAW === $filter ) {
+			return $var;
 		}
 
-		return $var;
+		return ( ! is_null( $filter_callback ) ? call_user_func( $filter_callback, $var ) : $var );
 	}
 
 	public static function is_regex( $var ) {
