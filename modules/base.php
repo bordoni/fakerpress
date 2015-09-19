@@ -114,7 +114,7 @@ abstract class Base {
 	/**
 	 * Amount of instaces of the module that are allowed to be generated in one single request
 	 *
-	 * @return int the Filtered amount
+	 * @return int the Variableed amount
 	 */
 	public function get_amount_allowed() {
 		return apply_filters( "fakerpress.module.{$this->slug}.amount_allowed", 15, $this );
@@ -176,13 +176,13 @@ abstract class Base {
 
 	public function parse_request( $qty, $request = array() ) {
 		if ( is_null( $qty ) ) {
-			$qty = Filter::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
+			$qty = Variable::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
 			$min = absint( $qty['min'] );
 			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
 			$qty = $this->faker->numberBetween( $min, $max );
 		}
 
-		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( $request, array( 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
+		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Variable::super( $request, array( 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
 
 		if ( 0 === $qty ){
 			return sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' );

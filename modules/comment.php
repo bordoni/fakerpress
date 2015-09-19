@@ -1,7 +1,7 @@
 <?php
 namespace FakerPress\Module;
 use FakerPress\Admin;
-use FakerPress\Filter;
+use FakerPress\Variable;
 use FakerPress\Plugin;
 
 
@@ -45,7 +45,7 @@ class Comment extends Base {
 
 	public function parse_request( $qty, $request = array() ) {
 		if ( is_null( $qty ) ) {
-			$qty = Filter::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
+			$qty = Variable::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
 			$min = absint( $qty['min'] );
 			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
 			$qty = $this->faker->numberBetween( $min, $max );
@@ -57,12 +57,12 @@ class Comment extends Base {
 
 		$meta_module = Meta::instance();
 
-		$comment_content_use_html = Filter::super( $request, array( 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
-		$comment_content_html_tags = array_map( 'trim', explode( ',', Filter::super( $request, array( 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
+		$comment_content_use_html = Variable::super( $request, array( 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
+		$comment_content_html_tags = array_map( 'trim', explode( ',', Variable::super( $request, array( 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
-		$min_date = Filter::super( $request, array( 'interval_date', 'min' ) );
-		$max_date = Filter::super( $request, array( 'interval_date', 'max' ) );
-		$metas = Filter::super( $request, array( 'meta' ), FILTER_UNSAFE_RAW );
+		$min_date = Variable::super( $request, array( 'interval_date', 'min' ) );
+		$max_date = Variable::super( $request, array( 'interval_date', 'max' ) );
+		$metas = Variable::super( $request, array( 'meta' ), FILTER_UNSAFE_RAW );
 
 		$results = array();
 
@@ -98,7 +98,7 @@ class Comment extends Base {
 		}
 
 		// After this point we are safe to say that we have a good POST request
-		$results = $this->parse_request( null, Filter::super( INPUT_POST, array( Plugin::$slug ), FILTER_UNSAFE_RAW ) );
+		$results = $this->parse_request( null, Variable::super( INPUT_POST, array( Plugin::$slug ), FILTER_UNSAFE_RAW ) );
 
 		if ( ! empty( $results ) ){
 			return Admin::add_message(

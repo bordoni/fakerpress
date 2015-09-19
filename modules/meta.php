@@ -1,7 +1,7 @@
 <?php
 namespace FakerPress\Module;
 use FakerPress\Admin;
-use FakerPress\Filter;
+use FakerPress\Variable;
 use FakerPress\Plugin;
 
 

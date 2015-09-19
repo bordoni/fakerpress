@@ -25,7 +25,7 @@ class Ajax {
 			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
 		}
 
-		$view = Filter::super( INPUT_POST, array( Plugin::$slug, 'view' ), FILTER_SANITIZE_STRING );
+		$view = Variable::super( INPUT_POST, array( Plugin::$slug, 'view' ), FILTER_SANITIZE_STRING );
 		$nonce_slug = Plugin::$slug . '.request.' . $view;
 
 		if ( ! check_admin_referer( $nonce_slug ) ) {
@@ -38,11 +38,11 @@ class Ajax {
 		$module = call_user_func_array( array( $module_class_name, 'instance' ), array() );
 
 		$response->allowed = $module->get_amount_allowed();
-		$response->offset = absint( Filter::super( INPUT_POST, array( 'offset' ), FILTER_UNSAFE_RAW ) );
-		$qty = $response->total = absint( Filter::super( INPUT_POST, array( 'total' ), FILTER_UNSAFE_RAW ) );
+		$response->offset = absint( Variable::super( INPUT_POST, array( 'offset' ), FILTER_UNSAFE_RAW ) );
+		$qty = $response->total = absint( Variable::super( INPUT_POST, array( 'total' ), FILTER_UNSAFE_RAW ) );
 
 		if ( ! $response->total ){
-			$qty = Filter::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
+			$qty = Variable::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
 
 			if ( is_array( $qty ) ) {
 				$min = absint( $qty['min'] );
@@ -64,7 +64,7 @@ class Ajax {
 			$response->is_capped = false;
 		}
 
-		$results = $module->parse_request( $qty, Filter::super( INPUT_POST, array( Plugin::$slug ), FILTER_UNSAFE_RAW ) );
+		$results = $module->parse_request( $qty, Variable::super( INPUT_POST, array( Plugin::$slug ), FILTER_UNSAFE_RAW ) );
 		$response->offset += $qty;
 
 		if ( is_string( $results ) ){

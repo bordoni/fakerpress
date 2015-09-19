@@ -153,9 +153,9 @@ class Plugin {
 		return (string) plugin_basename( $_file );
 	}
 
-	public static function get( $name, $default = false ){
+	public static function get( $name, $default = false ) {
 		$options = self::all();
-		$value = Filter::search( $options, $name );
+		$value = Variable::search( $options, $name );
 
 		if ( is_null( $value ) ){
 			return $default;
@@ -164,13 +164,13 @@ class Plugin {
 		return $value;
 	}
 
-	public static function update( $name = null, $value = false ){
+	public static function update( $name = null, $value = false ) {
 		$options = self::all();
 		$opts = array();
 
 		foreach ( (array) $name as $k => $index ) {
 			if ( 0 === $k ){
-				$opts[-1] = &$options;
+				$opts[ -1 ] = &$options;
 			}
 
 			if ( count( $name ) - 1 !== $k && ! isset( $opts[ $k - 1 ][ $index ] ) ){
@@ -185,14 +185,14 @@ class Plugin {
 		}
 		$opts[ $k ] = $value;
 
-		return update_option( self::$slug . '-plugin-options' , $options );
+		return update_option( self::$slug . '-plugin-options', $options );
 	}
 
-	public static function remove( $name = null ){
-		// Essa TODO
+	public static function remove( $name = null ) {
+		// @TODO
 	}
 
-	public static function all(){
+	public static function all() {
 		$defaults = array();
 		$options = get_option( self::$slug . '-plugin-options', $defaults );
 
@@ -204,8 +204,8 @@ class Plugin {
 	 *
 	 * @since 0.1.0
 	 */
-	public function __construct(){
+	public function __construct() {
 		// Setup the global version of the class, this only runs once...
-		null === self::$instance and self::$instance = &$this;
+		null === self::$instance && self::$instance = &$this;
 	}
 }

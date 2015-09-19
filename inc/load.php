@@ -24,7 +24,7 @@ if ( ! class_exists( 'Carbon\Carbon' ) ){
 require_once Plugin::path( 'inc/class-fp-dates.php' );
 
 // Require our Filtering Class
-require_once Plugin::path( 'inc/class-fp-filter.php' );
+require_once Plugin::path( 'inc/class-fp-variable.php' );
 
 // Require our Field Class
 require_once Plugin::path( 'inc/class-fp-field.php' );

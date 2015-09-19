@@ -6,7 +6,7 @@ if ( ! defined( 'WPINC' ) ){
 	die;
 }
 
-class Filter {
+class Variable {
 
 	public static $filter_callbacks = array(
 		FILTER_DEFAULT                     => null,
@@ -16,8 +16,8 @@ class Filter {
 		FILTER_VALIDATE_EMAIL              => 'is_email',
 		FILTER_VALIDATE_FLOAT              => 'is_float',
 		FILTER_VALIDATE_INT                => 'is_int',
-		FILTER_VALIDATE_IP                 => array( 'Filter', 'is_ip_address' ),
-		FILTER_VALIDATE_REGEXP             => array( 'Filter', 'is_regex' ),
+		FILTER_VALIDATE_IP                 => array( 'Variable', 'is_ip_address' ),
+		FILTER_VALIDATE_REGEXP             => array( 'Variable', 'is_regex' ),
 		FILTER_VALIDATE_URL                => 'wp_http_validate_url',
 
 		// Sanitize
@@ -96,7 +96,7 @@ class Filter {
 		return $var;
 	}
 
-	public static function filter( $var = null, $filter = null, $default = null ) {
+	public static function filter( $var = null, $filter = FILTER_DEFAULT, $default = null ) {
 		if ( is_null( $var ) ){
 			$var = $default;
 		}

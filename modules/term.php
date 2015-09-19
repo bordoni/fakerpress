@@ -1,7 +1,7 @@
 <?php
 namespace FakerPress\Module;
 use FakerPress\Admin;
-use FakerPress\Filter;
+use FakerPress\Variable;
 use FakerPress\Plugin;
 
 
@@ -60,7 +60,7 @@ class Term extends Base {
 
 	public function parse_request( $qty, $request = array() ) {
 		if ( is_null( $qty ) ) {
-			$qty = Filter::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
+			$qty = Variable::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
 			$min = absint( $qty['min'] );
 			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
 			$qty = $this->faker->numberBetween( $min, $max );
@@ -70,7 +70,7 @@ class Term extends Base {
 			return esc_attr__( 'Zero is not a good number of terms to fake...', 'fakerpress' );
 		}
 
-		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( $request, array( 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
+		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Variable::super( $request, array( 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
 
 		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->param( 'taxonomy', $taxonomies );
@@ -96,7 +96,7 @@ class Term extends Base {
 		}
 
 		// After this point we are safe to say that we have a good POST request
-		$results = $this->parse_request( null, Filter::super( INPUT_POST, array( Plugin::$slug ), FILTER_UNSAFE_RAW ) );
+		$results = $this->parse_request( null, Variable::super( INPUT_POST, array( Plugin::$slug ), FILTER_UNSAFE_RAW ) );
 
 		if ( is_string( $results ) ) {
 			return Admin::add_message( $results, 'error' );

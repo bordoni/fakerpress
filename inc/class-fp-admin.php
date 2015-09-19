@@ -74,12 +74,12 @@ class Admin {
 	 *
 	 * @return null Construct never returns
 	 */
-	public function __construct(){
-		self::$request_method = strtolower( Filter::super( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ) );
+	public function __construct() {
+		self::$request_method = strtolower( Variable::super( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ) );
 
 		self::$is_ajax = ( defined( 'DOING_AJAX' ) && DOING_AJAX );
 
-		$page = Filter::super( INPUT_GET, 'page', FILTER_SANITIZE_STRING );
+		$page = Variable::super( INPUT_GET, 'page', FILTER_SANITIZE_STRING );
 		self::$in_plugin = ( ! is_null( $page ) && strtolower( $page ) === Plugin::$slug );
 
 		self::$menus[] = (object) array(
@@ -129,7 +129,7 @@ class Admin {
 	 * @since 0.1.0
 	 *
 	 */
-	public static function add_menu( $view, $title, $label, $capability = 'manage_options', $priority = 10 ){
+	public static function add_menu( $view, $title, $label, $capability = 'manage_options', $priority = 10 ) {
 		$priority = absint( $priority );
 		self::$menus[] = (object) array(
 			'view' => sanitize_title( $view ),
@@ -157,7 +157,7 @@ class Admin {
 	 * @since 0.1.2
 	 *
 	 */
-	public static function add_message( $html, $type = 'success', $priority = 10 ){
+	public static function add_message( $html, $type = 'success', $priority = 10 ) {
 		$priority = absint( $priority );
 
 		/**
@@ -185,14 +185,14 @@ class Admin {
 	 *
 	 * @return void
 	 */
-	public function _action_set_admin_view(){
+	public function _action_set_admin_view() {
 		if ( ! self::$in_plugin ){
 			return;
 		}
 
 		// Default Page of the plugin
 		$view = (object) array(
-			'slug' => Filter::super( INPUT_GET, 'view', 'file', self::$menus[0]->view ),
+			'slug' => Variable::super( INPUT_GET, 'view', 'file', self::$menus[0]->view ),
 			'path' => null,
 		);
 
@@ -217,7 +217,7 @@ class Admin {
 		self::$view = apply_filters( 'fakerpress.view', $view );
 
 		do_action( 'fakerpress.view.request', self::$view );
-		do_action( 'fakerpress.view.request.' . self::$view->slug , self::$view );
+		do_action( 'fakerpress.view.request.' . self::$view->slug, self::$view );
 	}
 
 
@@ -231,7 +231,7 @@ class Admin {
 	 * @param  string $parent_file This doesn't Matter
 	 * @return string              We never touch this variable
 	 */
-	public function _filter_parent_file( $parent_file ){
+	public function _filter_parent_file( $parent_file ) {
 		if ( ! self::$in_plugin ){
 			return $parent_file;
 		}
@@ -376,7 +376,7 @@ class Admin {
 	/**
 	 * Method to include the settings page, from views folders
 	 *
-	 * @uses \FakerPress\Filter::super
+	 * @uses \FakerPress\Variable::super
 	 * @uses \FakerPress\Plugin::path
 	 * @uses do_action
 	 *
@@ -402,7 +402,7 @@ class Admin {
 
 
 	public function _filter_set_view_action( $view ) {
-		$view->action = Filter::super( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
+		$view->action = Variable::super( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
 		if ( empty( $view->action ) ){
 			$view->action = null;
 		}
@@ -484,7 +484,7 @@ class Admin {
 	/**
 	 * Filter the WordPress Version on plugins pages to display plugin version
 	 *
-	 * @uses \FakerPress\Filter::super
+	 * @uses \FakerPress\Variable::super
 	 * @uses \FakerPress\Plugin::$slug
 	 * @uses __
 	 *
@@ -511,7 +511,7 @@ class Admin {
 	/**
 	 * Filter the WordPress Version on plugins pages to display the plugin version
 	 *
-	 * @uses \FakerPress\Filter::super
+	 * @uses \FakerPress\Variable::super
 	 * @uses \FakerPress\Plugin::$slug
 	 * @uses \FakerPress\Plugin::admin_url
 	 * @uses \FakerPress\Plugin::version
@@ -564,11 +564,11 @@ class Admin {
 			return false;
 		}
 
-		$save_500px = is_string( Filter::super( INPUT_POST, array( 'fakerpress', 'actions', 'save_500px' ), FILTER_SANITIZE_STRING ) );
+		$save_500px = is_string( Variable::super( INPUT_POST, array( 'fakerpress', 'actions', 'save_500px' ), FILTER_UNSAFE_RAW ) );
 
 		if ( $save_500px ){
 			$opts = array(
-				'key' => Filter::super( INPUT_POST, array( 'fakerpress', '500px-key' ), FILTER_SANITIZE_STRING ),
+				'key' => Variable::super( INPUT_POST, array( 'fakerpress', '500px-key' ), FILTER_SANITIZE_STRING ),
 			);
 
 			Plugin::update( array( '500px' ), $opts );
@@ -577,8 +577,8 @@ class Admin {
 		}
 
 		// After this point we are safe to say that we have a good POST request
-		$erase_intention = is_string( Filter::super( INPUT_POST, array( 'fakerpress', 'actions', 'delete' ), FILTER_SANITIZE_STRING ) );
-		$erase_check     = in_array( strtolower( Filter::super( INPUT_POST, array( 'fakerpress', 'erase_phrase' ), FILTER_SANITIZE_STRING ) ), array( 'let it go', 'let it go!' ) );
+		$erase_intention = is_string( Variable::super( INPUT_POST, array( 'fakerpress', 'actions', 'delete' ), FILTER_UNSAFE_RAW ) );
+		$erase_check     = in_array( strtolower( Variable::super( INPUT_POST, array( 'fakerpress', 'erase_phrase' ), FILTER_SANITIZE_STRING ) ), array( 'let it go', 'let it go!' ) );
 
 		if ( ! $erase_intention ){
 			return false;
