@@ -100,6 +100,11 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
+= 0.3.3 &mdash; 10 of June, 2015 =
+* Tweak: Our menus and submenus no longer require JavaScript to work
+* Tweak: Featured Images now are linked to the post using the `post_parent` column &mdash; Reported by [Bruno DC](https://profiles.wordpress.org/decarvalho_bruno)
+* Fix: Dates on Meta fields are fully working again &mdash; Thanks [Ethan Clevenger](https://profiles.wordpress.org/eclev91)
+
 = 0.3.2 &mdash; 25 of May, 2015 =
 * New: Including LoremPixel as a Image Provider &mdash; Thanks [examinedliving](https://github.com/examinedliving)
 * Fix: A few JavaScript/jQuery tweeks for better Select2 Handling on Dates
@@ -107,11 +112,11 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Fix: Better verification of Carbon inclusion &mdash; Thanks [Frankie Jarrett](https://profiles.wordpress.org/fjarrett/)
 * Fix: Closures now using self variables better, prevents Fatal Error &mdash; Thanks [fccoelho7](https://profiles.wordpress.org/fccoelho7/)
 
-= 0.3.1 &mdash; 2 of May, 2015 =
+= 0.3.1 &mdash; 02 of May, 2015 =
 * Fix: Date Meta Field is now working as expected
 * Fix: Empty meta fields don't throw Fatal Errors anymore &mdash; Thanks [Jeffrey Carandang](https://profiles.wordpress.org/phpbits/)
 
-= 0.3.0 &mdash; 1 of May, 2015 =
+= 0.3.0 &mdash; 01 of May, 2015 =
 * New: Now you will be able to generate Custom dummy Meta for your Posts, Users and Comments
 
 = 0.2.2 &mdash; 15 of April, 2015 =
