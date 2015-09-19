@@ -6,7 +6,7 @@ if ( ! defined( 'WPINC' ) ){
 	die;
 }
 
-Class Admin {
+class Admin {
 	/**
 	 * Variable holding the submenus objects
 	 *
@@ -347,6 +347,7 @@ Class Admin {
 
 		// Register the plugin JS files
 		wp_register_script( 'fakerpress.fields', Plugin::url( 'ui/js/fields.js' ), array( 'jquery', 'underscore', 'fakerpress.select2', 'jquery-ui-datepicker' ), Plugin::version, true );
+		wp_register_script( 'fakerpress.module', Plugin::url( 'ui/js/module.js' ), array( 'jquery', 'underscore' ), Plugin::version, true );
 
 		// Register Vendor Select2
 		wp_register_style( 'fakerpress.select2', Plugin::url( 'ui/vendor/select2/select2.css' ), array(), '3.5.0', 'screen' );
@@ -366,7 +367,10 @@ Class Admin {
 
 		// Enqueue Vendor Select2
 		wp_enqueue_style( 'fakerpress.select2-wordpress' );
+
+		// Enqueue JS for the plugin
 		wp_enqueue_script( 'fakerpress.fields' );
+		wp_enqueue_script( 'fakerpress.module' );
 	}
 
 	/**
@@ -397,13 +401,16 @@ Class Admin {
 	}
 
 
-	public function _filter_set_view_action( $view ){
+	public function _filter_set_view_action( $view ) {
 		$view->action = Filter::super( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
+		if ( empty( $view->action ) ){
+			$view->action = null;
+		}
 
 		return $view;
 	}
 
-	public function _filter_set_view_title( $view ){
+	public function _filter_set_view_title( $view ) {
 		foreach ( self::$menus as $menu ){
 			if ( $view->slug !== $menu->view ){
 				continue;
@@ -426,7 +433,7 @@ Class Admin {
 		return $view;
 	}
 
-	public function _filter_set_admin_page_title( $admin_title, $title ){
+	public function _filter_set_admin_page_title( $admin_title, $title ) {
 		if ( ! self::$in_plugin ){
 			return $admin_title;
 		}
@@ -484,7 +491,7 @@ Class Admin {
 	 * @since 0.1.0
 	 * @return string
 	 */
-	public function _filter_admin_footer_text( $text ){
+	public function _filter_admin_footer_text( $text ) {
 		if ( ! self::$in_plugin ){
 			return $text;
 		}
@@ -493,8 +500,7 @@ Class Admin {
 		 * @todo Review the links to the Official repository before release
 		 */
 		return
-			'<a target="_blank" href="http://wordpress.org/support/plugin/fakerpress#postform">' . esc_attr__( 'Contact Support', 'fakerpress' ) . '</a>' .
-			' | ' .
+			'<a target="_blank" href="http://wordpress.org/support/plugin/fakerpress#postform">' . esc_attr__( 'Contact Support', 'fakerpress' ) . '</a> | ' .
 			str_replace(
 				array( '[stars]', '[wp.org]' ),
 				array( '<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/fakerpress#postform" >&#9733;&#9733;&#9733;&#9733;&#9733;</a>', '<a target="_blank" href="http://wordpress.org/plugins/fakerpress/" >wordpress.org</a>' ),
@@ -514,18 +520,18 @@ Class Admin {
 	 * @since 0.1.0
 	 * @return string
 	 */
-	public function _filter_update_footer( $text ){
+	public function _filter_update_footer( $text ) {
 		if ( ! self::$in_plugin ){
 			return $text;
 		}
 
 		$translate = sprintf( '<a class="fp-translations-link" href="%s" title="%s"><span class="dashicons dashicons-translation"></span></a>', Plugin::ext_site_url( '/r/translate' ), esc_attr__( 'Help us with Translations for the FakerPress project', 'fakerpress' ) );
-		$version = esc_attr__( 'Version' ) . ': ' . '<a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::version ) ) ) . '">' . esc_attr( Plugin::version ) . '</a>';
+		$version = esc_attr__( 'Version' ) . ': <a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::version ) ) ) . '">' . esc_attr( Plugin::version ) . '</a>';
 
 		return $translate . $version;
 	}
 
-	public function _filter_body_class( $classes ){
+	public function _filter_body_class( $classes ) {
 		$more = array(
 			$classes,
 			'__fakerpress',
@@ -534,7 +540,7 @@ Class Admin {
 		return implode( ' ', $more );
 	}
 
-	public function _action_setup_modules(){
+	public function _action_setup_modules() {
 		if ( ! is_admin() ){
 			return;
 		}
@@ -547,12 +553,12 @@ Class Admin {
 		Module\User::instance();
 	}
 
-	public function _action_setup_settings_page( $view ){
-		if ( 'post' !== Admin::$request_method || empty( $_POST ) ) {
+	public function _action_setup_settings_page( $view ) {
+		if ( 'post' !== self::$request_method || empty( $_POST ) ) {
 			return false;
 		}
 
-		$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
+		$nonce_slug = Plugin::$slug . '.request.' . self::$view->slug . ( isset( self::$view->action ) ? '.' . self::$view->action : '' );
 
 		if ( ! check_admin_referer( $nonce_slug ) ) {
 			return false;
@@ -567,7 +573,7 @@ Class Admin {
 
 			Plugin::update( array( '500px' ), $opts );
 
-			return Admin::add_message( __( 'Updated 500px Customer Application settings', 'fakerpress' ), 'success' );
+			return self::add_message( __( 'Updated 500px Customer Application settings', 'fakerpress' ), 'success' );
 		}
 
 		// After this point we are safe to say that we have a good POST request
@@ -579,7 +585,7 @@ Class Admin {
 		}
 
 		if ( ! $erase_check ){
-			return Admin::add_message( __( 'The verification to erase the data has failed, you have to let it go...', 'fakerpress' ), 'error' );
+			return self::add_message( __( 'The verification to erase the data has failed, you have to let it go...', 'fakerpress' ), 'error' );
 		}
 
 		$refs = (object) array(
@@ -606,7 +612,7 @@ Class Admin {
 			)
 		);
 
-		$refs->post = array_map( 'absint' , $query_posts->posts );
+		$refs->post = array_map( 'absint', $query_posts->posts );
 
 		$query_comments = new \WP_Comment_Query;
 		$query_comments = $query_comments->query(
@@ -667,7 +673,7 @@ Class Admin {
 			}
 		}
 
-		return Admin::add_message( __( 'All data is gone for good.', 'fakerpress' ), 'success' );
+		return self::add_message( __( 'All data is gone for good.', 'fakerpress' ), 'success' );
 	}
 }
 

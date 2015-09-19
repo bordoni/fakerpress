@@ -28,7 +28,7 @@ abstract class Base {
 
 	public $slug = null;
 
-	final public static function instance(){
+	final public static function instance() {
 		$class_name = get_called_class();
 		$reflection = new \ReflectionClass( $class_name );
 		$slug = strtolower( $reflection->getShortName() );
@@ -110,11 +110,21 @@ abstract class Base {
 	 */
 	abstract public function init();
 
+
+	/**
+	 * Amount of instaces of the module that are allowed to be generated in one single request
+	 *
+	 * @return int the Filtered amount
+	 */
+	public function get_amount_allowed() {
+		return apply_filters( "fakerpress.module.{$this->slug}.amount_allowed", 15, $this );
+	}
+
 	/**
 	 * Use this method to save the fake data to the database
 	 * @return int|bool|WP_Error Should return an error, or the $wpdb->insert_id or bool for the state
 	 */
-	final public function save( $reset = true ){
+	final public function save( $reset = true ) {
 		do_action( "fakerpress.module.{$this->slug}.pre_save", $this );
 
 		$params = array();
@@ -143,7 +153,7 @@ abstract class Base {
 		return $response;
 	}
 
-	public function reset(){
+	public function reset() {
 		$this->params = array();
 		$this->metas = array();
 
@@ -152,7 +162,7 @@ abstract class Base {
 		$this->object_name = 'post';
 	}
 
-	public function _action_setup_admin_page(){
+	public function _action_setup_admin_page() {
 		if ( ! $this->page ){
 			return;
 		}
@@ -160,18 +170,44 @@ abstract class Base {
 		\FakerPress\Admin::add_menu( $this->page->view, $this->page->title, $this->page->menu, 'manage_options', 10 );
 	}
 
-	public function _action_parse_request( $view ){
+	public function _action_parse_request( $view ) {
 		return;
 	}
 
-	protected function apply( $item ){
+	public function parse_request( $qty, $request = array() ) {
+		if ( is_null( $qty ) ) {
+			$qty = Filter::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
+			$min = absint( $qty['min'] );
+			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
+			$qty = $this->faker->numberBetween( $min, $max );
+		}
+
+		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Filter::super( $request, array( 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
+
+		if ( 0 === $qty ){
+			return sprintf( __( 'Zero is not a good number of %s to fake...', 'fakerpress' ), 'posts' );
+		}
+
+		for ( $i = 0; $i < $qty; $i++ ) {
+			$this->param( 'taxonomy', $taxonomies );
+			$this->generate();
+
+			$results[] = $this->save();
+		}
+
+		$results = array_filter( (array) $results, 'absint' );
+
+		return $results;
+	}
+
+	protected function apply( $item ) {
 		if ( ! isset( $item->generator ) ){
 			return reset( $item->arguments );
 		}
 		return call_user_func_array( array( $this->faker, $item->generator ), ( isset( $item->arguments ) ? (array) $item->arguments : array() ) );
 	}
 
-	final public function meta( $key, $generator = null ){
+	final public function meta( $key, $generator = null ) {
 		// If there is no meta just leave
 		if ( ! is_array( $this->meta ) ){
 			return false;
@@ -190,7 +226,7 @@ abstract class Base {
 		return $this->meta[ $key ];
 	}
 
-	final public function param( $key, $arguments = array() ){
+	final public function param( $key, $arguments = array() ) {
 		$arguments = func_get_args();
 		// Remove $key
 		array_shift( $arguments );

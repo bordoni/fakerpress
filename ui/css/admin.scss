@@ -36,6 +36,21 @@
 
 }
 
+.__fakerpress .fp-submit {
+    text-align: left;
+    max-width: 100%;
+    margin-top: 20px;
+    padding-top: 10px;
+
+    .fp-response {
+	    margin: 20px 0;
+	}
+
+    .spinner {
+    	float:none;
+    }
+}
+
 /*@@@@@@@@@@@@@@@@@*/
 
 
