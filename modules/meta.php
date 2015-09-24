@@ -44,7 +44,14 @@ class Meta extends Base {
 		return $this;
 	}
 
-	public function generate( $type, $name, $args = array() ) {
+	public function generate() {
+		// Allow a bunch of params
+		$args = func_get_args();
+
+		// Remove $key and $name
+		$key = array_shift( $args );
+		$name = array_shift( $args );
+
 		$this->data['meta_key'] = null;
 		$this->data['meta_value'] = null;
 
