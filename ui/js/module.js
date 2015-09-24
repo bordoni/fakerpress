@@ -60,6 +60,7 @@ if ( 'undefined' === typeof window.fakerpress ){
 				if ( 'success' !== status ){
 					$spinner.removeClass( 'is-active' );
 					$button.prop( 'disabled', false );
+
 					fp.log( $response, '<%= message %>', { message: jqXHR.responseText }, 'notice-warning' );
 				}
 			},
@@ -75,8 +76,10 @@ if ( 'undefined' === typeof window.fakerpress ){
 					} else {
 						$button.prop( 'disabled', false );
 					}
+
 					fp.log( $response, 'Faked <%= total %>: <%= message %>', { message: data.message, total: data.results.length }, 'notice-success' );
 				} else {
+					$button.prop( 'disabled', false );
 					fp.log( $response, '<%= message %>', data, 'notice-warning' );
 				}
 			}
