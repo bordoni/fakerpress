@@ -37,6 +37,9 @@ if ( 'undefined' === typeof window.fakerpress ){
 			_POST = Qs.parse( $form.serialize() );
 		}
 
+		// Always Hard set the Action
+		_POST.action = 'fakerpress.module_generate';
+
 		var $submit_container = $form.find( '.fp-submit' ),
 			$spinner = $submit_container.find( '.spinner' ),
 			$button = $submit_container.find( '.button-primary' ),
