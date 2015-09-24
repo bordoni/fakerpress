@@ -341,13 +341,8 @@ class Admin {
 			return;
 		}
 
-		// Register the plugin CSS files
-		wp_register_style( 'fakerpress.messages', Plugin::url( 'ui/css/messages.css' ), array(), Plugin::version, 'screen' );
-		wp_register_style( 'fakerpress.admin', Plugin::url( 'ui/css/admin.css' ), array(), Plugin::version, 'screen' );
-
-		// Register the plugin JS files
-		wp_register_script( 'fakerpress.fields', Plugin::url( 'ui/js/fields.js' ), array( 'jquery', 'underscore', 'fakerpress.select2', 'jquery-ui-datepicker' ), Plugin::version, true );
-		wp_register_script( 'fakerpress.module', Plugin::url( 'ui/js/module.js' ), array( 'jquery', 'underscore' ), Plugin::version, true );
+		// Register QS.js
+		wp_register_script( 'fakerpress.qs', Plugin::url( 'ui/vendor/qs.js' ), array(), '5.1.0', true );
 
 		// Register Vendor Select2
 		wp_register_style( 'fakerpress.select2', Plugin::url( 'ui/vendor/select2/select2.css' ), array(), '3.5.0', 'screen' );
@@ -357,6 +352,14 @@ class Admin {
 		// Register DatePicker Skins
 		wp_register_style( 'fakerpress.jquery-ui', Plugin::url( 'ui/css/jquery-ui.css' ), array(), '1.10.1', 'screen' );
 		wp_register_style( 'fakerpress.datepicker', Plugin::url( 'ui/css/datepicker.css' ), array( 'fakerpress.jquery-ui' ), Plugin::version, 'screen' );
+
+		// Register the plugin CSS files
+		wp_register_style( 'fakerpress.messages', Plugin::url( 'ui/css/messages.css' ), array(), Plugin::version, 'screen' );
+		wp_register_style( 'fakerpress.admin', Plugin::url( 'ui/css/admin.css' ), array(), Plugin::version, 'screen' );
+
+		// Register the plugin JS files
+		wp_register_script( 'fakerpress.fields', Plugin::url( 'ui/js/fields.js' ), array( 'jquery', 'underscore', 'fakerpress.select2', 'jquery-ui-datepicker' ), Plugin::version, true );
+		wp_register_script( 'fakerpress.module', Plugin::url( 'ui/js/module.js' ), array( 'jquery', 'underscore', 'fakerpress.qs' ), Plugin::version, true );
 
 		// Enqueue DatePicker Skins
 		wp_enqueue_style( 'fakerpress.datepicker' );
