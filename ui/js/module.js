@@ -34,8 +34,11 @@ if ( 'undefined' === typeof window.fakerpress ){
 
 	fp.moduleGenerate = function ( $form, _POST ){
 		if ( 'undefined' === typeof _POST ){
-			_POST = $form.serialize() + '&action=fakerpress.module_generate';
+			_POST = Qs.parse( $form.serialize() );
 		}
+
+		// Always Hard set the Action
+		_POST.action = 'fakerpress.module_generate';
 
 		var $submit_container = $form.find( '.fp-submit' ),
 			$spinner = $submit_container.find( '.spinner' ),
@@ -65,7 +68,10 @@ if ( 'undefined' === typeof window.fakerpress ){
 
 				if ( data.status ){
 					if ( data.is_capped && data.offset < data.total ){
-						fp.moduleGenerate( $form, _POST + '&offset=' + data.offset + '&total=' + data.total );
+						_POST.offset = data.offset;
+						_POST.total = data.total;
+
+						fp.moduleGenerate( $form, _POST );
 					} else {
 						$button.prop( 'disabled', false );
 					}
