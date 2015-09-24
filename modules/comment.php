@@ -22,23 +22,22 @@ class Comment extends Base {
 			'view' => 'comments',
 		);
 
-		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
+		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 3 );
 	}
 
 	public function format_link( $id ) {
 		return '<a href="' . esc_url( get_edit_comment_link( $id ) ) . '">' . absint( $id ) . '</a>';
 	}
 
-	public function do_save( $return_val, $params, $metas, $module ) {
-		$comment_id = wp_insert_comment( $params );
+	public function do_save( $return_val, $data, $module ) {
+		$comment_id = wp_insert_comment( $data );
 
 		if ( ! is_numeric( $comment_id ) ){
 			return false;
 		}
 
-		foreach ( $metas as $key => $value ) {
-			update_comment_meta( $comment_id, $key, $value );
-		}
+		// Flag the Object as FakerPress
+		update_post_meta( $comment_id, self::$flag, 1 );
 
 		return $comment_id;
 	}
@@ -55,8 +54,6 @@ class Comment extends Base {
 			return esc_attr__( 'Zero is not a good number of comments to fake...', 'fakerpress' );
 		}
 
-		$meta_module = Meta::instance();
-
 		$comment_content_use_html = Variable::super( $request, array( 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
 		$comment_content_html_tags = array_map( 'trim', explode( ',', Variable::super( $request, array( 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
@@ -66,18 +63,25 @@ class Comment extends Base {
 
 		$results = array();
 
-		for ( $i = 0; $i < $quantity; $i++ ) {
-			$this->param( 'comment_date', $min_date, $max_date );
-			$this->param( 'comment_content', $comment_content_use_html, array( 'elements' => $comment_content_html_tags ) );
-			$this->param( 'user_id', 0 );
+		for ( $i = 0; $i < $qty; $i++ ) {
+			$this->set( 'comment_date', $min_date, $max_date );
+			$this->set( 'comment_content', $comment_content_use_html, array( 'elements' => $comment_content_html_tags ) );
+			$this->set( 'user_id', 0 );
 
-			$this->generate();
+			$this->set( 'comment_author' );
+			$this->set( 'comment_parent' );
+			$this->set( 'comment_author_IP' );
+			$this->set( 'comment_agent' );
+			$this->set( 'comment_approved' );
+			$this->set( 'comment_post_ID' );
+			$this->set( 'comment_author_email' );
+			$this->set( 'comment_author_url' );
 
-			$comment_id = $this->save();
+			$comment_id = $this->generate()->save();
 
 			if ( $comment_id && is_numeric( $comment_id ) ){
 				foreach ( $metas as $meta_index => $meta ) {
-					$meta_module->object( $comment_id, 'comment' )->build( $meta['type'], $meta['name'], $meta )->save();
+					Meta::instance()->object( $comment_id, 'comment' )->generate( $meta['type'], $meta['name'], $meta )->save();
 				}
 			}
 			$results[] = $comment_id;

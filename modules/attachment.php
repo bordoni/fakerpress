@@ -18,23 +18,23 @@ class Attachment extends Base {
 	public $page = false;
 
 	public function init() {
-		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
+		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 3 );
 	}
 
-	public function do_save( $return_val, $params, $metas, $module ){
-		if ( empty( $params['attachment_url'] ) ){
+	public function do_save( $return_val, $data, $module ) {
+		if ( empty( $data['attachment_url'] ) ){
 			return false;
 		}
 
-		$bits = file_get_contents( $params['attachment_url'] );
+		$bits = file_get_contents( $data['attachment_url'] );
 		$filename = $this->faker->uuid() . '.jpg';
 		$upload = wp_upload_bits( $filename, null, $bits );
 
-		$params['guid'] = $upload['url'];
-		$params['post_mime_type'] = 'image/jpeg';
+		$data['guid'] = $upload['url'];
+		$data['post_mime_type'] = 'image/jpeg';
 
 		// Insert the attachment.
-		$attach_id = wp_insert_attachment( $params, $upload['file'], 0 );
+		$attach_id = wp_insert_attachment( $data, $upload['file'], 0 );
 
 		if ( ! is_numeric( $attach_id ) ){
 			return false;
@@ -46,11 +46,10 @@ class Attachment extends Base {
 		}
 
 		// Generate the metadata for the attachment, and update the database record.
-		$metas['_wp_attachment_metadata'] = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
+		update_post_meta( $attach_id, '_wp_attachment_metadata', wp_generate_attachment_metadata( $attach_id, $upload['file'] ) );
 
-		foreach ( $metas as $key => $value ) {
-			update_post_meta( $attach_id, $key, $value );
-		}
+		// Flag the Object as FakerPress
+		update_post_meta( $attach_id, self::$flag, 1 );
 
 		return $attach_id;
 	}

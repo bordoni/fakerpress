@@ -27,27 +27,26 @@ class Meta extends Base {
 	public $object_name = 'post';
 	public $object_id = 0;
 
-	public $meta = false;
-
-	public $faked = array(
-		'meta_key',
-		'meta_value',
-	);
-
 	public function init() {
-		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
+		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 3 );
 	}
 
-	public function object( $id = 0, $name = 'post' ){
+	public function reset() {
+		parent::reset();
+
+		$this->object_id = 0;
+	}
+
+	public function object( $id = 0, $name = 'post' ) {
 		$this->object_id = $id;
 		$this->object_name = $name;
 
 		return $this;
 	}
 
-	public function build( $type, $name, $args = array() ){
-		$this->params['meta_key'] = null;
-		$this->params['meta_value'] = null;
+	public function generate( $type, $name, $args = array() ) {
+		$this->data['meta_key'] = null;
+		$this->data['meta_value'] = null;
 
 		if ( empty( $type ) ){
 			return $this;
@@ -57,32 +56,32 @@ class Meta extends Base {
 			return $this;
 		}
 
-		$this->params['meta_key'] = $name;
+		$this->data['meta_key'] = $name;
 
 		unset( $args['name'], $args['type'] );
 
 		if ( is_callable( array( $this->faker, 'meta_type_' . $type ) ) ){
-			$this->params['meta_value'] = call_user_func_array( array( $this->faker, 'meta_type_' . $type ), $args );
+			$this->data['meta_value'] = call_user_func_array( array( $this->faker, 'meta_type_' . $type ), $args );
 		} else {
-			$this->params['meta_value'] = reset( $args );
+			$this->data['meta_value'] = reset( $args );
 		}
 
 		return $this;
 	}
 
-	public function do_save( $return_val, $params, $metas, $module ){
+	public function do_save( $return_val, $data, $module ) {
 		$status = false;
 
-		if ( ! isset( $params['meta_value'] ) ){
+		if ( ! isset( $data['meta_value'] ) ){
 			return false;
 		}
 
-		if ( empty( $params['meta_key'] ) ){
+		if ( empty( $data['meta_key'] ) ){
 			return false;
 		}
 
-		if ( ! is_null( $params['meta_value'] ) ){
-			$status = update_metadata( $this->object_name, $this->object_id, $params['meta_key'], $params['meta_value'] );
+		if ( ! is_null( $data['meta_value'] ) ){
+			$status = update_metadata( $this->object_name, $this->object_id, $data['meta_key'], $data['meta_value'] );
 		}
 		return $status;
 	}
