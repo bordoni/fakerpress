@@ -22,20 +22,20 @@ class Term extends Base {
 			'view' => 'terms',
 		);
 
-		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
+		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 3 );
 	}
 
 	public function format_link( $id ) {
 		return absint( $id );
 	}
 
-	public function do_save( $return_val, $params, $metas, $module ) {
+	public function do_save( $return_val, $data, $module ) {
 		$args = array(
-			'description' => $params['description'],
-			'parent' => $params['parent_term'],
+			'description' => $data['description'],
+			'parent' => $data['parent_term'],
 		);
 
-		$term_object = wp_insert_term( $params['name'], $params['taxonomy'], $args );
+		$term_object = wp_insert_term( $data['name'], $data['taxonomy'], $args );
 		if ( is_wp_error( $term_object ) ) {
 			return false;
 		}
@@ -47,10 +47,10 @@ class Term extends Base {
 			$flagged = array();
 		}
 
-		if ( ! isset( $flagged[ $params['taxonomy'] ] ) || ! is_array( $flagged[ $params['taxonomy'] ] ) ){
-			$flagged[ $params['taxonomy'] ] = array();
+		if ( ! isset( $flagged[ $data['taxonomy'] ] ) || ! is_array( $flagged[ $data['taxonomy'] ] ) ){
+			$flagged[ $data['taxonomy'] ] = array();
 		}
-		$flagged[ $params['taxonomy'] ] = array_merge( $flagged[ $params['taxonomy'] ], (array) $term_object['term_id'] );
+		$flagged[ $data['taxonomy'] ] = array_merge( $flagged[ $data['taxonomy'] ], (array) $term_object['term_id'] );
 
 		// When in posts relating is harder so we store in the Options Table
 		update_option( 'fakerpress.module_flag.' . $this->slug, $flagged );
@@ -73,10 +73,12 @@ class Term extends Base {
 		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Variable::super( $request, array( 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
 
 		for ( $i = 0; $i < $qty; $i++ ) {
-			$this->param( 'taxonomy', $taxonomies );
-			$this->generate();
+			$this->set( 'taxonomy', $taxonomies );
+			$this->set( 'name' );
+			$this->set( 'description' );
+			$this->set( 'parent_term' );
 
-			$results[] = $this->save();
+			$results[] = $this->generate()->save();
 		}
 
 		$results = array_filter( (array) $results, 'absint' );

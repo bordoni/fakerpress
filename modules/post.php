@@ -25,16 +25,15 @@ class Post extends Base {
 		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
 	}
 
-	public function do_save( $return_val, $params, $metas, $module ) {
-		$post_id = wp_insert_post( $params );
+	public function do_save( $return_val, $data, $module ) {
+		$post_id = wp_insert_post( $data );
 
 		if ( ! is_numeric( $post_id ) ){
 			return false;
 		}
 
-		foreach ( $metas as $key => $value ) {
-			update_post_meta( $post_id, $key, $value );
-		}
+		// Flag the Object as FakerPress
+		update_post_meta( $post_id, self::$flag, 1 );
 
 		return $post_id;
 	}
@@ -75,35 +74,35 @@ class Post extends Base {
 
 		$metas = Variable::super( $request, array( 'meta' ), FILTER_UNSAFE_RAW );
 
-		$attach_module = Attachment::instance();
-		$meta_module = Meta::instance();
-
 		$results = array();
 
 		for ( $i = 0; $i < $qty; $i++ ) {
-			$this->param( 'tax_input', $taxonomies );
-			$this->param( 'post_status', 'publish' );
-			$this->param( 'post_date', array( $min_date, $max_date ) );
-			$this->param( 'post_parent', $post_parents );
-			$this->param( 'post_content', $post_content_use_html, array( 'elements' => $post_content_html_tags ) );
-			$this->param( 'post_author', $post_author );
-			$this->param( 'post_type', $post_types );
-			$this->param( 'comment_status', $comment_status );
+			$this->set( 'post_title' );
+			$this->set( 'post_status', 'publish' );
+			$this->set( 'post_date', array( $min_date, $max_date ) );
+			$this->set( 'post_parent', $post_parents );
+			$this->set( 'post_content', $post_content_use_html, array( 'elements' => $post_content_html_tags ) );
+			$this->set( 'post_author', $post_author );
+			$this->set( 'post_type', $post_types );
+			$this->set( 'comment_status', $comment_status );
+			$this->set( 'ping_status' );
+			$this->set( 'tax_input', $taxonomies );
 
 			$post_id = $this->generate()->save();
 
 			if ( $post_id && is_numeric( $post_id ) ){
 				foreach ( $metas as $meta_index => $meta ) {
-					$meta_module->object( $post_id )->build( $meta['type'], $meta['name'], $meta )->save();
+					Meta::instance()->object( $post_id )->generate( $meta['type'], $meta['name'], $meta )->save();
 				}
 
 				if ( $this->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
-					$attach_module->param( 'attachment_url', $this->faker->randomElement( $images_origin ) );
-					$attach_module->param( 'post_parent', $post_id, 1 );
-					$attach_module->generate();
-					$attachment_id = $attach_module->save();
+					// Generate the Attachment
+					$attachment_id = Attachment::instance()
+						->set( 'attachment_url', $this->faker->randomElement( $images_origin ) )
+						->set( 'post_parent', $post_id, 1 )
+						->generate()->save();
 
-					$meta_module->object( $post_id )->build( 'raw', '_thumbnail_id', array( 100, $attachment_id, 0 ) )->save();
+					Meta::instance()->object( $post_id )->generate( 'raw', '_thumbnail_id', array( 100, $attachment_id, 0 ) )->save();
 				}
 			}
 

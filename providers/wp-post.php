@@ -15,7 +15,7 @@ class WP_Post extends Base {
 		return $title;
 	}
 
-	public function post_type( $haystack = array() ){
+	public function post_type( $haystack = array() ) {
 		if ( empty( $haystack ) ){
 			// Later on we will remove the Attachment rule
 			$haystack = array_diff( get_post_types( array( 'public' => true, 'show_ui' => true ), 'names' ), array( 'attachment' ) );
@@ -24,7 +24,7 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function post_status( $haystack = array( 'draft', 'publish', 'private' ) ){
+	public function post_status( $haystack = array( 'draft', 'publish', 'private' ) ) {
 		if ( empty( $haystack ) ){
 			$haystack = array_values( get_post_stati() );
 		}
@@ -32,7 +32,7 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function post_date( $interval = 'now' ){
+	public function post_date( $interval = 'now' ) {
 		$format = 'Y-m-d H:i:s';
 		$interval = (array) $interval;
 
@@ -48,7 +48,9 @@ class WP_Post extends Base {
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
 				$max = new \Carbon\Carbon( array_shift( $interval ) );
-			} catch ( \Exception $e ) {}
+			} catch ( \Exception $e ) {
+
+			}
 		}
 
 		if ( ! isset( $max ) ) {
@@ -77,7 +79,7 @@ class WP_Post extends Base {
 		return $content;
 	}
 
-	public function post_author( $haystack = array() ){
+	public function post_author( $haystack = array() ) {
 		if ( empty( $haystack ) ){
 			$haystack = get_users(
 				array(
@@ -91,11 +93,11 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function post_parent( $haystack = array(), $weight = 0.7 ){
+	public function post_parent( $haystack = array(), $weight = 0.7 ) {
 		return $this->generator->optional( $weight, 0 )->randomElement( (array) $haystack );
 	}
 
-	public function ping_status( $haystack = array() ){
+	public function ping_status( $haystack = array() ) {
 		if ( empty( $haystack ) ){
 			$haystack = static::$default['ping_status'];
 		}
@@ -103,7 +105,7 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function comment_status( $haystack = array() ){
+	public function comment_status( $haystack = array() ) {
 		if ( empty( $haystack ) ){
 			$haystack = static::$default['comment_status'];
 		}
@@ -111,7 +113,7 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function menu_order( $haystack = array() ){
+	public function menu_order( $haystack = array() ) {
 		if ( empty( $haystack ) ){
 			return 0;
 		}
@@ -119,7 +121,7 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function post_password( $generator = null, $args = array() ){
+	public function post_password( $generator = null, $args = array() ) {
 		if ( is_null( $generator ) ){
 			return '';
 		}
@@ -164,7 +166,7 @@ class WP_Post extends Base {
 			}
 
 			// Select the elements based on range
-			$elements = $this->generator->randomElements( $terms , $qty );
+			$elements = $this->generator->randomElements( $terms, $qty );
 			$tax_input = array();
 
 			foreach ( $elements as $term_id ) {
@@ -192,6 +194,4 @@ class WP_Post extends Base {
 
 		return $output;
 	}
-
-
 }

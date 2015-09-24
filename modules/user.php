@@ -21,31 +21,30 @@ class User extends Base {
 			'view' => 'users',
 		);
 
-		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
+		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 3 );
 	}
 
 	public function format_link( $id ) {
 		return '<a href="' . esc_url( get_edit_user_link( $id ) ) . '">' . absint( $id ) . '</a>';
 	}
 
-	public function do_save( $return_val, $params, $metas, $module ) {
-		$user_id = wp_insert_user( $params );
+	public function do_save( $return_val, $data, $module ) {
+		$user_id = wp_insert_user( $data );
 
 		if ( ! is_numeric( $user_id ) ){
 			return false;
 		}
 
 		// Only set role if needed
-		if ( ! is_null( $params['role'] ) ){
+		if ( ! is_null( $data['role'] ) ){
 			$user = new \WP_User( $user_id );
 
 			// Here we could add in the future the possibility to set multiple roles at once
-			$user->set_role( $params['role'] );
+			$user->set_role( $data['role'] );
 		}
 
-		foreach ( $metas as $key => $value ) {
-			update_user_meta( $user_id, $key, $value );
-		}
+		// Flag the Object as FakerPress
+		update_post_meta( $user_id, self::$flag, 1 );
 
 		return $user_id;
 	}
@@ -62,8 +61,6 @@ class User extends Base {
 			return esc_attr__( 'Zero is not a good number of users to fake...', 'fakerpress' );
 		}
 
-		$meta_module = Meta::instance();
-
 		$description_use_html = Variable::super( $request, array( 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
 		$description_html_tags = array_map( 'trim', explode( ',', Variable::super( $request, array( 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
@@ -73,15 +70,25 @@ class User extends Base {
 		$results = array();
 
 		for ( $i = 0; $i < $qty; $i++ ) {
-			$this->param( 'role', $roles );
-			$this->param( 'description', $description_use_html, array( 'elements' => $description_html_tags ) );
-			$this->generate();
+			$this->set( 'role', $roles );
+			$this->set( 'description', $description_use_html, array( 'elements' => $description_html_tags ) );
 
-			$user_id = $this->save();
+			$this->set( 'user_login' );
+			$this->set( 'user_pass' );
+			$this->set( 'user_nicename' );
+			$this->set( 'user_url' );
+			$this->set( 'user_email' );
+			$this->set( 'display_name' );
+			$this->set( 'nickname' );
+			$this->set( 'first_name' );
+			$this->set( 'last_name' );
+			$this->set( 'user_registered', 'yesterday', 'now' );
+
+			$user_id = $this->generate()->save();
 
 			if ( $user_id && is_numeric( $user_id ) ){
 				foreach ( $metas as $meta_index => $meta ) {
-					$meta_module->object( $user_id, 'user' )->build( $meta['type'], $meta['name'], $meta )->save();
+					Meta::instance()->object( $user_id, 'user' )->generate( $meta['type'], $meta['name'], $meta )->save();
 				}
 			}
 			$results[] = $user_id;
