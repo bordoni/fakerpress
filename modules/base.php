@@ -1,5 +1,6 @@
 <?php
 namespace FakerPress\Module;
+use FakerPress\Admin;
 
 /**
  * Abstract of a Module Generator.
@@ -80,11 +81,12 @@ abstract class Base {
 	}
 
 	public function _action_setup_admin_page() {
+		// Prevent any modules with page to be added to menu
 		if ( ! $this->page ){
 			return;
 		}
 
-		\FakerPress\Admin::add_menu( $this->page->view, $this->page->title, $this->page->menu, 'manage_options', 10 );
+		Admin::add_menu( $this->page->view, $this->page->title, $this->page->menu, 'manage_options', 10 );
 	}
 
 	public function _action_parse_request( $view ) {
@@ -101,19 +103,39 @@ abstract class Base {
 	/**
 	 * Amount of instaces of the module that are allowed to be generated in one single request
 	 *
-	 * @return int the Variableed amount
+	 * @return int the Variabled amount
 	 */
 	public function get_amount_allowed() {
 		return apply_filters( "fakerpress.module.{$this->slug}.amount_allowed", 15, $this );
 	}
 
 	final public function set( $key ) {
-		if ( ! is_string( $key ) ){
+		if ( ! is_string( $key ) && ! is_array( $key ) ){
 			return null;
 		}
 
 		// Allow a bunch of params
 		$arguments = func_get_args();
+
+		/**
+		 * This allows the following behavior, both will have the same arguments
+		 *
+		 * $module->set( array( 'post_title', 'post_content' ), false, true );
+		 */
+		if ( is_array( $key ) ){
+			// Remove any non string keys
+			$keys = array_filter( $key, 'is_string' );
+
+			foreach ( $keys as $key ) {
+				// Set the key
+				$arguments[0] = $key;
+
+				// Re-call Set with the string key instead of array
+				call_user_func_array( array( $this, 'set' ), $arguments );
+			}
+
+			return $this;
+		}
 
 		// Remove $key
 		array_shift( $arguments );

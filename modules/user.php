@@ -72,17 +72,19 @@ class User extends Base {
 		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->set( 'role', $roles );
 			$this->set( 'description', $description_use_html, array( 'elements' => $description_html_tags ) );
-
-			$this->set( 'user_login' );
-			$this->set( 'user_pass' );
-			$this->set( 'user_nicename' );
-			$this->set( 'user_url' );
-			$this->set( 'user_email' );
-			$this->set( 'display_name' );
-			$this->set( 'nickname' );
-			$this->set( 'first_name' );
-			$this->set( 'last_name' );
 			$this->set( 'user_registered', 'yesterday', 'now' );
+
+			$this->set( array(
+				'user_login',
+				'user_pass',
+				'user_nicename',
+				'user_url',
+				'user_email',
+				'display_name',
+				'nickname',
+				'first_name',
+				'last_name',
+			) );
 
 			$user_id = $this->generate()->save();
 
