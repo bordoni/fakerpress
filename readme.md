@@ -101,12 +101,12 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
-### 0.4.1 &mdash; 24 of Setptember, 2015 ###
+### 0.4.1 &mdash; 24 of September, 2015 ###
 * Tweak: Improve Modules code in general, if you have custom code based on Modules please check ([#71](https://github.com/bordoni/fakerpress/pull/71))
 * Fix: Generate button was locking after a warning for trying a bad request
 * Fix: Improved Modules JavaScript to prevent duplicated arguments on AJAX requests &mdash; Thanks [Jonathan Brinley](https://profiles.wordpress.org/jbrinley/)
 
-### 0.4.0 &mdash; 21 of Setptember, 2015 ###
+### 0.4.0 &mdash; 21 of September, 2015 ###
 * Feature: Now Modules use AJAX to fake, AKA no more timeouts for big dummy creation
 * Fix: handle WP_Error on term creation, avoids fatal errors if the term already exists &mdash; Thanks [Jonathan Brinley](https://profiles.wordpress.org/jbrinley/)
 
