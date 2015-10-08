@@ -9,6 +9,7 @@ class Attachment extends Base {
 		'\Faker\Provider\DateTime',
 		'\Faker\Provider\HTML',
 		'\Faker\Provider\PlaceHoldIt',
+		'\Faker\Provider\UnsplashIt',
 		'\Faker\Provider\LoremPixel',
 		'\Faker\Provider\Image500px',
 	);

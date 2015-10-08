@@ -115,6 +115,11 @@ $_image_providers[] = array(
 	'text' => 'Placehold.it',
 );
 
+$_image_providers[] = array(
+	'id' => 'unsplashit',
+	'text' => 'Unsplash.it',
+);
+
 if ( Plugin::get( array( '500px', 'key' ), false ) ){
 	$_image_providers[] = array(
 		'id' => '500px',

@@ -14,6 +14,9 @@ class HTML extends Base {
 		$provider = new PlaceHoldIt( $this->generator );
 		$this->generator->addProvider( $provider );
 
+		$provider = new UnsplashIt( $this->generator );
+		$this->generator->addProvider( $provider );
+
 		$provider = new LoremPixel( $this->generator );
 		$this->generator->addProvider( $provider );
 	}
@@ -93,7 +96,7 @@ class HTML extends Base {
 		return (array) $html;
 	}
 
-	private function html_element_img( $element, $sources = array( 'lorempixel', 'placeholdit' ) ){
+	private function html_element_img( $element, $sources = array( 'lorempixel', 'placeholdit', 'unsplashit' ) ){
 		if ( ! isset( $element->attr['class'] ) ) {
 			$element->attr['class'][] = $this->generator->optional( 0.4, null )->randomElement( array( 'aligncenter', 'alignleft', 'alignright' ) );
 			$element->attr['class'] = array_filter( $element->attr['class'] );
@@ -180,7 +183,7 @@ class HTML extends Base {
 		}
 
 		if ( 'img' === $element->name ){
-			$element = $this->html_element_img( $element, array( 'placeholdit', 'lorempixel' ) );
+			$element = $this->html_element_img( $element, array( 'placeholdit', 'lorempixel', 'unsplashit' ) );
 		}
 
 		$attributes = array();
