@@ -20,6 +20,10 @@ class WP_Attachment extends Base {
 			'width' => array( 200, 640 ),
 			'ratio' => 1.25,
 		),
+		'unsplashit' => array(
+			'width' => array( 1024, 1440 ),
+			'ratio' => 1.5,
+		),
 		'500px' => array()
 	);
 
@@ -28,6 +32,8 @@ class WP_Attachment extends Base {
 
 		if ( 'placeholdit' === $type ){
 			$url = call_user_func_array( array( $this->generator, 'placeholdit' ), (array) $args );
+		} elseif ( 'unsplashit' === $type ){
+			$url = call_user_func_array( array( $this->generator, 'unsplashit' ), (array) $args );
 		} elseif ( 'lorempixel' === $type ){
 			$url = call_user_func_array( array( $this->generator, 'lorempixel' ), (array) $args );
 		} elseif ( '500px' === $type ){

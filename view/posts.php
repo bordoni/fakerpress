@@ -170,6 +170,11 @@ $_image_providers[] = array(
 );
 
 $_image_providers[] = array(
+	'id' => 'unsplashit',
+	'text' => 'Unsplash.it',
+);
+
+$_image_providers[] = array(
 	'id' => 'lorempixel',
 	'text' => 'LoremPixel',
 );
