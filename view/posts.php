@@ -226,6 +226,17 @@ $fields[] = new Field(
 );
 
 $fields[] = new Field(
+	'taxonomy',
+	array(
+		'id' => 'taxonomy',
+	),
+	array(
+		'label' => __( 'Taxonomy Field Rules', 'fakerpress' ),
+		'description' => __( 'Use the fields below to configure the rules for the Taxonomy and Terms selected', 'fakerpress' ),
+	)
+);
+
+$fields[] = new Field(
 	'meta',
 	array(
 		'id' => 'meta',

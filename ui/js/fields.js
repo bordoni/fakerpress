@@ -291,62 +291,37 @@ window.fakerpress.fields.range = function( $, _ ){
 
 ( function( $, _ ){
 	'use strict';
-	$( document ).ready( function(){
-		var $meta_containers = $( 'form' ).children( '.form-table' ).children( 'tbody' ).children( '.fp-type-meta-container' ).each( function(){
-			var $container = $( this ),
-				_wrap = '.fp-field-wrap',
-				$wrap = $container.children( _wrap ),
+	window.fakerpress.fieldset = {
+		items: [
+			{
+				name: 'meta',
 
-				_meta = '.fp-table-meta',
-				$metas = $wrap.children( _meta ),
+				$: {},
+				selector: {
+					container: '.fp-type-meta-container',
 
-				_meta_type_container = '.fp-meta_type-container',
-				_meta_type = '.fp-meta_type',
+					item: '.fp-table-meta',
 
-				_meta_name_container = '.fp-meta_name-container',
-				_meta_name = '.fp-meta_name',
+					type_container: '.fp-meta_type-container',
+					type: '.fp-meta_type',
 
-				_meta_conf_container = '.fp-meta_conf-container',
+					name_container: '.fp-meta_name-container',
+					name: '.fp-meta_name',
 
-				_duplicate = '.fp-action-duplicate',
-				_remove = '.fp-action-remove',
-				_order = '.fp-action-order',
+					conf_container: '.fp-meta_conf-container'
+				},
 
-				_label = '.fp-field-label',
-				_internal_label = '.fp-internal-label',
-
-				_fields = '.fp-field';
-
-			$container.on( 'meta', [], function( event ){
-				// Update the List of Metas
-				$metas = $wrap.children( _meta );
-				$container.data( 'metas', $metas );
-
-				// If there is just one meta, disable the remove button
-				if ( 1 === $metas.length && ! $metas.eq( 0 ).find( _meta_type ).select2( 'val' ) ){
-					$metas.eq( 0 )
-						.find( _remove ).prop( 'disabled', true )
-						.end().find( _meta_name ).prop( 'required', false );
-				} else {
-					$metas
-						.find( _remove ).prop( 'disabled', false )
-						.end().find( _meta_name ).prop( 'required', true );
-				}
-
-				// Regenerate Order Index
-				$metas.each( function( index ){
-					var	$meta = $( this ),
-						$index = $meta.find( _order ),
-
-						$type = $meta.find( _meta_type ),
+				update: function( $item ) {
+					var fieldset = this,
+						$type = $item.find( fieldset.selector.type ),
 						type = $type.select2( 'val' ),
-						$name = $meta.find( _meta_name ),
+
+						$name = $item.find( fieldset.selector.name ),
 						name = $name.val(),
 
-						$name_container = $meta.find( _meta_name_container ),
-						$type_container = $meta.find( _meta_type_container ),
-						$conf_container = $meta.find( _meta_conf_container ),
-						$fields = $meta.find( _fields ),
+						$name_container = $item.find( fieldset.selector.name_container ),
+						$type_container = $item.find( fieldset.selector.type_container ),
+						$conf_container = $item.find( fieldset.selector.conf_container ),
 
 						$template;
 
@@ -354,50 +329,9 @@ window.fakerpress.fields.range = function( $, _ ){
 					if ( type instanceof jQuery ){
 						type = type.val();
 					}
-					$template = $( '.fp-template-' + type ).filter( '[data-rel="' + $container.attr( 'id' ) + '"]' ).filter( '[data-callable]' );
 
-
-					// Change the index first
-					$index.val( index + 1 );
-
-					$fields.each( function(  ){
-						var $field = $( this ),
-							$label = $field.next( _label ),
-							$internal_label = $field.next( _internal_label ),
-							__name = $field.data( 'name' ),
-							__id = $field.data( 'id' ),
-							id = [],
-							name = [];
-
-						// If didn't find a label inside of the parent element
-						if ( 0 === $label.length ){
-							$label = $field.parents( _wrap ).eq(0).find( _label );
-						}
-
-						_.each( __id, function( value, key, list ) {
-							id.push( value );
-							if ( 'meta' === value ){
-								id.push( index );
-							}
-						} );
-
-						_.each( __name, function( value, key, list ) {
-							name.push( value );
-							if ( 'meta' === value ){
-								name.push( index );
-							}
-						} );
-
-						if ( 0 !== id.length ){
-							$field.attr( 'id', window.fakerpress.fieldId( id ) );
-							$label.attr( 'for', window.fakerpress.fieldId( id ) );
-							$internal_label.attr( 'for', window.fakerpress.fieldId( id ) );
-						}
-
-						if ( 0 !== name.length ){
-							$field.attr( 'name', window.fakerpress.fieldName( name ) );
-						}
-					} );
+					// Find templates relevant to the current container
+					$template = $( '.fp-template-' + type ).filter( '[data-rel="' + fieldset.$.container.attr( 'id' ) + '"]' ).filter( '[data-callable]' );
 
 					if ( ! type || 0 === $template.length ){
 						$name_container.addClass( 'fp-last-child' );
@@ -406,70 +340,291 @@ window.fakerpress.fields.range = function( $, _ ){
 						$name_container.removeClass( 'fp-last-child' );
 						$conf_container.show();
 					}
-				} );
+				},
 
-				$.each( window.fakerpress.fields, function( key, callback ){
-					callback( window.jQuery, window._ );
-				} );
+				is_removeable: function() {
+					if ( 1 === this.$.items.length ){
+						if ( this.$.items.eq( 0 ).find( this.selector.type ).select2( 'val' ) === '' ) {
+							return true;
+						} else {
+							return false;
+						}
+					}
 
-			} ).trigger( 'meta' );
+					return false;
+				},
 
-			$container.on( 'change', _meta_type, [], function( event ){
-				var $field = $( this ),
-					$meta = $field.parents( _meta ),
-					$template = $( '.fp-template-' + event.added.id ).filter( '[data-rel="' + $container.attr( 'id' ) + '"]' ).filter( '[data-callable]' ),
-					template = $template.html(),
+				setup: function() {
+					var fieldset = this;
 
-					$conf_container = $meta.find( _meta_conf_container ),
-					$place = $conf_container.find( _wrap );
+					fieldset.$.container.on( 'change', fieldset.selector.type, [], function( event ){
+						var $field = $( this ),
+							$item = $field.parents( fieldset.selector.item ),
+							$template = $( '.fp-template-' + event.added.id ).filter( '[data-rel="' + fieldset.$.container.attr( 'id' ) + '"]' ).filter( '[data-callable]' ),
+							template = $template.html(),
 
-				$place.empty();
+							$conf_container = $item.find( fieldset.selector.conf_container ),
+							$place = $conf_container.find( window.fakerpress.fieldset.selector.wrap );
 
-				// Only place if there is a template
-				if ( 0 !== $template.length ){
-					$place.append( template );
+						$place.empty();
+
+						// Only place if there is a template
+						if ( 0 !== $template.length ){
+							$place.append( template );
+						}
+
+						// Update all the required information
+						window.fakerpress.fieldset.update( fieldset );
+					} );
+				},
+
+				reset: function( $item ) {
+					var $type = $item.find( this.selector.type ),
+						$name = $item.find( this.selector.name );
+
+					$type.select2( 'val', '' );
+					$name.val( '' );
 				}
+			},
+			{
+				name: 'taxonomy',
 
-				// Update all the required information
-				$container.trigger( 'meta' );
-			} );
+				$: {},
+				selector: {
+					container: '.fp-type-taxonomy-container',
 
-			$container.on( 'click', _duplicate, [], function( event ){
+					item: '.fp-table-taxonomy',
+
+					type_container: '.fp-meta_type-container',
+					type: '.fp-meta_type',
+
+					name_container: '.fp-meta_name-container',
+					name: '.fp-meta_name',
+
+					conf_container: '.fp-meta_conf-container'
+				},
+
+				update: function( $item ) {
+					var fieldset = this,
+						$type = $item.find( fieldset.selector.type ),
+						type = $type.select2( 'val' ),
+
+						$name = $item.find( fieldset.selector.name ),
+						name = $name.val(),
+
+						$name_container = $item.find( fieldset.selector.name_container ),
+						$type_container = $item.find( fieldset.selector.type_container ),
+						$conf_container = $item.find( fieldset.selector.conf_container ),
+
+						$template;
+
+					// Before constructing the Type Object check if it's a jQuery element (Select2 bug)
+					if ( type instanceof jQuery ){
+						type = type.val();
+					}
+
+					// Find templates relevant to the current container
+					$template = $( '.fp-template-' + type ).filter( '[data-rel="' + fieldset.$.container.attr( 'id' ) + '"]' ).filter( '[data-callable]' );
+
+					if ( ! type || 0 === $template.length ){
+						$name_container.addClass( 'fp-last-child' );
+						$conf_container.hide();
+					} else {
+						$name_container.removeClass( 'fp-last-child' );
+						$conf_container.show();
+					}
+				},
+
+				is_removeable: function() {
+					if ( 1 === this.$.items.length ){
+						if ( this.$.items.eq( 0 ).find( this.selector.type ).select2( 'val' ) === '' ) {
+							return true;
+						} else {
+							return false;
+						}
+					}
+
+					return false;
+				},
+
+				setup: function() {
+					var fieldset = this;
+
+					fieldset.$.container.on( 'change', fieldset.selector.type, [], function( event ){
+						var $field = $( this ),
+							$item = $field.parents( fieldset.selector.item ),
+							$template = $( '.fp-template-' + event.added.id ).filter( '[data-rel="' + fieldset.$.container.attr( 'id' ) + '"]' ).filter( '[data-callable]' ),
+							template = $template.html(),
+
+							$conf_container = $item.find( fieldset.selector.conf_container ),
+							$place = $conf_container.find( window.fakerpress.fieldset.selector.wrap );
+
+						$place.empty();
+
+						// Only place if there is a template
+						if ( 0 !== $template.length ){
+							$place.append( template );
+						}
+
+						// Update all the required information
+						window.fakerpress.fieldset.update( fieldset );
+					} );
+				},
+
+				reset: function( $item ) {
+					var $type = $item.find( this.selector.type ),
+						$name = $item.find( this.selector.name );
+
+					$type.select2( 'val', '' );
+					$name.val( '' );
+				}
+			},
+		],
+
+		// Global Elements
+		selector: {
+			wrap: '.fp-field-wrap',
+			duplicate: '.fp-action-duplicate',
+			remove: '.fp-action-remove',
+			order: '.fp-action-order',
+			label: '.fp-field-label',
+			internal_label: '.fp-internal-label',
+			field: '.fp-field',
+			field_container: '.fp-field-container'
+		},
+
+		setup: function( fieldset ) {
+			var $tbody = $( 'form' ).children( '.form-table' ).children( 'tbody' );
+
+			// Reset the Elements (safety)
+			fieldset.$ = {};
+
+			// Based on the Argument set the container
+			fieldset.$.container = $tbody.children( fieldset.selector.container );
+
+			// Get the Field Wrapper
+			fieldset.$.wrap = fieldset.$.container.children( window.fakerpress.fieldset.selector.wrap );
+
+			// Setup the Duplicate action
+			fieldset.$.container.on( 'click', this.selector.duplicate, [], function( event ){
 				var $button = $( this ),
-					$meta = $button.parents( _meta ),
-					$clone = $meta.clone();
+					$item = $button.parents( fieldset.selector.item ),
+					$clone = $item.clone();
 
 				$clone
-					.find( _meta_type ).select2( 'val', '' )
-					.end().find( _meta_name ).val( '' )
-					.end().find( '.fp-type-date' ).removeClass( 'hasDatepicker' )
+					.find( '.fp-type-date' ).removeClass( 'hasDatepicker' )
 					.end().find( '.fp-type-dropdown' ).removeClass( 'select2-offscreen' )
 					.filter( '.select2-container' ).remove();
 
+				fieldset.reset( $clone );
+
 				// Append the new Meta to the Wrap
-				$wrap.append( $clone );
+				fieldset.$.wrap.append( $clone );
 
 				// Update all the required information
-				$container.trigger( 'meta' );
+				window.fakerpress.fieldset.update( fieldset );
 			} );
 
-			$container.on( 'click', _remove, [], function( event ){
+			// Setup the Remove action
+			fieldset.$.container.on( 'click', this.selector.remove, [], function( event ){
 				var $button = $( this ),
-					$meta = $button.parents( _meta ),
-					$type = $meta.find( _meta_type ),
-					$name = $meta.find( _meta_name );
+					$item = $button.parents( fieldset.selector.item );
 
 				// Prevent remove when there is just one meta
-				if ( 1 === $metas.length ){
-					$type.select2( 'val', '' );
-					$name.val( '' );
+				if ( 1 === fieldset.$.items.length ){
+					fieldset.reset( fieldset.$.items.eq( 0 ) );
 				} else {
 					// Remove the Meta where the remove was clicked
-					$meta.remove();
+					$item.remove();
 				}
 
 				// Update all the required information
-				$container.trigger( 'meta' );
+				window.fakerpress.fieldset.update( fieldset );
+			} );
+
+			fieldset.setup();
+		},
+
+		update: function( fieldset ){
+			// Setup a base list of items
+			fieldset.$.items = fieldset.$.wrap.children( fieldset.selector.item );
+
+			// If there is just one meta, disable the remove button
+			if ( fieldset.is_removeable() ) {
+				fieldset.$.items.eq( 0 )
+					.find( window.fakerpress.fieldset.selector.remove ).prop( 'disabled', true )
+					.end().find( fieldset.selector.name ).prop( 'required', false );
+			} else {
+				fieldset.$.items
+					.find( window.fakerpress.fieldset.selector.remove ).prop( 'disabled', false )
+					.end().find( fieldset.selector.name ).prop( 'required', true );
+			}
+
+			// Regenerate Order Index
+			fieldset.$.items.each( function( index ){
+				var	$item = $( this ),
+					$index = $item.find( window.fakerpress.fieldset.selector.order ),
+					$fields = $item.find( window.fakerpress.fieldset.selector.field );
+
+				// Change the index first
+				$index.val( index + 1 );
+
+				$fields.each( function(  ){
+					var $field = $( this ),
+						$label = $field.next( window.fakerpress.fieldset.selector.label ),
+						$internal_label = $field.next( window.fakerpress.fieldset.selector.internal_label ),
+
+						__name = $field.data( 'name' ),
+						__id = $field.data( 'id' ),
+						id = [],
+						name = [];
+
+					// If didn't find a label inside of the parent element
+					if ( 0 === $label.length ){
+						$label = $field.parents( window.fakerpress.fieldset.selector.field_container ).eq(0).find( window.fakerpress.fieldset.selector.label );
+					}
+
+					_.each( __id, function( value, key, list ) {
+						id.push( value );
+						if ( 'meta' === value ){
+							id.push( index );
+						}
+					} );
+
+					_.each( __name, function( value, key, list ) {
+						name.push( value );
+						if ( 'meta' === value ){
+							name.push( index );
+						}
+					} );
+
+					if ( 0 !== id.length ){
+						$field.attr( 'id', window.fakerpress.fieldId( id ) );
+						$label.attr( 'for', window.fakerpress.fieldId( id ) );
+						$internal_label.attr( 'for', window.fakerpress.fieldId( id ) );
+					}
+
+					if ( 0 !== name.length ){
+						$field.attr( 'name', window.fakerpress.fieldName( name ) );
+					}
+				} );
+
+				fieldset.update( $item );
+			} );
+
+			$.each( window.fakerpress.fields, function( key, callback ){
+				callback( window.jQuery, window._ );
+			} );
+		}
+	};
+
+
+	$( document ).ready( function() {
+		$.each( window.fakerpress.fieldset.items, function( index, fieldset ) {
+			window.fakerpress.fieldset.setup( fieldset );
+			fieldset.$.container.each( function( _index, container ) {
+				// We need this to avoid having a `this` variable been a HTML element
+				window.fakerpress.fieldset.update( fieldset );
 			} );
 		} );
 	} );
@@ -606,42 +761,6 @@ window.fakerpress.fields.range = function( $, _ ){
 	});
 }( jQuery, _ ) );
 
-// Check for checkbox dependecies
-( function( $, _ ){
-	'use strict';
-	$(document).ready(function(){
-		var checkDependency = function( event ){
-			var $box, $dependecyField;
-			if ( _.isNumber( event ) ){
-				$box = $( this );
-				$dependecyField = $( $box.data('fpDepends') );
-			} else {
-				$dependecyField = $( this );
-				$box = $dependecyField.data( 'fpDependent' );
-			}
 
-			var	condition = $box.data('fpCondition'),
-				$placeholder = $dependecyField.data( 'fpPlaceholder' );
-
-			if ( ! $placeholder ){
-				$placeholder = $( "<div>" ).attr( 'id', _.uniqueId( 'fp-dependent-placeholder-' ) );
-				$dependecyField.data( 'fpPlaceholder', $placeholder );
-			}
-			$dependecyField.data( 'fpDependent', $box );
-
-			if ( _.isNumber( event ) ){
-				$dependecyField.on( 'change', checkDependency );
-			}
-
-			if ( $dependecyField.is(':checked') != condition ){
-				$box.after( $placeholder ).detach();
-			} else if ( $placeholder.is(':visible') ) {
-				$placeholder.replaceWith( $dependecyField.data( 'fpDependent' ) );
-			}
-		};
-
-		$( '.fp-field-dependent' ).each( checkDependency );
-	});
-}( window.jQuery, window._ ) );
 
 */
