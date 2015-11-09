@@ -3,7 +3,7 @@ namespace FakerPress\Module;
 use FakerPress\Admin;
 use FakerPress\Variable;
 use FakerPress\Plugin;
-
+use FakerPress\Utils;
 
 class Term extends Base {
 
@@ -60,25 +60,42 @@ class Term extends Base {
 
 	public function parse_request( $qty, $request = array() ) {
 		if ( is_null( $qty ) ) {
-			$qty = Variable::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
-			$min = absint( $qty['min'] );
-			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
-			$qty = $this->faker->numberBetween( $min, $max );
+			$qty = Utils::instance()->get_qty_from_range( Variable::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW ) );
 		}
 
 		if ( 0 === $qty ){
 			return esc_attr__( 'Zero is not a good number of terms to fake...', 'fakerpress' );
 		}
 
-		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Variable::super( $request, array( 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
+		$name_size = Variable::super( INPUT_POST, array( Plugin::$slug, 'size' ), FILTER_UNSAFE_RAW );
+
+		// Fetch taxomies
+		$taxonomies = Variable::super( $request, array( 'taxonomies' ), FILTER_SANITIZE_STRING );
+		$taxonomies = array_map( 'trim', explode( ',', $taxonomies ) );
+		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), $taxonomies );
+
+		// Only has meta after 4.4-beta
+		$has_metas = version_compare( $GLOBALS['wp_version'], '4.4-beta', '>=' );
+
+		if ( $has_metas ) {
+			$metas = Variable::super( $request, array( 'meta' ), FILTER_UNSAFE_RAW );
+		}
 
 		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->set( 'taxonomy', $taxonomies );
-			$this->set( 'name' );
+			$this->set( 'name', $name_size );
 			$this->set( 'description' );
 			$this->set( 'parent_term' );
 
-			$results[] = $this->generate()->save();
+			$term_id = $this->generate()->save();
+
+			if ( $has_metas && $term_id && is_numeric( $term_id ) ){
+				foreach ( $metas as $meta_index => $meta ) {
+					Meta::instance()->object( $term_id, 'term' )->generate( $meta['type'], $meta['name'], $meta )->save();
+				}
+			}
+
+			$results[] = $term_id;
 		}
 
 		$results = array_filter( (array) $results, 'absint' );

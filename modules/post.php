@@ -54,24 +54,41 @@ class Post extends Base {
 			return esc_attr__( 'Zero is not a good number of posts to fake...', 'fakerpress' );
 		}
 
-		$comment_status = array_map( 'trim', explode( ',', Variable::super( $request, array( 'comment_status' ), FILTER_SANITIZE_STRING ) ) );
+		// Fetch Comment Status
+		$comment_status = Variable::super( $request, array( 'comment_status' ), FILTER_SANITIZE_STRING );
+		$comment_status = array_map( 'trim', explode( ',', $comment_status ) );
 
-		$post_author = array_intersect( get_users( array( 'fields' => 'ID' ) ), array_map( 'trim', explode( ',', Variable::super( $request, array( 'author' ) ) ) ) );
+		// Fetch Post Author
+		$post_author = Variable::super( $request, array( 'author' ), FILTER_SANITIZE_STRING );
+		$post_author = array_map( 'trim', explode( ',', $post_author ) );
+		$post_author = array_intersect( get_users( array( 'fields' => 'ID' ) ), $post_author );
 
-		$min_date = Variable::super( $request, array( 'interval_date', 'min' ) );
-		$max_date = Variable::super( $request, array( 'interval_date', 'max' ) );
+		// Fetch the dates
+		$date = array(
+			Variable::super( $request, array( 'interval_date', 'min' ), FILTER_SANITIZE_STRING ),
+			Variable::super( $request, array( 'interval_date', 'max' ), FILTER_SANITIZE_STRING ),
+		);
 
-		$post_types = array_intersect( get_post_types( array( 'public' => true ) ), array_map( 'trim', explode( ',', Variable::super( $request, array( 'post_types' ), FILTER_SANITIZE_STRING ) ) ) );
-		$taxonomies = array_intersect( get_taxonomies( array( 'public' => true ) ), array_map( 'trim', explode( ',', Variable::super( $request, array( 'taxonomies' ), FILTER_SANITIZE_STRING ) ) ) );
+		// Fetch Post Types
+		$post_types = Variable::super( $request, array( 'post_types' ), FILTER_SANITIZE_STRING );
+		$post_types = array_map( 'trim', explode( ',', $post_types ) );
+		$post_types = array_intersect( get_post_types( array( 'public' => true ) ), $post_types );
 
+		// Fetch Post Content
 		$post_content_use_html = Variable::super( $request, array( 'use_html' ), FILTER_SANITIZE_NUMBER_INT, 0 ) === 1;
 		$post_content_html_tags = array_map( 'trim', explode( ',', Variable::super( $request, array( 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
-		$post_parents = array_map( 'trim', explode( ',', Variable::super( $request, array( 'post_parent' ), FILTER_SANITIZE_STRING ) ) );
+		// Fetch and clean Post Parents
+		$post_parents = Variable::super( $request, array( 'post_parent' ), FILTER_SANITIZE_STRING );
+		$post_parents = array_map( 'trim', explode( ',', $post_parents ) );
 
 		$featured_image_rate = absint( Variable::super( $request, array( 'featured_image_rate' ), FILTER_SANITIZE_NUMBER_INT ) );
 		$images_origin = array_map( 'trim', explode( ',', Variable::super( $request, array( 'images_origin' ), FILTER_SANITIZE_STRING ) ) );
 
+		// Fetch Taxonomies
+		$taxonomies_configuration = Variable::super( $request, array( 'taxonomy' ), FILTER_UNSAFE_RAW );
+
+		// Fetch Metas It will be parsed later!
 		$metas = Variable::super( $request, array( 'meta' ), FILTER_UNSAFE_RAW );
 
 		$results = array();
@@ -79,14 +96,14 @@ class Post extends Base {
 		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->set( 'post_title' );
 			$this->set( 'post_status', 'publish' );
-			$this->set( 'post_date', array( $min_date, $max_date ) );
+			$this->set( 'post_date', $date );
 			$this->set( 'post_parent', $post_parents );
 			$this->set( 'post_content', $post_content_use_html, array( 'elements' => $post_content_html_tags ) );
 			$this->set( 'post_author', $post_author );
 			$this->set( 'post_type', $post_types );
 			$this->set( 'comment_status', $comment_status );
 			$this->set( 'ping_status' );
-			$this->set( 'tax_input', $taxonomies );
+			$this->set( 'tax_input', $taxonomies_configuration );
 
 			$post_id = $this->generate()->save();
 

@@ -783,9 +783,19 @@ class Field {
 		$min->type = 'number';
 		$min->{'data-type'} = 'min';
 		$min->min = 0;
+
 		if ( isset( $field->min ) && is_numeric( $field->min ) ){
 			$min->value = $field->min;
 		}
+
+		if ( isset( $field->_max ) && is_numeric( $field->_max ) ){
+			$min->max = $field->_max;
+		}
+
+		if ( isset( $field->_min ) && is_numeric( $field->_min ) ){
+			$min->min = $field->_min;
+		}
+
 		$min->class = array();
 		$min->placeholder = esc_attr__( 'e.g.: 3', self::plugin );
 
@@ -795,11 +805,21 @@ class Field {
 		$max->{'data-type'} = 'max';
 		$max->type = 'number';
 		$max->min = 0;
+
 		if ( isset( $field->max ) && is_numeric( $field->max ) ){
 			$max->value = $field->max;
 		} else {
 			$max->disabled = true;
 		}
+
+		if ( isset( $field->_max ) && is_numeric( $field->_max ) ){
+			$max->max = $field->_max;
+		}
+
+		if ( isset( $field->_min ) && is_numeric( $field->_min ) ){
+			$max->min = $field->_min;
+		}
+
 		$max->class = array();
 		$max->placeholder = esc_attr__( 'e.g.: 12', self::plugin );
 
@@ -874,55 +894,94 @@ class Field {
 				'html' => '',
 				'class' => 'order-table',
 			),
-			'label', 'fields',
+			'label', 'fields', 'description',
 			array(
 				'html' => '',
 				'class' => 'actions-table',
 			),
 		);
 
-		$meta_type = clone $container;
-		$meta_type->id[] = 'type';
-		$meta_type->type .= '_type';
-		$meta_type->label = __( 'Type', self::plugin );
-		$meta_type->description = __( 'Select a type of the Meta Field', self::plugin );
-		$meta_type->class = array( 'meta_type-container' );
-		$meta_type->blocks = $blocks;
+		$tax_container = clone $container;
+		$tax_container->id[] = 'taxonomies';
+		$tax_container->type .= '_taxonomies';
+		$tax_container->label = __( 'Taxonomies', self::plugin );
+		$tax_container->description = '';
+		$tax_container->blocks = $blocks;
 
-		$meta_name = clone $container;
-		$meta_name->id[] = 'name';
-		$meta_name->type .= '_name';
-		$meta_name->label = __( 'Name', self::plugin );
-		$meta_name->description = __( 'Select the name for Meta Field', self::plugin );
-		$meta_name->class = array( 'meta_name-container' );
-		$meta_name->blocks = $blocks;
+		$taxonomies = get_taxonomies( array( 'public' => true ), 'object' );
+		$_json_taxonomies_output = array();
+		foreach ( $taxonomies as $key => $taxonomy ) {
+			$_json_taxonomies_output[] = array(
+				'id' => $taxonomy->name,
+				'text' => $taxonomy->labels->name,
+			);
+		}
 
-		$meta_conf = clone $container;
-		$meta_conf->id[] = 'conf';
-		$meta_conf->type .= '_conf';
-		$meta_conf->label = __( 'Configuration', self::plugin );
-		$meta_conf->description = __( '', self::plugin );
-		$meta_conf->class = array( 'meta_conf-container' );
-		$meta_conf->blocks = $blocks;
+		$tax_field = clone $field;
+		$tax_field->_id[] = 'taxonomies';
+		$tax_field->_name[] = 'taxonomies';
+		$tax_field->type = 'dropdown';
+		$tax_field->multiple = true;
+		$tax_field->{'data-options'} = $_json_taxonomies_output;
+		$tax_field->value = 'post_tag, category';
+		$tax_field->class = array( 'taxonomies' );
+		$tax_field->placeholder = esc_attr__( 'Select Which taxonomies', self::plugin );
 
-		$type = clone $field;
-		$type->_id[] = 'type';
-		$type->_name[] = 'type';
-		$type->type = 'dropdown';
-		$type->options = self::get_meta_types();
-		$type->class = array( 'meta_type' );
-		$type->placeholder = esc_attr__( 'Select a Field type', self::plugin );
+		$content[] = $tax_container->build( self::type_dropdown( $tax_field, null, 'string' ) );
 
-		$name = clone $field;
-		$name->_id[] = 'name';
-		$name->_name[] = 'name';
-		$name->type = 'text';
-		$name->class = array( 'meta_name' );
-		$name->placeholder = esc_attr__( 'Newborn Meta needs a Name, E.g.: _new_image', self::plugin );
+		$terms_container = clone $container;
+		$terms_container->id[] = 'terms';
+		$terms_container->type .= '_terms';
+		$terms_container->label = __( 'Terms', self::plugin );
+		$terms_container->description = '';
+		$terms_container->blocks = $blocks;
 
-		$content[] = $meta_type->build( self::type_dropdown( $type, null, 'string' ) );
-		$content[] = $meta_name->build( self::type_text( $name, null, 'string' ) );
-		$content[] = $meta_conf->build( '' );
+		$terms = clone $field;
+		$terms->_id[] = 'terms';
+		$terms->_name[] = 'terms';
+		$terms->type = 'dropdown';
+		$terms->multiple = true;
+		$terms->{'data-source'} = 'search_terms';
+
+		$terms->placeholder = esc_attr__( 'Which terms can be used', self::plugin );
+
+		$content[] = $terms_container->build( self::type_dropdown( $terms, null, 'string' ) );
+
+		$rate_container = clone $container;
+		$rate_container->id[] = 'rate';
+		$rate_container->type .= 'rate';
+		$rate_container->label = __( 'Rate', self::plugin );
+		$rate_container->description = __( 'Percentage rate of posts that will have terms generated for the amount below', self::plugin );
+		$rate_container->blocks = $blocks;
+
+		$rate = clone $field;
+		$rate->_id[] = 'rate';
+		$rate->_name[] = 'rate';
+		$rate->type = 'number';
+		$rate->placeholder = esc_attr__( 'Rate', self::plugin );
+		$rate->min = 0;
+		$rate->max = 100;
+		$rate->value = 85;
+
+		$content[] = $rate_container->build( self::type_text( $rate, null, 'string' ) );
+
+		$qty_container = clone $container;
+		$qty_container->id[] = 'qty';
+		$qty_container->type .= '_qty';
+		$qty_container->label = __( 'Quantity', self::plugin );
+		$qty_container->description = __( 'How many terms will be selected', self::plugin );
+		$qty_container->blocks = $blocks;
+
+		$qty = clone $field;
+		$qty->_id[] = 'qty';
+		$qty->_name[] = 'qty';
+		$qty->type = 'range';
+		$qty->min = 1;
+		$qty->max = 4;
+		$qty->_max = 200;
+		$qty->class = array( 'qty' );
+
+		$content[] = $qty_container->build( self::type_range( $qty, null, 'string' ) );
 
 		$content = $table->build( $content );
 
@@ -930,15 +989,6 @@ class Field {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
-		}
-
-		foreach ( $type->options as $key => $ftype ) {
-			$is_callable = ( isset( $ftype->template ) && is_callable( $ftype->template ) );
-			$html[] = '<script type="text/html" data-rel="' . self::id( $container->id, true ) . '" class="' . self::abbr( 'template-' . $ftype->value ) . '"' . ( $is_callable ? ' data-callable' : '' ) . '>';
-			if ( $is_callable ){
-				$html[] = call_user_func_array( $ftype->template, array( $field, $ftype ) );
-			}
-			$html[] = '</script>';
 		}
 
 		if ( 'string' === $output ){

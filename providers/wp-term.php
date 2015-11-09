@@ -1,28 +1,19 @@
 <?php
 namespace Faker\Provider;
+use FakerPress;
 
 class WP_Term extends Base {
-	public function name( $min = 1, $max = 8 ) {
-		if ( is_array( $min ) ){
-			$name = $this->generator->randomElement( $min );
-		} else {
-			// Not sure if this is the best approach, but it will work no metter what...
-			if ( ! is_numeric( $min ) ){
-				$min = 3;
-			}
-			if ( ! is_numeric( $max ) ){
-				$max = 10;
-			}
-			$name = $this->generator->sentence( $this->generator->numberBetween( $min, $max ) );
+	public function name( $qty = 4 ) {
+		$qty = FakerPress\Utils::instance()->get_qty_from_range( $qty );
+		$name = $this->generator->sentence( $qty );
 
-			// This removes the last dot on the end of the sentence
-			$name = substr( $name, 0, strlen( $name ) - 1 );
-		}
+		// This removes the last dot on the end of the sentence
+		$name = rtrim( $name, '.' );
 
 		return $name;
 	}
 
-	public function taxonomy( $taxonomies = array( 'category', 'post_tag' ), $args = array() ){
+	public function taxonomy( $taxonomies = array( 'category', 'post_tag' ), $args = array() ) {
 		if ( empty( $taxonomies ) ){
 			// Merge the returned terms to those provided
 			$taxonomies = get_taxonomies( $args, 'names' );
@@ -31,7 +22,7 @@ class WP_Term extends Base {
 		return $this->generator->randomElement( (array) $taxonomies );
 	}
 
-	public function description( $min = 5, $max = 50 ){
+	public function description( $min = 5, $max = 50 ) {
 		if ( is_array( $min ) ){
 			$description = $this->generator->randomElement( $min );
 		} else {
@@ -51,7 +42,7 @@ class WP_Term extends Base {
 		return $description;
 	}
 
-	public function parent_term( $terms = array(), $taxonomies = array(), $args = array() ){
+	public function parent_term( $terms = array(), $taxonomies = array(), $args = array() ) {
 		if ( ! empty( $taxonomies ) ){
 			// We only need the ids to be returned
 			$args['fields'] = 'ids';

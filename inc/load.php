@@ -23,6 +23,9 @@ if ( ! class_exists( 'Carbon\Carbon' ) ){
 // Include the Carbon class to deal with dates
 require_once Plugin::path( 'inc/class-fp-dates.php' );
 
+// Include the Utils for general stuff
+require_once Plugin::path( 'inc/class-fp-utils.php' );
+
 // Require our Filtering Class
 require_once Plugin::path( 'inc/class-fp-variable.php' );
 

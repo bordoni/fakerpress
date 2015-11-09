@@ -10,6 +10,15 @@ $fields[] = new Field(
 	)
 );
 
+$fields[] = new Field(
+	'range',
+	'size',
+	array(
+		'label' => __( 'Name Size', 'fakerpress' ),
+		'description' => __( 'What is the size of the Term name', 'fakerpress' ),
+	)
+);
+
 $taxonomies = get_taxonomies( array( 'public' => true ), 'object' );
 
 $_json_taxonomies_output = array();
@@ -32,6 +41,19 @@ $fields[] = new Field(
 		'description' => __( 'Group of taxonomies that the terms will be created within', 'fakerpress' ),
 	)
 );
+
+if ( version_compare( $GLOBALS['wp_version'], '4.4-beta', '>=' ) ) {
+	$fields[] = new Field(
+		'meta',
+		array(
+			'id' => 'meta',
+		),
+		array(
+			'label' => __( 'Meta Field Rules', 'fakerpress' ),
+			'description' => __( 'Use the fields below to configure a set of rules for your generated Terms', 'fakerpress' ),
+		)
+	);
+}
 
 ?>
 <div class='wrap'>

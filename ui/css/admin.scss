@@ -32,7 +32,7 @@
 	}
 
 	input[type="number"] {
-
+		line-height: 1em;
 	}
 
 	.fp-submit {
@@ -70,6 +70,10 @@
 		+ .fp-table-meta,
 		+ .fp-table-taxonomy {
 			border-top: 0px;
+		}
+
+		.fp-field-description {
+			font-size: 0.9em;
 		}
 
 		> thead th {
@@ -149,6 +153,12 @@
 		> tbody > tr > td.fp-order-table + td {
 			border-left-color: #ddd;
 			padding-left: 20px;
+			vertical-align: top;
+
+			.fp-field-label {
+				margin-top: 5px;
+				display: inline-block;
+			}
 		}
 
 		/* remove */

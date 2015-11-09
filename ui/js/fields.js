@@ -186,18 +186,28 @@ window.fakerpress.fields.dropdown = function( $, _ ){
 				return m;
 			};
 
-			args.formatSelection = function ( post ){
-				return _.template('<abbr title="<%= post_title %>"><%= post_type.labels.singular_name %>: <%= ID %></abbr>')( post )
-			};
-			args.formatResult = function ( post ){
-				return _.template('<abbr title="<%= post_title %>"><%= post_type.labels.singular_name %>: <%= ID %></abbr>')( post )
-			};
-
 			args.ajax = { // instead of writing the function to execute the request we use Select2's convenient helper
 				dataType: 'json',
 				type: 'POST',
 				url: window.ajaxurl,
-				data: function (search, page) {
+				results: function ( data ) { // parse the results into the format expected by Select2.
+					$.each( data.results, function( k, result ){
+						result.id = result.ID;
+					} );
+					return data;
+				}
+			};
+
+			// Now we set the data for the source we are looking
+			if ( 'WP_Query' === source ){
+				args.formatSelection = function ( post ){
+					return _.template('<abbr title="<%= post_title %>"><%= post_type.labels.singular_name %>: <%= ID %></abbr>')( post )
+				};
+				args.formatResult = function ( post ){
+					return _.template('<abbr title="<%= post_title %>"><%= post_type.labels.singular_name %>: <%= ID %></abbr>')( post )
+				};
+
+				args.ajax.data = function( search, page ) {
 					var post_types = _.intersection( $( '#fakerpress-field-post_types' ).val().split( ',' ), _.pluck( _.where( $( '#fakerpress-field-post_types' ).data( 'options' ), { hierarchical: true } ) , 'id' ) );
 
 					return {
@@ -209,15 +219,27 @@ window.fakerpress.fields.dropdown = function( $, _ ){
 							post_type: post_types
 						}
 					};
-				},
-				results: function ( data ) { // parse the results into the format expected by Select2.
-					$.each( data.results, function( k, result ){
-						result.id = result.ID;
-					} );
-					return data;
 				}
-			};
+			} else {
+				args.ajax.data = function( search, page ) {
+					var $container = $select.parents( '.fp-table-taxonomy' ).eq( 0 );
+					return {
+						action: 'fakerpress.select2-' + source,
+						search: search,
+						page: page,
+						page_limit: 25,
+						taxonomies: $container.find( '.fp-taxonomies' ).select2( 'val' ),
+						exclude: $( this ).select2( 'val' )
+					};
+				}
 
+				args.formatSelection = function ( result ){
+					return _.template( '<%= taxonomy %>: <%= name %>' )( result );
+				};
+				args.formatResult = function ( result ){
+					return _.template( '<%= taxonomy %>: <%= name %>' )( result );
+				};
+			}
 		}
 
 		$select.select2( args );
@@ -344,7 +366,9 @@ window.fakerpress.fields.range = function( $, _ ){
 
 				is_removeable: function() {
 					if ( 1 === this.$.items.length ){
-						if ( this.$.items.eq( 0 ).find( this.selector.type ).select2( 'val' ) === '' ) {
+						var $item = this.$.items.eq( 0 );
+
+						if ( _.isEmpty( $item.find( this.selector.type ).select2( 'val' ) ) ) {
 							return true;
 						} else {
 							return false;
@@ -379,11 +403,7 @@ window.fakerpress.fields.range = function( $, _ ){
 				},
 
 				reset: function( $item ) {
-					var $type = $item.find( this.selector.type ),
-						$name = $item.find( this.selector.name );
 
-					$type.select2( 'val', '' );
-					$name.val( '' );
 				}
 			},
 			{
@@ -395,49 +415,28 @@ window.fakerpress.fields.range = function( $, _ ){
 
 					item: '.fp-table-taxonomy',
 
-					type_container: '.fp-meta_type-container',
-					type: '.fp-meta_type',
+					taxonomies_container: '.fp-taxonomies-container',
+					taxonomies: '.fp-taxonomies',
 
-					name_container: '.fp-meta_name-container',
-					name: '.fp-meta_name',
+					terms_container: '.fp-terms-container',
+					terms: '.fp-terms',
 
-					conf_container: '.fp-meta_conf-container'
+					weight_container: '.fp-weight-container',
+					weight: '.fp-weight'
 				},
 
 				update: function( $item ) {
-					var fieldset = this,
-						$type = $item.find( fieldset.selector.type ),
-						type = $type.select2( 'val' ),
 
-						$name = $item.find( fieldset.selector.name ),
-						name = $name.val(),
-
-						$name_container = $item.find( fieldset.selector.name_container ),
-						$type_container = $item.find( fieldset.selector.type_container ),
-						$conf_container = $item.find( fieldset.selector.conf_container ),
-
-						$template;
-
-					// Before constructing the Type Object check if it's a jQuery element (Select2 bug)
-					if ( type instanceof jQuery ){
-						type = type.val();
-					}
-
-					// Find templates relevant to the current container
-					$template = $( '.fp-template-' + type ).filter( '[data-rel="' + fieldset.$.container.attr( 'id' ) + '"]' ).filter( '[data-callable]' );
-
-					if ( ! type || 0 === $template.length ){
-						$name_container.addClass( 'fp-last-child' );
-						$conf_container.hide();
-					} else {
-						$name_container.removeClass( 'fp-last-child' );
-						$conf_container.show();
-					}
 				},
 
 				is_removeable: function() {
 					if ( 1 === this.$.items.length ){
-						if ( this.$.items.eq( 0 ).find( this.selector.type ).select2( 'val' ) === '' ) {
+						var $item = this.$.items.eq( 0 );
+
+						if (
+							_.isEmpty( $item.find( this.selector.taxonomies ).select2( 'val' ) ) &&
+							_.isEmpty( $item.find( this.selector.terms ).val() )
+						) {
 							return true;
 						} else {
 							return false;
@@ -449,34 +448,10 @@ window.fakerpress.fields.range = function( $, _ ){
 
 				setup: function() {
 					var fieldset = this;
-
-					fieldset.$.container.on( 'change', fieldset.selector.type, [], function( event ){
-						var $field = $( this ),
-							$item = $field.parents( fieldset.selector.item ),
-							$template = $( '.fp-template-' + event.added.id ).filter( '[data-rel="' + fieldset.$.container.attr( 'id' ) + '"]' ).filter( '[data-callable]' ),
-							template = $template.html(),
-
-							$conf_container = $item.find( fieldset.selector.conf_container ),
-							$place = $conf_container.find( window.fakerpress.fieldset.selector.wrap );
-
-						$place.empty();
-
-						// Only place if there is a template
-						if ( 0 !== $template.length ){
-							$place.append( template );
-						}
-
-						// Update all the required information
-						window.fakerpress.fieldset.update( fieldset );
-					} );
 				},
 
 				reset: function( $item ) {
-					var $type = $item.find( this.selector.type ),
-						$name = $item.find( this.selector.name );
 
-					$type.select2( 'val', '' );
-					$name.val( '' );
 				}
 			},
 		],
@@ -516,7 +491,7 @@ window.fakerpress.fields.range = function( $, _ ){
 					.end().find( '.fp-type-dropdown' ).removeClass( 'select2-offscreen' )
 					.filter( '.select2-container' ).remove();
 
-				fieldset.reset( $clone );
+				window.fakerpress.fieldset.reset( fieldset, $clone );
 
 				// Append the new Meta to the Wrap
 				fieldset.$.wrap.append( $clone );
@@ -532,7 +507,7 @@ window.fakerpress.fields.range = function( $, _ ){
 
 				// Prevent remove when there is just one meta
 				if ( 1 === fieldset.$.items.length ){
-					fieldset.reset( fieldset.$.items.eq( 0 ) );
+					window.fakerpress.fieldset.reset( fieldset, fieldset.$.items.eq( 0 ) );
 				} else {
 					// Remove the Meta where the remove was clicked
 					$item.remove();
@@ -545,7 +520,25 @@ window.fakerpress.fields.range = function( $, _ ){
 			fieldset.setup();
 		},
 
-		update: function( fieldset ){
+		reset: function( fieldset, $item ) {
+			var $fields = $item.find( 'tbody' ).find( window.fakerpress.fieldset.selector.field );
+
+			$fields.each( function() {
+				var $field = $( this );
+
+				// Reset normal fields
+				$field.val( '' );
+
+				// Resets the Select2
+				if ( $field.hasClass( 'select2-offscreen' ) ){
+					$field.select2( 'val', '' );
+				}
+			} );
+
+			fieldset.reset( $item );
+		},
+
+		update: function( fieldset ) {
 			// Setup a base list of items
 			fieldset.$.items = fieldset.$.wrap.children( fieldset.selector.item );
 
@@ -586,14 +579,14 @@ window.fakerpress.fields.range = function( $, _ ){
 
 					_.each( __id, function( value, key, list ) {
 						id.push( value );
-						if ( 'meta' === value ){
+						if ( 'meta' === value || 'taxonomy' === value ){
 							id.push( index );
 						}
 					} );
 
 					_.each( __name, function( value, key, list ) {
 						name.push( value );
-						if ( 'meta' === value ){
+						if ( 'meta' === value || 'taxonomy' === value ){
 							name.push( index );
 						}
 					} );
