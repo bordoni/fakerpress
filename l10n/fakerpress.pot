@@ -3,15 +3,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FakerPress 0.4.1\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/fakerpress\n"
-"POT-Creation-Date: 2015-09-26 14:04:35+00:00\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/fakerpress\n"
+"POT-Creation-Date: 2015-11-09 04:24:04+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"X-Generator: grunt-wp-i18n 0.5.2\n"
+"X-Generator: grunt-wp-i18n 0.5.3\n"
 
 #: fakerpress.php:52
 msgid ""
@@ -83,8 +83,8 @@ msgstr ""
 msgid "All data is gone for good."
 msgstr ""
 
-#: inc/class-fp-ajax.php:21 inc/class-fp-ajax.php:84 inc/class-fp-ajax.php:141
-#: inc/class-fp-ajax.php:181
+#: inc/class-fp-ajax.php:21 inc/class-fp-ajax.php:84 inc/class-fp-ajax.php:154
+#: inc/class-fp-ajax.php:194
 msgid "Your request has failed"
 msgstr ""
 
@@ -92,8 +92,8 @@ msgstr ""
 msgid "Security fail, refresh the page and try again!"
 msgstr ""
 
-#: inc/class-fp-ajax.php:108 inc/class-fp-ajax.php:163
-#: inc/class-fp-ajax.php:200
+#: inc/class-fp-ajax.php:110 inc/class-fp-ajax.php:176
+#: inc/class-fp-ajax.php:213
 msgid "Request successful"
 msgstr ""
 
@@ -129,312 +129,341 @@ msgstr ""
 msgid "Next 15 Days"
 msgstr ""
 
-#: inc/class-fp-field.php:786
+#: inc/class-fp-field.php:800
 msgid "e.g.: 3"
 msgstr ""
 
-#: inc/class-fp-field.php:800
+#: inc/class-fp-field.php:824
 msgid "e.g.: 12"
 msgstr ""
 
-#: inc/class-fp-field.php:883
-msgid "Type"
+#: inc/class-fp-field.php:907 view/terms.php:40
+msgid "Taxonomies"
 msgstr ""
 
-#: inc/class-fp-field.php:884
-msgid "Select a type of the Meta Field"
+#: inc/class-fp-field.php:928
+msgid "Select Which taxonomies"
 msgstr ""
 
-#: inc/class-fp-field.php:891
-msgid "Name"
+#: inc/class-fp-field.php:935 modules/term.php:20
+msgid "Terms"
 msgstr ""
 
-#: inc/class-fp-field.php:892
-msgid "Select the name for Meta Field"
+#: inc/class-fp-field.php:946
+msgid "Which terms can be used"
 msgstr ""
 
-#: inc/class-fp-field.php:899
-msgid "Configuration"
+#: inc/class-fp-field.php:953 inc/class-fp-field.php:961
+msgid "Rate"
 msgstr ""
 
-#: inc/class-fp-field.php:910
-msgid "Select a Field type"
+#: inc/class-fp-field.php:954
+msgid "Percentage rate of posts that will have terms generated for the amount below"
 msgstr ""
 
-#: inc/class-fp-field.php:917
-msgid "Newborn Meta needs a Name, E.g.: _new_image"
-msgstr ""
-
-#: inc/class-fp-field.php:958
-msgid "E.g.: , "
-msgstr ""
-
-#: inc/class-fp-field.php:959
-msgid "Separator"
-msgstr ""
-
-#: inc/class-fp-field.php:969
-msgid "E.g.: 55"
-msgstr ""
-
-#: inc/class-fp-field.php:970
-msgid "Weight"
-msgstr ""
-
-#: inc/class-fp-field.php:977 view/attachments.php:11 view/comments.php:8
-#: view/posts.php:11 view/terms.php:8 view/users.php:8
+#: inc/class-fp-field.php:971 inc/class-fp-field.php:1159
+#: view/attachments.php:11 view/comments.php:8 view/posts.php:11
+#: view/terms.php:8 view/users.php:8
 msgid "Quantity"
 msgstr ""
 
-#: inc/class-fp-field.php:986
+#: inc/class-fp-field.php:972
+msgid "How many terms will be selected"
+msgstr ""
+
+#: inc/class-fp-field.php:1065
+msgid "Type"
+msgstr ""
+
+#: inc/class-fp-field.php:1066
+msgid "Select a type of the Meta Field"
+msgstr ""
+
+#: inc/class-fp-field.php:1073
+msgid "Name"
+msgstr ""
+
+#: inc/class-fp-field.php:1074
+msgid "Select the name for Meta Field"
+msgstr ""
+
+#: inc/class-fp-field.php:1081
+msgid "Configuration"
+msgstr ""
+
+#: inc/class-fp-field.php:1092
+msgid "Select a Field type"
+msgstr ""
+
+#: inc/class-fp-field.php:1099
+msgid "Newborn Meta needs a Name, E.g.: _new_image"
+msgstr ""
+
+#: inc/class-fp-field.php:1140
+msgid "E.g.: , "
+msgstr ""
+
+#: inc/class-fp-field.php:1141
+msgid "Separator"
+msgstr ""
+
+#: inc/class-fp-field.php:1151
+msgid "E.g.: 55"
+msgstr ""
+
+#: inc/class-fp-field.php:1152
+msgid "Weight"
+msgstr ""
+
+#: inc/class-fp-field.php:1168
 msgid "Number"
 msgstr ""
 
-#: inc/class-fp-field.php:993
+#: inc/class-fp-field.php:1175
 msgid "Range of possible numbers"
 msgstr ""
 
-#: inc/class-fp-field.php:1006
+#: inc/class-fp-field.php:1188
 msgid "WP_Query"
 msgstr ""
 
-#: inc/class-fp-field.php:1014
+#: inc/class-fp-field.php:1196
 msgid "category=2&posts_per_page=10"
 msgstr ""
 
-#: inc/class-fp-field.php:1015
+#: inc/class-fp-field.php:1197
 msgid ""
 "Uses <a href=\"http://codex.wordpress.org/Class_Reference/WP_Query\" "
 "target=\"_blank\">WP_Query</a>"
 msgstr ""
 
-#: inc/class-fp-field.php:1026
+#: inc/class-fp-field.php:1208
 msgid "Elements"
 msgstr ""
 
-#: inc/class-fp-field.php:1036
+#: inc/class-fp-field.php:1218
 msgid "Type all possible elements (Tab or Return)"
 msgstr ""
 
-#: inc/class-fp-field.php:1050
+#: inc/class-fp-field.php:1232
 msgid "Letter"
 msgstr ""
 
-#: inc/class-fp-field.php:1060
+#: inc/class-fp-field.php:1242
 msgid "Words"
 msgstr ""
 
-#: inc/class-fp-field.php:1072
+#: inc/class-fp-field.php:1254
 msgid "Text"
 msgstr ""
 
-#: inc/class-fp-field.php:1080
+#: inc/class-fp-field.php:1262
 msgid "Sentences"
 msgstr ""
 
-#: inc/class-fp-field.php:1084
+#: inc/class-fp-field.php:1266
 msgid "Paragraphs"
 msgstr ""
 
-#: inc/class-fp-field.php:1093
+#: inc/class-fp-field.php:1275
 msgid ""
 "Separator <b space>&mdash;</b> New Line: \"\\n"
 "\""
 msgstr ""
 
-#: inc/class-fp-field.php:1106
+#: inc/class-fp-field.php:1288
 msgid "HTML"
 msgstr ""
 
-#: inc/class-fp-field.php:1117
+#: inc/class-fp-field.php:1299
 msgid "HTML Tags, without &lt; or &gt;"
 msgstr ""
 
-#: inc/class-fp-field.php:1129
+#: inc/class-fp-field.php:1311
 msgid "Lexify"
 msgstr ""
 
-#: inc/class-fp-field.php:1136
+#: inc/class-fp-field.php:1318
 msgid "E.g.: John ##??"
 msgstr ""
 
-#: inc/class-fp-field.php:1137
+#: inc/class-fp-field.php:1319
 msgid "John ##?? <b spacer>&raquo;</b> John 29ze"
 msgstr ""
 
-#: inc/class-fp-field.php:1148
+#: inc/class-fp-field.php:1330
 msgid "Asciify"
 msgstr ""
 
-#: inc/class-fp-field.php:1155
+#: inc/class-fp-field.php:1337
 msgid "E.g.: John ****"
 msgstr ""
 
-#: inc/class-fp-field.php:1156
+#: inc/class-fp-field.php:1338
 msgid "John **** <b spacer>&raquo;</b> John r9\"+"
 msgstr ""
 
-#: inc/class-fp-field.php:1167
+#: inc/class-fp-field.php:1349
 msgid "Regexify"
 msgstr ""
 
-#: inc/class-fp-field.php:1174
+#: inc/class-fp-field.php:1356
 msgid "E.g.: [A-Z0-9._%+-]+@[A-Z0-9.-]"
 msgstr ""
 
-#: inc/class-fp-field.php:1175
+#: inc/class-fp-field.php:1357
 msgid "[A-Z0-9._%+-]+@[A-Z0-9.-] <b spacer>&raquo;</b> sm0@y8k96a"
 msgstr ""
 
-#: inc/class-fp-field.php:1186
+#: inc/class-fp-field.php:1368
 msgid "Person"
 msgstr ""
 
-#: inc/class-fp-field.php:1196
+#: inc/class-fp-field.php:1378
 msgid "Title"
 msgstr ""
 
-#: inc/class-fp-field.php:1200
+#: inc/class-fp-field.php:1382
 msgid "First Name"
 msgstr ""
 
-#: inc/class-fp-field.php:1204
+#: inc/class-fp-field.php:1386
 msgid "Last Name"
 msgstr ""
 
-#: inc/class-fp-field.php:1208 inc/class-fp-field.php:1347
+#: inc/class-fp-field.php:1390 inc/class-fp-field.php:1529
 msgid "Suffix"
 msgstr ""
 
-#: inc/class-fp-field.php:1216
+#: inc/class-fp-field.php:1398
 msgid "Name Template"
 msgstr ""
 
-#: inc/class-fp-field.php:1224
+#: inc/class-fp-field.php:1406
 msgid "Male"
 msgstr ""
 
-#: inc/class-fp-field.php:1228
+#: inc/class-fp-field.php:1410
 msgid "Female"
 msgstr ""
 
-#: inc/class-fp-field.php:1245
+#: inc/class-fp-field.php:1427
 msgid "Geo Information"
 msgstr ""
 
-#: inc/class-fp-field.php:1255
+#: inc/class-fp-field.php:1437
 msgid "Country"
 msgstr ""
 
-#: inc/class-fp-field.php:1259
+#: inc/class-fp-field.php:1441
 msgid "City Prefix"
 msgstr ""
 
-#: inc/class-fp-field.php:1263
+#: inc/class-fp-field.php:1445
 msgid "City Suffix"
 msgstr ""
 
-#: inc/class-fp-field.php:1267
+#: inc/class-fp-field.php:1449
 msgid "City"
 msgstr ""
 
-#: inc/class-fp-field.php:1271
+#: inc/class-fp-field.php:1453
 msgid "State"
 msgstr ""
 
-#: inc/class-fp-field.php:1275
+#: inc/class-fp-field.php:1457
 msgid "State Abbr"
 msgstr ""
 
-#: inc/class-fp-field.php:1279
+#: inc/class-fp-field.php:1461
 msgid "Address"
 msgstr ""
 
-#: inc/class-fp-field.php:1283
+#: inc/class-fp-field.php:1465
 msgid "Secondary Address"
 msgstr ""
 
-#: inc/class-fp-field.php:1287
+#: inc/class-fp-field.php:1469
 msgid "Building Number"
 msgstr ""
 
-#: inc/class-fp-field.php:1291
+#: inc/class-fp-field.php:1473
 msgid "Street Name"
 msgstr ""
 
-#: inc/class-fp-field.php:1295
+#: inc/class-fp-field.php:1477
 msgid "Street Address"
 msgstr ""
 
-#: inc/class-fp-field.php:1299
+#: inc/class-fp-field.php:1481
 msgid "Postal Code"
 msgstr ""
 
-#: inc/class-fp-field.php:1303
+#: inc/class-fp-field.php:1485
 msgid "Latitude"
 msgstr ""
 
-#: inc/class-fp-field.php:1307
+#: inc/class-fp-field.php:1489
 msgid "Longitude"
 msgstr ""
 
-#: inc/class-fp-field.php:1314
+#: inc/class-fp-field.php:1496
 msgid "Address Format"
 msgstr ""
 
-#: inc/class-fp-field.php:1325 inc/class-fp-field.php:1343
+#: inc/class-fp-field.php:1507 inc/class-fp-field.php:1525
 msgid "Company"
 msgstr ""
 
-#: inc/class-fp-field.php:1335
+#: inc/class-fp-field.php:1517
 msgid "Catch Phrase"
 msgstr ""
 
-#: inc/class-fp-field.php:1339
+#: inc/class-fp-field.php:1521
 msgid "BS"
 msgstr ""
 
-#: inc/class-fp-field.php:1354
+#: inc/class-fp-field.php:1536
 msgid "Company Format"
 msgstr ""
 
-#: inc/class-fp-field.php:1365 view/attachments.php:23 view/comments.php:50
+#: inc/class-fp-field.php:1547 view/attachments.php:23 view/comments.php:50
 #: view/posts.php:23
 msgid "Date"
 msgstr ""
 
-#: inc/class-fp-field.php:1379
+#: inc/class-fp-field.php:1561
 msgid ""
 "Date Format <b space>&mdash;</b> See <a "
 "href=\"http://php.net/manual/function.date.php\" target=\"_blank\">PHP "
 "Date</a>"
 msgstr ""
 
-#: inc/class-fp-field.php:1391
+#: inc/class-fp-field.php:1573
 msgid "TimeZone"
 msgstr ""
 
-#: inc/class-fp-field.php:1401
+#: inc/class-fp-field.php:1583
 msgid "Email"
 msgstr ""
 
-#: inc/class-fp-field.php:1411
+#: inc/class-fp-field.php:1593
 msgid "Domain"
 msgstr ""
 
-#: inc/class-fp-field.php:1421
+#: inc/class-fp-field.php:1603
 msgid "IP"
 msgstr ""
 
-#: inc/class-fp-field.php:1431
+#: inc/class-fp-field.php:1613
 msgid "Browser User Agent"
 msgstr ""
 
-#: inc/class-fp-field.php:1458 inc/class-fp-field.php:1467
+#: inc/class-fp-field.php:1640 inc/class-fp-field.php:1649
 msgid "yyyy-mm-dd"
 msgstr ""
 
-#: inc/class-fp-field.php:1474
+#: inc/class-fp-field.php:1656
 msgid "Select an Interval"
 msgstr ""
 
@@ -450,16 +479,16 @@ msgstr ""
 msgid "Generate Comments"
 msgstr ""
 
-#: modules/comment.php:54
+#: modules/comment.php:51
 msgid "Zero is not a good number of comments to fake..."
 msgstr ""
 
-#: modules/comment.php:110 modules/post.php:134 modules/term.php:108
+#: modules/comment.php:107 modules/post.php:151 modules/term.php:125
 #: modules/user.php:120
 msgid "Faked %d new %s: [ %s ]"
 msgstr ""
 
-#: modules/comment.php:112
+#: modules/comment.php:109
 msgid "comment"
 msgid_plural "comments"
 msgstr[0] ""
@@ -477,25 +506,21 @@ msgstr ""
 msgid "Zero is not a good number of posts to fake..."
 msgstr ""
 
-#: modules/post.php:136
+#: modules/post.php:153
 msgid "post"
 msgid_plural "posts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: modules/term.php:20
-msgid "Terms"
-msgstr ""
-
 #: modules/term.php:21
 msgid "Generate Terms"
 msgstr ""
 
-#: modules/term.php:70
+#: modules/term.php:67
 msgid "Zero is not a good number of terms to fake..."
 msgstr ""
 
-#: modules/term.php:110
+#: modules/term.php:127
 msgid "term"
 msgid_plural "terms"
 msgstr[0] ""
@@ -571,25 +596,25 @@ msgstr ""
 msgid "Select the group of tags that can be selected to print on the Post Content"
 msgstr ""
 
-#: view/attachments.php:166 view/posts.php:223
+#: view/attachments.php:171 view/posts.php:204
 msgid "Author"
 msgstr ""
 
-#: view/attachments.php:167 view/posts.php:224
+#: view/attachments.php:172 view/posts.php:205
 msgid "Choose some users to be authors of posts generated."
 msgstr ""
 
-#: view/attachments.php:178 view/comments.php:61 view/posts.php:234
-#: view/users.php:75
+#: view/attachments.php:183 view/comments.php:61 view/posts.php:226
+#: view/terms.php:52 view/users.php:75
 msgid "Meta Field Rules"
 msgstr ""
 
-#: view/attachments.php:179 view/posts.php:235
+#: view/attachments.php:184 view/posts.php:227
 msgid "Use the fields below to configure a set of rules for your generated Posts"
 msgstr ""
 
-#: view/attachments.php:195 view/comments.php:83 view/posts.php:254
-#: view/terms.php:49 view/users.php:93
+#: view/attachments.php:200 view/comments.php:83 view/posts.php:246
+#: view/terms.php:71 view/users.php:93
 msgid "Generate"
 msgstr ""
 
@@ -641,32 +666,34 @@ msgstr ""
 msgid "Sampling group of Post Types"
 msgstr ""
 
-#: view/posts.php:147 view/terms.php:31
-msgid "Taxonomies"
-msgstr ""
-
-#: view/posts.php:148
-msgid "From which taxonomies the related terms should be selected"
-msgstr ""
-
-#: view/posts.php:156
+#: view/posts.php:132
 msgid "e.g.: 75"
 msgstr ""
 
-#: view/posts.php:162
+#: view/posts.php:138
 msgid "Featured Image Rate"
 msgstr ""
 
-#: view/posts.php:163
+#: view/posts.php:139
 msgid "Percentage of the posts created that will have an Featured Image"
 msgstr ""
 
-#: view/posts.php:193
+#: view/posts.php:174
 msgid "Image Providers"
 msgstr ""
 
-#: view/posts.php:194
+#: view/posts.php:175
 msgid "Which image services will the generator use?"
+msgstr ""
+
+#: view/posts.php:215
+msgid "Taxonomy Field Rules"
+msgstr ""
+
+#: view/posts.php:216
+msgid ""
+"Use the fields below to configure the rules for the Taxonomy and Terms "
+"selected"
 msgstr ""
 
 #: view/settings.php:10
@@ -714,8 +741,20 @@ msgid ""
 "number of terms within the given range."
 msgstr ""
 
-#: view/terms.php:32
+#: view/terms.php:17
+msgid "Name Size"
+msgstr ""
+
+#: view/terms.php:18
+msgid "What is the size of the Term name"
+msgstr ""
+
+#: view/terms.php:41
 msgid "Group of taxonomies that the terms will be created within"
+msgstr ""
+
+#: view/terms.php:53
+msgid "Use the fields below to configure a set of rules for your generated Terms"
 msgstr ""
 
 #: view/users.php:9

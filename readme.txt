@@ -39,7 +39,7 @@ Normally a WordPress developer will need to perform the task of filling up an em
 Create randomly generated attachments as the Featured Images for your WordPress dummy content.
 
 = Create random Meta Information =
-WordPress has Meta for Users, Posts and Comments, FakerPress will allow you to generate custom dummy meta for all three, with *19 types of Data*
+WordPress has Meta for Users, Posts, Terms and Comments, FakerPress will allow you to generate custom dummy meta for all four, with *19 types of Data*
 
 = Delete the Content Generated =
 After you are done with your testing it should be easy to delete all the content created using FakerPress, now you will be able to do it.
@@ -99,6 +99,11 @@ Great! There are several ways you can get involved to help make FakerPress bette
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
+
+= 0.4.2 &mdash; 9 of November, 2015 =
+* Feature: Include meta for Terms for WordPress 4.4 and Up
+* Tweak: Include a more granular control over Taxonomy selector for Posts
+* Fix: CSS changes for WordPress 4.4
 
 = 0.4.1 &mdash; 24 of September, 2015 =
 * Tweak: Improve Modules code in general, if you have custom code based on Modules please check ([#71](https://github.com/bordoni/fakerpress/pull/71))
