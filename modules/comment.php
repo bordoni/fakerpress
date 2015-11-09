@@ -3,7 +3,7 @@ namespace FakerPress\Module;
 use FakerPress\Admin;
 use FakerPress\Variable;
 use FakerPress\Plugin;
-
+use FakerPress\Utils;
 
 class Comment extends Base {
 
@@ -44,10 +44,7 @@ class Comment extends Base {
 
 	public function parse_request( $qty, $request = array() ) {
 		if ( is_null( $qty ) ) {
-			$qty = Variable::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW );
-			$min = absint( $qty['min'] );
-			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
-			$qty = $this->faker->numberBetween( $min, $max );
+			$qty = Utils::instance()->get_qty_from_range( Variable::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW ) );
 		}
 
 		if ( 0 === $qty ){

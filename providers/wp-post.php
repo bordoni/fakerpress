@@ -1,5 +1,6 @@
 <?php
 namespace Faker\Provider;
+use FakerPress;
 
 class WP_Post extends Base {
 
@@ -129,9 +130,9 @@ class WP_Post extends Base {
 		return call_user_func_array( $generator, $args );
 	}
 
-	public function tax_input( $taxonomies = null ) {
+	public function tax_input( $config = null ) {
 		$output = array();
-		if ( is_null( $taxonomies ) ){
+		if ( is_null( $config ) ){
 			return $output;
 		}
 
@@ -149,47 +150,43 @@ class WP_Post extends Base {
 			'__default' => array( 0, 3 )
 		) );
 
-		foreach ( $taxonomies as $taxonomy ){
-			// Get all the term ids
-			$terms = array_map( 'absint', get_terms( $taxonomy, array( 'fields' => 'ids', 'hide_empty' => false ) ) );
-
-			$range = (array) ( isset( $ranges[ $taxonomy ] ) ? $ranges[ $taxonomy ] : $ranges['__default'] );
-			$qty_min = min( (array) $range );
-			$rate = ( isset( $rates[ $taxonomy ] ) ? $rates[ $taxonomy ] : $rates['__default'] );
-
-			// Turn a range into a number
-			$qty = ( is_array( $range ) ? call_user_func_array( array( $this->generator, 'numberBetween' ), $range ) : $range );
-
-			// Only check if not 0
-			if ( 0 !== $qty ){
-				$qty = min( count( $terms ), $qty );
+		foreach ( $config as $settings ){
+			$settings = (object) $settings;
+			if ( is_string( $settings->taxonomies ) ) {
+				$settings->taxonomies = explode( ',', $settings->taxonomies );
 			}
+			$settings->taxonomies = (array) $settings->taxonomies;
 
-			// Select the elements based on range
-			$elements = $this->generator->randomElements( $terms, $qty );
-			$tax_input = array();
+			if ( is_string( $settings->terms ) ) {
+				$settings->terms = explode( ',', $settings->terms );
+			}
+			$settings->terms = (array) $settings->terms;
 
-			foreach ( $elements as $term_id ) {
-				// Apply the rate
-				if ( $this->generator->numberBetween( 0, 100 ) <= absint( $rate ) ){
-					$tax_input[] = $term_id;
+			foreach ( $settings->taxonomies as $taxonomy ) {
+				if ( empty( $settings->terms ) ) {
+					$terms = get_terms( $taxonomy, array( 'fields' => 'ids', 'hide_empty' => false ) );
+				} else {
+					$terms = $settings->terms;
 				}
-			}
 
-			// If the number of elements is equals 1 and minimum is 1 then apply any
-			if ( count( $tax_input ) < $qty_min ){
-				$_elements = $terms;
-				for ( $i = count( $tax_input ); $i < $qty_min; $i++ ) {
-					$selected = $this->generator->randomElement( $_elements );
-					$tax_input[] = $selected;
+				// Get all the term ids
+				$terms = array_filter( array_map( 'absint', $terms ) );
 
-					// Make elements unique
-					$selected_key = array_search( $selected, $_elements );
-					unset( $_elements[ $selected_key ] );
+				if ( ! isset( $settings->qty ) ) {
+					$qty = FakerPress\Utils::instance()->get_qty_from_range( ( isset( $ranges[ $taxonomy ] ) ? $ranges[ $taxonomy ] : $ranges['__default'] ), $terms );
+				} else {
+					$qty = FakerPress\Utils::instance()->get_qty_from_range( $settings->qty, $terms );
 				}
-			}
 
-			$output[ $taxonomy ] = $tax_input;
+				if ( ! isset( $settings->rate ) ) {
+					$rate = isset( $rates[ $taxonomy ] ) ? $rates[ $taxonomy ] : $rates['__default'];
+				} else {
+					$rate = $settings->rate;
+				}
+
+				// Select the elements based on qty
+				$output[ $taxonomy ] = $this->generator->optional( $rate / 100, null )->randomElements( $terms, $qty );
+			}
 		}
 
 		return $output;

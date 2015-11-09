@@ -125,30 +125,6 @@ $fields[] = new Field(
 	)
 );
 
-$taxonomies = get_taxonomies( array( 'public' => true ), 'object' );
-
-$_json_taxonomies_output = array();
-foreach ( $taxonomies as $key => $taxonomy ) {
-	$_json_taxonomies_output[] = array(
-		'id' => $taxonomy->name,
-		'text' => $taxonomy->labels->name,
-	);
-}
-
-$fields[] = new Field(
-	'dropdown',
-	array(
-		'id' => 'taxonomies',
-		'multiple' => true,
-		'value' => 'post_tag, category',
-		'data-options' => $_json_taxonomies_output,
-	),
-	array(
-		'label' => __( 'Taxonomies', 'fakerpress' ),
-		'description' => __( 'From which taxonomies the related terms should be selected', 'fakerpress' ),
-	)
-);
-
 $fields[] = new Field(
 	'number',
 	array(
@@ -227,6 +203,17 @@ $fields[] = new Field(
 	array(
 		'label' => __( 'Author', 'fakerpress' ),
 		'description' => __( 'Choose some users to be authors of posts generated.', 'fakerpress' ),
+	)
+);
+
+$fields[] = new Field(
+	'taxonomy',
+	array(
+		'id' => 'taxonomy',
+	),
+	array(
+		'label' => __( 'Taxonomy Field Rules', 'fakerpress' ),
+		'description' => __( 'Use the fields below to configure the rules for the Taxonomy and Terms selected', 'fakerpress' ),
 	)
 );
 

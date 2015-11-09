@@ -11,7 +11,7 @@ class Ajax {
 	public function __construct() {
 		add_action( 'wp_ajax_' . Plugin::$slug . '.select2-WP_Query', array( __CLASS__, 'query_posts' ) );
 		add_action( 'wp_ajax_' . Plugin::$slug . '.search_authors', array( __CLASS__, 'search_authors' ) );
-		add_action( 'wp_ajax_' . Plugin::$slug . '.search_term', array( __CLASS__, 'search_terms' ) );
+		add_action( 'wp_ajax_' . Plugin::$slug . '.select2-search_terms', array( __CLASS__, 'search_terms' ) );
 		add_action( 'wp_ajax_' . Plugin::$slug . '.module_generate', array( __CLASS__, 'module_generate' ) );
 	}
 
@@ -95,6 +95,8 @@ class Ajax {
 			array(
 				'search' => isset( $_POST['search'] ) ? $_POST['search'] : '',
 				'post_type' => isset( $_POST['post_type'] ) ? $_POST['post_type'] : null,
+				'taxonomies' => isset( $_POST['taxonomies'] ) ? $_POST['taxonomies'] : array(),
+				'exclude' => isset( $_POST['exclude'] ) ? $_POST['exclude'] : array(),
 				'page' => absint( isset( $_POST['page'] ) ? $_POST['page'] : 0 ),
 				'page_limit' => absint( isset( $_POST['page_limit'] ) ? $_POST['page_limit'] : 10 ),
 			)
@@ -107,26 +109,37 @@ class Ajax {
 		$response->status  = true;
 		$response->message = __( 'Request successful', 'fakerpress' );
 
-		preg_match( '/@(\w+)/i', $request->search, $response->regex );
-
-		if ( ! empty( $response->regex ) ){
-			$request->search = array_filter( array_map( 'trim', explode( '|', str_replace( $response->regex[0], '|', $request->search ) ) ) );
-			$request->search = reset( $request->search );
-			$taxonomies      = $response->regex[1];
-		} else {
-			$taxonomies = get_object_taxonomies( $request->post_type );
+		foreach ( $request->taxonomies as $taxonomy ) {
+			$response->taxonomies[] = get_taxonomy( $taxonomy );
 		}
-		$response->taxonomies = get_object_taxonomies( $request->post_type, 'objects' );
 
-		$response->results = get_terms(
-			(array) $taxonomies,
-			array(
-				'hide_empty' => false,
-				'search' => $request->search,
-				'number' => $request->page_limit,
-				'offset' => $request->page_limit * ( $request->page - 1 ),
-			)
+		$args = array(
+			'hide_empty' => false,
+			'number' => $request->page_limit,
+			'offset' => $request->page_limit * ( $request->page - 1 ),
 		);
+
+		if ( ! empty( $request->search ) ){
+			$args['search'] = $request->search;
+		}
+
+		if ( ! empty( $request->exclude ) ){
+			$args['exclude'] = $request->exclude;
+		}
+
+		$response->args = $args;
+
+		$terms = get_terms( (array) $request->taxonomies, $args );
+
+		// Setting up Select2
+		foreach ( $terms as $term ) {
+			$response->results[] = array(
+				'id' => $term->term_id,
+				'value' => $term->term_id,
+				'name' => $term->name,
+				'taxonomy' => $term->taxonomy,
+			);
+		}
 
 		if ( empty( $response->results ) || count( $response->results ) < $request->page_limit ){
 			$response->more = false;

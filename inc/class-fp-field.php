@@ -11,7 +11,7 @@ class Field {
 	const plugin = 'fakerpress';
 	const abbr = 'fp';
 
-	public static function abbr( $str = '' ){
+	public static function abbr( $str = '' ) {
 		return self::abbr . '-' . $str;
 	}
 
@@ -50,6 +50,7 @@ class Field {
 		'number',
 		'hidden',
 		'meta',
+		'taxonomy',
 		// 'textarea',
 		// 'wysiwyg',
 		'radio',
@@ -230,9 +231,9 @@ class Field {
 			$container->class[] = 'error';
 		}
 
-		$container->class = array_map( array( __CLASS__, 'abbr' ) , $container->class );
+		$container->class = array_map( array( __CLASS__, 'abbr' ), $container->class );
 
-		if ( ! in_array( 'table' , $container->blocks ) ){
+		if ( ! in_array( 'table', $container->blocks ) ){
 			$html[] = '<tr id="' . self::id( $container->id, true ) . '" class="' . implode( ' ', $container->class ) . '">';
 		}
 
@@ -245,7 +246,7 @@ class Field {
 	}
 
 	public static function end_container( $container, $output = 'string', $html = array() ) {
-		if ( ! in_array( 'table' , $container->blocks ) ){
+		if ( ! in_array( 'table', $container->blocks ) ){
 			$html[] = '</tr>';
 		}
 
@@ -257,7 +258,7 @@ class Field {
 		}
 	}
 
-	public static function wrapper( $content = array(), $field = array(), $output = 'string' ){
+	public static function wrapper( $content = array(), $field = array(), $output = 'string' ) {
 		$attributes = (object) array();
 		$attributes->class[] = 'field-wrap';
 		$attributes->class[] = 'type-' . $field->type . '-wrap';
@@ -285,7 +286,7 @@ class Field {
 		if ( in_array( 'fields', $container->blocks ) ){
 			$html[] = '<td colspan="1">';
 			$html[] = '<fieldset' . self::attr( $container->wrap ) . '>';
-		} elseif ( ! in_array( 'table' , $container->blocks ) ) {
+		} elseif ( ! in_array( 'table', $container->blocks ) ) {
 			$container->wrap['colspan'] = 2;
 			$html[] = '<td' . self::attr( $container->wrap ) . '>';
 		}
@@ -303,14 +304,14 @@ class Field {
 			$html[] = self::actions( $container );
 		}
 
-		if ( in_array( 'fields', $container->blocks ) && ! in_array( 'table' , $container->blocks ) ){
+		if ( in_array( 'fields', $container->blocks ) && ! in_array( 'table', $container->blocks ) ){
 			$html[] = '</fieldset>';
 		}
 
 		if ( in_array( 'description', $container->blocks ) ){
 			$html[] = self::description( $container );
 		}
-		if ( ! in_array( 'table' , $container->blocks ) ){
+		if ( ! in_array( 'table', $container->blocks ) ){
 			$html[] = '</td>';
 		}
 
@@ -323,13 +324,15 @@ class Field {
 	}
 
 	public static function label( $container, $output = 'string', $html = array() ) {
-		$html[] = '<' . ( false !== strpos(  $container->type, 'meta' ) ? 'td' : 'th' ) . ' scope="row" colspan="1">';
+		$is_td = ( false !== strpos( $container->type, 'meta' ) ) || ( false !== strpos( $container->type, 'taxonomy' ) );
+
+		$html[] = '<' . ( $is_td ? 'td' : 'th' ) . ' scope="row" colspan="1">';
 
 		if ( isset( $container->label ) && false !== $container->label ) {
 			$html[] = '<label class="' . self::abbr( 'field-label' ) . '" for="' . self::id( $container->id ) . '">' . $container->label . '</label>';
 		}
 
-		$html[] = '</' . ( false !== strpos(  $container->type, 'meta' ) ? 'td' : 'th' ) . '>';
+		$html[] = '</' . ( $is_td ? 'td' : 'th' ) . '>';
 
 		$html = apply_filters( self::plugin . '/fields/field-label', $html, $container );
 		if ( 'string' === $output ){
@@ -376,16 +379,16 @@ class Field {
 	 * Static methods *
 	 ******************/
 
-	public static function is_valid_type( $type = false ){
+	public static function is_valid_type( $type = false ) {
 		// a list of valid field types, to prevent screwy behaviour
 		return in_array( $type, apply_filters( self::plugin . '/fields/valid_types', self::$valid_types ) );
 	}
 
-	public static function name( $indexes = array() ){
+	public static function name( $indexes = array() ) {
 		return self::plugin . '[' . implode( '][', (array) $indexes ) . ']';
 	}
 
-	public static function id( $id = array(), $container = false ){
+	public static function id( $id = array(), $container = false ) {
 		if ( ! is_array( $id ) ){
 			$id = (array) $id;
 		}
@@ -443,7 +446,7 @@ class Field {
 		return ' ' . implode( ' ', $html );
 	}
 
-	public static function parse( $field, &$container = null ){
+	public static function parse( $field, &$container = null ) {
 		if ( is_scalar( $field ) ){
 			if ( ! is_string( $field ) ){
 				return false;
@@ -466,7 +469,7 @@ class Field {
 		$field = (object) wp_parse_args( $field, ( ! empty( $container->field ) ? $container->field : array() ) );
 
 		// Setup Private Attributes (_*)
-		if ( isset( $field->_id ) ){
+		if ( isset( $field->_id ) ) {
 
 		} elseif ( empty( $field->id ) ){
 			$field->_id = (array) $container->id;
@@ -474,7 +477,7 @@ class Field {
 			$field->_id = (array) $field->id;
 		}
 
-		if ( isset( $field->_name ) ){
+		if ( isset( $field->_name ) ) {
 
 		} elseif ( ! isset( $field->name ) ){
 			$field->_name = (array) ( isset( $container->field->name ) ? $container->field->name : $field->_id );
@@ -505,6 +508,7 @@ class Field {
 				$container->blocks = array( 'actions' );
 				break;
 			case 'meta':
+			case 'taxonomy':
 				if ( ! isset( $container->label ) ){
 					$container->label = '';
 				}
@@ -779,9 +783,19 @@ class Field {
 		$min->type = 'number';
 		$min->{'data-type'} = 'min';
 		$min->min = 0;
+
 		if ( isset( $field->min ) && is_numeric( $field->min ) ){
 			$min->value = $field->min;
 		}
+
+		if ( isset( $field->_max ) && is_numeric( $field->_max ) ){
+			$min->max = $field->_max;
+		}
+
+		if ( isset( $field->_min ) && is_numeric( $field->_min ) ){
+			$min->min = $field->_min;
+		}
+
 		$min->class = array();
 		$min->placeholder = esc_attr__( 'e.g.: 3', self::plugin );
 
@@ -791,17 +805,185 @@ class Field {
 		$max->{'data-type'} = 'max';
 		$max->type = 'number';
 		$max->min = 0;
+
 		if ( isset( $field->max ) && is_numeric( $field->max ) ){
 			$max->value = $field->max;
 		} else {
 			$max->disabled = true;
 		}
+
+		if ( isset( $field->_max ) && is_numeric( $field->_max ) ){
+			$max->max = $field->_max;
+		}
+
+		if ( isset( $field->_min ) && is_numeric( $field->_min ) ){
+			$max->min = $field->_min;
+		}
+
 		$max->class = array();
 		$max->placeholder = esc_attr__( 'e.g.: 12', self::plugin );
 
 		$content[] = self::type_input( $min, null, 'string', array() );
 		$content[] = '<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
 		$content[] = self::type_input( $max, null, 'string', array() );
+
+		if ( is_a( $container, __CLASS__ ) ){
+			$html[] = $container->build( $content );
+		} else {
+			$html = $content;
+		}
+
+		if ( 'string' === $output ){
+			return implode( "\r\n", $html );
+		} else {
+			return $html;
+		}
+	}
+
+	public static function type_taxonomy( $field, $container = null, $output = 'string', $html = array() ) {
+		$field = self::parse( $field, $container );
+		if ( is_scalar( $field ) ){
+			return false;
+		}
+
+		$index = clone $field;
+		$index->_id[] = 'index';
+		$index->_name[] = 'index';
+		$index->type = 'button';
+		$index->value = '1';
+		$index->disabled = true;
+		$index->class = array( 'action-order' );
+
+		$remove = clone $field;
+		$remove->_id[] = 'remove';
+		$remove->_name[] = 'remove';
+		$remove->type = 'button';
+		$remove->value = '&minus;';
+		$remove->class = array( 'action-remove' );
+
+		$duplicate = clone $field;
+		$duplicate->_id[] = 'duplicate';
+		$duplicate->_name[] = 'duplicate';
+		$duplicate->type = 'button';
+		$duplicate->deactive = true;
+		$duplicate->value = '&plus;';
+		$duplicate->class = array( 'action-duplicate' );
+
+		$table = clone $container;
+		$table->blocks = array( 'heading', 'table' );
+		$table->heads = array(
+			array(
+				'class' => 'order-table',
+				'html' => self::type_button( $index, null, 'string' ),
+			),
+			array(
+				'class' => 'label-table',
+				'html' => '',
+			),
+			array(
+				'class' => 'fields-table',
+				'html' => '',
+			),
+			array(
+				'html' => self::type_button( $remove, null, 'string' ) . self::type_button( $duplicate, null, 'string' ),
+				'class' => 'actions-table',
+			),
+		);
+		$blocks = array(
+			array(
+				'html' => '',
+				'class' => 'order-table',
+			),
+			'label', 'fields', 'description',
+			array(
+				'html' => '',
+				'class' => 'actions-table',
+			),
+		);
+
+		$tax_container = clone $container;
+		$tax_container->id[] = 'taxonomies';
+		$tax_container->type .= '_taxonomies';
+		$tax_container->label = __( 'Taxonomies', self::plugin );
+		$tax_container->description = '';
+		$tax_container->blocks = $blocks;
+
+		$taxonomies = get_taxonomies( array( 'public' => true ), 'object' );
+		$_json_taxonomies_output = array();
+		foreach ( $taxonomies as $key => $taxonomy ) {
+			$_json_taxonomies_output[] = array(
+				'id' => $taxonomy->name,
+				'text' => $taxonomy->labels->name,
+			);
+		}
+
+		$tax_field = clone $field;
+		$tax_field->_id[] = 'taxonomies';
+		$tax_field->_name[] = 'taxonomies';
+		$tax_field->type = 'dropdown';
+		$tax_field->multiple = true;
+		$tax_field->{'data-options'} = $_json_taxonomies_output;
+		$tax_field->value = 'post_tag, category';
+		$tax_field->class = array( 'taxonomies' );
+		$tax_field->placeholder = esc_attr__( 'Select Which taxonomies', self::plugin );
+
+		$content[] = $tax_container->build( self::type_dropdown( $tax_field, null, 'string' ) );
+
+		$terms_container = clone $container;
+		$terms_container->id[] = 'terms';
+		$terms_container->type .= '_terms';
+		$terms_container->label = __( 'Terms', self::plugin );
+		$terms_container->description = '';
+		$terms_container->blocks = $blocks;
+
+		$terms = clone $field;
+		$terms->_id[] = 'terms';
+		$terms->_name[] = 'terms';
+		$terms->type = 'dropdown';
+		$terms->multiple = true;
+		$terms->{'data-source'} = 'search_terms';
+
+		$terms->placeholder = esc_attr__( 'Which terms can be used', self::plugin );
+
+		$content[] = $terms_container->build( self::type_dropdown( $terms, null, 'string' ) );
+
+		$rate_container = clone $container;
+		$rate_container->id[] = 'rate';
+		$rate_container->type .= 'rate';
+		$rate_container->label = __( 'Rate', self::plugin );
+		$rate_container->description = __( 'Percentage rate of posts that will have terms generated for the amount below', self::plugin );
+		$rate_container->blocks = $blocks;
+
+		$rate = clone $field;
+		$rate->_id[] = 'rate';
+		$rate->_name[] = 'rate';
+		$rate->type = 'number';
+		$rate->placeholder = esc_attr__( 'Rate', self::plugin );
+		$rate->min = 0;
+		$rate->max = 100;
+		$rate->value = 85;
+
+		$content[] = $rate_container->build( self::type_text( $rate, null, 'string' ) );
+
+		$qty_container = clone $container;
+		$qty_container->id[] = 'qty';
+		$qty_container->type .= '_qty';
+		$qty_container->label = __( 'Quantity', self::plugin );
+		$qty_container->description = __( 'How many terms will be selected', self::plugin );
+		$qty_container->blocks = $blocks;
+
+		$qty = clone $field;
+		$qty->_id[] = 'qty';
+		$qty->_name[] = 'qty';
+		$qty->type = 'range';
+		$qty->min = 1;
+		$qty->max = 4;
+		$qty->_max = 200;
+		$qty->class = array( 'qty' );
+
+		$content[] = $qty_container->build( self::type_range( $qty, null, 'string' ) );
+
+		$content = $table->build( $content );
 
 		if ( is_a( $container, __CLASS__ ) ){
 			$html[] = $container->build( $content );
@@ -895,7 +1077,7 @@ class Field {
 
 		$meta_conf = clone $container;
 		$meta_conf->id[] = 'conf';
-		$meta_name->type .= '_conf';
+		$meta_conf->type .= '_conf';
 		$meta_conf->label = __( 'Configuration', self::plugin );
 		$meta_conf->description = __( '', self::plugin );
 		$meta_conf->class = array( 'meta_conf-container' );
@@ -944,7 +1126,7 @@ class Field {
 		}
 	}
 
-	public static function get_meta_types(){
+	public static function get_meta_types() {
 		$types = (object) array();
 
 		$default = (object) array(
@@ -1070,7 +1252,7 @@ class Field {
 		$types->text = array(
 			'value' => 'text',
 			'text' => __( 'Text', self::plugin ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$text = clone $field;
 				$text->_id = array( 'meta', 'text_type' );
 				$text->_name = array( 'meta', 'text_type' );
