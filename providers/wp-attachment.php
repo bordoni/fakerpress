@@ -27,7 +27,13 @@ class WP_Attachment extends Base {
 		'500px' => array()
 	);
 
-	public function attachment_url( $type = '500px', $args = array() ){
+	public function attachment_url( $type = '500px', $args = array() ) {
+		$url = '';
+
+		// Check if defaults exists
+		if ( ! isset( self::$type_defaults[ $type ] ) ){
+			return $url;
+		}
 		$args = wp_parse_args( $args, self::$type_defaults[ $type ] );
 
 		if ( 'placeholdit' === $type ){
@@ -60,7 +66,7 @@ class WP_Attachment extends Base {
 		return $content;
 	}
 
-	public function post_author( $haystack = array() ){
+	public function post_author( $haystack = array() ) {
 		if ( empty( $haystack ) ){
 			$haystack = get_users(
 				array(
@@ -74,15 +80,15 @@ class WP_Attachment extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function post_status(){
+	public function post_status() {
 		return 'inherit';
 	}
 
-	public function post_parent( $haystack = array(), $rate = 70 ){
+	public function post_parent( $haystack = array(), $rate = 70 ) {
 		return $this->generator->numberBetween( 0, 100 ) < absint( $rate ) ? 0 : $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function ping_status( $haystack = array() ){
+	public function ping_status( $haystack = array() ) {
 		if ( empty( $haystack ) ){
 			$haystack = static::$default['ping_status'];
 		}
@@ -90,7 +96,7 @@ class WP_Attachment extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function comment_status( $haystack = array() ){
+	public function comment_status( $haystack = array() ) {
 		if ( empty( $haystack ) ){
 			$haystack = static::$default['comment_status'];
 		}
@@ -98,7 +104,7 @@ class WP_Attachment extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function menu_order( $haystack = array() ){
+	public function menu_order( $haystack = array() ) {
 		if ( empty( $haystack ) ){
 			return 0;
 		}
@@ -106,7 +112,7 @@ class WP_Attachment extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function post_password( $generator = null, $args = array() ){
+	public function post_password( $generator = null, $args = array() ) {
 		if ( is_null( $generator ) ){
 			return '';
 		}
@@ -114,11 +120,11 @@ class WP_Attachment extends Base {
 		return call_user_func_array( $generator, $args );
 	}
 
-	public function post_date( $min = 'now', $max = null ){
+	public function post_date( $min = 'now', $max = null ) {
 		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 		try {
 			$min = new \Carbon\Carbon( $min );
-		} catch (\Exception $e) {
+		} catch ( \Exception $e ) {
 			return null;
 		}
 
