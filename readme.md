@@ -101,6 +101,10 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
+### 0.4.3 &mdash; Future ###
+* Tweak: Use `wp_remote_get` to fetch external images [revaxarts](https://twitter.com/revaxarts)
+* Fix: Prevent Notices from happening when no Image providers were selected
+
 ### 0.4.2 &mdash; 9 of November, 2015 ###
 * Feature: Include meta for Terms for WordPress 4.4 and Up
 * Tweak: Include a more granular control over Taxonomy selector for Posts
