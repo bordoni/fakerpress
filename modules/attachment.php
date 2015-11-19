@@ -27,7 +27,14 @@ class Attachment extends Base {
 			return false;
 		}
 
-		$bits = file_get_contents( $data['attachment_url'] );
+		$response = wp_remote_get( $data['attachment_url'], array( 'timeout' => 5 ) );
+
+		if( is_wp_error( $response ) ){
+			return false;
+		}
+
+		$bits = wp_remote_retrieve_body( $response );
+
 		$filename = $this->faker->uuid() . '.jpg';
 		$upload = wp_upload_bits( $filename, null, $bits );
 
