@@ -29,6 +29,39 @@ class Term extends Base {
 		return absint( $id );
 	}
 
+	/**
+	 * Fetches all the FakerPress related Terms
+	 * @return array IDs of the Terms with
+	 */
+	public static function fetch() {
+		$terms = get_option( 'fakerpress.module_flag.term', array() );
+
+		return $terms;
+	}
+
+	/**
+	 * Use this method to prevent excluding something that was not configured by FakerPress
+	 *
+	 * @todo  Improve this to allow better checking
+	 *
+	 * @param  array $items The array of arrays, first level has taxonomy as keys, second level only ids
+	 * @return bool
+	 */
+	public static function delete( $items ) {
+		$deleted = array();
+		foreach ( $items as $taxonomy => $terms ){
+			$deleted[ $taxonomy ] = array();
+
+			foreach ( $terms as $term ){
+				$deleted[ $taxonomy ][ $term ] = wp_delete_term( $term, $taxonomy );
+			}
+		}
+
+		delete_option( 'fakerpress.module_flag.term' );
+
+		return $deleted;
+	}
+
 	public function do_save( $return_val, $data, $module ) {
 		$args = array(
 			'description' => $data['description'],

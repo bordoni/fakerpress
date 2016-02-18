@@ -591,89 +591,16 @@ class Admin {
 			return self::add_message( __( 'The verification to erase the data has failed, you have to let it go...', 'fakerpress' ), 'error' );
 		}
 
-		$refs = (object) array(
-			'post' => array(),
-			'term' => get_option( 'fakerpress.module_flag.term', array() ),
-			'comment' => array(),
-			'user' => array(),
-		);
+		$modules = array( 'post', 'term', 'comment', 'user' );
 
-		$query_posts = new \WP_Query(
-			array(
-				'post_type' => 'any',
-				'post_status' => 'any',
-				'nopaging' => true,
-				'posts_per_page' => -1,
-				'fields' => 'ids',
-				'meta_query' => array(
-					array(
-						'key' => apply_filters( 'fakerpress.modules_flag', 'fakerpress_flag' ),
-						'value' => true,
-						'type' => 'BINARY',
-					),
-				),
-			)
-		);
-
-		$refs->post = array_map( 'absint', $query_posts->posts );
-
-		$query_comments = new \WP_Comment_Query;
-		$query_comments = $query_comments->query(
-			array(
-				'meta_query' => array(
-					array(
-						'key' => apply_filters( 'fakerpress.modules_flag', 'fakerpress_flag' ),
-						'value' => true,
-						'type' => 'BINARY',
-					),
-				),
-			)
-		);
-
-		foreach ( $query_comments as $comment ){
-			$refs->comment[] = absint( $comment->comment_ID );
-		}
-
-		$query_users = new \WP_User_Query(
-			array(
-				'fields' => 'ID',
-				'meta_query' => array(
-					array(
-						'key' => apply_filters( 'fakerpress.modules_flag', 'fakerpress_flag' ),
-						'value' => true,
-						'type' => 'BINARY',
-					),
-				),
-			)
-		);
-		$refs->user = array_map( 'absint', $query_users->results );
-
-		foreach ( $refs as $module => $ref ){
-			switch ( $module ) {
-				case 'post':
-					foreach ( $ref as $post_id ){
-						wp_delete_post( $post_id, true );
-					}
-					break;
-				case 'comment':
-					foreach ( $ref as $comment_id ){
-						wp_delete_comment( $comment_id, true );
-					}
-					break;
-				case 'term':
-					foreach ( $ref as $taxonomy => $terms ){
-						foreach ( $terms as $term ){
-							wp_delete_term( $term, $taxonomy );
-						}
-					}
-					delete_option( 'fakerpress.module_flag.term' );
-					break;
-				case 'user':
-					foreach ( $ref as $user_id ){
-						wp_delete_user( $user_id );
-					}
-					break;
+		foreach ( $modules as $module ){
+			$class_name = 'Module\\' . ucfirst( $module );
+			if ( ! class_exists( $class_name ) ) {
+				continue;
 			}
+
+			$items = call_user_func_array( $class_name . '::fetch' );
+			$deleted = call_user_func_array( $class_name . '::delete', array( $items ) );
 		}
 
 		return self::add_message( __( 'All data is gone for good.', 'fakerpress' ), 'success' );
