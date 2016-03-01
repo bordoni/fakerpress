@@ -28,6 +28,68 @@ class User extends Base {
 		return '<a href="' . esc_url( get_edit_user_link( $id ) ) . '">' . absint( $id ) . '</a>';
 	}
 
+	/**
+	 * Fetches all the FakerPress related Users
+	 * @return array IDs of the Users
+	 */
+	public static function fetch() {
+		$query_users = new \WP_User_Query(
+			array(
+				'fields' => 'ID',
+				'meta_query' => array(
+					array(
+						'key' => self::$flag,
+						'value' => true,
+						'type' => 'BINARY',
+					),
+				),
+			)
+		);
+
+		return array_map( 'absint', $query_users->results );
+	}
+
+	/**
+	 * Use this method to prevent excluding something that was not configured by FakerPress
+	 *
+	 * @param  array|int|\WP_User $user The ID for the user or the Object
+	 * @return bool
+	 */
+	public static function delete( $user ) {
+		if ( is_array( $user ) ) {
+			$deleted = array();
+
+			foreach ( $user as $id ) {
+				$id = $id instanceof \WP_User ? $id->ID : $id;
+
+				if ( ! is_numeric( $id ) ) {
+					continue;
+				}
+
+				$deleted[ $id ] = self::delete( $id );
+			}
+
+			return $deleted;
+		}
+
+		if ( is_numeric( $user ) ) {
+			$user = new \WP_User( $user );
+		}
+
+		if ( ! $user instanceof \WP_User || ! $user->exists() ) {
+			return false;
+		}
+
+		$flag = (bool) get_post_meta( $user->ID, self::$flag, true );
+
+		if ( true !== $flag ) {
+			return false;
+		}
+
+		return wp_delete_post( $user->ID, true );
+	}
+
+
 	public function do_save( $return_val, $data, $module ) {
 		$user_id = wp_insert_user( $data );
 

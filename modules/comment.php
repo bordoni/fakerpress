@@ -29,6 +29,73 @@ class Comment extends Base {
 		return '<a href="' . esc_url( get_edit_comment_link( $id ) ) . '">' . absint( $id ) . '</a>';
 	}
 
+	/**
+	 * Fetches all the FakerPress related comments
+	 * @return array IDs of the comments
+	 */
+	public static function fetch() {
+		$comments = array();
+
+		$query_comments = new \WP_Comment_Query;
+		$query_comments = $query_comments->query(
+			array(
+				'meta_query' => array(
+					array(
+						'key' => self::$flag,
+						'value' => true,
+						'type' => 'BINARY',
+					),
+				),
+			)
+		);
+
+		foreach ( $query_comments as $comment ){
+			$comments[] = absint( $comment->comment_ID );
+		}
+
+		return $comments;
+	}
+
+	/**
+	 * Use this method to prevent excluding something that was not configured by FakerPress
+	 *
+	 * @param  array|int|\WP_Comment $comment The ID for the Post or the Object
+	 * @return bool
+	 */
+	public static function delete( $comment ) {
+		if ( is_array( $comment ) ) {
+			$deleted = array();
+
+			foreach ( $comment as $id ) {
+				$id = $id instanceof \WP_Comment ? $id->comment_ID : $id;
+
+				if ( ! is_numeric( $id ) ) {
+					continue;
+				}
+
+				$deleted[ $id ] = self::delete( $id );
+			}
+
+			return $deleted;
+		}
+
+		if ( is_numeric( $comment ) ) {
+			$comment = \WP_Comment::get_instance( $comment );
+		}
+
+		if ( ! $comment instanceof \WP_Comment ) {
+			return false;
+		}
+
+		$flag = (bool) get_comment_meta( $comment->comment_ID, self::$flag, true );
+
+		if ( true !== $flag ) {
+			return false;
+		}
+
+		return wp_delete_comment( $comment->comment_ID, true );
+	}
+
 	public function do_save( $return_val, $data, $module ) {
 		$comment_id = wp_insert_comment( $data );
 

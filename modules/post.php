@@ -25,6 +25,71 @@ class Post extends Base {
 		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 4 );
 	}
 
+	/**
+	 * Fetches all the FakerPress related Posts
+	 * @return array IDs of the Posts
+	 */
+	public static function fetch() {
+		$query_posts = new \WP_Query(
+			array(
+				'post_type' => 'any',
+				'post_status' => 'any',
+				'nopaging' => true,
+				'posts_per_page' => -1,
+				'fields' => 'ids',
+				'meta_query' => array(
+					array(
+						'key' => self::$flag,
+						'value' => true,
+						'type' => 'BINARY',
+					),
+				),
+			)
+		);
+
+		return array_map( 'absint', $query_posts->posts );
+	}
+
+	/**
+	 * Use this method to prevent excluding something that was not configured by FakerPress
+	 *
+	 * @param  array|int|\WP_Post $post The ID for the Post or the Object
+	 * @return bool
+	 */
+	public static function delete( $post ) {
+		if ( is_array( $post ) ) {
+			$deleted = array();
+
+			foreach ( $post as $id ) {
+				$id = $id instanceof \WP_Post ? $id->ID : $id;
+
+				if ( ! is_numeric( $id ) ) {
+					continue;
+				}
+
+				$deleted[ $id ] = self::delete( $id );
+			}
+
+			return $deleted;
+		}
+
+		if ( is_numeric( $post ) ) {
+			$post = \WP_Post::get_instance( $post );
+		}
+
+		if ( ! $post instanceof \WP_Post ) {
+			return false;
+		}
+
+		$flag = (bool) get_post_meta( $post->ID, self::$flag, true );
+
+		if ( true !== $flag ) {
+			return false;
+		}
+
+		return wp_delete_post( $post->ID, true );
+	}
+
 	public function do_save( $return_val, $data, $module ) {
 		$post_id = wp_insert_post( $data );
 
