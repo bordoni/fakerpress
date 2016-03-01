@@ -36,11 +36,11 @@ class HTML extends Base {
 		'wp' => array( '!--more--' )
 	);
 
-	private function filter_html_comments( $element = '' ){
-		return ! preg_match( '/<?!--(.*?)-->?/i' , $element );
+	private function filter_html_comments( $element = '' ) {
+		return ! preg_match( '/<?!--(.*?)-->?/i', $element );
 	}
 
-	private function has_element( $needle = '', $haystack = array() ){
+	private function has_element( $needle = '', $haystack = array() ) {
 		$needle = trim( $needle );
 		$filtered = array_filter( $haystack, function( $element ) use ( $needle ){
 			return preg_match( "/<?(!--)? ?({$needle})+ ?(--)?>?/i", $element ) !== 0;
@@ -48,7 +48,7 @@ class HTML extends Base {
 		return count( $filtered ) > 0;
 	}
 
-	public function html_elements( $args = array() ){
+	public function html_elements( $args = array() ) {
 		$html = array();
 
 		$defaults = array(
@@ -85,7 +85,7 @@ class HTML extends Base {
 
 			$els[] = $element = Base::randomElement( $elements );
 
-			$html[] = $this->element( $element, $args->attr );
+			$html[] = $this->element( $element, $args->attr, null, $args );
 
 			if ( $this->generator->numberBetween( 0, 100 ) <= 80 && ! $args->did_more_element && $args->qty > 2 && $this->has_element( '!--more--', $args->elements ) && $i < $max_to_more &&	$i > $min_to_more ){
 				$html[] = $this->element( '!--more--' );
@@ -96,7 +96,7 @@ class HTML extends Base {
 		return (array) $html;
 	}
 
-	private function html_element_img( $element, $sources = array( 'lorempixel', 'placeholdit', 'unsplashit' ) ){
+	private function html_element_img( $element, $sources = array( 'lorempixel', 'placeholdit', 'unsplashit' ) ) {
 		if ( ! isset( $element->attr['class'] ) ) {
 			$element->attr['class'][] = $this->generator->optional( 0.4, null )->randomElement( array( 'aligncenter', 'alignleft', 'alignright' ) );
 			$element->attr['class'] = array_filter( $element->attr['class'] );
@@ -108,7 +108,7 @@ class HTML extends Base {
 		}
 
 		if ( ! isset( $element->attr['src'] ) ) {
-			$element->attr['src'] = call_user_func_array( array( $this->generator, $this->generator->randomElement( $sources ) ), array() );
+			$element->attr['src'] = $this->get_img_src( $sources );
 		}
 
 		$element->attr = array_filter( $element->attr );
@@ -116,7 +116,28 @@ class HTML extends Base {
 		return $element;
 	}
 
-	public function random_apply_element( $element = 'a', $max = 5, $text = null ){
+	public function get_img_src( $sources = array( 'lorempixel', 'placeholdit', 'unsplashit' ) ) {
+		$fetch_url = call_user_func_array( array( $this->generator, $this->generator->randomElement( $sources ) ), array() );
+		$images = \FakerPress\Module\Post::fetch( array( 'post_type' => 'attachment' ) );
+		$image = false;
+		$count_images = count( $images );
+		$optional = ( $count_images * 0.025 );
+		$optional = $optional > 1 ? 1 : $optional;
+
+		if ( $count_images > 0 ) {
+			$image = $this->generator->optional( $optional, $image )->randomElement( $images );
+		}
+
+		if ( false === $image ) {
+			$image = \FakerPress\Module\Attachment::instance()
+				->set( 'attachment_url', $this->generator->randomElement( $sources ) )
+				->generate()->save();
+		}
+
+		return wp_get_attachment_url( $image );
+	}
+
+	public function random_apply_element( $element = 'a', $max = 5, $text = null ) {
 		$words       = explode( ' ', $text );
 		$total_words = count( $words );
 		$sentences   = array();
@@ -159,7 +180,7 @@ class HTML extends Base {
 		return implode( ' ', $sentences );
 	}
 
-	public function element( $name = 'div', $attr = array(), $text = null ){
+	public function element( $name = 'div', $attr = array(), $text = null, $args = null ) {
 		$element = (object) array(
 			'name' => $name,
 			'attr' => $attr,
@@ -183,7 +204,11 @@ class HTML extends Base {
 		}
 
 		if ( 'img' === $element->name ){
-			$element = $this->html_element_img( $element, array( 'placeholdit', 'lorempixel', 'unsplashit' ) );
+			$sources = array( 'placeholdit', 'lorempixel', 'unsplashit' );
+			if ( is_object( $args ) && $args->sources ) {
+				$sources = $args->sources;
+			}
+			$element = $this->html_element_img( $element, $sources );
 		}
 
 		$attributes = array();

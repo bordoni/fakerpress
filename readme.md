@@ -101,8 +101,10 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
-### 0.4.3 &mdash; Future ###
+### 0.4.3 &mdash; 1 of March, 2016 ###
+* Feature: No more Hot-linking external sites on Content Images &mdash; Thanks [b0rg](https://profiles.wordpress.org/b0rg) + [mvaneijgen](https://profiles.wordpress.org/mvaneijgen) + [okvee](https://profiles.wordpress.org/okvee)
 * Tweak: Use `wp_remote_get` to fetch external images &mdash; Thanks [revaxarts](https://twitter.com/revaxarts)
+* Tweak: Improve how we handle the Deletes to make sure it doesn't delete all your site &mdash; Thanks [Paul Mckay](https://twitter.com/McKay_1988/status/700299519825723392)
 * Fix: Prevent Notices from happening when no Image providers were selected
 
 ### 0.4.2 &mdash; 9 of November, 2015 ###
