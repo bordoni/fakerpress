@@ -594,12 +594,13 @@ class Admin {
 		$modules = array( 'post', 'term', 'comment', 'user' );
 
 		foreach ( $modules as $module ){
-			$class_name = 'Module\\' . ucfirst( $module );
+			$class_name = '\FakerPress\Module\\' . ucfirst( $module );
+
 			if ( ! class_exists( $class_name ) ) {
 				continue;
 			}
 
-			$items = call_user_func_array( $class_name . '::fetch' );
+			$items = call_user_func_array( $class_name . '::fetch', array() );
 			$deleted = call_user_func_array( $class_name . '::delete', array( $items ) );
 		}
 

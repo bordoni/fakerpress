@@ -34,6 +34,8 @@ class Comment extends Base {
 	 * @return array IDs of the comments
 	 */
 	public static function fetch() {
+		$comments = array();
+
 		$query_comments = new \WP_Comment_Query;
 		$query_comments = $query_comments->query(
 			array(
