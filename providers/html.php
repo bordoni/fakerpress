@@ -19,6 +19,9 @@ class HTML extends Base {
 
 		$provider = new LoremPixel( $this->generator );
 		$this->generator->addProvider( $provider );
+
+		$provider = new Image500px( $this->generator );
+		$this->generator->addProvider( $provider );
 	}
 
 	static public $sets = array(
@@ -117,7 +120,6 @@ class HTML extends Base {
 	}
 
 	public function get_img_src( $sources = array( 'lorempixel', 'placeholdit', 'unsplashit' ) ) {
-		$fetch_url = call_user_func_array( array( $this->generator, $this->generator->randomElement( $sources ) ), array() );
 		$images = \FakerPress\Module\Post::fetch( array( 'post_type' => 'attachment' ) );
 		$image = false;
 		$count_images = count( $images );
