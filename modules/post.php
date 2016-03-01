@@ -29,23 +29,24 @@ class Post extends Base {
 	 * Fetches all the FakerPress related Posts
 	 * @return array IDs of the Posts
 	 */
-	public static function fetch() {
-		$query_posts = new \WP_Query(
-			array(
-				'post_type' => 'any',
-				'post_status' => 'any',
-				'nopaging' => true,
-				'posts_per_page' => -1,
-				'fields' => 'ids',
-				'meta_query' => array(
-					array(
-						'key' => self::$flag,
-						'value' => true,
-						'type' => 'BINARY',
-					),
+	public static function fetch( $overwrite = array() ) {
+		$defaults = array(
+			'post_type' => 'any',
+			'post_status' => 'any',
+			'nopaging' => true,
+			'posts_per_page' => -1,
+			'fields' => 'ids',
+			'meta_query' => array(
+				array(
+					'key' => self::$flag,
+					'value' => true,
+					'type' => 'BINARY',
 				),
-			)
+			),
 		);
+
+		$args = wp_parse_args( $overwrite, $defaults );
+		$query_posts = new \WP_Query( $args );
 
 		return array_map( 'absint', $query_posts->posts );
 	}
@@ -163,7 +164,7 @@ class Post extends Base {
 			$this->set( 'post_status', 'publish' );
 			$this->set( 'post_date', $date );
 			$this->set( 'post_parent', $post_parents );
-			$this->set( 'post_content', $post_content_use_html, array( 'elements' => $post_content_html_tags ) );
+			$this->set( 'post_content', $post_content_use_html, array( 'elements' => $post_content_html_tags, 'sources' => $images_origin ) );
 			$this->set( 'post_author', $post_author );
 			$this->set( 'post_type', $post_types );
 			$this->set( 'comment_status', $comment_status );
