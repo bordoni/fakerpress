@@ -102,7 +102,7 @@ class WP_Meta extends Base {
 			return $value;
 		}
 
-		return implode( "\n" , $value );
+		return implode( "\n", $value );
 	}
 
 	public function meta_type_wp_query( $query, $weight = 50 ) {
@@ -110,6 +110,11 @@ class WP_Meta extends Base {
 
 		$args = wp_parse_args( $query, array() );
 		$args['fields'] = 'ids';
+
+		// Make easier for Attachment Queries
+		if ( isset( $args['post_type'] ) && ! isset( $args['post_status'] ) && in_array( 'attachment', (array) $args['post_type'] ) ) {
+			$args['post_status'] = 'any';
+		}
 
 		$query = new \WP_Query( $args );
 

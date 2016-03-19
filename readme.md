@@ -101,6 +101,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
+### 0.4.4 &mdash; unreleased ###
+* Tweak: WP_Query Meta for attachments is a little bit easier now, prediction of forgotten `post_status`
+
 ### 0.4.3 &mdash; 1 of March, 2016 ###
 * Feature: No more Hot-linking external sites on Content Images &mdash; Thanks [b0rg](https://profiles.wordpress.org/b0rg) + [mvaneijgen](https://profiles.wordpress.org/mvaneijgen) + [okvee](https://profiles.wordpress.org/okvee)
 * Tweak: Use `wp_remote_get` to fetch external images &mdash; Thanks [revaxarts](https://twitter.com/revaxarts)

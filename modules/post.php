@@ -174,9 +174,11 @@ class Post extends Base {
 			$post_id = $this->generate()->save();
 
 			if ( $post_id && is_numeric( $post_id ) ){
+				var_dump( $metas, $post_id );
 				foreach ( $metas as $meta_index => $meta ) {
 					Meta::instance()->object( $post_id )->generate( $meta['type'], $meta['name'], $meta )->save();
 				}
+				exit;
 
 				if ( $this->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
 					// Generate the Attachment
