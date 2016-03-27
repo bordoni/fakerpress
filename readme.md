@@ -103,6 +103,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ### 0.4.4 &mdash; unreleased ###
 * Tweak: WP_Query Meta for attachments is a little bit easier now, prediction of forgotten `post_status`
+* Tweak: Make the Post Parent selection easier to know which posts by showing more information on the items &mdash; Thanks [@fxbernard](https://github.com/bordoni/fakerpress/issues/81)
+* Fix: Get some missing Text Domains working &mdash; Thanks [@ginsterbusch](https://github.com/bordoni/fakerpress/issues/77)
 
 ### 0.4.3 &mdash; 1 of March, 2016 ###
 * Feature: No more Hot-linking external sites on Content Images &mdash; Thanks [b0rg](https://profiles.wordpress.org/b0rg) + [mvaneijgen](https://profiles.wordpress.org/mvaneijgen) + [okvee](https://profiles.wordpress.org/okvee)
