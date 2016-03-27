@@ -229,6 +229,12 @@
 		transition: 0.05s border-color ease-in-out;
 	}
 
+	.select2-results li abbr em {
+		background-color: transparent;
+		font-style: italic;
+		font-size: 0.9em;
+	}
+
 	.fp-internal-label {
 		font-size: 12px;
 		color: #888;

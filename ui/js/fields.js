@@ -79,7 +79,16 @@ window.fakerpress.fields.dates = function( $, _ ){
 // Select2 Fields
 window.fakerpress.fields.dropdown = function( $, _ ){
 	'use strict';
-	var $elements = $( '.fp-type-dropdown' ).not( '.select2-offscreen, .select2-container' );
+	var $elements = $( '.fp-type-dropdown' ).not( '.select2-offscreen, .select2-container' ),
+		config = {
+			wp_query_title: []
+		};
+
+	config.wp_query_title.push( "ID: &quot;<%= ID %>&quot;" );
+	config.wp_query_title.push( "Title: &quot;<%= post_title %>&quot;" );
+	config.wp_query_title.push( "Post Type: &quot;<%= post_type.labels.singular_name %>&quot;" );
+	config.wp_query_title.push( "Author: &quot;<%= post_author %>&quot;" );
+
 	$elements.each(function(){
 		var $select = $(this),
 			args = {
@@ -201,10 +210,10 @@ window.fakerpress.fields.dropdown = function( $, _ ){
 			// Now we set the data for the source we are looking
 			if ( 'WP_Query' === source ){
 				args.formatSelection = function ( post ){
-					return _.template('<abbr title="<%= post_title %>"><%= post_type.labels.singular_name %>: <%= ID %></abbr>')( post )
+					return _.template('<abbr title="' + config.wp_query_title.join( '&#13;&#10;' ) + '"><%= post_type.labels.singular_name %>: <%= ID %>')( post )
 				};
 				args.formatResult = function ( post ){
-					return _.template('<abbr title="<%= post_title %>"><%= post_type.labels.singular_name %>: <%= ID %></abbr>')( post )
+					return _.template('<abbr title="' + config.wp_query_title.join( '&#13;&#10;' ) + '"><%= post_type.labels.singular_name %>: <%= ID %> <b>[</b> <em><%= post_title %></em> <b>]</b></abbr>')( post )
 				};
 
 				args.ajax.data = function( search, page ) {
