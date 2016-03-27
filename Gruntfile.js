@@ -98,7 +98,7 @@ module.exports = function( grunt ) {
 		// Check textdomain errors.
 		checktextdomain: {
 			options:{
-				text_domain: 'woocommerce',
+				text_domain: 'fakerpress',
 				keywords: [
 					'__:1,2d',
 					'_e:1,2d',

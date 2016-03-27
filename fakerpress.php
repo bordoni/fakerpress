@@ -53,7 +53,7 @@ if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
 				'<br />' .
 				esc_attr__( 'To allow better control over dates, advanced security improvements and performance gain.', 'fakerpress' ) .
 				'<br />' .
-				esc_attr__( 'Contact your Hosting or your system administrator and ask for this Upgrade to version 5.3 of PHP.', 'vsh' );
+				esc_attr__( 'Contact your Hosting or your system administrator and ask for this Upgrade to version 5.3 of PHP.', 'fakerpress' );
 			exit();
 		}
 

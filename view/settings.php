@@ -20,7 +20,7 @@ $fields[] = new Field(
 	array(
 		'id' => 'heading-500px',
 		'title' => __( 'API: <i>500px</i>', 'fakerpress' ),
-		'description' => __( 'Setting up 500px API connection is fully optional.' )
+		'description' => __( 'Setting up 500px API connection is fully optional.', 'fakerpress' )
 	)
 );
 

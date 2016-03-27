@@ -273,7 +273,7 @@ class Admin {
 
 		// Change the Default Submenu for FakerPress menus
 		if ( ! empty( $GLOBALS['submenu'][ Plugin::$slug ] ) ){
-			$GLOBALS['submenu'][ Plugin::$slug ][0][0] = esc_attr__( 'Settings', 'FakerPress' );
+			$GLOBALS['submenu'][ Plugin::$slug ][0][0] = esc_attr__( 'Settings', 'fakerpress' );
 		}
 	}
 
@@ -529,7 +529,7 @@ class Admin {
 		}
 
 		$translate = sprintf( '<a class="fp-translations-link" href="%s" title="%s"><span class="dashicons dashicons-translation"></span></a>', Plugin::ext_site_url( '/r/translate' ), esc_attr__( 'Help us with Translations for the FakerPress project', 'fakerpress' ) );
-		$version = esc_attr__( 'Version' ) . ': <a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::version ) ) ) . '">' . esc_attr( Plugin::version ) . '</a>';
+		$version = esc_attr__( 'Version', 'fakerpress' ) . ': <a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::version ) ) ) . '">' . esc_attr( Plugin::version ) . '</a>';
 
 		return $translate . $version;
 	}
