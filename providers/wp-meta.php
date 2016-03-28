@@ -248,6 +248,8 @@ class WP_Meta extends Base {
 		$template = explode( '|', $template );
 		$tags = array(
 			'country',
+			'country_code',
+			'country_abbr',
 			'city_prefix',
 			'city_suffix',
 			'city',
@@ -272,6 +274,12 @@ class WP_Meta extends Base {
 				switch ( $term ) {
 					case 'country':
 						$text[] = $this->generator->country;
+						break;
+					case 'country_code':
+						$text[] = \FakerPress\Utils::get_country_alpha_code( $this->generator->country, 2 );
+						break;
+					case 'country_abbr':
+						$text[] = \FakerPress\Utils::get_country_alpha_code( $this->generator->country, 3 );
 						break;
 					case 'city_prefix':
 						$text[] = $this->generator->cityPrefix;

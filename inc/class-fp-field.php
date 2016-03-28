@@ -1438,6 +1438,14 @@ class Field {
 						'value' => '{% country %}',
 					),
 					array(
+						'text' => __( 'Country Code (e.g.: US)', 'fakerpress' ),
+						'value' => '{% country_code %}',
+					),
+					array(
+						'text' => __( 'Country ABBR (e.g.: USA', 'fakerpress' ),
+						'value' => '{% country_abbr %}',
+					),
+					array(
 						'text' => __( 'City Prefix', 'fakerpress' ),
 						'value' => '{% city_prefix %}',
 					),
