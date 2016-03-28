@@ -101,6 +101,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 == Changelog ==
 
 = 0.4.4 &mdash; unreleased =
+* Feature: Address Meta templating now allows you to fetch Country ABBR and Code &mdash; Thanks [@fxbernard](https://github.com/bordoni/fakerpress/issues/81)
 * Tweak: WP_Query Meta for attachments is a little bit easier now, prediction of forgotten `post_status`
 * Tweak: Make the Post Parent selection easier to know which posts by showing more information on the items &mdash; Thanks [@fxbernard](https://github.com/bordoni/fakerpress/issues/81)
 * Fix: Get some missing Text Domains working &mdash; Thanks [@ginsterbusch](https://github.com/bordoni/fakerpress/issues/77)
