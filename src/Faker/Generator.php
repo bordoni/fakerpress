@@ -26,11 +26,14 @@ namespace Faker;
  *
  * @property string $ean13
  * @property string $ean8
+ * @property string $isbn13
+ * @property string $isbn10
  *
  * @property string $phoneNumber
  *
  * @property string $company
  * @property string $companySuffix
+ * @property string $jobTitle
  *
  * @property string $creditCardType
  * @property string $creditCardNumber
@@ -39,6 +42,7 @@ namespace Faker;
  * @property string $creditCardExpirationDateString
  * @property string $creditCardDetails
  * @property string $bankAccountNumber
+ * @method string iban($countryCode = null, $prefix = '', $length = null)
  * @property string $swiftBicNumber
  * @property string $vat
  *
@@ -106,6 +110,7 @@ namespace Faker;
  * @property string $countryISOAlpha3
  * @property string $languageCode
  * @property string $currencyCode
+ * @property boolean boolean
  * @method boolean boolean($chanceOfGettingTrue = 50)
  *
  * @property int    $randomDigit
@@ -151,7 +156,7 @@ namespace Faker;
  * @property string $fileExtension
  * @method string file($sourceDirectory = '/tmp', $targetDirectory = '/tmp', $fullPath = true)
  *
- * @method string imageUrl($width = 640, $height = 480, $category = null, $randomize = true)
+ * @method string imageUrl($width = 640, $height = 480, $category = null, $randomize = true, $word = null)
  * @method string image($dir = null, $width = 640, $height = 480, $category = null, $fullPath = true)
  *
  * @property string $hexColor
@@ -182,7 +187,7 @@ class Generator
         if ($seed === null) {
             mt_srand();
         } else {
-            mt_srand($seed);
+            mt_srand((int) $seed);
         }
     }
 
@@ -225,11 +230,18 @@ class Generator
         return $this->format($matches[1]);
     }
 
+    /**
+     * @param string $attribute
+     */
     public function __get($attribute)
     {
         return $this->format($attribute);
     }
 
+    /**
+     * @param string $method
+     * @param array $attributes
+     */
     public function __call($method, $attributes)
     {
         return $this->format($method, $attributes);
