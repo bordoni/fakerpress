@@ -86,7 +86,7 @@ class User extends Base {
 			return false;
 		}
 
-		return wp_delete_post( $user->ID, true );
+		return wp_delete_user( $user->ID, get_current_user_id() );
 	}
 
 
