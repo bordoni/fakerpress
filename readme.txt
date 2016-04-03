@@ -100,6 +100,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
+= 0.4.5 &mdash; unreleased =
+* Fix: Users Module was using Post Meta methods on flag related methods, preventing the users to be deleted when "Let it Go!" &mdash; Thanks [@derpixler](https://github.com/bordoni/fakerpress/issues/84)
+
 = 0.4.4 &mdash; 1 of April, 2016 =
 * Feature: Address Meta templating now allows you to fetch Country ABBR and Code &mdash; Thanks [@kirilisa](https://wordpress.org/support/topic/excellent-3360)
 * Tweak: Include [latest code from Faker](https://github.com/fzaninotto/Faker) version > 1.5.0
