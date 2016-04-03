@@ -80,7 +80,7 @@ class User extends Base {
 			return false;
 		}
 
-		$flag = (bool) get_post_meta( $user->ID, self::$flag, true );
+		$flag = (bool) get_user_meta( $user->ID, self::$flag, true );
 
 		if ( true !== $flag ) {
 			return false;
@@ -106,7 +106,7 @@ class User extends Base {
 		}
 
 		// Flag the Object as FakerPress
-		update_post_meta( $user_id, self::$flag, 1 );
+		update_user_meta( $user_id, self::$flag, 1 );
 
 		return $user_id;
 	}
