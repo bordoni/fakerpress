@@ -7,7 +7,7 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Contributors:** [bordoni](http://profiles.wordpress.org/bordoni)  
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy content), [dummy data](http://wordpress.org/plugins/tags/dummy data), [lorem ipsun](http://wordpress.org/plugins/tags/lorem ipsun), [admin](http://wordpress.org/plugins/tags/admin), [exemples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [images](http://wordpress.org/plugins/tags/images), [attachments](http://wordpress.org/plugins/tags/attachments), [featured image](http://wordpress.org/plugins/tags/featured image), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake data), [random](http://wordpress.org/plugins/tags/random), [developer](http://wordpress.org/plugins/tags/developer), [dev](http://wordpress.org/plugins/tags/dev), [development](http://wordpress.org/plugins/tags/development), [test](http://wordpress.org/plugins/tags/test), [tests](http://wordpress.org/plugins/tags/tests)  
 **Requires at least:** 3.7  
-**Tested up to:** 4.4  
+**Tested up to:** 4.5  
 **Stable tag:** trunk (master)  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -101,10 +101,11 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
-### 0.4.5 &mdash; unreleased ###
+### 0.4.5 &mdash; 11 of June, 2016 ###
 * Fix: Users Module was using Post Meta methods on flag related methods, preventing the users to be deleted when "Let it Go!" &mdash; Thanks [@derpixler](https://github.com/bordoni/fakerpress/issues/84)
 * Fix: Taxonomy and Meta Modules had a compatibility problem with Faker, preveting users to use Meta and Taxonomy Properly &mdash; Thanks [@rayrutjes](https://github.com/bordoni/fakerpress/issues/94)
 * Tweak: Add a better description for a few fields
+* Tweak: Include [latest code from Faker](https://github.com/fzaninotto/Faker) version > 1.6.0
 
 ### 0.4.4 &mdash; 1 of April, 2016 ###
 * Feature: Address Meta templating now allows you to fetch Country ABBR and Code &mdash; Thanks [@kirilisa](https://wordpress.org/support/topic/excellent-3360)
