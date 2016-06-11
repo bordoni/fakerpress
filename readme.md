@@ -103,6 +103,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ### 0.4.5 &mdash; unreleased ###
 * Fix: Users Module was using Post Meta methods on flag related methods, preventing the users to be deleted when "Let it Go!" &mdash; Thanks [@derpixler](https://github.com/bordoni/fakerpress/issues/84)
+* Fix: Taxonomy and Meta Modules had a compatibility problem with Faker, preveting users to use Meta and Taxonomy Properly &mdash; Thanks [@rayrutjes](https://github.com/bordoni/fakerpress/issues/94)
+* Tweak: Add a better description for a few fields
 
 ### 0.4.4 &mdash; 1 of April, 2016 ###
 * Feature: Address Meta templating now allows you to fetch Country ABBR and Code &mdash; Thanks [@kirilisa](https://wordpress.org/support/topic/excellent-3360)

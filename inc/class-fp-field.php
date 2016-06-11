@@ -941,6 +941,7 @@ class Field {
 		$terms->_name[] = 'terms';
 		$terms->type = 'dropdown';
 		$terms->multiple = true;
+		$terms->description = esc_html__( 'If you do not select any, the plugin will choose from all the existing terms.', 'fakerpress' );
 		$terms->{'data-source'} = 'search_terms';
 
 		$terms->placeholder = esc_attr__( 'Which terms can be used', 'fakerpress' );
@@ -950,8 +951,8 @@ class Field {
 		$rate_container = clone $container;
 		$rate_container->id[] = 'rate';
 		$rate_container->type .= 'rate';
-		$rate_container->label = __( 'Rate', 'fakerpress' );
-		$rate_container->description = __( 'Percentage rate of posts that will have terms generated for the amount below', 'fakerpress' );
+		$rate_container->label = esc_html__( 'Rate', 'fakerpress' );
+		$rate_container->description = esc_html__( 'Percentage rate of posts that will have terms generated for the amount below', 'fakerpress' );
 		$rate_container->blocks = $blocks;
 
 		$rate = clone $field;
@@ -968,8 +969,8 @@ class Field {
 		$qty_container = clone $container;
 		$qty_container->id[] = 'qty';
 		$qty_container->type .= '_qty';
-		$qty_container->label = __( 'Quantity', 'fakerpress' );
-		$qty_container->description = __( 'How many terms will be selected', 'fakerpress' );
+		$qty_container->label = esc_html__( 'Quantity', 'fakerpress' );
+		$qty_container->description = esc_html__( 'How many terms will be selected', 'fakerpress' );
 		$qty_container->blocks = $blocks;
 
 		$qty = clone $field;
