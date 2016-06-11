@@ -824,7 +824,7 @@ class Field {
 		$max->placeholder = esc_attr__( 'e.g.: 12', 'fakerpress' );
 
 		$content[] = self::type_input( $min, null, 'string', array() );
-		$content[] = '<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
+		$content[] = '<div title="' . esc_attr__( 'To', 'fakerpress' ) . '" class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
 		$content[] = self::type_input( $max, null, 'string', array() );
 
 		if ( is_a( $container, __CLASS__ ) ){
@@ -970,7 +970,7 @@ class Field {
 		$qty_container->id[] = 'qty';
 		$qty_container->type .= '_qty';
 		$qty_container->label = esc_html__( 'Quantity', 'fakerpress' );
-		$qty_container->description = esc_html__( 'How many terms will be selected', 'fakerpress' );
+		$qty_container->description = __( 'How many terms will be selected. <br> E.g.: From 1 to 4 or just fill the first field for an exact number', 'fakerpress' );
 		$qty_container->blocks = $blocks;
 
 		$qty = clone $field;
