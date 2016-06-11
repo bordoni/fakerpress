@@ -179,13 +179,13 @@ Each of the generator properties (like `name`, `address`, and `lorem`) are calle
 ### `Faker\Provider\DateTime`
 
     unixTime($max = 'now')                // 58781813
-    dateTime($max = 'now')                // DateTime('2008-04-25 08:37:17')
-    dateTimeAD($max = 'now')              // DateTime('1800-04-29 20:38:49')
+    dateTime($max = 'now', $timezone = date_default_timezone_get()) // DateTime('2008-04-25 08:37:17', 'UTC')
+    dateTimeAD($max = 'now', $timezone = date_default_timezone_get()) // DateTime('1800-04-29 20:38:49', 'Europe/Paris')
     iso8601($max = 'now')                 // '1978-12-09T10:10:29+0000'
     date($format = 'Y-m-d', $max = 'now') // '1979-06-09'
     time($format = 'H:i:s', $max = 'now') // '20:49:42'
-    dateTimeBetween($startDate = '-30 years', $endDate = 'now') // DateTime('2003-03-15 02:00:49')
-    dateTimeInInterval($startDate = '-30 years', $interval = '+ 5 days') // DateTime('2003-03-15 02:00:49')
+    dateTimeBetween($startDate = '-30 years', $endDate = 'now', $timezone = date_default_timezone_get()) // DateTime('2003-03-15 02:00:49', 'Africa/Lagos')
+    dateTimeInInterval($startDate = '-30 years', $interval = '+ 5 days', $timezone = date_default_timezone_get()) // DateTime('2003-03-15 02:00:49', 'Antartica/Vostok')
     dateTimeThisCentury($max = 'now')     // DateTime('1915-05-30 19:28:21')
     dateTimeThisDecade($max = 'now')      // DateTime('2007-05-29 22:30:48')
     dateTimeThisYear($max = 'now')        // DateTime('2011-02-27 20:52:14')
@@ -756,15 +756,6 @@ echo $faker->vat;           // "AT U12345678" - Austrian Value Added Tax number
 echo $faker->vat(false);    // "ATU12345678" - unspaced Austrian Value Added Tax number
 ```
 
-### `Faker\Provider\be_BE\Payment`
-
-```php
-<?php
-
-echo $faker->vat;           // "BE 0123456789" - Belgian Value Added Tax number
-echo $faker->vat(false);    // "BE0123456789" - unspaced Belgian Value Added Tax number
-```
-
 ### `Faker\Provider\bg_BG\Payment`
 
 ```php
@@ -893,6 +884,15 @@ echo $faker->mobileNumber; // 082 123 5555
 
 // Generates a Documento Nacional de Identidad (DNI) number
 echo $faker->dni; // '77446565E'
+```
+
+### `Faker\Provider\fr_BE\Payment`
+
+```php
+<?php
+
+echo $faker->vat;           // "BE 0123456789" - Belgian Value Added Tax number
+echo $faker->vat(false);    // "BE0123456789" - unspaced Belgian Value Added Tax number
 ```
 
 ### `Faker\Provider\fr_FR\Address`
@@ -1039,6 +1039,24 @@ echo $faker->district;
 echo $faker->cityName;
 ```
 
+### `Faker\Provider\nl_BE\Payment`
+
+```php
+<?php
+
+echo $faker->vat;           // "BE 0123456789" - Belgian Value Added Tax number
+echo $faker->vat(false);    // "BE0123456789" - unspaced Belgian Value Added Tax number
+```
+
+### `Faker\Provider\nl_NL\Company`
+
+```php
+<?php
+
+echo $faker->vat; // "NL123456789B01" - Dutch Value Added Tax number
+echo $faker->btw; // "NL123456789B01" - Dutch Value Added Tax number (alias)
+```
+
 ### `Faker\Provider\no_NO\Payment`
 
 ```php
@@ -1139,7 +1157,16 @@ echo $faker->name; // 'Sr. Luis Adriano Sepúlveda Filho'
 echo $faker->cpf;        // '145.343.345-76'
 echo $faker->cpf(false); // '45623467866'
 echo $faker->rg;         // '84.405.736-3'
-echo $faker->cnpj;       // '23.663.478/0001-24'
+```
+
+### `Faker\Provider\pt_BR\Company`
+
+```php
+<?php
+
+// Generates a Brazilian formated and valid CNPJ
+echo $faker->cnpj;        // '23.663.478/0001-24'
+echo $faker->cnpj(false); // '23663478000124'
 ```
 
 ### `Faker\Provider\ro_MD\Payment`
@@ -1223,6 +1250,16 @@ echo $faker->personalIdentityNumber() // '950910-0799'
 
 //Since the numbers are different for male and female persons, optionally you can specify gender.
 echo $faker->personalIdentityNumber('female') // '950910-0781'
+```
+
+
+### `Faker\Provider\zh_CN\Payment`
+
+```php
+<?php
+
+// Generates a random bank name (based on list of real chinese banks)
+echo $faker->bank; // '中国建设银行'
 ```
 
 ## Third-Party Libraries Extending/Based On Faker

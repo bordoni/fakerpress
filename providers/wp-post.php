@@ -94,7 +94,7 @@ class WP_Post extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function post_parent( $haystack = array(), $weight = 0.7 ) {
+	public function post_parent( $haystack = array(), $weight = 70 ) {
 		return $this->generator->optional( $weight, 0 )->randomElement( (array) $haystack );
 	}
 
@@ -152,15 +152,16 @@ class WP_Post extends Base {
 
 		foreach ( $config as $settings ){
 			$settings = (object) $settings;
-			if ( is_string( $settings->taxonomies ) ) {
+
+			if ( ! empty( $settings->taxonomies ) && is_string( $settings->taxonomies ) ) {
 				$settings->taxonomies = explode( ',', $settings->taxonomies );
 			}
-			$settings->taxonomies = (array) $settings->taxonomies;
+			$settings->taxonomies = array_filter( (array) $settings->taxonomies );
 
-			if ( is_string( $settings->terms ) ) {
+			if ( ! empty( $settings->terms ) && is_string( $settings->terms ) ) {
 				$settings->terms = explode( ',', $settings->terms );
 			}
-			$settings->terms = (array) $settings->terms;
+			$settings->terms = array_filter( (array) $settings->terms );
 
 			foreach ( $settings->taxonomies as $taxonomy ) {
 				if ( empty( $settings->terms ) ) {
@@ -175,17 +176,17 @@ class WP_Post extends Base {
 				if ( ! isset( $settings->qty ) ) {
 					$qty = FakerPress\Utils::instance()->get_qty_from_range( ( isset( $ranges[ $taxonomy ] ) ? $ranges[ $taxonomy ] : $ranges['__default'] ), $terms );
 				} else {
-					$qty = FakerPress\Utils::instance()->get_qty_from_range( $settings->qty, $terms );
+					$qty = (int) FakerPress\Utils::instance()->get_qty_from_range( $settings->qty, $terms );
 				}
 
 				if ( ! isset( $settings->rate ) ) {
 					$rate = isset( $rates[ $taxonomy ] ) ? $rates[ $taxonomy ] : $rates['__default'];
 				} else {
-					$rate = $settings->rate;
+					$rate = (int) $settings->rate;
 				}
 
 				// Select the elements based on qty
-				$output[ $taxonomy ] = $this->generator->optional( $rate / 100, null )->randomElements( $terms, $qty );
+				$output[ $taxonomy ] = $this->generator->optional( $rate, null )->randomElements( $terms, $qty );
 			}
 		}
 

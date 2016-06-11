@@ -37,13 +37,11 @@ class WP_Meta extends Base {
 
 	public function meta_type_numbers( $number = array( 0, 9 ), $weight = 50 ) {
 		$number = ( is_array( $number ) ? call_user_func_array( array( $this->generator, 'numberBetween' ), $number ) : $number );
-		$weight = $weight / 100;
 
 		return $this->generator->optional( $weight, null )->randomElement( (array) $number );
 	}
 
 	public function meta_type_elements( $elements = '', $qty = 1, $separator = ',', $weight = 50 ) {
-		$weight = $weight / 100;
 		$separator = $this->meta_parse_separator( $separator );
 
 		$elements = explode( ',', $elements );
@@ -58,20 +56,16 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_letter( $weight = 50 ) {
-		$weight = $weight / 100;
-
 		return $this->generator->optional( $weight, null )->randomLetter();
 	}
 
 	public function meta_type_words( $qty = 8, $weight = 50 ) {
-		$weight = $weight / 100;
 		$qty = $this->meta_parse_qty( $qty );
 
 		return $this->generator->optional( $weight, null )->sentence( $qty );
 	}
 
 	public function meta_type_text( $type = 'sentences', $qty = 3, $separator = "\r\n\r\n", $weight = 50 ) {
-		$weight = $weight / 100;
 		$separator = $this->meta_parse_separator( $separator );
 		$qty = $this->meta_parse_qty( $qty );
 
@@ -89,7 +83,6 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_html( $elements, $qty = 6, $weight = 50 ) {
-		$weight = $weight / 100;
 		$qty = $this->meta_parse_qty( $qty );
 		$elements = explode( ',', $elements );
 
@@ -106,8 +99,6 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_wp_query( $query, $weight = 50 ) {
-		$weight = $weight / 100;
-
 		$args = wp_parse_args( $query, array() );
 		$args['fields'] = 'ids';
 
@@ -128,40 +119,30 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_lexify( $template, $weight = 50 ) {
-		$weight = $weight / 100;
-
 		$value = $this->generator->optional( $weight, null )->bothify( (string) $template );
 
 		return $value;
 	}
 
 	public function meta_type_asciify( $template, $weight = 50 ) {
-		$weight = $weight / 100;
-
 		$value = $this->generator->optional( $weight, null )->asciify( (string) $template );
 
 		return $value;
 	}
 
 	public function meta_type_regexify( $template, $weight = 50 ) {
-		$weight = $weight / 100;
-
 		$value = $this->generator->optional( $weight, null )->regexify( (string) $template );
 
 		return $value;
 	}
 
 	public function meta_type_timezone( $weight = 50 ) {
-		$weight = $weight / 100;
-
 		$value = $this->generator->optional( $weight, null )->timezone;
 
 		return $value;
 	}
 
 	public function meta_type_company( $template, $weight = 50 ) {
-		$weight = $weight / 100;
-
 		$template = explode( '|', $template );
 
 		$tags = array(
@@ -202,8 +183,6 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_person( $template, $gender = 'female', $weight = 50 ) {
-		$weight = $weight / 100;
-
 		$template = explode( '|', $template );
 
 		$tags = array(
@@ -244,7 +223,6 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_geo( $template, $weight = 50 ) {
-		$weight = $weight / 100;
 		$template = explode( '|', $template );
 		$tags = array(
 			'country',
@@ -368,32 +346,24 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_ip( $weight = 50 ) {
-		$weight = $weight / 100;
-
 		$value = $this->generator->optional( $weight, null )->ipv4;
 
 		return $value;
 	}
 
 	public function meta_type_domain( $weight = 50 ) {
-		$weight = $weight / 100;
-
 		$value = $this->generator->optional( $weight, null )->domainName;
 
 		return $value;
 	}
 
 	public function meta_type_email( $weight = 50 ) {
-		$weight = $weight / 100;
-
 		$value = $this->generator->optional( $weight, null )->email;
 
 		return $value;
 	}
 
 	public function meta_type_user_agent( $weight = 50 ) {
-		$weight = $weight / 100;
-
 		$value = $this->generator->optional( $weight, null )->userAgent;
 
 		return $value;
