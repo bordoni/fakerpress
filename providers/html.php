@@ -101,13 +101,13 @@ class HTML extends Base {
 
 	private function html_element_img( $element, $sources = array( 'lorempixel', 'placeholdit', 'unsplashit' ) ) {
 		if ( ! isset( $element->attr['class'] ) ) {
-			$element->attr['class'][] = $this->generator->optional( 0.4, null )->randomElement( array( 'aligncenter', 'alignleft', 'alignright' ) );
+			$element->attr['class'][] = $this->generator->optional( 40, null )->randomElement( array( 'aligncenter', 'alignleft', 'alignright' ) );
 			$element->attr['class'] = array_filter( $element->attr['class'] );
 			$element->attr['class'] = implode( ' ', $element->attr['class'] );
 		}
 
 		if ( ! isset( $element->attr['alt'] ) ) {
-			$element->attr['alt'] = rtrim( $this->generator->optional( 0.7, null )->sentence( Base::randomDigitNotNull() ), '.' );
+			$element->attr['alt'] = rtrim( $this->generator->optional( 70, null )->sentence( Base::randomDigitNotNull() ), '.' );
 		}
 
 		if ( ! isset( $element->attr['src'] ) ) {
@@ -123,8 +123,8 @@ class HTML extends Base {
 		$images = \FakerPress\Module\Post::fetch( array( 'post_type' => 'attachment' ) );
 		$image = false;
 		$count_images = count( $images );
-		$optional = ( $count_images * 0.025 );
-		$optional = $optional > 1 ? 1 : $optional;
+		$optional = ( $count_images * 2 );
+		$optional = $optional > 100 ? 100 : $optional;
 
 		if ( $count_images > 0 ) {
 			$image = $this->generator->optional( $optional, $image )->randomElement( $images );

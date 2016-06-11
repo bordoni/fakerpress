@@ -10,15 +10,20 @@ if ( 'undefined' === typeof window.fakerpress ){
 	// Setup the Selectors
 	fp._module_generator = '.fp-module-generator';
 
-	fp.log = function ( $element, html, data, classes ){
-		if ( 'undefined' === typeof classes ){
-			classes = 'notice is-dismissible';
+	fp.log = function ( $element, html, data, attrClass ){
+		if ( 'undefined' === typeof attrClass ){
+			attrClass = 'notice is-dismissible';
 		} else {
-			classes = 'notice is-dismissible ' + classes;
+			attrClass = 'notice is-dismissible ' + attrClass;
 		}
 
-		var htmlTemplate = _.template( html ),
-			$notice = $( _.template( '<div class="<%= classes %>"><p><%= html %></p><button type="button" class="notice-dismiss"></button></div>', { classes: classes, html: htmlTemplate( data ) } ) );
+		var noticeContent = _.template( html )( data ),
+			templateVars = {
+				'attrClass': attrClass,
+				'html': noticeContent
+			},
+			noticeHtml = _.template( '<div class="<%= attrClass %>"><p><%= html %></p><button type="button" class="notice-dismiss"></button></div>' )( templateVars ),
+			$notice = $( noticeHtml );
 
 		$notice.on( 'click.wp-dismiss-notice', '.notice-dismiss', function( event ) {
 			event.preventDefault();
@@ -67,7 +72,7 @@ if ( 'undefined' === typeof window.fakerpress ){
 			success: function( data, textStatus, jqXHR ) {
 				$spinner.removeClass( 'is-active' );
 
-				if ( data.status ){
+				if ( null !== data && data.status ){
 					if ( data.is_capped && data.offset < data.total ){
 						_POST.offset = data.offset;
 						_POST.total = data.total;
