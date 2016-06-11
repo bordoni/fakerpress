@@ -188,10 +188,6 @@ class WP_Post extends Base {
 				// Select the elements based on qty
 				$output[ $taxonomy ] = $this->generator->optional( $rate, null )->randomElements( $terms, $qty );
 			}
-
-			var_dump( $output );
-			exit;
-
 		}
 
 		return $output;
