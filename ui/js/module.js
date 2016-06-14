@@ -17,6 +17,8 @@ if ( 'undefined' === typeof window.fakerpress ){
 			attrClass = 'notice is-dismissible ' + attrClass;
 		}
 
+		console.log( data, html );
+
 		var noticeContent = _.template( html )( data ),
 			templateVars = {
 				'attrClass': attrClass,
@@ -66,13 +68,15 @@ if ( 'undefined' === typeof window.fakerpress ){
 					$spinner.removeClass( 'is-active' );
 					$button.prop( 'disabled', false );
 
-					fp.log( $response, '<%= message %>', { message: jqXHR.responseText }, 'notice-warning' );
+					fp.log( $response, '<%= message %>', { message: jqXHR.responseText }, 'notice-error' );
 				}
 			},
 			success: function( data, textStatus, jqXHR ) {
 				$spinner.removeClass( 'is-active' );
-
-				if ( null !== data && data.status ){
+				if ( null === data ) {
+					$button.prop( 'disabled', false );
+					fp.log( $response, '<%= message %>', { message: jqXHR.responseText }, 'notice-error' );
+				} else if ( data.status ){
 					if ( data.is_capped && data.offset < data.total ){
 						_POST.offset = data.offset;
 						_POST.total = data.total;
@@ -85,7 +89,7 @@ if ( 'undefined' === typeof window.fakerpress ){
 					fp.log( $response, 'Faked <%= total %>: <%= message %>', { message: data.message, total: data.results.length }, 'notice-success' );
 				} else {
 					$button.prop( 'disabled', false );
-					fp.log( $response, '<%= message %>', data, 'notice-warning' );
+					fp.log( $response, '<%= message %>', data, 'notice-error' );
 				}
 			}
 		});
