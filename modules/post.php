@@ -171,7 +171,8 @@ class Post extends Base {
 			$this->set( 'ping_status' );
 			$this->set( 'tax_input', $taxonomies_configuration );
 
-			$post_id = $this->generate()->save();
+			$generated = $this->generate();
+			$post_id = $generated->save();
 
 			if ( $post_id && is_numeric( $post_id ) ){
 				foreach ( $metas as $meta_index => $meta ) {

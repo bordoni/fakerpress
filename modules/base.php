@@ -193,6 +193,19 @@ abstract class Base {
 		return $this;
 	}
 
+	/**
+	 * A method to make it easier to debug which variables will be actually saved
+	 *
+	 * @return array
+	 */
+	public function get_values() {
+		$values = array();
+		foreach ( $this->data as $name => $item ) {
+			$values[ $name ] = $this->data[ $name ]->value;
+		}
+		return $values;
+	}
+
 	protected function apply( $item ) {
 		if ( ! isset( $item->generator ) ){
 			return reset( $item->arguments );
