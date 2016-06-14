@@ -100,6 +100,10 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
+= 0.4.6 &mdash; 14 of June, 2016 =
+* Fix: Post Meta and taxonomy is finally working again &mdash; Thanks [@peachey_a](https://wordpress.org/support/topic/generated-posts-not-assigned-categories) and [@zoeitsolutions](https://wordpress.org/support/topic/user-meta-not-being-generated)
+* Fix: Allow Meta Number generation using any type of range, doesn't limit from 0 to 9
+
 = 0.4.5 &mdash; 11 of June, 2016 =
 * Fix: Users Module was using Post Meta methods on flag related methods, preventing the users to be deleted when "Let it Go!" &mdash; Thanks [@derpixler](https://github.com/bordoni/fakerpress/issues/84)
 * Fix: Taxonomy and Meta Modules had a compatibility problem with Faker, preveting users to use Meta and Taxonomy Properly &mdash; Thanks [@rayrutjes](https://github.com/bordoni/fakerpress/issues/94)
