@@ -1175,7 +1175,6 @@ class Field {
 				$range->class = array();
 				$range->label = __( 'Range of possible numbers', 'fakerpress' );
 				$range->_min = 0;
-				$range->_max = 9;
 
 				$html[] = Field::wrapper( Field::type_range( $range, null, 'string' ), $range );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
