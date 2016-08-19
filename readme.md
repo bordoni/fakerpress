@@ -7,7 +7,7 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Contributors:** [bordoni](http://profiles.wordpress.org/bordoni)  
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy content), [dummy data](http://wordpress.org/plugins/tags/dummy data), [lorem ipsun](http://wordpress.org/plugins/tags/lorem ipsun), [admin](http://wordpress.org/plugins/tags/admin), [exemples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [images](http://wordpress.org/plugins/tags/images), [attachments](http://wordpress.org/plugins/tags/attachments), [featured image](http://wordpress.org/plugins/tags/featured image), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake data), [random](http://wordpress.org/plugins/tags/random), [developer](http://wordpress.org/plugins/tags/developer), [dev](http://wordpress.org/plugins/tags/dev), [development](http://wordpress.org/plugins/tags/development), [test](http://wordpress.org/plugins/tags/test), [tests](http://wordpress.org/plugins/tags/tests)  
 **Requires at least:** 3.7  
-**Tested up to:** 4.5  
+**Tested up to:** 4.6  
 **Stable tag:** trunk (master)  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -41,7 +41,7 @@ Normally a WordPress developer will need to perform the task of filling up an em
 Create randomly generated attachments as the Featured Images for your WordPress dummy content.
 
 ### Create random Meta Information ###
-WordPress has Meta for Users, Posts, Terms and Comments, FakerPress will allow you to generate custom dummy meta for all four, with *19 types of Data*
+WordPress has Meta for Users, Posts, Terms and Comments, FakerPress will allow you to generate custom dummy meta for all four, with *20 types of Data*
 
 ### Delete the Content Generated ###
 After you are done with your testing it should be easy to delete all the content created using FakerPress, now you will be able to do it.
@@ -62,8 +62,9 @@ For creating and assigning the terms you will have a much better tool that will 
 If you fill up your WordPress with any data for the user profiles you might not catch an edge case, this plugin will fill up the fields with data that will really matter in the tests.
 
 ### Types of Meta Included ###
-* Number
+* Attachment
 * WP_Query
+* Number
 * Elements
 * Letter
 * Words
@@ -83,11 +84,7 @@ If you fill up your WordPress with any data for the user profiles you might not 
 * Browser User Agent
 
 ### Languages ###
-* English
-* Portuguese (pt_BR) &mdash; [Luan Cuba](https://profiles.wordpress.org/luancuba/)
-* Chinese (zh_CH) &mdash; [xnces](https://www.transifex.com/accounts/profile/xnces/)
-
-> Want to help us translate FakerPress? Get on board on our [Transifex project](https://www.transifex.com/projects/p/fakerpress/)
+We moved away from _Transifex_ due to the new GlotPress on WordPress.org, so if you want to translate FakerPress to your language please [follow this guidelines](https://make.wordpress.org/polyglots/handbook/rosetta/theme-plugin-directories/#translating-themes-plugins).\
 
 ### See room for improvement? ###
 Great! There are several ways you can get involved to help make FakerPress better:
@@ -100,6 +97,11 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 
 ## Changelog ##
+
+### 0.4.7 &mdash; undefined ###
+* [pending] Feature: Attachment Meta Field to allow compatibility with Avatars and ACF
+* [pending] Fix: Revisiting the Taxonomy, to allow more complex usage of Terms + Taxonomy rules
+* [pending] Fix: HTML fields now allow usage of custom tags easily (without attributes)
 
 ### 0.4.6 &mdash; 14 of June, 2016 ###
 * Fix: Post Meta and taxonomy is finally working again &mdash; Thanks [@peachey_a](https://wordpress.org/support/topic/generated-posts-not-assigned-categories) and [@zoeitsolutions](https://wordpress.org/support/topic/user-meta-not-being-generated)
