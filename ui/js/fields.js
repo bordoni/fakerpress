@@ -342,11 +342,7 @@ window.fakerpress.fields.range = function( $, _ ){
 					conf_container: '.fp-meta_conf-container'
 				},
 
-				update: function( $item, bubble ) {
-					if ( 'undefined' === typeof bubble ) {
-						bubble = true;
-					}
-
+				update: function( $item ) {
 					var fieldset = this,
 						$type = $item.find( fieldset.selector.type ),
 						type = $type.select2( 'val' ),
@@ -358,7 +354,10 @@ window.fakerpress.fields.range = function( $, _ ){
 						$type_container = $item.find( fieldset.selector.type_container ),
 						$conf_container = $item.find( fieldset.selector.conf_container ),
 
-						$template;
+						$place = $conf_container.find( window.fakerpress.fieldset.selector.wrap ),
+
+						$template,
+						template;
 
 					// Before constructing the Type Object check if it's a jQuery element (Select2 bug)
 					if ( type instanceof jQuery ){
@@ -367,13 +366,11 @@ window.fakerpress.fields.range = function( $, _ ){
 
 					// Find templates relevant to the current container
 					$template = $( '.fp-template-' + type ).filter( '[data-rel="' + fieldset.$.container.attr( 'id' ) + '"]' ).filter( '[data-callable]' );
+					template = $template.html();
 
-					// Trigger a Type Change for hiding the Options
-					if ( bubble ) {
-						$type.trigger( 'change', bubble );
-					}
+					$type.trigger( 'change' );
 
-					if ( 0 === $template.length ){
+					if ( $place.is( ':empty' ) ){
 						$name_container.addClass( 'fp-last-child' );
 					} else {
 						$name_container.removeClass( 'fp-last-child' );
@@ -397,17 +394,20 @@ window.fakerpress.fields.range = function( $, _ ){
 				setup: function() {
 					var fieldset = this;
 
-					fieldset.$.container.on( 'change', fieldset.selector.type, [], function( event, bubble ){
+					fieldset.$.container.on( 'change', fieldset.selector.type, [], function( event ){
 						var $field = $( this ),
 							type = $field.select2( 'val' ),
 
 							$item = $field.parents( fieldset.selector.item ),
 
-							$template,
-							template,
-
+							$name_container = $item.find( fieldset.selector.name_container ),
+							$type_container = $item.find( fieldset.selector.type_container ),
 							$conf_container = $item.find( fieldset.selector.conf_container ),
-							$place = $conf_container.find( window.fakerpress.fieldset.selector.wrap );
+
+							$place = $conf_container.find( window.fakerpress.fieldset.selector.wrap ),
+
+							$template,
+							template;
 
 						$place.empty();
 
@@ -431,9 +431,13 @@ window.fakerpress.fields.range = function( $, _ ){
 							$conf_container.hide();
 						}
 
-						// Update all the required information
-						window.fakerpress.fieldset.update( fieldset, false );
+						if ( $place.is( ':empty' ) ){
+							$name_container.addClass( 'fp-last-child' );
+						} else {
+							$name_container.removeClass( 'fp-last-child' );
+						}
 					} );
+
 				},
 
 				reset: function( $item ) {
@@ -572,11 +576,7 @@ window.fakerpress.fields.range = function( $, _ ){
 			fieldset.reset( $item );
 		},
 
-		update: function( fieldset, bubble ) {
-			if ( 'undefined' === typeof bubble ) {
-				bubble = true;
-			}
-
+		update: function( fieldset ) {
 			// Setup a base list of items
 			fieldset.$.items = fieldset.$.wrap.children( fieldset.selector.item );
 
@@ -640,7 +640,7 @@ window.fakerpress.fields.range = function( $, _ ){
 					}
 				} );
 
-				fieldset.update( $item, bubble );
+				fieldset.update( $item );
 			} );
 
 			$.each( window.fakerpress.fields, function( key, callback ){
