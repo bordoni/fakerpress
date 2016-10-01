@@ -155,7 +155,7 @@ $_image_providers[] = array(
 	'text' => 'LoremPixel',
 );
 
-if ( Plugin::get( array( '500px', 'key' ), false ) ){
+if ( Plugin::get( array( '500px', 'key' ), false ) ) {
 	$_image_providers[] = array(
 		'id' => '500px',
 		'text' => '500px',
@@ -221,6 +221,14 @@ $fields[] = new Field(
 	'meta',
 	array(
 		'id' => 'meta',
+		'config' => array(
+			array(
+				'type'   => 'attachment',
+				'name'   => '_attachment_id',
+				'weight' => 75,
+				'store'  => 'attachment_id',
+			),
+		),
 	),
 	array(
 		'label' => __( 'Meta Field Rules', 'fakerpress' ),
