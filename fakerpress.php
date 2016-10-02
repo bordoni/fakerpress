@@ -3,7 +3,7 @@
  * Plugin Name:       FakerPress
  * Plugin URI:        https://fakerpress.com
  * Description:       FakerPress is a clean way to generate fake data to your WordPress instalation, great for developers who need testing
- * Version:           0.4.6
+ * Version:           0.4.7
  * Author:            Gustavo Bordoni
  * Author URI:        http://bordoni.me
  * Text Domain:       fakerpress
@@ -46,7 +46,7 @@ if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
 	if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
-		if ( ! is_plugin_active( plugin_basename( __FP_FILE__ ) ) ){
+		if ( ! is_plugin_active( plugin_basename( __FP_FILE__ ) ) ) {
 			wp_print_styles( 'open-sans' );
 			echo "<style>body{margin: 0 2px;font-family: 'Open Sans',sans-serif;font-size: 13px;line-height: 1.5em;}</style>";
 			echo wp_kses_post( __( '<b>FakerPress</b> requires PHP 5.3 or higher, and the plugin has now disabled itself.', 'fakerpress' ) ) .

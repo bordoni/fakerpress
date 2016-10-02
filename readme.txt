@@ -96,10 +96,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
-= 0.4.7 &mdash; undefined =
-* [pending] Feature: Attachment Meta Field to allow compatibility with Avatars and ACF
-* [pending] Fix: Revisiting the Taxonomy, to allow more complex usage of Terms + Taxonomy rules
-* [pending] Fix: HTML fields now allow usage of custom tags easily (without attributes)
+= 0.4.7 &mdash; 2 of October, 2016 =
+* Feature: Image Attachment Meta Field to allow more Flexibility all around the plugin
 
 = 0.4.6 &mdash; 14 of June, 2016 =
 * Fix: Post Meta and taxonomy is finally working again &mdash; Thanks [@peachey_a](https://wordpress.org/support/topic/generated-posts-not-assigned-categories) and [@zoeitsolutions](https://wordpress.org/support/topic/user-meta-not-being-generated)

@@ -13,7 +13,7 @@ class Plugin {
 	 * @since 0.1.0
 	 * @var string
 	 */
-	const version = '0.4.6';
+	const version = '0.4.7';
 
 	/**
 	 * A static variable that holds a dinamic instance of the class
