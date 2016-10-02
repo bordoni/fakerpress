@@ -11,18 +11,10 @@ class ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71
     );
 
     public static $prefixLengthsPsr4 = array (
-        'U' => 
-        array (
-            'Underscore\\' => 11,
-        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Translation\\' => 30,
-        ),
-        'P' => 
-        array (
-            'Patchwork\\' => 10,
         ),
         'F' => 
         array (
@@ -35,11 +27,6 @@ class ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71
     );
 
     public static $prefixDirsPsr4 = array (
-        'Underscore\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/anahkiasen/underscore-php/src',
-            1 => __DIR__ . '/..' . '/anahkiasen/underscore-php/tests',
-        ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
@@ -47,10 +34,6 @@ class ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71
         'Symfony\\Component\\Translation\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/translation',
-        ),
-        'Patchwork\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/patchwork/utf8/src/Patchwork',
         ),
         'Faker\\' => 
         array (
@@ -62,27 +45,11 @@ class ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71
         ),
     );
 
-    public static $prefixesPsr0 = array (
-        'D' => 
-        array (
-            'Doctrine\\Common\\Inflector\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/inflector/lib',
-            ),
-        ),
-    );
-
-    public static $classMap = array (
-        'Normalizer' => __DIR__ . '/..' . '/patchwork/utf8/src/Normalizer.php',
-    );
-
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71::$classMap;
 
         }, null, ClassLoader::class);
     }
