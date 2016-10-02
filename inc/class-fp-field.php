@@ -1270,7 +1270,19 @@ class Field {
 				$attachment->placeholder = __( 'Which value should be saved on the Meta', 'fakerpress' );
 				$attachment->label = __( 'Stored Data', 'fakerpress' );
 
+				$providers = clone $field;
+				$providers->_id = array( 'meta', 'provider' );
+				$providers->_name = array( 'meta', 'provider' );
+				$providers->type = 'dropdown';
+				$providers->class = array();
+				$providers->multiple = true;
+				$providers->placeholder = __( 'Select at one Provider', 'fakerpress' );
+				$providers->label = __( 'Which image services will the generator use?', 'fakerpress' );
+				$providers->value = implode( ',', wp_list_pluck( Modules\Attachment::get_providers(), 'id' ) );
+				$providers->{'data-options'} = Modules\Attachment::get_providers();
+
 				$html[] = Field::wrapper( Field::type_dropdown( $attachment, null, 'string' ), $attachment );
+				$html[] = Field::wrapper( Field::type_dropdown( $providers, null, 'string' ), $providers );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );

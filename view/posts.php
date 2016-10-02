@@ -125,57 +125,6 @@ $fields[] = new Field(
 	)
 );
 
-$fields[] = new Field(
-	'number',
-	array(
-		'id' => 'featured_image_rate',
-		'placeholder' => __( 'e.g.: 75', 'fakerpress' ),
-		'min' => 0,
-		'max' => 100,
-		'value' => 75,
-	),
-	array(
-		'label' => __( 'Featured Image Rate', 'fakerpress' ),
-		'description' => __( 'Percentage of the posts created that will have an Featured Image', 'fakerpress' ),
-	)
-);
-
-$_image_providers[] = array(
-	'id' => 'placeholdit',
-	'text' => 'Placehold.it',
-);
-
-$_image_providers[] = array(
-	'id' => 'unsplashit',
-	'text' => 'Unsplash.it',
-);
-
-$_image_providers[] = array(
-	'id' => 'lorempixel',
-	'text' => 'LoremPixel',
-);
-
-if ( Plugin::get( array( '500px', 'key' ), false ) ) {
-	$_image_providers[] = array(
-		'id' => '500px',
-		'text' => '500px',
-	);
-}
-
-$fields[] = new Field(
-	'dropdown',
-	array(
-		'id' => 'images_origin',
-		'multiple' => true,
-		'value' => implode( ',', wp_list_pluck( $_image_providers, 'id' ) ),
-		'data-options' => $_image_providers,
-	),
-	array(
-		'label' => __( 'Image Providers', 'fakerpress' ),
-		'description' => __( 'Which image services will the generator use?', 'fakerpress' ),
-	)
-);
-
 // Mount the options for Users
 $users = get_users(
 	array(
