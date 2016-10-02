@@ -392,6 +392,13 @@ window.fakerpress.fields.range = function( $, _ ){
 					}
 				},
 
+				/**
+				 * A way to setup the configuration fields for Meta
+				 *
+				 * @param  jQuery   $conf  The configuration Container
+				 *
+				 * @return null
+				 */
 				configure: function( $conf ) {
 					var config = $conf.data( 'config' ),
 						$fields = $conf.find( window.fakerpress.fieldset.selector.field );

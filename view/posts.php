@@ -125,6 +125,20 @@ $fields[] = new Field(
 	)
 );
 
+$fields[] = new Field(
+	'dropdown',
+	array(
+		'id' => 'images_origin',
+		'multiple' => true,
+		'value' => implode( ',', wp_list_pluck( Module\Attachment::get_providers(), 'id' ) ),
+		'data-options' => Module\Attachment::get_providers(),
+	),
+	array(
+		'label' => __( 'Image Providers', 'fakerpress' ),
+		'description' => __( 'Which image services will the generator use?', 'fakerpress' ),
+	)
+);
+
 // Mount the options for Users
 $users = get_users(
 	array(
@@ -173,7 +187,7 @@ $fields[] = new Field(
 		'config' => array(
 			array(
 				'type'   => 'attachment',
-				'name'   => '_attachment_id',
+				'name'   => '_thumbnail_id',
 				'weight' => 75,
 				'store'  => 'id',
 			),

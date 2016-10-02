@@ -148,6 +148,8 @@ class Post extends Base {
 		$post_parents = Variable::super( $request, array( 'post_parent' ), FILTER_SANITIZE_STRING );
 		$post_parents = array_map( 'trim', explode( ',', $post_parents ) );
 
+		$images_origin = array_map( 'trim', explode( ',', Variable::super( $request, array( 'images_origin' ), FILTER_SANITIZE_STRING ) ) );
+
 		// Fetch Taxonomies
 		$taxonomies_configuration = Variable::super( $request, array( 'taxonomy' ), FILTER_UNSAFE_RAW );
 

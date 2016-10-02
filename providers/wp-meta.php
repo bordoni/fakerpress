@@ -1,7 +1,20 @@
 <?php
 namespace Faker\Provider;
+use FakerPress;
 
 class WP_Meta extends Base {
+	public $meta_object = array(
+		'name' => 'post',
+		'id' => 0,
+	);
+
+	public function set_meta_object( $name, $id ) {
+		$this->meta_object = (object) $this->meta_object;
+
+		$this->meta_object->name = $name;
+		$this->meta_object->id = $id;
+	}
+
 	private function meta_parse_qty( $qty, $elements = null ) {
 		$_qty = array_filter( (array) $qty );
 		$min = reset( $_qty );
@@ -119,17 +132,25 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_attachment( $type, $providers, $weight = 50 ) {
-
-		var_dump( $type, $providers, $weight );
-		exit;
+		$providers = array_map( 'esc_attr', array_map( 'trim', explode( ',', $providers ) ) );
 
 		// Generate the Attachment
-		$attachment_id = Attachment::instance()
-			->set( 'attachment_url', $this->faker->randomElement( $images_origin ) )
-			->set( 'post_parent', $post_id, 1 )
-			->generate()->save();
+		$attachment = FakerPress\Module\Attachment::instance()->set( 'attachment_url', $this->generator->randomElement( $providers ) );
 
-		$images_origin = array_map( 'trim', explode( ',', Variable::super( $request, array( 'images_origin' ), FILTER_SANITIZE_STRING ) ) );
+		// If it's meta for a post we need to mark the attachment as child of that post
+		if ( 'post' === $this->meta_object->name ) {
+			$attachment->set( 'post_parent', $this->meta_object->id, 1 );
+		}
+
+		// Actually save the Attachment and get it's ID
+		$attachment_id = $attachment->generate()->save();
+
+		// Apply Weight
+		$value = $this->generator->optional( (int) $weight, null )->randomElement( (array) $attachment_id );
+
+		if ( ! $value ) {
+			return null;
+		}
 
 		return $value;
 	}
