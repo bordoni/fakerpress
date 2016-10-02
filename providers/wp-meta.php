@@ -143,14 +143,20 @@ class WP_Meta extends Base {
 		}
 
 		// Actually save the Attachment and get it's ID
-		$attachment_id = $attachment->generate()->save();
+		$value = $attachment->generate()->save();
 
-		// Apply Weight
-		$value = $this->generator->optional( (int) $weight, null )->randomElement( (array) $attachment_id );
-
+		// If there was an error, just bail now
 		if ( ! $value ) {
 			return null;
 		}
+
+		// If asked URL, change to URL
+		if ( 'url' === $type ) {
+			$value = wp_get_attachment_url( $value );
+		}
+
+		// Apply Weight
+		$value = $this->generator->optional( (int) $weight, null )->randomElement( (array) $value );
 
 		return $value;
 	}
