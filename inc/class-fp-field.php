@@ -1251,12 +1251,12 @@ class Field {
 			'value' => 'attachment',
 			'text' => __( 'Attachment', 'fakerpress' ),
 			'template' => function( $field, $type ) use ( $default ) {
-				$attachment = clone $field;
-				$attachment->_id = array( 'meta', 'attachment' );
-				$attachment->_name = array( 'meta', 'attachment' );
-				$attachment->type = 'dropdown';
-				$attachment->value = 'id';
-				$attachment->options = array(
+				$store = clone $field;
+				$store->_id = array( 'meta', 'store' );
+				$store->_name = array( 'meta', 'store' );
+				$store->type = 'dropdown';
+				$store->value = 'id';
+				$store->options = array(
 					array(
 						'id' => 'id',
 						'text' => esc_attr__( 'Attachment ID' ),
@@ -1266,9 +1266,9 @@ class Field {
 						'text' => esc_attr__( 'Attachment URL' ),
 					),
 				);
-				$attachment->class = array();
-				$attachment->placeholder = __( 'Which value should be saved on the Meta', 'fakerpress' );
-				$attachment->label = __( 'Stored Data', 'fakerpress' );
+				$store->class = array();
+				$store->placeholder = __( 'Which value should be saved on the Meta', 'fakerpress' );
+				$store->label = __( 'Stored Data', 'fakerpress' );
 
 				$providers = clone $field;
 				$providers->_id = array( 'meta', 'provider' );
@@ -1278,10 +1278,10 @@ class Field {
 				$providers->multiple = true;
 				$providers->placeholder = __( 'Select at one Provider', 'fakerpress' );
 				$providers->label = __( 'Which image services will the generator use?', 'fakerpress' );
-				$providers->value = implode( ',', wp_list_pluck( Modules\Attachment::get_providers(), 'id' ) );
-				$providers->{'data-options'} = Modules\Attachment::get_providers();
+				$providers->value = implode( ',', wp_list_pluck( Module\Attachment::get_providers(), 'id' ) );
+				$providers->{'data-options'} = Module\Attachment::get_providers();
 
-				$html[] = Field::wrapper( Field::type_dropdown( $attachment, null, 'string' ), $attachment );
+				$html[] = Field::wrapper( Field::type_dropdown( $store, null, 'string' ), $store );
 				$html[] = Field::wrapper( Field::type_dropdown( $providers, null, 'string' ), $providers );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 

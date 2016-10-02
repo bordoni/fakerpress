@@ -175,7 +175,7 @@ $fields[] = new Field(
 				'type'   => 'attachment',
 				'name'   => '_attachment_id',
 				'weight' => 75,
-				'store'  => 'attachment_id',
+				'store'  => 'id',
 			),
 		),
 	),

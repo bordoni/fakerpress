@@ -2,23 +2,23 @@
 namespace Faker\Provider;
 
 class WP_Meta extends Base {
-	private function meta_parse_qty( $qty, $elements = null ){
+	private function meta_parse_qty( $qty, $elements = null ) {
 		$_qty = array_filter( (array) $qty );
 		$min = reset( $_qty );
 
 		$qty = (int) ( is_array( $qty ) && count( $_qty ) > 1 ? call_user_func_array( array( $this->generator, 'numberBetween' ), $qty ) : reset( $_qty ) );
-		if ( $qty < $min ){
+		if ( $qty < $min ) {
 			$qty = $min;
 		}
 
-		if ( is_array( $elements ) && $qty > count( $elements ) ){
+		if ( is_array( $elements ) && $qty > count( $elements ) ) {
 			$qty = count( $elements );
 		}
 
 		return $qty;
 	}
 
-	private function meta_parse_separator( $separator ){
+	private function meta_parse_separator( $separator ) {
 		$separator = stripcslashes( $separator );
 
 		$search = array(
@@ -69,7 +69,7 @@ class WP_Meta extends Base {
 		$separator = $this->meta_parse_separator( $separator );
 		$qty = $this->meta_parse_qty( $qty );
 
-		if ( 'sentences' === $type ){
+		if ( 'sentences' === $type ) {
 			$value = $this->generator->optional( (int) $weight, null )->sentences( $qty );
 		} else {
 			$value = $this->generator->optional( (int) $weight, null )->paragraphs( $qty );
@@ -109,11 +109,27 @@ class WP_Meta extends Base {
 
 		$query = new \WP_Query( $args );
 
-		if ( ! $query->have_posts() ){
+		if ( ! $query->have_posts() ) {
 			return null;
 		}
 
 		$value = $this->generator->optional( (int) $weight, null )->randomElement( (array) $query->posts );
+
+		return $value;
+	}
+
+	public function meta_type_attachment( $type, $providers, $weight = 50 ) {
+
+		var_dump( $type, $providers, $weight );
+		exit;
+
+		// Generate the Attachment
+		$attachment_id = Attachment::instance()
+			->set( 'attachment_url', $this->faker->randomElement( $images_origin ) )
+			->set( 'post_parent', $post_id, 1 )
+			->generate()->save();
+
+		$images_origin = array_map( 'trim', explode( ',', Variable::super( $request, array( 'images_origin' ), FILTER_SANITIZE_STRING ) ) );
 
 		return $value;
 	}
@@ -156,7 +172,7 @@ class WP_Meta extends Base {
 
 		foreach ( $template as $key => $tag ) {
 			preg_match( '|^\{\% *([^\ ]*) *\%\}$|i', $tag, $_parsed );
-			if ( ! empty( $_parsed ) ){
+			if ( ! empty( $_parsed ) ) {
 				list( $element, $term ) = $_parsed;
 				switch ( $term ) {
 					case 'suffix':
@@ -196,7 +212,7 @@ class WP_Meta extends Base {
 
 		foreach ( $template as $key => $tag ) {
 			preg_match( '|^\{\% *([^\ ]*) *\%\}$|i', $tag, $_parsed );
-			if ( ! empty( $_parsed ) ){
+			if ( ! empty( $_parsed ) ) {
 				list( $element, $term ) = $_parsed;
 				switch ( $term ) {
 					case 'title':
@@ -247,7 +263,7 @@ class WP_Meta extends Base {
 
 		foreach ( $template as $key => $tag ) {
 			preg_match( '|^\{\% *([^\ ]*) *\%\}$|i', $tag, $_parsed );
-			if ( ! empty( $_parsed ) ){
+			if ( ! empty( $_parsed ) ) {
 				list( $element, $term ) = $_parsed;
 				switch ( $term ) {
 					case 'country':
@@ -320,7 +336,7 @@ class WP_Meta extends Base {
 			$min = $min->startOfDay();
 		}
 
-		if ( ! empty( $interval ) ){
+		if ( ! empty( $interval ) ) {
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
 				$max = new \Carbon\Carbon( $interval['max'] );
@@ -334,7 +350,7 @@ class WP_Meta extends Base {
 		// If max has no Time set it to the end of the day
 		$max_has_time = array_filter( array( $max->hour, $max->minute, $max->second ) );
 		$max_has_time = ! empty( $max_has_time );
-		if ( ! $max_has_time ){
+		if ( ! $max_has_time ) {
 			$max = $max->endOfDay();
 		}
 

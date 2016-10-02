@@ -88,7 +88,7 @@ class Attachment extends Base {
 			),
 		);
 
-		if ( Plugin::get( array( '500px', 'key' ), false ) ) {
+		if ( FakerPress\Plugin::get( array( '500px', 'key' ), false ) ) {
 			$providers[] = array(
 				'id'   => '500px',
 				'text' => esc_attr__( '500px', 'fakerpress' ),
