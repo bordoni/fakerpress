@@ -56,11 +56,11 @@ class Meta extends Base {
 		$this->data['meta_key'] = null;
 		$this->data['meta_value'] = null;
 
-		if ( empty( $type ) ){
+		if ( empty( $type ) ) {
 			return $this;
 		}
 
-		if ( empty( $name ) ){
+		if ( empty( $name ) ) {
 			return $this;
 		}
 
@@ -68,7 +68,10 @@ class Meta extends Base {
 
 		unset( $args['name'], $args['type'] );
 
-		if ( is_callable( array( $this->faker, 'meta_type_' . $type ) ) ){
+		// Pass which object we are dealing with
+		$this->faker->set_meta_object( $this->object_name, $this->object_id );
+
+		if ( is_callable( array( $this->faker, 'meta_type_' . $type ) ) ) {
 			$this->data['meta_value'] = call_user_func_array( array( $this->faker, 'meta_type_' . $type ), $args );
 		} else {
 			$this->data['meta_value'] = reset( $args );
@@ -80,15 +83,15 @@ class Meta extends Base {
 	public function do_save( $return_val, $data, $module ) {
 		$status = false;
 
-		if ( ! isset( $data['meta_value'] ) ){
+		if ( ! isset( $data['meta_value'] ) ) {
 			return false;
 		}
 
-		if ( empty( $data['meta_key'] ) ){
+		if ( empty( $data['meta_key'] ) ) {
 			return false;
 		}
 
-		if ( ! is_null( $data['meta_value'] ) ){
+		if ( ! is_null( $data['meta_value'] ) ) {
 			$status = update_metadata( $this->object_name, $this->object_id, $data['meta_key'], $data['meta_value'] );
 		}
 		return $status;

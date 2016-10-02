@@ -2,7 +2,7 @@
 namespace FakerPress;
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ){
+if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
@@ -12,13 +12,8 @@ require_once plugin_dir_path( __FP_FILE__ ) . 'inc' . DIRECTORY_SEPARATOR . 'cla
 // Create the Plugin static instance
 $FakerPress = new Plugin;
 
-// Include the Faker Main Class
-require_once Plugin::path( 'inc/vendor/Faker/src/autoload.php' );
-
-// Include the Carbon class to deal with dates
-if ( ! class_exists( 'Carbon\Carbon' ) ){
-	require_once Plugin::path( 'inc/vendor/Carbon/Carbon.php' );
-}
+// Load Composer Vendor Modules
+require_once Plugin::path( 'vendor/autoload.php' );
 
 // Include the Carbon class to deal with dates
 require_once Plugin::path( 'inc/class-fp-dates.php' );

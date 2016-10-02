@@ -2,7 +2,7 @@
 namespace FakerPress;
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ){
+if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
@@ -63,11 +63,11 @@ class Field {
 		$this->error = false;
 
 		// Non Valid types are just set to Raw
-		if ( ! self::is_valid_type( $type ) ){
+		if ( ! self::is_valid_type( $type ) ) {
 			$type = 'raw';
 		}
 
-		if ( is_string( $field ) ){
+		if ( is_string( $field ) ) {
 			$this->field = (object) array(
 				'id' => $field,
 			);
@@ -80,7 +80,7 @@ class Field {
 
 		// set the ID
 		$this->type = $type;
-		if ( ! isset( $this->field->id ) ){
+		if ( ! isset( $this->field->id ) ) {
 			$this->id = (array) self::abbr( uniqid() );
 		} else {
 			$this->id = (array) $this->field->id;
@@ -91,6 +91,7 @@ class Field {
 
 		$this->label = $container->label;
 		$this->description = $container->description;
+		$this->attributes = $container->attributes;
 		$this->actions = $container->actions;
 		$this->blocks = $container->blocks;
 		$this->class = $container->class;
@@ -112,7 +113,7 @@ class Field {
 			// filter the output
 			$field = apply_filters( self::plugin . '/fields/field-output-' . $this->type, $field, $this );
 
-			if ( $print ){
+			if ( $print ) {
 				echo balanceTags( $field );
 			} else {
 				return $field;
@@ -125,12 +126,16 @@ class Field {
 	public function build( $content, $output = 'string', $html = array() ) {
 		$content = (array) $content;
 		$key = array_search( 'fields', $this->blocks );
+		$is_multiple = is_array( reset( $content ) );
+		if ( ! $is_multiple ) {
+			$content = array( $content );
+		}
 
 		$before = array_filter( array_slice( $this->blocks, 0, $key ), 'is_array' );
 		$before_content = array();
 		foreach ( $before as $i => $block ) {
 			$_html = '';
-			if ( ! empty( $block['html'] ) ){
+			if ( ! empty( $block['html'] ) ) {
 				$_html = $block['html'];
 				unset( $block['html'] );
 			}
@@ -141,37 +146,47 @@ class Field {
 		$after_content = array();
 		foreach ( $after as $i => $block ) {
 			$_html = '';
-			if ( ! empty( $block['html'] ) ){
+			if ( ! empty( $block['html'] ) ) {
 				$_html = $block['html'];
 				unset( $block['html'] );
 			}
 			$after_content[] = '<td' . self::attr( $block ) . '>' . $_html . '</td>';
 		}
 
-		if ( in_array( 'table', $this->blocks ) ){
-			$html[] = self::start_table( $this );
+		if ( in_array( 'heading', $this->blocks ) ) {
+			$html[] = self::type_heading( array(
+				'type' => 'heading',
+				'title' => $this->label,
+				'description' => $this->description,
+			), null, 'string' );
 		}
 
-		$html[] = self::start_container( $this );
-		$html[] = implode( "\r\n", $before_content );
+		foreach ( $content as $blocks ) {
+			if ( in_array( 'table', $this->blocks ) ) {
+				$html[] = self::start_table( $this );
+			}
 
-		if ( in_array( 'label', $this->blocks ) ){
-			$html[] = self::label( $this );
+			$html[] = self::start_container( $this );
+			$html[] = implode( "\r\n", $before_content );
+
+			if ( in_array( 'label', $this->blocks ) ) {
+				$html[] = self::label( $this );
+			}
+
+			$html[] = self::start_wrap( $this );
+			$html[] = implode( "\r\n", $blocks );
+			$html[] = self::end_wrap( $this );
+
+			$html[] = implode( "\r\n", $after_content );
+
+			$html[] = self::end_container( $this );
+
+			if ( in_array( 'table', $this->blocks ) ) {
+				$html[] = self::end_table( $this );
+			}
 		}
 
-		$html[] = self::start_wrap( $this );
-		$html[] = implode( "\r\n", $content );
-		$html[] = self::end_wrap( $this );
-
-		$html[] = implode( "\r\n", $after_content );
-
-		$html[] = self::end_container( $this );
-
-		if ( in_array( 'table', $this->blocks ) ){
-			$html[] = self::end_table( $this );
-		}
-
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -179,18 +194,12 @@ class Field {
 	}
 
 	public static function start_table( $container, $output = 'string', $html = array() ) {
-		$html[] = self::type_heading( array(
-			'type' => 'heading',
-			'title' => $container->label,
-			'description' => $container->description,
-		), null, 'string' );
-
 		$html[] = '<table class="' . self::abbr( 'table-' . implode( '-', $container->id ) ) . '">';
-		if ( ! empty( $container->heads ) ){
+		if ( ! empty( $container->heads ) ) {
 			$html[] = '<thead>';
 			foreach ( $container->heads as $head ) {
 				$_html = '';
-				if ( ! empty( $head['html'] ) ){
+				if ( ! empty( $head['html'] ) ) {
 					$_html = $head['html'];
 					unset( $head['html'] );
 				}
@@ -201,7 +210,7 @@ class Field {
 		$html[] = '<tbody>';
 
 		$html = apply_filters( self::plugin . '/fields/field-start_table', $html, $container );
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -213,7 +222,7 @@ class Field {
 		$html[] = '</table>';
 
 		$html = apply_filters( self::plugin . '/fields/field-end_table', $html, $container );
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -221,24 +230,24 @@ class Field {
 	}
 
 	public static function start_container( $container, $output = 'string', $html = array() ) {
-		if ( ! is_array( $container->class ) ){
+		if ( ! is_array( $container->class ) ) {
 			$container->class = (array) $container->class;
 		}
 		$container->class[] = 'field-container';
 		$container->class[] = 'type-' . $container->type . '-container';
 
-		if ( is_wp_error( $container->error ) ){
+		if ( is_wp_error( $container->error ) ) {
 			$container->class[] = 'error';
 		}
 
 		$container->class = array_map( array( __CLASS__, 'abbr' ), $container->class );
 
-		if ( ! in_array( 'table', $container->blocks ) ){
-			$html[] = '<tr id="' . self::id( $container->id, true ) . '" class="' . implode( ' ', $container->class ) . '">';
+		if ( ! in_array( 'table', $container->blocks ) ) {
+			$html[] = '<tr id="' . self::id( $container->id, true ) . '" class="' . implode( ' ', $container->class ) . '" ' . self::attr( $container->attributes ) . '>';
 		}
 
 		$html = apply_filters( self::plugin . '/fields/field-start_container', $html, $container );
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -246,12 +255,12 @@ class Field {
 	}
 
 	public static function end_container( $container, $output = 'string', $html = array() ) {
-		if ( ! in_array( 'table', $container->blocks ) ){
+		if ( ! in_array( 'table', $container->blocks ) ) {
 			$html[] = '</tr>';
 		}
 
 		$html = apply_filters( self::plugin . '/fields/field-end_container', $html, $container );
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -264,16 +273,16 @@ class Field {
 		$attributes->class[] = 'type-' . $field->type . '-wrap';
 
 		$html = array();
-		if ( ! empty( $content ) ){
+		if ( ! empty( $content ) ) {
 			$html[] = '<fieldset' . self::attr( $attributes ) . '>';
 			$html[] = implode( "\r\n", (array) $content );
-			if ( ! empty( $field->label ) ){
+			if ( ! empty( $field->label ) ) {
 				$html[] = '<label class="' . self::abbr( 'internal-label' ) . '">' . $field->label . '</label>';
 			}
 			$html[] = '</fieldset>';
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -283,7 +292,7 @@ class Field {
 	public static function start_wrap( $container, $output = 'string', $html = array() ) {
 		$container->wrap['class'][] = 'field-wrap';
 		$container->wrap['class'][] = 'type-' . $container->type . '-wrap';
-		if ( in_array( 'fields', $container->blocks ) ){
+		if ( in_array( 'fields', $container->blocks ) ) {
 			$html[] = '<td colspan="1">';
 			$html[] = '<fieldset' . self::attr( $container->wrap ) . '>';
 		} elseif ( ! in_array( 'table', $container->blocks ) ) {
@@ -292,7 +301,7 @@ class Field {
 		}
 
 		$html = apply_filters( self::plugin . '/fields/field-start_wrap', $html, $container );
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -300,23 +309,23 @@ class Field {
 	}
 
 	public static function end_wrap( $container, $output = 'string', $html = array() ) {
-		if ( in_array( 'actions', $container->blocks ) ){
+		if ( in_array( 'actions', $container->blocks ) ) {
 			$html[] = self::actions( $container );
 		}
 
-		if ( in_array( 'fields', $container->blocks ) && ! in_array( 'table', $container->blocks ) ){
+		if ( in_array( 'fields', $container->blocks ) && ! in_array( 'table', $container->blocks ) ) {
 			$html[] = '</fieldset>';
 		}
 
-		if ( in_array( 'description', $container->blocks ) ){
+		if ( in_array( 'description', $container->blocks ) ) {
 			$html[] = self::description( $container );
 		}
-		if ( ! in_array( 'table', $container->blocks ) ){
+		if ( ! in_array( 'table', $container->blocks ) ) {
 			$html[] = '</td>';
 		}
 
 		$html = apply_filters( self::plugin . '/fields/field-end_wrap', $html, $container );
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -335,7 +344,7 @@ class Field {
 		$html[] = '</' . ( $is_td ? 'td' : 'th' ) . '>';
 
 		$html = apply_filters( self::plugin . '/fields/field-label', $html, $container );
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -354,7 +363,7 @@ class Field {
 		$html[] = '</div>';
 
 		$html = apply_filters( self::plugin . '/fields/field-actions', $html, $container );
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -367,7 +376,7 @@ class Field {
 		}
 
 		$html = apply_filters( self::plugin . '/fields/field-description', $html, $container );
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -389,45 +398,45 @@ class Field {
 	}
 
 	public static function id( $id = array(), $container = false ) {
-		if ( ! is_array( $id ) ){
+		if ( ! is_array( $id ) ) {
 			$id = (array) $id;
 		}
-		if ( $container ){
+		if ( $container ) {
 			$id[] = 'container';
 		}
 		return self::plugin . '-field-' . implode( '-', (array) $id );
 	}
 
 	public static function attr( $attributes = array(), $html = array() ) {
-		if ( is_scalar( $attributes ) ){
+		if ( is_scalar( $attributes ) ) {
 			return false;
 		}
 
 		$attributes = (array) $attributes;
 
 		foreach ( $attributes as $key => $value ) {
-			if ( is_null( $value ) || false === $value ){
+			if ( is_null( $value ) || false === $value ) {
 				continue;
 			}
 
-			if ( 'label' === $key ){
+			if ( 'label' === $key ) {
 				continue;
 			}
 
-			if ( '_' === substr( $key, 0, 1 ) ){
+			if ( '_' === substr( $key, 0, 1 ) ) {
 				$key = substr_replace( $key, 'data-', 0, 1 );
 			}
 
-			if ( 'class' === $key && ! is_array( $value ) ){
+			if ( 'class' === $key && ! is_array( $value ) ) {
 				$value = (array) $value;
 			}
 
 			$attr = $key;
 
 			if ( ! is_scalar( $value ) ) {
-				if ( 'class' === $key ){
+				if ( 'class' === $key ) {
 					$value = array_map( array( __CLASS__, 'abbr' ), (array) $value );
-					if ( in_array( 'fp-type-button', $value ) ){
+					if ( in_array( 'fp-type-button', $value ) ) {
 						$value[] = 'button';
 					}
 					$value = array_map( 'sanitize_html_class', $value );
@@ -436,7 +445,7 @@ class Field {
 					$value = htmlspecialchars( json_encode( $value ), ENT_QUOTES, 'UTF-8' );
 				}
 			}
-			if ( ! is_bool( $value ) || true !== $value ){
+			if ( ! is_bool( $value ) || true !== $value ) {
 				$attr .= '="' . $value . '"';
 			}
 
@@ -447,19 +456,19 @@ class Field {
 	}
 
 	public static function parse( $field, &$container = null ) {
-		if ( is_scalar( $field ) ){
-			if ( ! is_string( $field ) ){
+		if ( is_scalar( $field ) ) {
+			if ( ! is_string( $field ) ) {
 				return false;
 			}
 
 			$field = (object) array(
 				'type' => $field,
 			);
-		} elseif ( is_array( $field ) ){
+		} elseif ( is_array( $field ) ) {
 			$field = (object) $field;
 		}
 
-		if ( ! is_a( $container, __CLASS__ ) ){
+		if ( ! is_a( $container, __CLASS__ ) ) {
 			$container = (object) wp_parse_args( $container, self::$default_container );
 		}
 		if ( ! isset( $container->id ) ) {
@@ -471,7 +480,7 @@ class Field {
 		// Setup Private Attributes (_*)
 		if ( isset( $field->_id ) ) {
 
-		} elseif ( empty( $field->id ) ){
+		} elseif ( empty( $field->id ) ) {
 			$field->_id = (array) $container->id;
 		} else {
 			$field->_id = (array) $field->id;
@@ -479,14 +488,14 @@ class Field {
 
 		if ( isset( $field->_name ) ) {
 
-		} elseif ( ! isset( $field->name ) ){
+		} elseif ( ! isset( $field->name ) ) {
 			$field->_name = (array) ( isset( $container->field->name ) ? $container->field->name : $field->_id );
 		} else {
 			$field->_name = (array) $field->name;
 		}
 
 		// Setup Public Attributes
-		if ( empty( $field->type ) ){
+		if ( empty( $field->type ) ) {
 			$field->type = $container->type;
 		}
 		$field->_type = $field->type;
@@ -496,11 +505,11 @@ class Field {
 
 		switch ( $field->type ) {
 			case 'heading':
-				if ( ! isset( $field->title ) ){
+				if ( ! isset( $field->title ) ) {
 					$field->title = '';
 				}
 
-				if ( ! isset( $field->description ) ){
+				if ( ! isset( $field->description ) ) {
 					$field->description = '';
 				}
 
@@ -509,8 +518,16 @@ class Field {
 				break;
 			case 'meta':
 			case 'taxonomy':
-				if ( ! isset( $container->label ) ){
+				if ( ! isset( $container->label ) ) {
 					$container->label = '';
+				}
+
+				if ( ! isset( $field->config ) ) {
+					$field->config = array();
+				}
+
+				if ( ! isset( $field->index ) ) {
+					$field->index = 0;
 				}
 
 				$container->has_label = false;
@@ -520,12 +537,12 @@ class Field {
 				# code...
 				break;
 			case 'text':
-				if ( empty( $field->size ) ){
+				if ( empty( $field->size ) ) {
 					$field->size = 'medium';
 				}
 				break;
 			case 'number':
-				if ( empty( $field->size ) ){
+				if ( empty( $field->size ) ) {
 					$field->size = 'tiny';
 				}
 				break;
@@ -533,21 +550,21 @@ class Field {
 			case 'checkbox':
 				unset( $field->size );
 
-				if ( ! isset( $field->options ) ){
+				if ( ! isset( $field->options ) ) {
 					$field->options = array();
 				}
 				$field->options = (array) $field->options;
 
 				break;
 			case 'dropdown':
-				if ( isset( $field->multiple ) && $field->multiple ){
+				if ( isset( $field->multiple ) && $field->multiple ) {
 					$field->type = 'hidden';
 
-					if ( isset( $field->{'data-tags'} ) && true === $field->{'data-tags'} && empty( $field->{'data-separator'} ) ){
+					if ( isset( $field->{'data-tags'} ) && true === $field->{'data-tags'} && empty( $field->{'data-separator'} ) ) {
 						$field->{'data-separator'} = ',';
 					}
 				} else {
-					if ( ! isset( $field->options ) ){
+					if ( ! isset( $field->options ) ) {
 						$field->options = array();
 					}
 					$field->options = (array) $field->options;
@@ -569,13 +586,13 @@ class Field {
 		$field = apply_filters( self::plugin . '/fields/field-' . $field->_type, $field, $container );
 		$container = apply_filters( self::plugin . '/fields/container-' . $field->_type, $container, $field );
 
-		if ( ! empty( $field->class ) ){
+		if ( ! empty( $field->class ) ) {
 			$field->class = (array) $field->class;
 		}
 		$field->class[] = 'field';
 		$field->class[] = 'type-' . $field->_type;
 
-		if ( ! empty( $field->size ) ){
+		if ( ! empty( $field->size ) ) {
 			$field->class[] = 'size-' . $field->size;
 		}
 
@@ -588,19 +605,19 @@ class Field {
 
 	public static function type_input( $field, $container = null, $output = 'string', $html = array() ) {
 		$field = self::parse( $field, $container );
-		if ( is_scalar( $field ) ){
+		if ( is_scalar( $field ) ) {
 			return false;
 		}
 
 		$content[] = '<input' . self::attr( $field ) . '/>';
 
-		if ( is_a( $container, __CLASS__ ) ){
+		if ( is_a( $container, __CLASS__ ) ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -629,23 +646,23 @@ class Field {
 
 	public static function type_heading( $field, $container = null, $output = 'string', $html = array() ) {
 		$field = self::parse( $field, $container );
-		if ( is_scalar( $field ) ){
+		if ( is_scalar( $field ) ) {
 			return false;
 		}
 
 		$content[] = '<h3>' . $field->title . '</h3>';
 
-		if ( ! empty( $field->description ) ){
+		if ( ! empty( $field->description ) ) {
 			$content[] = '<div class="' . self::abbr( 'field-description' ) . '">' . $field->description . '</div>';
 		}
 
-		if ( is_a( $container, __CLASS__ ) ){
+		if ( is_a( $container, __CLASS__ ) ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -654,22 +671,22 @@ class Field {
 
 	public static function type_radio( $field, $container = null, $output = 'string', $html = array() ) {
 		$field = self::parse( $field, $container );
-		if ( is_scalar( $field ) ){
+		if ( is_scalar( $field ) ) {
 			return false;
 		}
 
 		foreach ( $field->options as $opt ) {
 			$radio = clone $field;
-			if ( isset( $opt['value'] ) ){
+			if ( isset( $opt['value'] ) ) {
 				$radio->_id[] = sanitize_html_class( $opt['value'] );
 				$radio->value = $opt['value'];
 			}
 
-			if ( ! empty( $opt['class'] ) ){
+			if ( ! empty( $opt['class'] ) ) {
 				$radio->class = array_merge( $radio->class, (array) $opt['class'] );
 			}
 
-			if ( isset( $field->value ) && $field->value === $radio->value ){
+			if ( isset( $field->value ) && $field->value === $radio->value ) {
 				$radio->checked = true;
 			}
 
@@ -677,13 +694,13 @@ class Field {
 			$content[] = '<label class="' . self::abbr( 'field-label' ) . '" for="' . self::id( $radio->_id ) . '">' . $opt['text'] . '</label><br />';
 		}
 
-		if ( is_a( $container, __CLASS__ ) ){
+		if ( is_a( $container, __CLASS__ ) ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -692,22 +709,22 @@ class Field {
 
 	public static function type_checkbox( $field, $container = null, $output = 'string', $html = array() ) {
 		$field = self::parse( $field, $container );
-		if ( is_scalar( $field ) ){
+		if ( is_scalar( $field ) ) {
 			return false;
 		}
 
 		foreach ( $field->options as $opt ) {
 			$checkbox = clone $field;
-			if ( isset( $opt['value'] ) ){
+			if ( isset( $opt['value'] ) ) {
 				$checkbox->_id[] = sanitize_html_class( $opt['value'] );
 				$checkbox->value = $opt['value'];
 			}
 
-			if ( ! empty( $opt['class'] ) ){
+			if ( ! empty( $opt['class'] ) ) {
 				$checkbox->class = array_merge( $checkbox->class, (array) $opt['class'] );
 			}
 
-			if ( isset( $field->value ) && $field->value === $checkbox->value ){
+			if ( isset( $field->value ) && $field->value === $checkbox->value ) {
 				$checkbox->checked = true;
 			}
 
@@ -715,13 +732,13 @@ class Field {
 			$content[] = '<label class="' . self::abbr( 'field-label' ) . '" for="' . self::id( $checkbox->_id ) . '">' . $opt['text'] . '</label><br />';
 		}
 
-		if ( is_a( $container, __CLASS__ ) ){
+		if ( is_a( $container, __CLASS__ ) ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -730,11 +747,11 @@ class Field {
 
 	public static function type_dropdown( $field, $container = null, $output = 'string', $html = array() ) {
 		$field = self::parse( $field, $container );
-		if ( is_scalar( $field ) ){
+		if ( is_scalar( $field ) ) {
 			return false;
 		}
 
-		if ( isset( $field->multiple ) && $field->multiple ){
+		if ( isset( $field->multiple ) && $field->multiple ) {
 			$content[] = self::type_input( $field, null, 'string', array() );
 		} else {
 			$content[] = '<select' . self::attr( $field ) . '>';
@@ -742,15 +759,15 @@ class Field {
 			foreach ( $field->options as $option ) {
 				$option = (array) $option;
 
-				if ( ! isset( $option['value'] ) && isset( $option['id'] ) ){
+				if ( ! isset( $option['value'] ) && isset( $option['id'] ) ) {
 					$option['value'] = $option['id'];
-				} elseif ( ! isset( $option['value'] ) && isset( $option['ID'] ) ){
+				} elseif ( ! isset( $option['value'] ) && isset( $option['ID'] ) ) {
 					$option['value'] = $option['ID'];
 				} elseif ( ! isset( $option['value'] ) ) {
 					$option['value'] = false;
 				}
 
-				if ( isset( $field->value ) && $field->value === $option['value'] ){
+				if ( isset( $field->value ) && $field->value === $option['value'] ) {
 					$option['selected'] = true;
 				}
 				$content[] = '<option' . self::attr( $option ) . '>' . esc_attr( $option['text'] ) . '</option>';
@@ -758,13 +775,13 @@ class Field {
 			$content[] = '</select>';
 		}
 
-		if ( is_a( $container, __CLASS__ ) ){
+		if ( is_a( $container, __CLASS__ ) ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -773,7 +790,7 @@ class Field {
 
 	public static function type_range( $field, $container = null, $output = 'string', $html = array() ) {
 		$field = self::parse( $field, $container );
-		if ( is_scalar( $field ) ){
+		if ( is_scalar( $field ) ) {
 			return false;
 		}
 
@@ -784,15 +801,15 @@ class Field {
 		$min->{'data-type'} = 'min';
 		$min->min = 0;
 
-		if ( isset( $field->min ) && is_numeric( $field->min ) ){
+		if ( isset( $field->min ) && is_numeric( $field->min ) ) {
 			$min->value = $field->min;
 		}
 
-		if ( isset( $field->_max ) && is_numeric( $field->_max ) ){
+		if ( isset( $field->_max ) && is_numeric( $field->_max ) ) {
 			$min->max = $field->_max;
 		}
 
-		if ( isset( $field->_min ) && is_numeric( $field->_min ) ){
+		if ( isset( $field->_min ) && is_numeric( $field->_min ) ) {
 			$min->min = $field->_min;
 		}
 
@@ -806,17 +823,17 @@ class Field {
 		$max->type = 'number';
 		$max->min = 0;
 
-		if ( isset( $field->max ) && is_numeric( $field->max ) ){
+		if ( isset( $field->max ) && is_numeric( $field->max ) ) {
 			$max->value = $field->max;
 		} else {
 			$max->disabled = true;
 		}
 
-		if ( isset( $field->_max ) && is_numeric( $field->_max ) ){
+		if ( isset( $field->_max ) && is_numeric( $field->_max ) ) {
 			$max->max = $field->_max;
 		}
 
-		if ( isset( $field->_min ) && is_numeric( $field->_min ) ){
+		if ( isset( $field->_min ) && is_numeric( $field->_min ) ) {
 			$max->min = $field->_min;
 		}
 
@@ -827,13 +844,13 @@ class Field {
 		$content[] = '<div title="' . esc_attr__( 'To', 'fakerpress' ) . '" class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
 		$content[] = self::type_input( $max, null, 'string', array() );
 
-		if ( is_a( $container, __CLASS__ ) ){
+		if ( is_a( $container, __CLASS__ ) ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -842,7 +859,7 @@ class Field {
 
 	public static function type_taxonomy( $field, $container = null, $output = 'string', $html = array() ) {
 		$field = self::parse( $field, $container );
-		if ( is_scalar( $field ) ){
+		if ( is_scalar( $field ) ) {
 			return false;
 		}
 
@@ -894,7 +911,9 @@ class Field {
 				'html' => '',
 				'class' => 'order-table',
 			),
-			'label', 'fields', 'description',
+			'label',
+			'fields',
+			'description',
 			array(
 				'html' => '',
 				'class' => 'actions-table',
@@ -986,13 +1005,13 @@ class Field {
 
 		$content = $table->build( $content );
 
-		if ( is_a( $container, __CLASS__ ) ){
+		if ( is_a( $container, __CLASS__ ) ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -1001,7 +1020,7 @@ class Field {
 
 	public static function type_meta( $field, $container = null, $output = 'string', $html = array() ) {
 		$field = self::parse( $field, $container );
-		if ( is_scalar( $field ) ){
+		if ( is_scalar( $field ) ) {
 			return false;
 		}
 
@@ -1009,7 +1028,7 @@ class Field {
 		$index->_id[] = 'index';
 		$index->_name[] = 'index';
 		$index->type = 'button';
-		$index->value = '1';
+		$index->value = $field->index + 1;
 		$index->disabled = true;
 		$index->class = array( 'action-order' );
 
@@ -1048,79 +1067,104 @@ class Field {
 				'class' => 'actions-table',
 			),
 		);
-		$blocks = array(
+
+		$container_blocks = array(
 			array(
 				'html' => '',
 				'class' => 'order-table',
 			),
-			'label', 'fields',
+			'label',
+			'fields',
 			array(
 				'html' => '',
 				'class' => 'actions-table',
 			),
 		);
 
-		$meta_type = clone $container;
-		$meta_type->id[] = 'type';
-		$meta_type->type .= '_type';
-		$meta_type->label = __( 'Type', 'fakerpress' );
-		$meta_type->description = __( 'Select a type of the Meta Field', 'fakerpress' );
-		$meta_type->class = array( 'meta_type-container' );
-		$meta_type->blocks = $blocks;
+		// Store the Configuration
+		$configuration = $field->config;
 
-		$meta_name = clone $container;
-		$meta_name->id[] = 'name';
-		$meta_name->type .= '_name';
-		$meta_name->label = __( 'Name', 'fakerpress' );
-		$meta_name->description = __( 'Select the name for Meta Field', 'fakerpress' );
-		$meta_name->class = array( 'meta_name-container' );
-		$meta_name->blocks = $blocks;
+		// Prevents Unwanted Attributes
+		unset( $field->config );
 
-		$meta_conf = clone $container;
-		$meta_conf->id[] = 'conf';
-		$meta_conf->type .= '_conf';
-		$meta_conf->label = __( 'Configuration', 'fakerpress' );
-		$meta_conf->description = __( '', 'fakerpress' );
-		$meta_conf->class = array( 'meta_conf-container' );
-		$meta_conf->blocks = $blocks;
+		foreach ( $configuration as $index => $config ) {
+			$type = clone $field;
+			$type->_id[] = 'type';
+			$type->_name[] = 'type';
+			$type->type = 'dropdown';
+			$type->options = self::get_meta_types();
+			$type->class = array( 'meta_type' );
+			$type->placeholder = esc_attr__( 'Select a Field type', 'fakerpress' );
+			if ( isset( $config['type'] ) ) {
+				$type->value = $config['type'];
+			}
 
-		$type = clone $field;
-		$type->_id[] = 'type';
-		$type->_name[] = 'type';
-		$type->type = 'dropdown';
-		$type->options = self::get_meta_types();
-		$type->class = array( 'meta_type' );
-		$type->placeholder = esc_attr__( 'Select a Field type', 'fakerpress' );
+			$name = clone $field;
+			$name->_id[] = 'name';
+			$name->_name[] = 'name';
+			$name->type = 'text';
+			$name->class = array( 'meta_name' );
+			$name->placeholder = esc_attr__( 'Newborn Meta needs a Name, E.g.: _new_image', 'fakerpress' );
+			if ( isset( $config['name'] ) ) {
+				$name->value = $config['name'];
+			}
 
-		$name = clone $field;
-		$name->_id[] = 'name';
-		$name->_name[] = 'name';
-		$name->type = 'text';
-		$name->class = array( 'meta_name' );
-		$name->placeholder = esc_attr__( 'Newborn Meta needs a Name, E.g.: _new_image', 'fakerpress' );
+			$containers = (object) array();
 
-		$content[] = $meta_type->build( self::type_dropdown( $type, null, 'string' ) );
-		$content[] = $meta_name->build( self::type_text( $name, null, 'string' ) );
-		$content[] = $meta_conf->build( '' );
+			$containers->type = clone $container;
+			$containers->type->id[] = 'type';
+			$containers->type->type .= '_type';
+			$containers->type->label = __( 'Type', 'fakerpress' );
+			$containers->type->description = __( 'Select a type of the Meta Field', 'fakerpress' );
+			$containers->type->class = array( 'meta_type-container' );
+			$containers->type->blocks = $container_blocks;
+
+			$containers->name = clone $container;
+			$containers->name->id[] = 'name';
+			$containers->name->type .= '_name';
+			$containers->name->label = __( 'Name', 'fakerpress' );
+			$containers->name->description = __( 'Select the name for Meta Field', 'fakerpress' );
+			$containers->name->class = array( 'meta_name-container' );
+			$containers->name->blocks = $container_blocks;
+
+			$containers->conf = clone $container;
+			$containers->conf->id[] = 'conf';
+			$containers->conf->type .= '_conf';
+			$containers->conf->label = __( 'Configuration', 'fakerpress' );
+			$containers->conf->description = __( '', 'fakerpress' );
+			$containers->conf->class = array( 'meta_conf-container' );
+			$containers->conf->blocks = $container_blocks;
+			$containers->conf->attributes = array(
+				'data-config' => $config,
+			);
+
+			$content[] = array(
+				$containers->type->build( self::type_dropdown( $type, null, 'string' ) ),
+				$containers->name->build( self::type_text( $name, null, 'string' ) ),
+				$containers->conf->build( '' ),
+			);
+
+		}
 
 		$content = $table->build( $content );
 
-		if ( is_a( $container, __CLASS__ ) ){
+		if ( is_a( $container, __CLASS__ ) ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
 		}
 
+		// Creates Templates for generating Meta via JavaScript
 		foreach ( $type->options as $key => $ftype ) {
 			$is_callable = ( isset( $ftype->template ) && is_callable( $ftype->template ) );
 			$html[] = '<script type="text/html" data-rel="' . self::id( $container->id, true ) . '" class="' . self::abbr( 'template-' . $ftype->value ) . '"' . ( $is_callable ? ' data-callable' : '' ) . '>';
-			if ( $is_callable ){
+			if ( $is_callable ) {
 				$html[] = call_user_func_array( $ftype->template, array( $field, $ftype ) );
 			}
 			$html[] = '</script>';
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -1167,7 +1211,7 @@ class Field {
 		$types->numbers = array(
 			'value' => 'numbers',
 			'text' => __( 'Number', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$range = clone $field;
 				$range->_id = array( 'meta', 'number' );
 				$range->_name = array( 'meta', 'number' );
@@ -1186,7 +1230,7 @@ class Field {
 		$types->wp_query = array(
 			'value' => 'wp_query',
 			'text' => __( 'WP_Query', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$query = clone $field;
 				$query->_id = array( 'meta', 'query' );
 				$query->_name = array( 'meta', 'query' );
@@ -1203,10 +1247,52 @@ class Field {
 			},
 		);
 
+		$types->attachment = array(
+			'value' => 'attachment',
+			'text' => __( 'Attachment', 'fakerpress' ),
+			'template' => function( $field, $type ) use ( $default ) {
+				$store = clone $field;
+				$store->_id = array( 'meta', 'store' );
+				$store->_name = array( 'meta', 'store' );
+				$store->type = 'dropdown';
+				$store->value = 'id';
+				$store->options = array(
+					array(
+						'id' => 'id',
+						'text' => esc_attr__( 'Attachment ID' ),
+					),
+					array(
+						'id' => 'url',
+						'text' => esc_attr__( 'Attachment URL' ),
+					),
+				);
+				$store->class = array();
+				$store->placeholder = __( 'Which value should be saved on the Meta', 'fakerpress' );
+				$store->label = __( 'Stored Data', 'fakerpress' );
+
+				$providers = clone $field;
+				$providers->_id = array( 'meta', 'provider' );
+				$providers->_name = array( 'meta', 'provider' );
+				$providers->type = 'dropdown';
+				$providers->class = array();
+				$providers->multiple = true;
+				$providers->placeholder = __( 'Select at one Provider', 'fakerpress' );
+				$providers->label = __( 'Which image services will the generator use?', 'fakerpress' );
+				$providers->value = implode( ',', wp_list_pluck( Module\Attachment::get_providers(), 'id' ) );
+				$providers->{'data-options'} = Module\Attachment::get_providers();
+
+				$html[] = Field::wrapper( Field::type_dropdown( $store, null, 'string' ), $store );
+				$html[] = Field::wrapper( Field::type_dropdown( $providers, null, 'string' ), $providers );
+				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
+
+				return implode( "\r\n", $html );
+			},
+		);
+
 		$types->elements = array(
 			'value' => 'elements',
 			'text' => __( 'Elements', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$tags = clone $field;
 				$tags->_id = array( 'meta', 'elements' );
 				$tags->_name = array( 'meta', 'elements' );
@@ -1230,7 +1316,7 @@ class Field {
 		$types->letter = array(
 			'value' => 'letter',
 			'text' => __( 'Letter', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1240,7 +1326,7 @@ class Field {
 		$types->words = array(
 			'value' => 'words',
 			'text' => __( 'Words', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 
 				$html[] = Field::wrapper( Field::type_range( $default->qty, null, 'string' ), $default->qty );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
@@ -1286,7 +1372,7 @@ class Field {
 		$types->html = array(
 			'value' => 'html',
 			'text' => __( 'HTML', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$elements = clone $field;
 				$elements->_id = array( 'meta', 'elements' );
 				$elements->_name = array( 'meta', 'elements' );
@@ -1309,7 +1395,7 @@ class Field {
 		$types->lexify = array(
 			'value' => 'lexify',
 			'text' => __( 'Lexify', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$template = clone $field;
 				$template->_id = array( 'meta', 'template' );
 				$template->_name = array( 'meta', 'template' );
@@ -1328,7 +1414,7 @@ class Field {
 		$types->asciify = array(
 			'value' => 'asciify',
 			'text' => __( 'Asciify', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$template = clone $field;
 				$template->_id = array( 'meta', 'template' );
 				$template->_name = array( 'meta', 'template' );
@@ -1347,7 +1433,7 @@ class Field {
 		$types->regexify = array(
 			'value' => 'regexify',
 			'text' => __( 'Regexify', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$template = clone $field;
 				$template->_id = array( 'meta', 'template' );
 				$template->_name = array( 'meta', 'template' );
@@ -1366,7 +1452,7 @@ class Field {
 		$types->person = array(
 			'value' => 'person',
 			'text' => __( 'Person', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$template = clone $field;
 				$template->_id = array( 'meta', 'template' );
 				$template->_name = array( 'meta', 'template' );
@@ -1425,7 +1511,7 @@ class Field {
 		$types->geo = array(
 			'value' => 'geo',
 			'text' => __( 'Geo Information', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$template = clone $field;
 				$template->_id = array( 'meta', 'template' );
 				$template->_name = array( 'meta', 'template' );
@@ -1513,7 +1599,7 @@ class Field {
 		$types->phone = array(
 			'value' => 'company',
 			'text' => __( 'Company', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$template = clone $field;
 				$template->_id = array( 'meta', 'template' );
 				$template->_name = array( 'meta', 'template' );
@@ -1553,7 +1639,7 @@ class Field {
 		$types->date = array(
 			'value' => 'date',
 			'text' => __( 'Date', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$template = clone $field;
 				$template->_id = array( 'meta', 'interval' );
 				$template->_name = array( 'meta', 'interval' );
@@ -1579,7 +1665,7 @@ class Field {
 		$types->timezone = array(
 			'value' => 'timezone',
 			'text' => __( 'TimeZone', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1589,7 +1675,7 @@ class Field {
 		$types->email = array(
 			'value' => 'email',
 			'text' => __( 'Email', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1599,7 +1685,7 @@ class Field {
 		$types->domain = array(
 			'value' => 'domain',
 			'text' => __( 'Domain', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1609,7 +1695,7 @@ class Field {
 		$types->ip = array(
 			'value' => 'ip',
 			'text' => __( 'IP', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1619,7 +1705,7 @@ class Field {
 		$types->user_agent = array(
 			'value' => 'user_agent',
 			'text' => __( 'Browser User Agent', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ){
+			'template' => function( $field, $type ) use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1634,7 +1720,7 @@ class Field {
 
 	public static function type_interval( $field, $container = null, $output = 'string', $html = array() ) {
 		$field = self::parse( $field, $container );
-		if ( is_scalar( $field ) ){
+		if ( is_scalar( $field ) ) {
 			return false;
 		}
 
@@ -1669,13 +1755,13 @@ class Field {
 		$content[] = '<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
 		$content[] = self::type_date( $max, null, 'string' );
 
-		if ( is_a( $container, __CLASS__ ) ){
+		if ( is_a( $container, __CLASS__ ) ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -1684,23 +1770,23 @@ class Field {
 
 	public static function type_raw( $field, $container = null, $output = 'string', $html = array() ) {
 		$field = self::parse( $field, $container );
-		if ( is_scalar( $field ) ){
+		if ( is_scalar( $field ) ) {
 			return false;
 		}
 
-		if ( ! empty( $field->html ) ){
+		if ( ! empty( $field->html ) ) {
 			$content[] = $field->html;
 		} else {
 			$content = '';
 		}
 
-		if ( is_a( $container, __CLASS__ ) ){
+		if ( is_a( $container, __CLASS__ ) ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $html );
 		} else {
 			return $html;
@@ -1710,7 +1796,7 @@ class Field {
 	/*
 
 	public static function type_textarea( $field, $container = null, $output = 'string' ) {
-		if ( is_array( $container ) ){
+		if ( is_array( $container ) ) {
 			$field[] = $this->start_container();
 			$field[] = $this->label();
 			$field[] = $this->start_wrap();
@@ -1718,12 +1804,12 @@ class Field {
 
 		$field[] = '<textarea' . $this->attr() . '>' . esc_html( stripslashes( $this->value ) ) . '</textarea>';
 
-		if ( is_array( $container ) ){
+		if ( is_array( $container ) ) {
 			$field[] = $this->end_wrap();
 			$field[] = $this->end_container();
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $field );
 		} else {
 			return $field;
@@ -1739,7 +1825,7 @@ class Field {
 		wp_editor( html_entity_decode( ( $this->value ) ), $this->name, $settings );
 		$editor = ob_get_clean();
 
-		if ( is_array( $container ) ){
+		if ( is_array( $container ) ) {
 			$field[] = $this->start_container();
 			$field[] = $this->label();
 			$field[] = $this->start_wrap();
@@ -1747,12 +1833,12 @@ class Field {
 
 		$field[] = $editor;
 
-		if ( is_array( $container ) ){
+		if ( is_array( $container ) ) {
 			$field[] = $this->end_wrap();
 			$field[] = $this->end_container();
 		}
 
-		if ( 'string' === $output ){
+		if ( 'string' === $output ) {
 			return implode( "\r\n", $field );
 		} else {
 			return $field;

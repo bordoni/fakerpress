@@ -343,6 +343,11 @@ window.fakerpress.fields.range = function( $, _ ){
 				},
 
 				update: function( $item ) {
+					// Render again the Configuration
+					this.render( $item );
+				},
+
+				render: function( $item ) {
 					var fieldset = this,
 						$type = $item.find( fieldset.selector.type ),
 						type = $type.select2( 'val' ),
@@ -354,7 +359,11 @@ window.fakerpress.fields.range = function( $, _ ){
 						$type_container = $item.find( fieldset.selector.type_container ),
 						$conf_container = $item.find( fieldset.selector.conf_container ),
 
-						$template;
+						$place = $conf_container.find( window.fakerpress.fieldset.selector.wrap ),
+						config = $conf_container.data( 'config' ),
+
+						$template,
+						template;
 
 					// Before constructing the Type Object check if it's a jQuery element (Select2 bug)
 					if ( type instanceof jQuery ){
@@ -363,14 +372,53 @@ window.fakerpress.fields.range = function( $, _ ){
 
 					// Find templates relevant to the current container
 					$template = $( '.fp-template-' + type ).filter( '[data-rel="' + fieldset.$.container.attr( 'id' ) + '"]' ).filter( '[data-callable]' );
+					template = $template.html();
 
-					if ( ! type || 0 === $template.length ){
+					// Only place if there is a template
+					if ( template && type !== $conf_container.data( 'type' ) ) {
+						$conf_container.data( 'type', type );
+						$place.empty().append( template );
+
+						this.configure( $conf_container );
+					}
+
+					// Make Styles Match the what needs to be done
+					if ( $place.is( ':empty' ) ){
 						$name_container.addClass( 'fp-last-child' );
 						$conf_container.hide();
 					} else {
 						$name_container.removeClass( 'fp-last-child' );
 						$conf_container.show();
 					}
+				},
+
+				/**
+				 * A way to setup the configuration fields for Meta
+				 *
+				 * @param  jQuery   $conf  The configuration Container
+				 *
+				 * @return null
+				 */
+				configure: function( $conf ) {
+					var config = $conf.data( 'config' ),
+						$fields = $conf.find( window.fakerpress.fieldset.selector.field );
+
+					// Reset the Configuration, only happens once!
+					$conf.removeAttr( 'data-config', false ).data( 'config', {} );
+
+					// Loop fields
+					$fields.each( function() {
+						var $field = $( this ),
+							name = $field.data( 'name' ),
+							index = name.length - 1,
+							key = name[ index ];
+
+						if ( 'undefined' === typeof config[ key ] ) {
+							return;
+						}
+
+						$field.val( config[ key ] );
+					} );
 				},
 
 				is_removeable: function() {
@@ -391,23 +439,13 @@ window.fakerpress.fields.range = function( $, _ ){
 					var fieldset = this;
 
 					fieldset.$.container.on( 'change', fieldset.selector.type, [], function( event ){
-						var $field = $( this ),
-							$item = $field.parents( fieldset.selector.item ),
-							$template = $( '.fp-template-' + event.added.id ).filter( '[data-rel="' + fieldset.$.container.attr( 'id' ) + '"]' ).filter( '[data-callable]' ),
-							template = $template.html(),
+						var $field = $( this );
 
-							$conf_container = $item.find( fieldset.selector.conf_container ),
-							$place = $conf_container.find( window.fakerpress.fieldset.selector.wrap );
-
-						$place.empty();
-
-						// Only place if there is a template
-						if ( 0 !== $template.length ){
-							$place.append( template );
-						}
+						// Render again the Configuration
+						fieldset.render( $field );
 
 						// Update all the required information
-						window.fakerpress.fieldset.update( fieldset );
+						window.fakerpress.fieldset.update( fieldset, false );
 					} );
 				},
 
@@ -527,6 +565,9 @@ window.fakerpress.fields.range = function( $, _ ){
 			} );
 
 			fieldset.setup();
+
+			// Update all the required information
+			this.update( fieldset, false );
 		},
 
 		reset: function( fieldset, $item ) {
@@ -571,7 +612,7 @@ window.fakerpress.fields.range = function( $, _ ){
 				// Change the index first
 				$index.val( index + 1 );
 
-				$fields.each( function(  ){
+				$fields.filter( 'input, textarea, select' ).each( function(  ){
 					var $field = $( this ),
 						$label = $field.next( window.fakerpress.fieldset.selector.label ),
 						$internal_label = $field.next( window.fakerpress.fieldset.selector.internal_label ),

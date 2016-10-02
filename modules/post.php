@@ -94,7 +94,7 @@ class Post extends Base {
 	public function do_save( $return_val, $data, $module ) {
 		$post_id = wp_insert_post( $data );
 
-		if ( ! is_numeric( $post_id ) ){
+		if ( ! is_numeric( $post_id ) ) {
 			return false;
 		}
 
@@ -116,7 +116,7 @@ class Post extends Base {
 			$qty = $this->faker->numberBetween( $min, $max );
 		}
 
-		if ( 0 === $qty ){
+		if ( 0 === $qty ) {
 			return esc_attr__( 'Zero is not a good number of posts to fake...', 'fakerpress' );
 		}
 
@@ -148,7 +148,6 @@ class Post extends Base {
 		$post_parents = Variable::super( $request, array( 'post_parent' ), FILTER_SANITIZE_STRING );
 		$post_parents = array_map( 'trim', explode( ',', $post_parents ) );
 
-		$featured_image_rate = absint( Variable::super( $request, array( 'featured_image_rate' ), FILTER_SANITIZE_NUMBER_INT ) );
 		$images_origin = array_map( 'trim', explode( ',', Variable::super( $request, array( 'images_origin' ), FILTER_SANITIZE_STRING ) ) );
 
 		// Fetch Taxonomies
@@ -174,19 +173,9 @@ class Post extends Base {
 			$generated = $this->generate();
 			$post_id = $generated->save();
 
-			if ( $post_id && is_numeric( $post_id ) ){
+			if ( $post_id && is_numeric( $post_id ) ) {
 				foreach ( $metas as $meta_index => $meta ) {
 					Meta::instance()->object( $post_id )->generate( $meta['type'], $meta['name'], $meta )->save();
-				}
-
-				if ( $this->faker->numberBetween( 0, 100 ) <= $featured_image_rate ){
-					// Generate the Attachment
-					$attachment_id = Attachment::instance()
-						->set( 'attachment_url', $this->faker->randomElement( $images_origin ) )
-						->set( 'post_parent', $post_id, 1 )
-						->generate()->save();
-
-					Meta::instance()->object( $post_id )->generate( 'raw', '_thumbnail_id', array( 100, $attachment_id, 0 ) )->save();
 				}
 			}
 
@@ -212,7 +201,7 @@ class Post extends Base {
 		// After this point we are safe to say that we have a good POST request
 		$results = $this->parse_request( null, Variable::super( INPUT_POST, array( Plugin::$slug ), FILTER_UNSAFE_RAW ) );
 
-		if ( ! empty( $results ) ){
+		if ( ! empty( $results ) ) {
 			return Admin::add_message(
 				sprintf(
 					__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),
