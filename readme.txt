@@ -82,7 +82,7 @@ If you fill up your WordPress with any data for the user profiles you might not 
 * Browser User Agent
 
 = Languages =
-We moved away from _Transifex_ due to the new GlotPress on WordPress.org, so if you want to translate FakerPress to your language please [follow this guidelines](https://make.wordpress.org/polyglots/handbook/rosetta/theme-plugin-directories/#translating-themes-plugins).\
+We moved away from _Transifex_ due to the new GlotPress on WordPress.org, so if you want to translate FakerPress to your language please [follow this guidelines](https://make.wordpress.org/polyglots/handbook/rosetta/theme-plugin-directories/#translating-themes-plugins).
 
 = See room for improvement? =
 

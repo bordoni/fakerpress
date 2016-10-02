@@ -1087,6 +1087,11 @@ class Field {
 		// Prevents Unwanted Attributes
 		unset( $field->config );
 
+		// Makes Sure we at least have some configuration to avoid bugs
+		if ( empty( $configuration ) ) {
+			$configuration = array( true );
+		}
+
 		foreach ( $configuration as $index => $config ) {
 			$type = clone $field;
 			$type->_id[] = 'type';
