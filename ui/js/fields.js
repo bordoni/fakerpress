@@ -383,7 +383,7 @@ window.fakerpress.fields.range = function( $, _ ){
 					}
 
 					// Make Styles Match the what needs to be done
-					if ( $place.is( ':empty' ) ){
+					if ( ! type ){
 						$name_container.addClass( 'fp-last-child' );
 						$conf_container.hide();
 					} else {
