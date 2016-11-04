@@ -1281,7 +1281,7 @@ class Field {
 				$providers->type = 'dropdown';
 				$providers->class = array();
 				$providers->multiple = true;
-				$providers->placeholder = __( 'Select at one Provider', 'fakerpress' );
+				$providers->placeholder = __( 'Select at least one Provider', 'fakerpress' );
 				$providers->label = __( 'Which image services will the generator use?', 'fakerpress' );
 				$providers->value = implode( ',', wp_list_pluck( Module\Attachment::get_providers(), 'id' ) );
 				$providers->{'data-options'} = Module\Attachment::get_providers();
