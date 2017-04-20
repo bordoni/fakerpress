@@ -157,7 +157,7 @@ class WordPress_Readme_Parser {
 			', ',
 			array_map(
 				function ( $tag ) {
-					return sprintf( '[%s](http://wordpress.org/plugins/tags/%s)', $tag, rawurlencode( $tag ) );
+					return sprintf( '[%s](http://wordpress.org/plugins/tags/%s)', $tag, urlencode( $tag ) );
 				},
 				$this->metadata['Tags']
 			)
