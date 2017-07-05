@@ -76,6 +76,8 @@ class Meta extends Base {
 		} else {
 			$this->data['meta_value'] = reset( $args );
 		}
+		
+		$this->data['meta_value'] = apply_filters( 'faker_' . $this->data['meta_key'], $this->data['meta_value'], $args);
 
 		return $this;
 	}
