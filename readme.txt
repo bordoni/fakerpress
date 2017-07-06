@@ -98,6 +98,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 = 0.4.8 &mdash; TBD =
 
+* Fix: Resolve problems on failed Meta generation - Thanks [@Mte90]
 
 = 0.4.7 &mdash; 2 of October, 2016 =
 * Feature: Image Attachment Meta Field to allow more Flexibility all around the plugin
