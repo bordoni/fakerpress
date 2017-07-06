@@ -2,7 +2,7 @@
 Contributors:      bordoni
 Tags:              generator, dummy content, dummy data, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
 Requires at least: 3.7
-Tested up to:      4.6
+Tested up to:      4.7.5
 Stable tag:        trunk
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -97,6 +97,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 == Changelog ==
 
 = 0.4.8 &mdash; TBD =
+
 * Fix: Resolve problems on failed Meta generation - Thanks [@Mte90]
 
 = 0.4.7 &mdash; 2 of October, 2016 =
