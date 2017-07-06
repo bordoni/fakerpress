@@ -175,7 +175,7 @@ class Post extends Base {
 
 			if ( $post_id && is_numeric( $post_id ) ) {
 				foreach ( $metas as $meta_index => $meta ) {
-					if( isset( $meta['type'] ) && isset( $meta['name'] ) ) {
+					if ( isset( $meta['type'] ) && isset( $meta['name'] ) ) {
 						Meta::instance()->object( $post_id )->generate( $meta['type'], $meta['name'], $meta )->save();
 					}
 				}
