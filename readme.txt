@@ -98,7 +98,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 = 0.4.8 &mdash; TBD =
 
-* Feature: Now Comments can be generated with differnt types, allowing for WooCommerce Notes for example - Thanks [@dibbyo456](https://wordpress.org/support/topic/can-i-create-custom-comments/)
+* Feature: Now Comments can be generated with different types, allowing for WooCommerce Notes for example - Thanks [@dibbyo456](https://wordpress.org/support/topic/can-i-create-custom-comments/)
+* Feature: Comments for Custom Post Types - Thanks [@jasondevine](https://github.com/bordoni/fakerpress/issues/109)
 * Tweak: Added two new filters to Filter Meta Value `fakerpress.module.meta.value` and `fakerpress.module.meta.{$key}.value` - Thanks [@Mte90](https://github.com/bordoni/fakerpress/pull/111)
 * Fix: Resolve problems on failed Meta generation - Thanks [@Mte90](https://github.com/bordoni/fakerpress/pull/110)
 * Fix: Typo on Provider text for Attachment Meta - Thanks [@codiceovvio](https://github.com/bordoni/fakerpress/pull/103)
