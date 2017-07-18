@@ -41,9 +41,28 @@ class WP_Comment extends Base {
 		return absint( $comment_parent );
 	}
 
-	// @codingStandardsIgnoreStart | Because of the cammel casing on the name
+	/**
+	 * Generate a random comment type with the values given
+	 * Converts 'default' into an empty string for default post comments
+	 *
+	 * @since  0.4.8
+	 *
+	 * @param  array|string $comment_type Possible comment types to pick from
+	 *
+	 * @return string
+	 */
+	public function comment_type( $comment_type = null ) {
+		// Fetch a Random element from the possible comment types
+		$comment_type = $this->generator->randomElement( (array) $comment_type );
+
+		if ( 'default' === $comment_type || is_null( $comment_type ) ) {
+			$comment_type = '';
+		}
+
+		return $comment_type;
+	}
+
 	public function comment_author_IP( $ip = null ) {
-	// @codingStandardsIgnoreEnd
 		if ( is_null( $ip ) ){
 			$ip = $this->generator->ipv4;
 		}
