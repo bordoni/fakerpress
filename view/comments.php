@@ -1,6 +1,77 @@
 <?php
 namespace FakerPress;
 
+global $wpdb;
+
+// Mount the options for post_types
+$comment_types = $wpdb->get_col( "SELECT `comment_type` FROM $wpdb->comments GROUP BY `comment_type`" );
+
+// Default is the Empty value
+$_json_comment_types_output = array(
+	array(
+		'id' => 'default',
+		'text' => esc_attr__( 'default', 'fakerpress' ),
+	),
+);
+
+foreach ( $comment_types as $comment ) {
+	// Skip the Default Option
+	if ( empty( $comment ) ) {
+		continue;
+	}
+
+	$_json_comment_types_output[] = array(
+		'id' => $comment,
+		'text' => $comment,
+	);
+}
+
+$fields[] = new Field(
+	'dropdown',
+	array(
+		'id' => 'type',
+		'multiple' => true,
+		'data-options' => $_json_comment_types_output,
+		'data-tags' => true,
+		'value' => 'default',
+	),
+	array(
+		'label' => __( 'Type', 'fakerpress' ),
+		'description' => __( 'Which type of comment are you going to generate?', 'fakerpress' ),
+	)
+);
+
+// Mount the options for post_types
+$post_types = get_post_types( array( 'public' => true ), 'object' );
+
+// Exclude Attachments as we don't support images yet
+if ( isset( $post_types['attachment'] ) ){
+	unset( $post_types['attachment'] );
+}
+
+$_json_post_types_output = array();
+foreach ( $post_types as $key => $post_type ) {
+	$_json_post_types_output[] = array(
+		'hierarchical' => $post_type->hierarchical,
+		'id' => $post_type->name,
+		'text' => $post_type->labels->name,
+	);
+}
+
+$fields[] = new Field(
+	'dropdown',
+	array(
+		'id' => 'post_types',
+		'multiple' => true,
+		'data-options' => $_json_post_types_output,
+		'value' => 'post',
+	),
+	array(
+		'label' => __( 'Post Type', 'fakerpress' ),
+		'description' => __( 'Group of Post Types that the comment can be generate for', 'fakerpress' ),
+	)
+);
+
 $fields[] = new Field(
 	'range',
 	'qty',

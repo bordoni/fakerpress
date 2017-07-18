@@ -77,6 +77,29 @@ class Meta extends Base {
 			$this->data['meta_value'] = reset( $args );
 		}
 
+		/**
+		 * Allow filtering for the value for a Meta
+		 * 
+		 * @since  0.4.8
+		 *
+		 * @param  mixed  $meta_value  The Meta value that will be filtered
+		 * @param  string $meta_key    Which meta key we are currently filtering for
+		 * @param  string $meta_type   Which type of Meta we are dealing with
+		 * @param  self   $module      An instance of the Meta Module
+		 */
+		$this->data['meta_value'] = apply_filters( "fakerpress.module.meta.value", $this->data['meta_value'], $this->data['meta_key'], $type, $this );
+
+		/**
+		 * Allow filtering for the Value of a specific meta value based on it's key
+		 * 
+		 * @since  0.4.8
+		 *
+		 * @param  mixed  $meta_value  The Meta value that will be filtered
+		 * @param  string $meta_type   Which type of Meta we are dealing with
+		 * @param  self   $module      An instance of the Meta Module
+		 */
+		$this->data['meta_value'] = apply_filters( "fakerpress.module.meta.{$this->data['meta_key']}.value", $this->data['meta_value'], $type, $this );
+
 		return $this;
 	}
 
