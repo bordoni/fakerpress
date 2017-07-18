@@ -101,6 +101,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 ### 0.4.8 &mdash; TBD ###
 * Tweak: Added two new filters to Filter Meta Value `fakerpress.module.meta.value` and ``fakerpress.module.meta.{$key}.value`` - Thanks [@Mte90](https://github.com/bordoni/fakerpress/pull/111)
 * Fix: Resolve problems on failed Meta generation - Thanks [@Mte90](https://github.com/bordoni/fakerpress/pull/110)
+* Fix: Typo on Provider text for Attachment Meta - Thanks [@codiceovvio](https://github.com/bordoni/fakerpress/pull/103)
 
 ### 0.4.7 &mdash; 2 of October, 2016 ###
 * Feature: Image Attachment Meta Field to allow more Flexibility all around the plugin
