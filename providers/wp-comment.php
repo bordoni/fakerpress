@@ -83,27 +83,38 @@ class WP_Comment extends Base {
 		return $comment_approved;
 	}
 
-	// @codingStandardsIgnoreStart | Because of the cammel casing on the name
-	public function comment_post_ID( $comment_post_ID = null ) {
-	// @codingStandardsIgnoreEnd
+	/**
+	 * Generates a Post ID for the Comment
+	 *
+	 * @since  0.1.0
+	 * @since  0.4.8 Argument `$args` to allow custom Post Types
+	 *
+	 * @param  array|int $comment_post_ID Which ids you want to use
+	 * @param  array     $args            WP_Query args for Searching these Posts
+	 *
+	 * @return int
+	 */
+	public function comment_post_ID( $comment_post_ID = null, $args = array() ) {
+
 		if ( is_null( $comment_post_ID ) ){
 			// We should be able to pass these arguments
-			$args = array(
+			$defaults = array(
 				'posts_per_page'   => -1,
 				'post_type'        => 'post',
 				'post_status'      => 'publish',
 				'suppress_filters' => true,
 			);
 
-			$posts = get_posts( $args );
-			// Should be using WP_Query, but it's alright for now
+			// Apply the defaults
+			$args = wp_parse_args( $args, $defaults );
 
-			foreach ( $posts as $post ){
-				$post_id[] = $post->ID;
-			}
+			// We need only the IDs here
+			$args['fields'] = 'ids';
 
-			if ( ! empty($post_id) ){
-				$comment_post_ID = absint( $this->generator->randomElement( $post_id, 1 ) );
+			$query = new \WP_Query( $args );
+
+			if ( $query->found_posts ){
+				$comment_post_ID = absint( $this->generator->randomElement( $query->posts, 1 ) );
 			}
 
 			// We need to check if there is no posts, should we include the comment anyways?
