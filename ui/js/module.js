@@ -17,8 +17,6 @@ if ( 'undefined' === typeof window.fakerpress ){
 			attrClass = 'notice is-dismissible ' + attrClass;
 		}
 
-		console.log( data, html );
-
 		var noticeContent = _.template( html )( data ),
 			templateVars = {
 				'attrClass': attrClass,

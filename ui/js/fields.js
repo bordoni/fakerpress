@@ -378,8 +378,6 @@ window.fakerpress.fields.range = function( $, _ ){
 					$template = $( '.fp-template-' + type ).filter( '[data-rel="' + fieldset.$.container.attr( 'id' ) + '"]' ).filter( '[data-callable]' );
 					template = $template.html();
 
-					console.log( template );
-
 					// Only place if there is a template
 					if ( template && type !== $conf_container.data( 'type' ) ) {
 						$conf_container.data( 'type', type );
@@ -419,12 +417,6 @@ window.fakerpress.fields.range = function( $, _ ){
 							index = name.length - 1,
 							key = name[ index ];
 
-						if ( 'undefined' === typeof config[ key ] ) {
-							return;
-						}
-
-						$field.val( config[ key ] );
-
 						var $field = $( this ),
 							$label = $field.next( window.fakerpress.fieldset.selector.label ),
 							$internal_label = $field.next( window.fakerpress.fieldset.selector.internal_label ),
@@ -462,6 +454,13 @@ window.fakerpress.fields.range = function( $, _ ){
 						if ( 0 !== name.length ){
 							$field.attr( 'name', window.fakerpress.fieldName( name ) );
 						}
+
+
+						if ( 'undefined' === typeof config || 'undefined' === typeof config[ key ] ) {
+							return;
+						}
+
+						$field.val( config[ key ] );
 					} );
 				},
 
