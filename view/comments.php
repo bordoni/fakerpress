@@ -41,6 +41,37 @@ $fields[] = new Field(
 	)
 );
 
+// Mount the options for post_types
+$post_types = get_post_types( array( 'public' => true ), 'object' );
+
+// Exclude Attachments as we don't support images yet
+if ( isset( $post_types['attachment'] ) ){
+	unset( $post_types['attachment'] );
+}
+
+$_json_post_types_output = array();
+foreach ( $post_types as $key => $post_type ) {
+	$_json_post_types_output[] = array(
+		'hierarchical' => $post_type->hierarchical,
+		'id' => $post_type->name,
+		'text' => $post_type->labels->name,
+	);
+}
+
+$fields[] = new Field(
+	'dropdown',
+	array(
+		'id' => 'post_types',
+		'multiple' => true,
+		'data-options' => $_json_post_types_output,
+		'value' => 'post',
+	),
+	array(
+		'label' => __( 'Post Type', 'fakerpress' ),
+		'description' => __( 'Group of Post Types that the comment can be generate for', 'fakerpress' ),
+	)
+);
+
 $fields[] = new Field(
 	'range',
 	'qty',

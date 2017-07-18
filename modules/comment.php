@@ -121,6 +121,7 @@ class Comment extends Base {
 		$comment_content_use_html = Variable::super( $request, array( 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
 		$comment_content_html_tags = array_map( 'trim', explode( ',', Variable::super( $request, array( 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 		$comment_type = array_map( 'trim', explode( ',', Variable::super( $request, array( 'type' ), FILTER_SANITIZE_STRING ) ) );
+		$post_types = array_map( 'trim', explode( ',', Variable::super( $request, array( 'post_types' ), FILTER_SANITIZE_STRING ) ) );
 
 		$min_date = Variable::super( $request, array( 'interval_date', 'min' ) );
 		$max_date = Variable::super( $request, array( 'interval_date', 'max' ) );
@@ -139,7 +140,7 @@ class Comment extends Base {
 			$this->set( 'comment_author_IP' );
 			$this->set( 'comment_agent' );
 			$this->set( 'comment_approved' );
-			$this->set( 'comment_post_ID' );
+			$this->set( 'comment_post_ID', null, array( 'post_type' => $post_types ) );
 			$this->set( 'comment_author_email' );
 			$this->set( 'comment_author_url' );
 
