@@ -99,6 +99,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
+### 0.4.9 &mdash; TBD ###
+...
+
 ### 0.4.8 &mdash; 18 of July, 2017 ###
 * Feature: Now Comments can be generated with different types, allowing for WooCommerce Notes for example - Thanks [@dibbyo456](https://wordpress.org/support/topic/can-i-create-custom-comments/)
 * Feature: Comments for Custom Post Types - Thanks [@jasondevine](https://github.com/bordoni/fakerpress/issues/109)
