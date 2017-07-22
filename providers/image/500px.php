@@ -12,7 +12,9 @@ class Image500px extends Base {
 	/**
 	 * The base URL for the 500px API
 	 *
-	 * @var string
+	 * @since  0.2.2
+	 *
+	 * @var   string
 	 */
 	protected static $base_url = 'https://api.500px.com/v1/';
 
@@ -21,7 +23,7 @@ class Image500px extends Base {
 	 *
 	 * @since  0.2.2
 	 *
-	 * @param  \Faker\Generator  $generator
+	 * @param \Faker\Generator $generator An instance of the Faker Generator class
 	 */
 	public function __construct( \Faker\Generator $generator ) {
 		$this->generator = $generator;
@@ -54,6 +56,8 @@ class Image500px extends Base {
 		// Determine the Transient Key
 		array_multisort( $args );
 		$hashed_id = substr( md5( json_encode( $args ) ), 0, 10 );
+
+		// Creates as transient key for the 500px request
 		$transient_id = Plugin::$slug . '-request-500px-' . $endpoint . '-' . $hashed_id;
 
 		/**
