@@ -33,7 +33,9 @@ $fields[] = new Field(
 	),
 	array(
 		'label' => __( 'Consumer Key', 'fakerpress' ),
-		'description' => __( 'Application Consumer Key — <a href="https://500px.com/settings/applications" target="_blank">500px Applications</a>', 'fakerpress' ),
+		'description' =>
+			__( 'Application Consumer Key — <a href="https://500px.com/settings/applications" target="_blank">500px Applications</a>', 'fakerpress' ) .
+			'<br />' . __( 'Note: Images generated this provider will not respect meta Width/Height configuration' ),
 		'actions' => array(
 			'save_500px' => __( 'Save', 'fakerpress' ),
 		),

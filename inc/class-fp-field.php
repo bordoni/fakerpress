@@ -814,7 +814,11 @@ class Field {
 		}
 
 		$min->class = array();
+
 		$min->placeholder = esc_attr__( 'e.g.: 3', 'fakerpress' );
+		if ( ! empty( $min->_placeholder_min ) ) {
+			$min->placeholder = $min->_placeholder_min;
+		}
 
 		$max = clone $field;
 		$max->_id[] = 'max';
@@ -825,7 +829,7 @@ class Field {
 
 		if ( isset( $field->max ) && is_numeric( $field->max ) ) {
 			$max->value = $field->max;
-		} else {
+		} elseif ( ! isset( $max->_prevent_disable ) || ! $max->_prevent_disable ) {
 			$max->disabled = true;
 		}
 
@@ -838,7 +842,11 @@ class Field {
 		}
 
 		$max->class = array();
+
 		$max->placeholder = esc_attr__( 'e.g.: 12', 'fakerpress' );
+		if ( ! empty( $max->_placeholder_max ) ) {
+			$max->placeholder = $max->_placeholder_max;
+		}
 
 		$content[] = self::type_input( $min, null, 'string', array() );
 		$content[] = '<div title="' . esc_attr__( 'To', 'fakerpress' ) . '" class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
@@ -1286,9 +1294,35 @@ class Field {
 				$providers->value = implode( ',', wp_list_pluck( Module\Attachment::get_providers(), 'id' ) );
 				$providers->{'data-options'} = Module\Attachment::get_providers();
 
+				$size_width = clone $field;
+				$size_width->_id = array( 'meta', 'width' );
+				$size_width->_name = array( 'meta', 'width' );
+				$size_width->type = 'range';
+				$size_width->class = array();
+				$size_width->label = __( 'Range of possible width sizes for the image', 'fakerpress' );
+				$size_width->_min = 0;
+				$size_width->_placeholder_min = esc_attr__( 'e.g.: 350', 'fakerpress' );
+				$size_width->_placeholder_max = esc_attr__( 'e.g.: 900', 'fakerpress' );
+				$size_width->_prevent_disable = true;
+
+				$size_height = clone $field;
+				$size_height->_id = array( 'meta', 'height' );
+				$size_height->_name = array( 'meta', 'height' );
+				$size_height->type = 'range';
+				$size_height->class = array();
+				$size_height->label = __( 'Range of possible height sizes for the image', 'fakerpress' );
+				$size_height->_min = 0;
+				$size_height->_placeholder_min = esc_attr__( 'e.g.: 125', 'fakerpress' );
+				$size_height->_placeholder_max = esc_attr__( 'e.g.: 650', 'fakerpress' );
+				$size_height->_prevent_disable = true;
+
 				$html[] = Field::wrapper( Field::type_dropdown( $store, null, 'string' ), $store );
 				$html[] = Field::wrapper( Field::type_dropdown( $providers, null, 'string' ), $providers );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
+
+				// Image Dimensions
+				$html[] = Field::wrapper( Field::type_range( $size_width, null, 'string' ), $size_width );
+				$html[] = Field::wrapper( Field::type_range( $size_height, null, 'string' ), $size_height );
 
 				return implode( "\r\n", $html );
 			},

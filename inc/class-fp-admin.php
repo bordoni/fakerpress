@@ -289,7 +289,7 @@ class Admin {
 				// Plugin class to give the styling
 				'fakerpress-message',
 				// This is to use WordPress JS to move them above the h2
-				'updated-nag',
+				'notice',
 			);
 
 			if ( 0 === $k ) {
