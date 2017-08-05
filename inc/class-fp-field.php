@@ -1295,8 +1295,8 @@ class Field {
 				$providers->{'data-options'} = Module\Attachment::get_providers();
 
 				$size_width = clone $field;
-				$size_width->_id = array( 'meta', 'size', 'width' );
-				$size_width->_name = array( 'meta', 'size', 'width' );
+				$size_width->_id = array( 'meta', 'width' );
+				$size_width->_name = array( 'meta', 'width' );
 				$size_width->type = 'range';
 				$size_width->class = array();
 				$size_width->label = __( 'Range of possible width sizes for the image', 'fakerpress' );
@@ -1306,8 +1306,8 @@ class Field {
 				$size_width->_prevent_disable = true;
 
 				$size_height = clone $field;
-				$size_height->_id = array( 'meta', 'size', 'height' );
-				$size_height->_name = array( 'meta', 'size', 'height' );
+				$size_height->_id = array( 'meta', 'height' );
+				$size_height->_name = array( 'meta', 'height' );
 				$size_height->type = 'range';
 				$size_height->class = array();
 				$size_height->label = __( 'Range of possible height sizes for the image', 'fakerpress' );

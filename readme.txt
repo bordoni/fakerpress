@@ -99,7 +99,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 = 0.4.9 &mdash; TBD =
 
-...
+* Feature: Allow Attachments to be generated with a given Width and Height range &mdash; Thanks [@COLABORATI](https://github.com/bordoni/fakerpress/issues/86)
+* Fix: Resolve problems where attachments wouldn't get setup correctly and throw an Empty Message &mdash; Thanks [@r083r7 and @oyvind_skjelstad](https://wordpress.org/support/topic/featured-image-not-showing-up-6)
 
 = 0.4.8 &mdash; 18 of July, 2017 =
 

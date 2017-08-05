@@ -79,7 +79,7 @@ class Meta extends Base {
 
 		/**
 		 * Allow filtering for the value for a Meta
-		 * 
+		 *
 		 * @since  0.4.8
 		 *
 		 * @param  mixed  $meta_value  The Meta value that will be filtered
@@ -91,7 +91,7 @@ class Meta extends Base {
 
 		/**
 		 * Allow filtering for the Value of a specific meta value based on it's key
-		 * 
+		 *
 		 * @since  0.4.8
 		 *
 		 * @param  mixed  $meta_value  The Meta value that will be filtered
