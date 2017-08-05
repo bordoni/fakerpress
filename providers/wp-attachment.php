@@ -14,15 +14,15 @@ class WP_Attachment extends Base {
 	private static $type_defaults = array(
 		'placeholdit' => array(
 			'width' => array( 200, 640 ),
-			'ratio' => 1.25,
+			'height' => 1.25,
 		),
 		'lorempixel' => array(
 			'width' => array( 200, 640 ),
-			'ratio' => 1.25,
+			'height' => 1.25,
 		),
 		'unsplashit' => array(
 			'width' => array( 1024, 1440 ),
-			'ratio' => 1.5,
+			'height' => 1.5,
 		),
 		'500px' => array()
 	);
@@ -34,6 +34,7 @@ class WP_Attachment extends Base {
 		if ( ! isset( self::$type_defaults[ $type ] ) ){
 			return $url;
 		}
+
 		$args = wp_parse_args( $args, self::$type_defaults[ $type ] );
 
 		if ( 'placeholdit' === $type ){

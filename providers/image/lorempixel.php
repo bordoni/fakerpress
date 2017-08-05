@@ -22,21 +22,29 @@ class LoremPixel extends Base {
 	 * Generate an URL for an image from LoremPixel
 	 *
 	 * @since  0.3.2
+	 * @since  0.4.9  On this version we started to accept Array or Int in the Second Param
 	 *
-	 * @param  array|int  $width  A range for the images that will be generated, if a int is passed
-	 *                            we use that value always.
-	 * @param  float      $ratio  It makes the logic a few times easier to pass the Ratio instead of
-	 *                            the height of the image.
+	 * @param  array|int        $width   A range for the images that will be generated, if a int is passed
+	 *                                   we use that value always.
+	 * @param  float|array|int  $height  Image height, int for fixed size, array for randomized and
+	 *                                   float to use a ratio
 	 *
-	 * @return string        Return the URL for the
+	 * @return string       Return the URL for Lorem Pixel
 	 */
-	public function lorempixel( $width = array( 200, 640 ), $ratio = 1.25 ) {
+	public function lorempixel( $width = array( 200, 640 ), $height = 1.25 ) {
 		if ( is_array( $width ) ){
 			$width = call_user_func_array( array( $this->generator, 'numberBetween' ), $width );
 		}
 
+		// Makes sure we have an Int
 		$width = absint( $width );
-		$height = floor( $width / floatval( $ratio ) );
+
+		// Check For float (ratio)
+		if ( is_float( $height ) ) {
+			$height = floor( $width / floatval( $height ) );
+		} elseif ( is_array( $height ) ) {
+			$height = call_user_func_array( array( $this->generator, 'numberBetween' ), $height );
+		}
 
 		$categories = array(
 			'abstract',
@@ -56,6 +64,8 @@ class LoremPixel extends Base {
 
 		/**
 		 * Allow developers to filter the Categories, only one will be selected.
+		 *
+		 * @since  0.4.9
 		 *
 		 * @param  array  $categories  The set of categories that can be used from LoremPixel
 		 * @param  self   $provider    An instance of the Provider

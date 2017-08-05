@@ -71,7 +71,7 @@ class Image500px extends Base {
 		 * @param  array   $args        Arguments for the Request to 500px
 		 * @param  self    $provider    Instance of the Current class
 		 */
-		$expiration = apply_filters( 'fakerpress.provider.image.500px.request_expiration', 6 * HOUR_IN_SECONDS, $endpoint, $args, $this )
+		$expiration = apply_filters( 'fakerpress.provider.image.500px.request_expiration', 6 * HOUR_IN_SECONDS, $endpoint, $args, $this );
 
 		if ( ! $expiration || false === ( $response = get_transient( $transient_id ) ) ) {
 			$response = wp_remote_get( add_query_arg( $args, self::$base_url . $endpoint ) );
@@ -130,7 +130,7 @@ class Image500px extends Base {
 		 * @param  array $args      Arguments for the Request to 500px
 		 * @param  self  $provider  Instance of the Current class
 		 */
-		$args = apply_filters( 'fakerpress.provider.image.500px.args', $args, $this )
+		$args = apply_filters( 'fakerpress.provider.image.500px.args', $args, $this );
 
 		$response = $this->request( 'photos', $args );
 
