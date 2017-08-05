@@ -38,10 +38,10 @@ class Utils {
 
 	/**
 	 * From range return a random Integer
-	 * Providing the $elements param will limit the returning integer to the total number of elements
+	 * Providing the $total param will limit the returning integer to the total number of elements
 	 *
-	 * @param  array|int $qty   The range or integer
-	 * @param  null|int|array $elements {
+	 * @param  array|int       $qty   The range or integer
+	 * @param  null|int|array  $total {
 	 *      @example null  Will not limit the Range to a maximum int
 	 *      @example int   Limits the range to this maximum
 	 *      @example array Counts the elements in array and limit to that

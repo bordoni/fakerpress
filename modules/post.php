@@ -164,6 +164,7 @@ class Post extends Base {
 			$this->set( 'post_date', $date );
 			$this->set( 'post_parent', $post_parents );
 			$this->set( 'post_content', $post_content_use_html, array( 'elements' => $post_content_html_tags, 'sources' => $images_origin ) );
+			$this->set( 'post_excerpt' );
 			$this->set( 'post_author', $post_author );
 			$this->set( 'post_type', $post_types );
 			$this->set( 'comment_status', $comment_status );

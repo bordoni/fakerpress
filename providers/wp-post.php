@@ -80,6 +80,30 @@ class WP_Post extends Base {
 		return $content;
 	}
 
+	/**
+	 * Configures a Excerpt for the Post
+	 *
+	 * @since  0.4.9
+	 *
+	 * @param  array|int  $qty     How many words we should generate (range with Array)
+	 * @param  boolean    $html    Should use HTML or not (currently not used)
+	 * @param  integer    $weight  Percentage of times where we will setup a Excerpt
+	 *
+	 * @return string
+	 */
+	public function post_excerpt( $qty = array( 25, 75 ), $html = false, $weight = 60 ) {
+		$words = FakerPress\Utils::instance()->get_qty_from_range( $qty );
+		$paragraphs = $this->generator->randomElement( array( 1, 1, 1, 1, 1, 2, 2, 2, 3, 4 ) );
+
+		for ( $i=0; $i < $paragraphs; $i++ ) {
+			$excerpt[ $i ] = $this->generator->sentence( $words );
+		}
+
+		$excerpt = implode( "\n\n", $excerpt );
+
+		return $this->generator->optional( $weight, '' )->randomElement( (array) $excerpt );
+	}
+
 	public function post_author( $haystack = array() ) {
 		if ( empty( $haystack ) ){
 			$haystack = get_users(
