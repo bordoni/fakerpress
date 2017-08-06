@@ -404,31 +404,31 @@ window.fakerpress.fields.range = function( $, _ ){
 				 * @return null
 				 */
 				configure: function( $conf ) {
-					var config = $conf.data( 'config' ),
-						$fields = $conf.find( window.fakerpress.fieldset.selector.field );
+					var fieldset = this;
+					var config = $conf.data( 'config' );
+					var $fields = $conf.find( window.fakerpress.fieldset.selector.field );
 
 					// Reset the Configuration, only happens once!
 					// $conf.removeAttr( 'data-config', false ).data( 'config', {} );
 
 					// Loop fields
 					$fields.each( function() {
-						var $field = $( this ),
-							name = $field.data( 'name' ),
-							index = name.length - 1,
-							key = name[ index ];
+						var $field = $( this );
+						var $fieldset = $field.parents( fieldset.selector.item ).eq( 0 );
+						var $label = $field.next( window.fakerpress.fieldset.selector.label );
+						var $internal_label = $field.next( window.fakerpress.fieldset.selector.internal_label );
 
-						var $field = $( this ),
-							$label = $field.next( window.fakerpress.fieldset.selector.label ),
-							$internal_label = $field.next( window.fakerpress.fieldset.selector.internal_label ),
-
-							__name = $field.data( 'name' ),
-							__id = $field.data( 'id' ),
-							id = [],
-							name = [];
+						var name = $field.data( 'name' );
+						var index = parseInt( $fieldset.find( window.fakerpress.fieldset.selector.order ).val(), 10 ) - 1;
+						var key = name[ index ];
+						var __name = $field.data( 'name' );
+						var __id = $field.data( 'id' );
+						var id = [];
+						var name = [];
 
 						// If didn't find a label inside of the parent element
 						if ( 0 === $label.length ){
-							$label = $field.parents( window.fakerpress.fieldset.selector.field_container ).eq(0).find( window.fakerpress.fieldset.selector.label );
+							$label = $field.parents( window.fakerpress.fieldset.selector.field_container ).eq( 0 ).find( window.fakerpress.fieldset.selector.label );
 						}
 
 						_.each( __id, function( value, key, list ) {
@@ -454,7 +454,6 @@ window.fakerpress.fields.range = function( $, _ ){
 						if ( 0 !== name.length ){
 							$field.attr( 'name', window.fakerpress.fieldName( name ) );
 						}
-
 
 						if ( 'undefined' === typeof config || 'undefined' === typeof config[ key ] ) {
 							return;
@@ -715,138 +714,3 @@ window.fakerpress.fields.range = function( $, _ ){
 		} );
 	} );
 }( window.jQuery, window._ ) );
-
-/*
-
-// Terms Fields
-( function( $, _ ){
-	'use strict';
-	$(document).ready(function(){
-		$( '.field-select2-terms' ).each(function(){
-			var $select = $(this);
-
-			$select.select2({
-				width: 400,
-				multiple: true,
-				data: {results:[]},
-				initSelection : function (element, callback) {
-					callback(element.data( 'selected' ));
-				},
-				allowClear: true,
-				ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-					dataType: 'json',
-					type: 'POST',
-					url: window.ajaxurl,
-					data: function (term, page) {
-						return {
-							action: 'fakerpress.search_terms',
-							search: term, // search term
-							page_limit: 10,
-							page: page,
-							post_type: null
-						};
-					},
-					results: function ( data ) { // parse the results into the format expected by Select2.
-						$.each( data.results, function( k, result ){
-							result.text = _.template('<%= tax %>: <%= term %>')( { tax: data.taxonomies[result.taxonomy].labels.singular_name, term: result.name } );
-							result.id = result.term_id;
-						} );
-						return data;
-					}
-				},
-			});
-		});
-	});
-}( jQuery, _ ) );
-
-// Author fields
-( function( $ ){
-	'use strict';
-	$(document).ready(function(){
-		$( '.field-select2-author' ).each(function(){
-			var $select = $(this);
-
-			$select.select2({
-				width: 400,
-				multiple: true,
-				allowClear: true,
-				escapeMarkup: function (m) { return m; },
-				formatSelection: function ( author ){
-					return _.template('<abbr title="<%= ID %>: <%= data.user_email %>"><%= roles %>: <%= data.display_name %></abbr>')( author )
-				},
-				formatResult: function ( author ){
-					return _.template('<abbr title="<%= ID %>: <%= data.user_email %>"><%= roles %>: <%= data.display_name %></abbr>')( author )
-				},
-				ajax: {
-					dataType: 'json',
-					type: 'POST',
-					url: window.ajaxurl,
-					data: function ( author, page ) {
-						return {
-							action: 'fakerpress.search_authors',
-							search: author, // search author
-							page_limit: 10,
-							page: page,
-						};
-					},
-					results: function ( data ) { // parse the results into the format expected by Select2.
-						$.each( data.results, function( k, result ){
-							result.id = result.data.ID;
-							result.text = result.data.display_name;
-						} );
-						return data;
-					}
-				}
-			});
-		});
-	});
-}( jQuery ) );
-
-// Post Query for Select2
-( function( $, _ ){
-	'use strict';
-	$(document).ready(function(){
-		$( '.fp-field-select2-posts' ).each(function(){
-			var $select = $(this);
-			$select.select2({
-				width: 400,
-				multiple: true,
-				data: {results:[]},
-				allowClear: true,
-				escapeMarkup: function (m) { return m; },
-				formatSelection: function ( post ){
-					return _.template('<abbr title="<%= post_title %>"><%= post_type.labels.singular_name %>: <%= ID %></abbr>')( post )
-				},
-				formatResult: function ( post ){
-					return _.template('<abbr title="<%= post_title %>"><%= post_type.labels.singular_name %>: <%= ID %></abbr>')( post )
-				},
-				ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-					dataType: 'json',
-					type: 'POST',
-					url: window.ajaxurl,
-					data: function (search, page) {
-						return {
-							action: 'fakerpress.query_posts',
-							query: {
-								s: search,
-								posts_per_page: 10,
-								paged: page,
-								post_type: _.pluck( _.where( $( '.field-post_type.select2-offscreen' ).data( 'value' ), { hierarchical: true } ) , 'id' )
-							}
-						};
-					},
-					results: function ( data ) { // parse the results into the format expected by Select2.
-						$.each( data.results, function( k, result ){
-							result.id = result.ID;
-						} );
-						return data;
-					}
-				},
-			});
-		});
-	});
-}( jQuery, _ ) );
-
-
-
-*/
