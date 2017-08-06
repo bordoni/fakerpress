@@ -1,6 +1,7 @@
 <?php
 namespace Faker\Provider;
 use FakerPress;
+use FakerPress\Utils;
 
 class WP_Meta extends Base {
 	public $meta_object = array(
@@ -74,8 +75,9 @@ class WP_Meta extends Base {
 
 	public function meta_type_words( $qty = 8, $weight = 50 ) {
 		$qty = $this->meta_parse_qty( $qty );
+		$sentence = $this->generator->optional( (int) $weight, '' )->sentence( $qty );
 
-		return $this->generator->optional( (int) $weight, null )->sentence( $qty );
+		return Utils::instance()->remove_sentence_period( $sentence );
 	}
 
 	public function meta_type_text( $type = 'sentences', $qty = 3, $separator = "\r\n\r\n", $weight = 50 ) {
