@@ -104,6 +104,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Fix: Meta field rules were not respecting Configurations due to a JavaScript bug on indexing the fields &mdash; Thanks [@ckpicker](https://github.com/bordoni/fakerpress/issues/115)
 * Fix: Resolve problems where attachments wouldn't get setup correctly and throw an Empty Message &mdash; Thanks [@r083r7 and @oyvind_skjelstad](https://wordpress.org/support/topic/featured-image-not-showing-up-6)
 * Fix: Allow Term Meta to generate the fields correctly again &mdash; Thanks [@stratboy](https://github.com/bordoni/fakerpress/issues/105)
+* Tweak: Prevent `_encloseme` and `_pingme` for FakerPress generated Posts
 
 = 0.4.8 &mdash; 18 of July, 2017 =
 

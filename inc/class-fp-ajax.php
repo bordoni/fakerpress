@@ -16,6 +16,20 @@ class Ajax {
 	}
 
 	public static function module_generate( $request = null ) {
+		/**
+		 * Allows us to prevent `_encloseme` and `_pingme` meta when generating Posts
+		 *
+		 * @since  0.4.9
+		 *
+		 * @param  bool  $prevent_enclose_ping_meta
+		 */
+		$prevent_enclose_ping_meta = (bool) apply_filters( 'fakerpress.module.generate.prevent_enclose_ping_meta', true );
+
+		// This will prevent us having `_encloseme` and `_pingme`
+		if ( $prevent_enclose_ping_meta ) {
+			define( 'WP_IMPORTING', true );
+		}
+
 		$response = (object) array(
 			'status' => false,
 			'message' => __( 'Your request has failed', 'fakerpress' ),
