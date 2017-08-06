@@ -100,9 +100,10 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 = 0.4.9 &mdash; TBD =
 
 * Feature: Allow Attachments to be generated with a given Width and Height range &mdash; Thanks [@COLABORATI](https://github.com/bordoni/fakerpress/issues/86)
+* Feature: Generate `post_excerpt` for Posts (how I forgot that is beyond me) &mdash; Thanks [@njbarrett](https://github.com/bordoni/fakerpress/issues/104)
+* Fix: Meta field rules were not respecting Configurations due to a JavaScript bug on indexing the fields &mdash; Thanks [@ckpicker](https://github.com/bordoni/fakerpress/issues/115)
 * Fix: Resolve problems where attachments wouldn't get setup correctly and throw an Empty Message &mdash; Thanks [@r083r7 and @oyvind_skjelstad](https://wordpress.org/support/topic/featured-image-not-showing-up-6)
 * Fix: Allow Term Meta to generate the fields correctly again &mdash; Thanks [@stratboy](https://github.com/bordoni/fakerpress/issues/105)
-* Fix: Makes sure we generate `post_excerpt`, which wasn't happening for some reason &mdash; Thanks [@njbarrett](https://github.com/bordoni/fakerpress/issues/104)
 
 = 0.4.8 &mdash; 18 of July, 2017 =
 

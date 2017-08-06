@@ -35,6 +35,16 @@ class Utils {
 
 	}
 
+	/**
+	 * Remove the Period on the end of the Setence from Faker
+	 *
+	 * @param  string  $sentence  Which sentence we should remove the period from
+	 * @return string
+	 */
+	public function remove_sentence_period( $sentence ) {
+		return rtrim( $sentence, '.' );
+	}
+
 
 	/**
 	 * From range return a random Integer
