@@ -2,7 +2,7 @@
 Contributors:      bordoni
 Tags:              generator, dummy content, dummy data, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
 Requires at least: 3.7
-Tested up to:      4.8
+Tested up to:      4.8.1
 Stable tag:        trunk
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -97,7 +97,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
-= 0.4.9 &mdash; TBD =
+= 0.4.9 &mdash; 07 of August, 2017 =
 
 * Feature: Allow Attachments to be generated with a given Width and Height range &mdash; Thanks [@COLABORATI](https://github.com/bordoni/fakerpress/issues/86)
 * Feature: Generate `post_excerpt` for Posts (how I forgot that is beyond me) &mdash; Thanks [@njbarrett](https://github.com/bordoni/fakerpress/issues/104)
