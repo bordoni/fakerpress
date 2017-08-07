@@ -1,6 +1,7 @@
 <?php
 namespace Faker\Provider;
 use FakerPress;
+use FakerPress\Utils;
 
 class WP_Meta extends Base {
 	public $meta_object = array(
@@ -74,8 +75,9 @@ class WP_Meta extends Base {
 
 	public function meta_type_words( $qty = 8, $weight = 50 ) {
 		$qty = $this->meta_parse_qty( $qty );
+		$sentence = $this->generator->optional( (int) $weight, '' )->sentence( $qty );
 
-		return $this->generator->optional( (int) $weight, null )->sentence( $qty );
+		return Utils::instance()->remove_sentence_period( $sentence );
 	}
 
 	public function meta_type_text( $type = 'sentences', $qty = 3, $separator = "\r\n\r\n", $weight = 50 ) {
@@ -131,11 +133,24 @@ class WP_Meta extends Base {
 		return $value;
 	}
 
-	public function meta_type_attachment( $type, $providers, $weight = 50 ) {
+	public function meta_type_attachment( $type, $providers, $weight = 50, $width = array(), $height = array() ) {
 		$providers = array_map( 'esc_attr', array_map( 'trim', explode( ',', $providers ) ) );
+		$attachment = FakerPress\Module\Attachment::instance();
+
+		$arguments = array();
+
+		// Specially for Meta we do the Randomization here
+		if ( ! empty( $width ) ) {
+			$arguments['width'] = $this->meta_parse_qty( $width );
+		}
+
+		// Specially for Meta we do the Randomization here
+		if ( ! empty( $height ) ) {
+			$arguments['height'] = $this->meta_parse_qty( $height );
+		}
 
 		// Generate the Attachment
-		$attachment = FakerPress\Module\Attachment::instance()->set( 'attachment_url', $this->generator->randomElement( $providers ) );
+		$attachment->set( 'attachment_url', $this->generator->randomElement( $providers ), $arguments );
 
 		// If it's meta for a post we need to mark the attachment as child of that post
 		if ( 'post' === $this->meta_object->name ) {

@@ -35,13 +35,23 @@ class Utils {
 
 	}
 
+	/**
+	 * Remove the Period on the end of the Setence from Faker
+	 *
+	 * @param  string  $sentence  Which sentence we should remove the period from
+	 * @return string
+	 */
+	public function remove_sentence_period( $sentence ) {
+		return rtrim( $sentence, '.' );
+	}
+
 
 	/**
 	 * From range return a random Integer
-	 * Providing the $elements param will limit the returning integer to the total number of elements
+	 * Providing the $total param will limit the returning integer to the total number of elements
 	 *
-	 * @param  array|int $qty   The range or integer
-	 * @param  null|int|array $elements {
+	 * @param  array|int       $qty   The range or integer
+	 * @param  null|int|array  $total {
 	 *      @example null  Will not limit the Range to a maximum int
 	 *      @example int   Limits the range to this maximum
 	 *      @example array Counts the elements in array and limit to that
