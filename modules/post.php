@@ -4,7 +4,6 @@ use FakerPress\Admin;
 use FakerPress\Variable;
 use FakerPress\Plugin;
 
-
 class Post extends Base {
 
 	public $dependencies = array(
@@ -141,6 +140,7 @@ class Post extends Base {
 		$post_types = array_intersect( get_post_types( array( 'public' => true ) ), $post_types );
 
 		// Fetch Post Content
+		$post_content_size = Variable::super( $request, array( 'content_size' ), FILTER_UNSAFE_RAW, array( 5, 15 ) );
 		$post_content_use_html = Variable::super( $request, array( 'use_html' ), FILTER_SANITIZE_NUMBER_INT, 0 ) === 1;
 		$post_content_html_tags = array_map( 'trim', explode( ',', Variable::super( $request, array( 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
@@ -163,7 +163,15 @@ class Post extends Base {
 			$this->set( 'post_status', 'publish' );
 			$this->set( 'post_date', $date );
 			$this->set( 'post_parent', $post_parents );
-			$this->set( 'post_content', $post_content_use_html, array( 'elements' => $post_content_html_tags, 'sources' => $images_origin ) );
+			$this->set(
+				'post_content',
+				$post_content_use_html,
+				array(
+					'qty' => $post_content_size,
+					'elements' => $post_content_html_tags,
+					'sources'  => $images_origin,
+				)
+			);
 			$this->set( 'post_excerpt' );
 			$this->set( 'post_author', $post_author );
 			$this->set( 'post_type', $post_types );
