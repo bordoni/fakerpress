@@ -290,30 +290,45 @@ window.fakerpress.fields.range = function( $, _ ){
 	'use strict';
 
 	$( '.fp-type-range-wrap' ).each(function(){
-		var $container = $(this),
-			$minField = $container.find( '.fp-type-number[data-type="min"]' ),
-			$maxField = $container.find( '.fp-type-number[data-type="max"]' );
+		var $container = $( this );
+		var $minField = $container.find( '.fp-type-number[data-type="min"]' );
+		var $maxField = $container.find( '.fp-type-number[data-type="max"]' );
 
 		if ( $container.hasClass( window.fakerpress.ready_class ) ){
 			return;
 		}
 		$container.addClass( window.fakerpress.ready_class );
 
-		$minField.on({
+		$minField.on( {
 			'change keyup': function(e){
-				if ( $.isNumeric( $(this).val() ) ) {
-					$maxField.removeAttr( 'disabled' );
+				var minValue = parseInt( $minField.val(), 10 );
+				var maxValue = parseInt( $maxField.val(), 10 );
 
-					if ( $maxField.val() && $(this).val() >= $maxField.val() ){
-						$(this).val( '' );
+				if ( $.isNumeric( minValue ) ) {
+					$maxField.prop( 'disabled', false );
+
+					// When we have max value we don't allow min to be bigger than max
+					if ( maxValue && $.isNumeric( maxValue ) && minValue > maxValue ){
+						$minField.val( maxValue );
 					}
 				} else {
-					$(this).val( '' );
+					$maxField.prop( 'disabled', true );
+					$minField.val( '' );
 				}
-
 			}
-		});
-	});
+		} ).trigger( 'change' );
+
+		$maxField.on( {
+			'change keyup': function(e){
+				var minValue = parseInt( $minField.val(), 10 );
+				var maxValue = parseInt( $maxField.val(), 10 );
+
+				if ( $.isNumeric( maxValue ) && minValue > maxValue ) {
+					$minField.val( maxValue );
+				}
+			}
+		} ).trigger( 'change' );
+	} );
 };
 
 ( function( $ ){
