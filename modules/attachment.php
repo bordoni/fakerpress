@@ -86,11 +86,6 @@ class Attachment extends Base {
 				'text' => esc_attr__( 'Unsplash.it', 'fakerpress' ),
 				'type' => 'image',
 			),
-			array(
-				'id'   => 'lorempixel',
-				'text' => esc_attr__( 'LoremPixel', 'fakerpress' ),
-				'type' => 'image',
-			),
 		);
 
 		if ( FakerPress\Plugin::get( array( '500px', 'key' ), false ) ) {
