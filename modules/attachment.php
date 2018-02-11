@@ -32,7 +32,7 @@ class Attachment extends Base {
 		if ( is_wp_error( $response ) ) {
 			$bits = file_get_contents( $data['attachment_url'] );
 
-			// Try again, some users have bad `wp_remote_get` had more sucess with `file_get_contents`
+			// Try again, some users have bad `wp_remote_get` had more success with `file_get_contents`
 			if ( false === $bits ) {
 				return false;
 			}

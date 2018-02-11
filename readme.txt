@@ -100,6 +100,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 = 0.4.10 &mdash; ?? of February, 2018 =
 
 * Feature: Added size control to Post Content, Comment Content and User Description
+* Fix: On image and attachment download we try one more time using `file_get_contents` &mdash; Thanks [@lazlo-toth](https://wordpress.org/support/topic/most-of-the-featured-image-links-appear-to-be-invalid/)
 * Fix: Resolve Quantity Min and Max fields weird interaction &mdash; Thanks [@rahmantanvir](https://github.com/bordoni/fakerpress/issues/124)
 
 = 0.4.9 &mdash; 07 of August, 2017 =
