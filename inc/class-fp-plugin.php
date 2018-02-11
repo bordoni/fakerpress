@@ -2,7 +2,7 @@
 namespace FakerPress;
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ){
+if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
@@ -13,7 +13,7 @@ class Plugin {
 	 * @since 0.1.0
 	 * @var string
 	 */
-	const version = '0.4.9';
+	const version = '0.4.10';
 
 	/**
 	 * A static variable that holds a dinamic instance of the class
@@ -157,7 +157,7 @@ class Plugin {
 		$options = self::all();
 		$value = Variable::search( $options, $name );
 
-		if ( is_null( $value ) ){
+		if ( is_null( $value ) ) {
 			return $default;
 		}
 
@@ -169,15 +169,15 @@ class Plugin {
 		$opts = array();
 
 		foreach ( (array) $name as $k => $index ) {
-			if ( 0 === $k ){
+			if ( 0 === $k ) {
 				$opts[ -1 ] = &$options;
 			}
 
-			if ( count( $name ) - 1 !== $k && ! isset( $opts[ $k - 1 ][ $index ] ) ){
+			if ( count( $name ) - 1 !== $k && ! isset( $opts[ $k - 1 ][ $index ] ) ) {
 				$opts[ $k - 1 ][ $index ] = array();
 			}
 
-			if ( isset( $opts[ $k - 1 ][ $index ] ) ){
+			if ( isset( $opts[ $k - 1 ][ $index ] ) ) {
 				$opts[ $k ] = &$opts[ $k - 1 ][ $index ];
 			} else {
 				$opts[ $k - 1 ][ $index ] = $value;
