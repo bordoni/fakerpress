@@ -49,7 +49,7 @@ class Comment extends Base {
 			)
 		);
 
-		foreach ( $query_comments as $comment ){
+		foreach ( $query_comments as $comment ) {
 			$comments[] = absint( $comment->comment_ID );
 		}
 
@@ -99,7 +99,7 @@ class Comment extends Base {
 	public function do_save( $return_val, $data, $module ) {
 		$comment_id = wp_insert_comment( $data );
 
-		if ( ! is_numeric( $comment_id ) ){
+		if ( ! is_numeric( $comment_id ) ) {
 			return false;
 		}
 
@@ -114,11 +114,12 @@ class Comment extends Base {
 			$qty = Utils::instance()->get_qty_from_range( Variable::super( INPUT_POST, array( Plugin::$slug, 'qty' ), FILTER_UNSAFE_RAW ) );
 		}
 
-		if ( 0 === $qty ){
+		if ( 0 === $qty ) {
 			return esc_attr__( 'Zero is not a good number of comments to fake...', 'fakerpress' );
 		}
 
-		$comment_content_use_html = Variable::super( $request, array( 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
+		$comment_content_size = Variable::super( $request, array( 'content_size' ), FILTER_UNSAFE_RAW, array( 1, 5 ) );
+		$comment_content_use_html = Utils::instance()->is_truthy( Variable::super( $request, array( 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) );
 		$comment_content_html_tags = array_map( 'trim', explode( ',', Variable::super( $request, array( 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 		$comment_type = array_map( 'trim', explode( ',', Variable::super( $request, array( 'type' ), FILTER_SANITIZE_STRING ) ) );
 		$post_types = array_map( 'trim', explode( ',', Variable::super( $request, array( 'post_types' ), FILTER_SANITIZE_STRING ) ) );
@@ -131,7 +132,14 @@ class Comment extends Base {
 
 		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->set( 'comment_date', $min_date, $max_date );
-			$this->set( 'comment_content', $comment_content_use_html, array( 'elements' => $comment_content_html_tags ) );
+			$this->set(
+				'comment_content',
+				$comment_content_use_html,
+				array(
+					'qty' => $comment_content_size,
+					'elements' => $comment_content_html_tags,
+				)
+			);
 			$this->set( 'user_id', 0 );
 			$this->set( 'comment_type', $comment_type );
 
@@ -146,7 +154,7 @@ class Comment extends Base {
 
 			$comment_id = $this->generate()->save();
 
-			if ( $comment_id && is_numeric( $comment_id ) ){
+			if ( $comment_id && is_numeric( $comment_id ) ) {
 				foreach ( $metas as $meta_index => $meta ) {
 					Meta::instance()->object( $comment_id, 'comment' )->generate( $meta['type'], $meta['name'], $meta )->save();
 				}

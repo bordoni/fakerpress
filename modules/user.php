@@ -119,10 +119,12 @@ class User extends Base {
 			$qty = $this->faker->numberBetween( $min, $max );
 		}
 
-		if ( 0 === $qty ){
+		if ( 0 === $qty ) {
 			return esc_attr__( 'Zero is not a good number of users to fake...', 'fakerpress' );
 		}
 
+		$description_size = Variable::super( $request, array( 'description_size' ), FILTER_UNSAFE_RAW, array( 1, 5 ) );
+		$description_use_html = Utils::instance()->is_truthy( Variable::super( $request, array( 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) );
 		$description_use_html = Variable::super( $request, array( 'use_html' ), FILTER_SANITIZE_STRING, 'off' ) === 'on';
 		$description_html_tags = array_map( 'trim', explode( ',', Variable::super( $request, array( 'html_tags' ), FILTER_SANITIZE_STRING ) ) );
 
@@ -133,7 +135,14 @@ class User extends Base {
 
 		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->set( 'role', $roles );
-			$this->set( 'description', $description_use_html, array( 'elements' => $description_html_tags ) );
+			$this->set(
+				'description',
+				$description_use_html,
+				array(
+					'qty' => $description_size,
+					'elements' => $description_html_tags,
+				)
+			);
 			$this->set( 'user_registered', 'yesterday', 'now' );
 
 			$this->set( array(
@@ -150,7 +159,7 @@ class User extends Base {
 
 			$user_id = $this->generate()->save();
 
-			if ( $user_id && is_numeric( $user_id ) ){
+			if ( $user_id && is_numeric( $user_id ) ) {
 				foreach ( $metas as $meta_index => $meta ) {
 					Meta::instance()->object( $user_id, 'user' )->generate( $meta['type'], $meta['name'], $meta )->save();
 				}

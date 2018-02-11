@@ -1,21 +1,27 @@
 <?php
 namespace Faker\Provider;
+use FakerPress;
 
 class WP_Comment extends Base {
 
 	public function comment_content( $html = true, $args = array() ) {
-		if ( $html === true ){
-			$comment_content = implode( "\n", $this->generator->html_elements( $args ) );
+		$defaults = array(
+			'qty' => array( 5, 15 ),
+		);
+		$args = wp_parse_args( $args, $defaults );
+
+		if ( true === $html ) {
+			$content = implode( "\n", $this->generator->html_elements( $args ) );
 		} else {
-			$comment_content = implode( "\r\n\r\n", $this->generator->paragraphs( $this->generator->randomDigitNotNull() ) );
+			$content = implode( "\r\n\r\n", $this->generator->paragraphs( FakerPress\Utils::instance()->get_qty_from_range( $args['qty'] ) ) );
 		}
 
-		return $comment_content;
+		return $content;
 	}
 
 	public function user_id( $users = array() ) {
 		// We only need to query if there is no users passed
-		if ( is_array( $users ) && empty( $users ) ){
+		if ( is_array( $users ) && empty( $users ) ) {
 			$users = get_users(
 				array(
 					'blog_id' => $GLOBALS['blog_id'],
@@ -63,7 +69,7 @@ class WP_Comment extends Base {
 	}
 
 	public function comment_author_IP( $ip = null ) {
-		if ( is_null( $ip ) ){
+		if ( is_null( $ip ) ) {
 			$ip = $this->generator->ipv4;
 		}
 
@@ -71,7 +77,7 @@ class WP_Comment extends Base {
 	}
 
 	public function comment_agent( $user_agent = null ) {
-		if ( is_null( $user_agent ) ){
+		if ( is_null( $user_agent ) ) {
 			$user_agent = $this->generator->userAgent;
 		}
 
@@ -96,7 +102,7 @@ class WP_Comment extends Base {
 	 */
 	public function comment_post_ID( $comment_post_ID = null, $args = array() ) {
 
-		if ( is_null( $comment_post_ID ) ){
+		if ( is_null( $comment_post_ID ) ) {
 			// We should be able to pass these arguments
 			$defaults = array(
 				'posts_per_page'   => -1,
@@ -113,7 +119,7 @@ class WP_Comment extends Base {
 
 			$query = new \WP_Query( $args );
 
-			if ( $query->found_posts ){
+			if ( $query->found_posts ) {
 				$comment_post_ID = absint( $this->generator->randomElement( $query->posts, 1 ) );
 			}
 
@@ -124,7 +130,7 @@ class WP_Comment extends Base {
 	}
 
 	public function comment_author_email( $author_email = null ) {
-		if ( is_null( $author_email ) ){
+		if ( is_null( $author_email ) ) {
 			$author_email = $this->generator->safeEmail;
 			$author_email = substr( $author_email, 0, strlen( $author_email ) - 1 );
 		}
@@ -133,7 +139,7 @@ class WP_Comment extends Base {
 	}
 
 	public function comment_author_url( $author_url = null ) {
-		if ( is_null( $author_url ) ){
+		if ( is_null( $author_url ) ) {
 			$author_url = $this->generator->url;
 			$author_url = substr( $author_url, 0, strlen( $author_url ) - 1 );
 		}
@@ -141,19 +147,19 @@ class WP_Comment extends Base {
 		return $author_url;
 	}
 
-	public function comment_date( $min = 'now', $max = null ){
+	public function comment_date( $min = 'now', $max = null ) {
 		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 		try {
 			$min = new \Carbon\Carbon( $min );
-		} catch (Exception $e) {
+		} catch ( Exception $e ) {
 			return null;
 		}
 
-		if ( ! is_null( $max ) ){
+		if ( ! is_null( $max ) ) {
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
 				$max = new \Carbon\Carbon( $max );
-			} catch (Exception $e) {
+			} catch ( Exception $e ) {
 				return null;
 			}
 		}
