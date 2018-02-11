@@ -30,10 +30,15 @@ class Attachment extends Base {
 		$response = wp_remote_get( $data['attachment_url'], array( 'timeout' => 5 ) );
 
 		if ( is_wp_error( $response ) ) {
-			return false;
-		}
+			$bits = file_get_contents( $data['attachment_url'] );
 
-		$bits = wp_remote_retrieve_body( $response );
+			// Try again, some users have bad `wp_remote_get` had more success with `file_get_contents`
+			if ( false === $bits ) {
+				return false;
+			}
+		} else {
+			$bits = wp_remote_retrieve_body( $response );
+		}
 
 		$filename = $this->faker->uuid() . '.jpg';
 		$upload = wp_upload_bits( $filename, null, $bits );
@@ -79,11 +84,6 @@ class Attachment extends Base {
 			array(
 				'id'   => 'unsplashit',
 				'text' => esc_attr__( 'Unsplash.it', 'fakerpress' ),
-				'type' => 'image',
-			),
-			array(
-				'id'   => 'lorempixel',
-				'text' => esc_attr__( 'LoremPixel', 'fakerpress' ),
 				'type' => 'image',
 			),
 		);

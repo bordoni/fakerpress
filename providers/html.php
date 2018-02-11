@@ -111,7 +111,7 @@ class HTML extends Base {
 		return (array) $html;
 	}
 
-	private function html_element_img( $element, $sources = array( 'lorempixel', 'placeholdit', 'unsplashit' ) ) {
+	private function html_element_img( $element, $sources = array( 'placeholdit', 'unsplashit' ) ) {
 		if ( ! isset( $element->attr['class'] ) ) {
 			$element->attr['class'][] = $this->generator->optional( 40, null )->randomElement( array( 'aligncenter', 'alignleft', 'alignright' ) );
 			$element->attr['class'] = array_filter( $element->attr['class'] );
@@ -131,7 +131,7 @@ class HTML extends Base {
 		return $element;
 	}
 
-	public function get_img_src( $sources = array( 'lorempixel', 'placeholdit', 'unsplashit' ) ) {
+	public function get_img_src( $sources = array( 'placeholdit', 'unsplashit' ) ) {
 		$images = \FakerPress\Module\Post::fetch( array( 'post_type' => 'attachment' ) );
 		$image = false;
 		$count_images = count( $images );
@@ -200,7 +200,7 @@ class HTML extends Base {
 			'attr' => $attr,
 		);
 
-		if ( empty( $element->name ) ){
+		if ( empty( $element->name ) ) {
 			return false;
 		}
 
@@ -208,7 +208,7 @@ class HTML extends Base {
 
 		$html = array();
 
-		if ( 'a' === $element->name ){
+		if ( 'a' === $element->name ) {
 			if ( ! isset( $element->attr['title'] ) ) {
 				$element->attr['title'] = Lorem::sentence( Base::numberBetween( 1, Base::numberBetween( 3, 9 ) ) );
 			}
@@ -217,8 +217,8 @@ class HTML extends Base {
 			}
 		}
 
-		if ( 'img' === $element->name ){
-			$sources = array( 'placeholdit', 'lorempixel', 'unsplashit' );
+		if ( 'img' === $element->name ) {
+			$sources = array( 'placeholdit', 'unsplashit' );
 			if ( is_object( $args ) && $args->sources ) {
 				$sources = $args->sources;
 			}
@@ -233,19 +233,19 @@ class HTML extends Base {
 		$html[] = sprintf( '<%s%s>', $element->name, ( ! empty( $attributes ) ? ' ' : '' ) . implode( ' ', $attributes ) );
 
 		if ( ! $element->one_liner ) {
-			if ( ! is_null( $text ) ){
+			if ( ! is_null( $text ) ) {
 				$html[] = $text;
-			} elseif ( in_array( $element->name, self::$sets['inline'] ) ){
+			} elseif ( in_array( $element->name, self::$sets['inline'] ) ) {
 				$text   = Lorem::text( Base::numberBetween( 5, 25 ) );
 				$html[] = substr( $text, 0, strlen( $text ) - 1 );
-			} elseif ( in_array( $element->name, self::$sets['item'] ) ){
+			} elseif ( in_array( $element->name, self::$sets['item'] ) ) {
 				$text   = Lorem::text( Base::numberBetween( 10, 60 ) );
 				$html[] = substr( $text, 0, strlen( $text ) - 1 );
-			} elseif ( in_array( $element->name, self::$sets['list'] ) ){
+			} elseif ( in_array( $element->name, self::$sets['list'] ) ) {
 				for ( $i = 0; $i < Base::numberBetween( 1, 15 ); $i++ ) {
 					$html[] = $this->element( 'li' );
 				}
-			} elseif ( in_array( $element->name, self::$sets['header'] ) ){
+			} elseif ( in_array( $element->name, self::$sets['header'] ) ) {
 				$text   = Lorem::text( Base::numberBetween( 60, 200 ) );
 				$html[] = substr( $text, 0, strlen( $text ) - 1 );
 			} else {
