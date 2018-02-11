@@ -1,6 +1,8 @@
 <?php
 namespace Faker\Provider;
 
+use Fakerpress;
+
 class HTML extends Base {
 	/**
 	 * @param \Faker\Generator $generator
@@ -55,7 +57,7 @@ class HTML extends Base {
 		$html = array();
 
 		$defaults = array(
-			'qty' => Base::numberBetween( 5, 25 ),
+			'qty' => array( 5, 25 ),
 			'elements' => array_merge( self::$sets['header'], self::$sets['list'], self::$sets['block'] ),
 			'attr' => array(),
 			'exclude' => array( 'div' ),
@@ -65,15 +67,18 @@ class HTML extends Base {
 		$args = (object) wp_parse_args( $args, $defaults );
 		$args->did_more_element = false;
 
+		// Randomize the quantity based on range
+		$args->qty = FakerPress\Utils::instance()->get_qty_from_range( $args->qty );
+
 		$max_to_more = ( $args->qty / 2 ) + $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
 		$min_to_more = ( $args->qty / 2 ) - $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
 
 		for ( $i = 0; $i < $args->qty; $i++ ) {
 			$exclude = $args->exclude;
-			if ( isset( $element ) ){
+			if ( isset( $element ) ) {
 				// Here we check if we need to exclude some elements from the next
 				// This one is to exclude header elements from apearing one after the other, or in the end of the string
-				if ( in_array( $element, self::$sets['header'] ) || $args->qty - 1 === $i ){
+				if ( in_array( $element, self::$sets['header'] ) || $args->qty - 1 === $i ) {
 					$exclude = array_merge( (array) $exclude, self::$sets['header'] );
 				} elseif ( $i > 1 && ( in_array( $els[ $i - 1 ], self::$sets['list'] ) || in_array( $els[ $i - 2 ], self::$sets['list'] ) ) ) {
 					$exclude = array_merge( (array) $exclude, self::$sets['list'] );
@@ -82,7 +87,7 @@ class HTML extends Base {
 
 			$elements = array_diff( $args->elements, $exclude );
 
-			if ( ! $args->allow_html_comments ){
+			if ( ! $args->allow_html_comments ) {
 				$elements = array_filter( $elements, array( $this, 'filter_html_comments' ) );
 			}
 
@@ -90,7 +95,14 @@ class HTML extends Base {
 
 			$html[] = $this->element( $element, $args->attr, null, $args );
 
-			if ( $this->generator->numberBetween( 0, 100 ) <= 80 && ! $args->did_more_element && $args->qty > 2 && $this->has_element( '!--more--', $args->elements ) && $i < $max_to_more &&	$i > $min_to_more ){
+			if (
+				$this->generator->numberBetween( 0, 100 ) <= 80
+				&& ! $args->did_more_element
+				&& $args->qty > 2
+				&& $this->has_element( '!--more--', $args->elements )
+				&& $i < $max_to_more
+				&&	$i > $min_to_more
+			) {
 				$html[] = $this->element( '!--more--' );
 				$args->did_more_element = true;
 			}

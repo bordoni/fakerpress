@@ -29,7 +29,7 @@ $fields[] = new Field(
 $post_types = get_post_types( array( 'public' => true ), 'object' );
 
 // Exclude Attachments as we don't support images yet
-if ( isset( $post_types['attachment'] ) ){
+if ( isset( $post_types['attachment'] ) ) {
 	unset( $post_types['attachment'] );
 }
 
@@ -92,6 +92,45 @@ $fields[] = new Field(
 	)
 );
 
+
+// Mount the options for Users
+$users = get_users(
+	array(
+		'blog_id' => $GLOBALS['blog_id'],
+		'count_total' => false,
+		'fields' => array( 'ID', 'display_name' ), // When you pass only one field it returns an array of the values
+	)
+);
+
+$_json_users_output = array();
+foreach ( $users as $user ) {
+	$_json_users_output[] = array(
+		'id' => $user->ID,
+		'text' => esc_attr( $user->display_name ),
+	);
+}
+
+$fields[] = new Field(
+	'dropdown',
+	array(
+		'id' => 'author',
+		'multiple' => true,
+		'data-options' => $_json_users_output,
+	),
+	array(
+		'label' => __( 'Author', 'fakerpress' ),
+		'description' => __( 'Choose some users to be authors of posts generated.', 'fakerpress' ),
+	)
+);
+
+$fields[] = new Field(
+	'heading',
+	array(
+		'title' => __( 'Post Content', 'fakerpress' ),
+	),
+	array()
+);
+
 $fields[] = new Field(
 	'checkbox',
 	array(
@@ -106,6 +145,19 @@ $fields[] = new Field(
 	),
 	array(
 		'label' => __( 'Use HTML', 'fakerpress' ),
+	)
+);
+
+$fields[] = new Field(
+	'range',
+	array(
+		'id' => 'content_size',
+		'min' => 5,
+		'max' => 15,
+	),
+	array(
+		'label' => __( 'Content Size', 'fakerpress' ),
+		'description' => __( 'How many paragraphs we are going to generate of content.', 'fakerpress' ),
 	)
 );
 
@@ -139,35 +191,6 @@ $fields[] = new Field(
 	)
 );
 
-// Mount the options for Users
-$users = get_users(
-	array(
-		'blog_id' => $GLOBALS['blog_id'],
-		'count_total' => false,
-		'fields' => array( 'ID', 'display_name' ), // When you pass only one field it returns an array of the values
-	)
-);
-
-$_json_users_output = array();
-foreach ( $users as $user ) {
-	$_json_users_output[] = array(
-		'id' => $user->ID,
-		'text' => esc_attr( $user->display_name ),
-	);
-}
-
-$fields[] = new Field(
-	'dropdown',
-	array(
-		'id' => 'author',
-		'multiple' => true,
-		'data-options' => $_json_users_output,
-	),
-	array(
-		'label' => __( 'Author', 'fakerpress' ),
-		'description' => __( 'Choose some users to be authors of posts generated.', 'fakerpress' ),
-	)
-);
 
 $fields[] = new Field(
 	'taxonomy',

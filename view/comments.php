@@ -45,7 +45,7 @@ $fields[] = new Field(
 $post_types = get_post_types( array( 'public' => true ), 'object' );
 
 // Exclude Attachments as we don't support images yet
-if ( isset( $post_types['attachment'] ) ){
+if ( isset( $post_types['attachment'] ) ) {
 	unset( $post_types['attachment'] );
 }
 
@@ -82,6 +82,36 @@ $fields[] = new Field(
 );
 
 $fields[] = new Field(
+	'interval',
+	'interval_date',
+	array(
+		'label' => __( 'Date', 'fakerpress' ),
+		'description' => __( 'Choose the range for the posts dates.', 'fakerpress' ),
+	)
+);
+
+$fields[] = new Field(
+	'heading',
+	array(
+		'title' => __( 'Comment Content', 'fakerpress' ),
+	),
+	array()
+);
+
+$fields[] = new Field(
+	'range',
+	array(
+		'id' => 'content_size',
+		'min' => 1,
+		'max' => 5,
+	),
+	array(
+		'label' => __( 'Content Size', 'fakerpress' ),
+		'description' => __( 'How many paragraphs we are going to generate of content.', 'fakerpress' ),
+	)
+);
+
+$fields[] = new Field(
 	'checkbox',
 	array(
 		'id' => 'use_html',
@@ -111,15 +141,6 @@ $fields[] = new Field(
 	array(
 		'label' => __( 'HTML tags', 'fakerpress' ),
 		'description' => __( 'Select the group of tags that can be selected to print on the Comment Content.', 'fakerpress' ),
-	)
-);
-
-$fields[] = new Field(
-	'interval',
-	'interval_date',
-	array(
-		'label' => __( 'Date', 'fakerpress' ),
-		'description' => __( 'Choose the range for the posts dates.', 'fakerpress' ),
 	)
 );
 

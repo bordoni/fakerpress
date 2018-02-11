@@ -10,6 +10,50 @@ $fields[] = new Field(
 	)
 );
 
+$roles = get_editable_roles();
+
+$_json_roles_output = array();
+foreach ( $roles as $role_name => $role_data ) {
+	$_json_roles_output[] = array(
+		'id' => $role_name,
+		'text' => esc_attr( $role_data['name'] ),
+	);
+}
+
+$fields[] = new Field(
+	'dropdown',
+	array(
+		'id' => 'roles',
+		'multiple' => true,
+		'data-options' => $_json_roles_output,
+	),
+	array(
+		'label' => __( 'Roles', 'fakerpress' ),
+		'description' => __( 'Sampling roles to be used', 'fakerpress' ),
+	)
+);
+
+$fields[] = new Field(
+	'heading',
+	array(
+		'title' => __( 'User Description', 'fakerpress' ),
+	),
+	array()
+);
+
+$fields[] = new Field(
+	'range',
+	array(
+		'id' => 'description_size',
+		'min' => 1,
+		'max' => 5,
+	),
+	array(
+		'label' => __( 'Description Size', 'fakerpress' ),
+		'description' => __( 'How many paragraphs we are going to generate of description.', 'fakerpress' ),
+	)
+);
+
 $fields[] = new Field(
 	'checkbox',
 	array(
@@ -40,29 +84,6 @@ $fields[] = new Field(
 	array(
 		'label' => __( 'HTML tags', 'fakerpress' ),
 		'description' => __( 'Select the group of tags that can be selected to print on the User Description.', 'fakerpress' ),
-	)
-);
-
-$roles = get_editable_roles();
-
-$_json_roles_output = array();
-foreach ( $roles as $role_name => $role_data ) {
-	$_json_roles_output[] = array(
-		'id' => $role_name,
-		'text' => esc_attr( $role_data['name'] ),
-	);
-}
-
-$fields[] = new Field(
-	'dropdown',
-	array(
-		'id' => 'roles',
-		'multiple' => true,
-		'data-options' => $_json_roles_output,
-	),
-	array(
-		'label' => __( 'Roles', 'fakerpress' ),
-		'description' => __( 'Sampling roles to be used', 'fakerpress' ),
 	)
 );
 

@@ -1,17 +1,18 @@
 <?php
 namespace Faker\Provider;
+use FakerPress;
 
 class WP_User extends Base {
 
 	public function user_login( $login = null ) {
-		if ( is_null( $login ) ){
+		if ( is_null( $login ) ) {
 			$login = $this->generator->userName;
 		}
 		return $login;
 	}
 
 	public function user_pass( $pass = null, $qty = 10 ) {
-		if ( is_null( $pass ) ){
+		if ( is_null( $pass ) ) {
 			// By the way we should be using the WordPress wp_generate_password
 			$pass = $this->generator->randomNumber( $qty - 1 ) + $this->generator->randomLetter();
 		}
@@ -19,7 +20,7 @@ class WP_User extends Base {
 	}
 
 	public function role( $role = null ) {
-		if ( is_null( $role ) ){
+		if ( is_null( $role ) ) {
 			$role = array_keys( get_editable_roles() );
 		}
 
@@ -27,28 +28,28 @@ class WP_User extends Base {
 	}
 
 	public function user_nicename( $nicename = null ) {
-		if ( is_null( $nicename ) ){
+		if ( is_null( $nicename ) ) {
 			$nicename = $this->generator->userName;
 		}
 		return $nicename;
 	}
 
 	public function user_url( $url = null ) {
-		if ( is_null( $url ) ){
+		if ( is_null( $url ) ) {
 			$url = $this->generator->url;
 		}
 		return $url;
 	}
 
 	public function user_email( $email = null ) {
-		if ( is_null( $email ) ){
+		if ( is_null( $email ) ) {
 			$email = $this->generator->safeEmail;
 		}
 		return $email;
 	}
 
 	public function display_name( $display_name = null, $gender = array( 'male', 'female' ) ) {
-		if ( is_null( $display_name ) ){
+		if ( is_null( $display_name ) ) {
 			$display_name = $this->generator->firstName( $this->generator->randomElements( $gender, 1 ) );
 		}
 		return $display_name;
@@ -62,7 +63,7 @@ class WP_User extends Base {
 	}
 
 	public function first_name( $first_name = null, $gender = array( 'male', 'female' ) ) {
-		if ( is_null( $first_name ) ){
+		if ( is_null( $first_name ) ) {
 			$first_name = $this->generator->firstName( $this->generator->randomElements( $gender, 1 ) );
 		}
 		return $first_name;
@@ -76,27 +77,32 @@ class WP_User extends Base {
 	}
 
 	public function description( $html = true, $args = array() ) {
-		if ( true === $html ){
-			$description = implode( "\n", $this->generator->html_elements( $args ) );
+		$defaults = array(
+			'qty' => array( 5, 15 ),
+		);
+		$args = wp_parse_args( $args, $defaults );
+
+		if ( true === $html ) {
+			$content = implode( "\n", $this->generator->html_elements( $args ) );
 		} else {
-			$description = implode( "\r\n\r\n", $this->generator->paragraphs( $this->generator->randomDigitNotNull() ) );
+			$content = implode( "\r\n\r\n", $this->generator->paragraphs( FakerPress\Utils::instance()->get_qty_from_range( $args['qty'] ) ) );
 		}
 
-		return $description;
+		return $content;
 	}
 
 	public function user_registered( $min = 'now', $max = null ) {
 		try {
 			$min = new \Carbon\Carbon( $min );
-		} catch (Exception $e) {
+		} catch ( Exception $e ) {
 			return null;
 		}
 
-		if ( ! is_null( $max ) ){
+		if ( ! is_null( $max ) ) {
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
 				$max = new \Carbon\Carbon( $max );
-			} catch (Exception $e) {
+			} catch ( Exception $e ) {
 				return null;
 			}
 		}
