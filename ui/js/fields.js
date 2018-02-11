@@ -316,7 +316,18 @@ window.fakerpress.fields.range = function( $, _ ){
 					$minField.val( '' );
 				}
 			}
-		} );
+		} ).trigger( 'change' );
+
+		$maxField.on( {
+			'change keyup': function(e){
+				var minValue = parseInt( $minField.val(), 10 );
+				var maxValue = parseInt( $maxField.val(), 10 );
+
+				if ( $.isNumeric( maxValue ) && minValue > maxValue ) {
+					$minField.val( maxValue );
+				}
+			}
+		} ).trigger( 'change' );
 	} );
 };
 
