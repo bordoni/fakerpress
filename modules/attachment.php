@@ -29,15 +29,16 @@ class Attachment extends Base {
 
 		$response = wp_remote_get( $data['attachment_url'], array( 'timeout' => 5 ) );
 
+		// Bail early if we have an error
 		if ( is_wp_error( $response ) ) {
-			$bits = file_get_contents( $data['attachment_url'] );
+			return false;
+		}
 
-			// Try again, some users have bad `wp_remote_get` had more success with `file_get_contents`
-			if ( false === $bits ) {
-				return false;
-			}
-		} else {
-			$bits = wp_remote_retrieve_body( $response );
+		$bits = wp_remote_retrieve_body( $response );
+
+		// Prevent Weird bits
+		if ( false === $bits ) {
+			return false;
 		}
 
 		$filename = $this->faker->uuid() . '.jpg';

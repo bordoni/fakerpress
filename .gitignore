@@ -3,6 +3,9 @@
 .ssh
 .svn
 
+# WordPress Project
+.org
+
 # OS #
 #######
 .DS_Store*

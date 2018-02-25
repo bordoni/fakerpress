@@ -3,6 +3,7 @@ namespace FakerPress\Module;
 use FakerPress\Admin;
 use FakerPress\Variable;
 use FakerPress\Plugin;
+use FakerPress\Utils;
 
 class User extends Base {
 

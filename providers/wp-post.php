@@ -79,7 +79,7 @@ class WP_Post extends Base {
 		if ( true === $html ) {
 			$content = implode( "\n", $this->generator->html_elements( $args ) );
 		} else {
-			$content = implode( "\r\n\r\n", $this->generator->paragraphs( FakerPress::instance()->get_qty_from_range( $args['qty'] ) ) );
+			$content = implode( "\r\n\r\n", $this->generator->paragraphs( FakerPress\Utils::instance()->get_qty_from_range( $args['qty'] ) ) );
 		}
 
 		return $content;

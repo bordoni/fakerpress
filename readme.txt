@@ -97,6 +97,11 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
+= 0.4.11 &mdash; 25 of February, 2018 =
+
+* Fix: Prevent fatals from oversight with Namespace and Classnames for User and Post generation &mdash; Thanks [@radgh](https://wordpress.org/support/topic/fakerpress-generate-users-fails/)
+* Fix: Resolve Quantity Min and Max fields weird interaction &mdash; Thanks [@rahmantanvir](https://github.com/bordoni/fakerpress/issues/124)
+
 = 0.4.10 &mdash; 11 of February, 2018 =
 
 * Feature: Added size control to Post Content, Comment Content and User Description
