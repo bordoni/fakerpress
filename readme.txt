@@ -99,8 +99,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 = 0.4.11 &mdash; 25 of February, 2018 =
 
-* Fix: Prevent fatals from oversight with Namespace and Classnames for User and Post generation &mdash; Thanks [@radgh](https://wordpress.org/support/topic/fakerpress-generate-users-fails/)
-* Fix: Resolve Quantity Min and Max fields weird interaction &mdash; Thanks [@rahmantanvir](https://github.com/bordoni/fakerpress/issues/124)
+* Fix: Prevent fatals from oversight with Namespace and Classnames for User and Post generation &mdash; Thanks [@radgh](https://wordpress.org/support/topic/fakerpress-generate-users-fails/) & [@johny-dotpad](https://wordpress.org/support/topic/post-generation-fails/)
+* Fix: Rollback change to `file_get_contents` it was making peoples servers hang to long &mdash; Thanks [@bilimokur](https://wordpress.org/support/topic/most-images-are-corrupted/)
 
 = 0.4.10 &mdash; 11 of February, 2018 =
 
