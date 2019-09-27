@@ -126,6 +126,27 @@ $fields[] = new Field(
 $fields[] = new Field(
 	'heading',
 	array(
+		'title' => __( 'Post Title', 'fakerpress' ),
+	),
+	array()
+);
+
+$fields[] = new Field(
+	'text',
+	array(
+		'id' => 'title_prefix',
+		'min' => 5,
+		'max' => 15,
+	),
+	array(
+		'label' => __( 'Title prefix', 'fakerpress' ),
+		'description' => __( 'Prefix the post title with this text.', 'fakerpress' ),
+	)
+);
+
+$fields[] = new Field(
+	'heading',
+	array(
 		'title' => __( 'Post Content', 'fakerpress' ),
 	),
 	array()

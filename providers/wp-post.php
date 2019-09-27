@@ -9,11 +9,11 @@ class WP_Post extends Base {
 		'comment_status' => array( 'closed', 'open' ),
 	);
 
-	public function post_title( $qty_words = 5 ) {
+	public function post_title( $prefix = '', $qty_words = 5 ) {
 		$title = $this->generator->sentence( $qty_words );
 		$title = substr( $title, 0, strlen( $title ) - 1 );
 
-		return $title;
+		return $prefix . $title;
 	}
 
 	public function post_type( $haystack = array() ) {

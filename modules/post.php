@@ -139,6 +139,9 @@ class Post extends Base {
 		$post_types = array_map( 'trim', explode( ',', $post_types ) );
 		$post_types = array_intersect( get_post_types( array( 'public' => true ) ), $post_types );
 
+		// Fetch Post Title
+		$post_title_prefix = Variable::super( $request, array( 'title_prefix' ), FILTER_UNSAFE_RAW );
+
 		// Fetch Post Content
 		$post_content_size = Variable::super( $request, array( 'content_size' ), FILTER_UNSAFE_RAW, array( 5, 15 ) );
 		$post_content_use_html = Variable::super( $request, array( 'use_html' ), FILTER_SANITIZE_NUMBER_INT, 0 ) === 1;
@@ -159,7 +162,7 @@ class Post extends Base {
 		$results = array();
 
 		for ( $i = 0; $i < $qty; $i++ ) {
-			$this->set( 'post_title' );
+			$this->set( 'post_title', $post_title_prefix );
 			$this->set( 'post_status', 'publish' );
 			$this->set( 'post_date', $date );
 			$this->set( 'post_parent', $post_parents );
