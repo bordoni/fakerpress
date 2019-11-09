@@ -2,7 +2,9 @@
 
 namespace Faker\Test\Provider\zh_TW;
 
-class TextTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class TextTest extends TestCase
 {
     private $textClass;
 
@@ -20,7 +22,7 @@ class TextTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    function it_should_explode_the_string_to_array()
+    function testItShouldExplodeTheStringToArray()
     {
         $this->assertSame(
             array('中', '文', '測', '試', '真', '有', '趣'),
@@ -34,7 +36,7 @@ class TextTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    function it_should_return_the_string_length()
+    function testItShouldReturnTheStringLength()
     {
         $this->assertContains(
             $this->getMethod('strlen')->invokeArgs(null, array('中文測試真有趣')),
@@ -43,7 +45,7 @@ class TextTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    function it_should_return_the_character_is_valid_start_or_not()
+    function testItShouldReturnTheCharacterIsValidStartOrNot()
     {
         $this->assertTrue($this->getMethod('validStart')->invokeArgs(null, array('中')));
 
@@ -57,7 +59,7 @@ class TextTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    function it_should_append_end_punct_to_the_end_of_string()
+    function testItShouldAppendEndPunctToTheEndOfString()
     {
         $this->assertSame(
             '中文測試真有趣。',

@@ -3,10 +3,10 @@
 namespace Faker\Test\Provider;
 
 use Faker\Provider\Miscellaneous;
+use PHPUnit\Framework\TestCase;
 
-class MiscellaneousTest extends \PHPUnit_Framework_TestCase
+class MiscellaneousTest extends TestCase
 {
-
     public function testBoolean()
     {
         $this->assertContains(Miscellaneous::boolean(), array(true, false));
@@ -50,5 +50,10 @@ class MiscellaneousTest extends \PHPUnit_Framework_TestCase
     public function testCurrencyCode()
     {
         $this->assertRegExp('/^[A-Z]{3}$/', Miscellaneous::currencyCode());
+    }
+
+    public function testEmoji()
+    {
+        $this->assertRegExp('/^[\x{1F600}-\x{1F637}]$/u', Miscellaneous::emoji());
     }
 }

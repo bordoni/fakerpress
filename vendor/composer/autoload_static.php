@@ -20,10 +20,6 @@ class ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71
         array (
             'Faker\\' => 6,
         ),
-        'C' => 
-        array (
-            'Carbon\\' => 7,
-        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -39,9 +35,19 @@ class ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71
         array (
             0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
         ),
-        'Carbon\\' => 
+    );
+
+    public static $fallbackDirsPsr4 = array (
+        0 => __DIR__ . '/..' . '/nesbot/carbon/src',
+    );
+
+    public static $prefixesPsr0 = array (
+        'U' => 
         array (
-            0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
+            'UpdateHelper\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/kylekatarnls/update-helper/src',
+            ),
         ),
     );
 
@@ -50,6 +56,8 @@ class ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

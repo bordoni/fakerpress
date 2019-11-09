@@ -18,16 +18,25 @@ class Image extends Base
      * Set randomize to false to remove the random GET parameter at the end of the url.
      *
      * @example 'http://lorempixel.com/640/480/?12345'
+     *
+     * @param integer $width
+     * @param integer $height
+     * @param string|null $category
+     * @param bool $randomize
+     * @param string|null $word
+     * @param bool $gray
+     *
+     * @return string
      */
     public static function imageUrl($width = 640, $height = 480, $category = null, $randomize = true, $word = null, $gray = false)
     {
-        $baseUrl = "http://lorempixel.com/";
+        $baseUrl = "https://lorempixel.com/";
         $url = "{$width}/{$height}/";
-        
+
         if ($gray) {
             $url = "gray/" . $url;
         }
-        
+
         if ($category) {
             if (!in_array($category, static::$categories)) {
                 throw new \InvalidArgumentException(sprintf('Unknown image category "%s"', $category));
@@ -74,19 +83,21 @@ class Image extends Base
             $fp = fopen($filepath, 'w');
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_FILE, $fp);
-            $success = curl_exec($ch);
-            curl_close($ch);
+            $success = curl_exec($ch) && curl_getinfo($ch, CURLINFO_HTTP_CODE) === 200;
             fclose($fp);
+            curl_close($ch);
+
+            if (!$success) {
+                unlink($filepath);
+
+                // could not contact the distant URL or HTTP error - fail silently.
+                return false;
+            }
         } elseif (ini_get('allow_url_fopen')) {
             // use remote fopen() via copy()
             $success = copy($url, $filepath);
         } else {
             return new \RuntimeException('The image formatter downloads an image from a remote HTTP server. Therefore, it requires that PHP can request remote hosts, either via cURL or fopen()');
-        }
-
-        if (!$success) {
-            // could not contact the distant URL or HTTP error - fail silently.
-            return false;
         }
 
         return $fullPath ? $filepath : $filename;

@@ -3,8 +3,9 @@
 namespace Faker\Test\Calculator;
 
 use Faker\Calculator\Luhn;
+use PHPUnit\Framework\TestCase;
 
-class LuhnTest extends \PHPUnit_Framework_TestCase
+class LuhnTest extends TestCase
 {
 
     public function checkDigitProvider()
@@ -18,10 +19,10 @@ class LuhnTest extends \PHPUnit_Framework_TestCase
             array('510510510510510', '0'),
             array(7992739871, '3'),
             array(3852000002323, '7'),
-            array(37144963539843, '1'),
-            array(561059108101825, '0'),
-            array(601100099013942, '4'),
-            array(510510510510510, '0')
+            array('37144963539843', '1'),
+            array('561059108101825', '0'),
+            array('601100099013942', '4'),
+            array('510510510510510', '0')
         );
     }
 
@@ -58,5 +59,14 @@ class LuhnTest extends \PHPUnit_Framework_TestCase
     public function testIsValid($number, $isValid)
     {
         $this->assertEquals($isValid, Luhn::isValid($number));
+    }
+
+    /**
+     * @expectedException        InvalidArgumentException
+     * @expectedExceptionMessage Argument should be an integer.
+     */
+    public function testGenerateLuhnNumberWithInvalidPrefix()
+    {
+        Luhn::generateLuhnNumber('abc');
     }
 }

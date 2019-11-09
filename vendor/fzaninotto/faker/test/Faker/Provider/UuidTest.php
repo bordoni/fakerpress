@@ -2,9 +2,11 @@
 
 namespace Faker\Test\Provider;
 
+use Faker\Generator;
 use Faker\Provider\Uuid as BaseProvider;
+use PHPUnit\Framework\TestCase;
 
-class UuidTest extends \PHPUnit_Framework_TestCase
+class UuidTest extends TestCase
 {
     public function testUuidReturnsUuid()
     {
@@ -14,7 +16,11 @@ class UuidTest extends \PHPUnit_Framework_TestCase
 
     public function testUuidExpectedSeed()
     {
-        mt_srand(123);
+        if (pack('L', 0x6162797A) == pack('N', 0x6162797A)) {
+            $this->markTestSkipped('Big Endian');
+        }
+        $faker = new Generator();
+        $faker->seed(123);
         $this->assertEquals("8e2e0c84-50dd-367c-9e66-f3ab455c78d6", BaseProvider::uuid());
         $this->assertEquals("073eb60a-902c-30ab-93d0-a94db371f6c8", BaseProvider::uuid());
     }

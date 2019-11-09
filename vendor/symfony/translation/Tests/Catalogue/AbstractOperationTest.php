@@ -11,15 +11,16 @@
 
 namespace Symfony\Component\Translation\Tests\Catalogue;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\MessageCatalogueInterface;
 
-abstract class AbstractOperationTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractOperationTest extends TestCase
 {
     public function testGetEmptyDomains()
     {
         $this->assertEquals(
-            array(),
+            [],
             $this->createOperation(
                 new MessageCatalogue('en'),
                 new MessageCatalogue('en')
@@ -30,17 +31,17 @@ abstract class AbstractOperationTest extends \PHPUnit_Framework_TestCase
     public function testGetMergedDomains()
     {
         $this->assertEquals(
-            array('a', 'b', 'c'),
+            ['a', 'b', 'c'],
             $this->createOperation(
-                new MessageCatalogue('en', array('a' => array(), 'b' => array())),
-                new MessageCatalogue('en', array('b' => array(), 'c' => array()))
+                new MessageCatalogue('en', ['a' => [], 'b' => []]),
+                new MessageCatalogue('en', ['b' => [], 'c' => []])
             )->getDomains()
         );
     }
 
     public function testGetMessagesFromUnknownDomain()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->createOperation(
             new MessageCatalogue('en'),
             new MessageCatalogue('en')
@@ -50,9 +51,9 @@ abstract class AbstractOperationTest extends \PHPUnit_Framework_TestCase
     public function testGetEmptyMessages()
     {
         $this->assertEquals(
-            array(),
+            [],
             $this->createOperation(
-                new MessageCatalogue('en', array('a' => array())),
+                new MessageCatalogue('en', ['a' => []]),
                 new MessageCatalogue('en')
             )->getMessages('a')
         );

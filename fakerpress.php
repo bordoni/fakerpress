@@ -3,7 +3,7 @@
  * Plugin Name:       FakerPress
  * Plugin URI:        https://fakerpress.com
  * Description:       FakerPress is a clean way to generate fake data to your WordPress instalation, great for developers who need testing
- * Version:           0.4.11
+ * Version:           0.4.12
  * Author:            Gustavo Bordoni
  * Author URI:        http://bordoni.me
  * Text Domain:       fakerpress
@@ -42,18 +42,18 @@ add_action( 'plugins_loaded', '_fp_l10n' );
  * intention is to bring this number lower
  */
 
-if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
+if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
 	if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 		if ( ! is_plugin_active( plugin_basename( __FP_FILE__ ) ) ) {
 			wp_print_styles( 'open-sans' );
 			echo "<style>body{margin: 0 2px;font-family: 'Open Sans',sans-serif;font-size: 13px;line-height: 1.5em;}</style>";
-			echo wp_kses_post( __( '<b>FakerPress</b> requires PHP 5.3 or higher, and the plugin has now disabled itself.', 'fakerpress' ) ) .
+			echo wp_kses_post( __( '<b>FakerPress</b> requires PHP 5.6 or higher, and the plugin has now disabled itself.', 'fakerpress' ) ) .
 				'<br />' .
 				esc_attr__( 'To allow better control over dates, advanced security improvements and performance gain.', 'fakerpress' ) .
 				'<br />' .
-				esc_attr__( 'Contact your Hosting or your system administrator and ask for this Upgrade to version 5.3 of PHP.', 'fakerpress' );
+				esc_attr__( 'Contact your Hosting or your system administrator and ask for this Upgrade to version 5.6 of PHP.', 'fakerpress' );
 			exit();
 		}
 

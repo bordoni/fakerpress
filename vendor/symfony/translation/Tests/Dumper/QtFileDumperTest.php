@@ -11,15 +11,16 @@
 
 namespace Symfony\Component\Translation\Tests\Dumper;
 
-use Symfony\Component\Translation\MessageCatalogue;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\Dumper\QtFileDumper;
+use Symfony\Component\Translation\MessageCatalogue;
 
-class QtFileDumperTest extends \PHPUnit_Framework_TestCase
+class QtFileDumperTest extends TestCase
 {
     public function testFormatCatalogue()
     {
         $catalogue = new MessageCatalogue('en');
-        $catalogue->add(array('foo' => 'bar'), 'resources');
+        $catalogue->add(['foo' => 'bar'], 'resources');
 
         $dumper = new QtFileDumper();
 
