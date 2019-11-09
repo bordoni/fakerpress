@@ -1,6 +1,7 @@
 <?php
 namespace FakerPress;
 use Carbon\Carbon;
+use Faker\Provider\HTML;
 
 $fields[] = new Field(
 	'range',
@@ -161,7 +162,7 @@ $fields[] = new Field(
 	]
 );
 
-$_elements = array_merge( \Faker\Provider\HTML::$sets['header'], \Faker\Provider\HTML::$sets['list'], \Faker\Provider\HTML::$sets['block'], \Faker\Provider\HTML::$sets['self_close'] );
+$_elements = array_merge( HTML::$sets['header'], HTML::$sets['list'], HTML::$sets['block'], HTML::$sets['self_close'] );
 $fields[] = new Field(
 	'dropdown',
 	[

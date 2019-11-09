@@ -1,8 +1,9 @@
 === FakerPress ===
 Contributors:      bordoni
 Tags:              generator, dummy content, dummy data, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
-Requires at least: 3.7
+Requires at least: 4.7
 Tested up to:      5.3
+Requires PHP:      5.6
 Stable tag:        trunk
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -97,8 +98,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
-= 0.4.12 &mdash; 12 of November, 2019 =
+= 0.5.0 &mdash; 12 of November, 2019 =
 
+* Tweak: Update required version of PHP to 5.6 to be more along the requirements of WordPress.
 * Tweak: Test and update the version of WordPress FakerPress was tested up to, now on 5.3.
 * Tweak: Updated the version of fzaninotto/faker (v1.6.0 => v1.8.0)
 * Tweak: Updated the version of nesbot/carbon (1.21.0 => 1.39.1)

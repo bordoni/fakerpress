@@ -2,17 +2,17 @@
 namespace FakerPress;
 $fields[] = new Field(
 	'text',
-	array(
+	[
 		'id' => 'erase_phrase',
 		'placeholder' => 'The cold never bothered me anyway!',
-	),
-	array(
+	],
+	[
 		'label' => __( 'Erase faked data', 'fakerpress' ),
 		'description' => __( 'To erase all data generated type "<b>Let it Go!</b>".', 'fakerpress' ),
-		'actions' => array(
+		'actions' => [
 			'delete' => __( 'Delete!', 'fakerpress' ),
-		),
-	)
+		],
+	]
 );
 
 ?>
