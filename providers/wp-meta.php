@@ -4,10 +4,10 @@ use FakerPress;
 use FakerPress\Utils;
 
 class WP_Meta extends Base {
-	public $meta_object = array(
+	public $meta_object = [
 		'name' => 'post',
 		'id' => 0,
-	);
+	];
 
 	public function set_meta_object( $name, $id ) {
 		$this->meta_object = (object) $this->meta_object;
@@ -20,7 +20,7 @@ class WP_Meta extends Base {
 		$_qty = array_filter( (array) $qty );
 		$min = reset( $_qty );
 
-		$qty = (int) ( is_array( $qty ) && count( $_qty ) > 1 ? call_user_func_array( array( $this->generator, 'numberBetween' ), $qty ) : reset( $_qty ) );
+		$qty = (int) ( is_array( $qty ) && count( $_qty ) > 1 ? call_user_func_array( [ $this->generator, 'numberBetween' ], $qty ) : reset( $_qty ) );
 		if ( $qty < $min ) {
 			$qty = $min;
 		}
@@ -35,22 +35,22 @@ class WP_Meta extends Base {
 	private function meta_parse_separator( $separator ) {
 		$separator = stripcslashes( $separator );
 
-		$search = array(
+		$search = [
 			'\n',
 			'\r',
 			'\t',
-		);
-		$replace = array(
+		];
+		$replace = [
 			"\n",
 			"\r",
 			"\t",
-		);
+		];
 		$separator = str_replace( $search, $replace, $separator );
 		return $separator;
 	}
 
-	public function meta_type_numbers( $number = array( 0, 9 ), $weight = 50 ) {
-		$number = ( is_array( $number ) ? call_user_func_array( array( $this->generator, 'numberBetween' ), $number ) : $number );
+	public function meta_type_numbers( $number = [ 0, 9 ], $weight = 50 ) {
+		$number = ( is_array( $number ) ? call_user_func_array( [ $this->generator, 'numberBetween' ], $number ) : $number );
 
 		return $this->generator->optional( (int) $weight, null )->randomElement( (array) $number );
 	}
@@ -101,10 +101,10 @@ class WP_Meta extends Base {
 		$qty = $this->meta_parse_qty( $qty );
 		$elements = explode( ',', $elements );
 
-		$value = $this->generator->optional( (int) $weight, null )->html_elements( array(
+		$value = $this->generator->optional( (int) $weight, null )->html_elements( [
 			'elements' => $elements,
 			'qty' => $qty,
-		) );
+		] );
 
 		if ( is_null( $value ) ) {
 			return $value;
@@ -114,7 +114,7 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_wp_query( $query, $weight = 50 ) {
-		$args = wp_parse_args( $query, array() );
+		$args = wp_parse_args( $query, [] );
 		$args['fields'] = 'ids';
 
 		// Make easier for Attachment Queries
@@ -133,24 +133,26 @@ class WP_Meta extends Base {
 		return $value;
 	}
 
-	public function meta_type_attachment( $type, $providers, $weight = 50, $width = array(), $height = array() ) {
+	public function meta_type_attachment( $type, $providers, $weight = 50, $width = [], $height = [] ) {
 		$providers = array_map( 'esc_attr', array_map( 'trim', explode( ',', $providers ) ) );
+		$provider = $this->generator->randomElement( $providers );
+
 		$attachment = FakerPress\Module\Attachment::instance();
 
-		$arguments = array();
+		$arguments = [];
 
 		// Specially for Meta we do the Randomization here
-		if ( ! empty( $width ) ) {
+		if ( ! empty( $width )&& $this->meta_parse_qty( $width ) ) {
 			$arguments['width'] = $this->meta_parse_qty( $width );
 		}
 
 		// Specially for Meta we do the Randomization here
-		if ( ! empty( $height ) ) {
+		if ( ! empty( $height ) && $this->meta_parse_qty( $height ) ) {
 			$arguments['height'] = $this->meta_parse_qty( $height );
 		}
 
 		// Generate the Attachment
-		$attachment->set( 'attachment_url', $this->generator->randomElement( $providers ), $arguments );
+		$attachment->set( 'attachment_url', $provider, $arguments );
 
 		// If it's meta for a post we need to mark the attachment as child of that post
 		if ( 'post' === $this->meta_object->name ) {
@@ -203,14 +205,14 @@ class WP_Meta extends Base {
 	public function meta_type_company( $template, $weight = 50 ) {
 		$template = explode( '|', $template );
 
-		$tags = array(
+		$tags = [
 			'suffix',
 			'company',
 			'bs',
 			'catch_phrase',
-		);
+		];
 
-		$text = array();
+		$text = [];
 
 		foreach ( $template as $key => $tag ) {
 			preg_match( '|^\{\% *([^\ ]*) *\%\}$|i', $tag, $_parsed );
@@ -243,14 +245,14 @@ class WP_Meta extends Base {
 	public function meta_type_person( $template, $gender = 'female', $weight = 50 ) {
 		$template = explode( '|', $template );
 
-		$tags = array(
+		$tags = [
 			'title',
 			'first_name',
 			'last_name',
 			'suffix',
-		);
+		];
 
-		$text = array();
+		$text = [];
 
 		foreach ( $template as $key => $tag ) {
 			preg_match( '|^\{\% *([^\ ]*) *\%\}$|i', $tag, $_parsed );
@@ -282,7 +284,7 @@ class WP_Meta extends Base {
 
 	public function meta_type_geo( $template, $weight = 50 ) {
 		$template = explode( '|', $template );
-		$tags = array(
+		$tags = [
 			'country',
 			'country_code',
 			'country_abbr',
@@ -299,9 +301,9 @@ class WP_Meta extends Base {
 			'postalcode',
 			'latitude',
 			'longitude',
-		);
+		];
 
-		$text = array();
+		$text = [];
 
 		foreach ( $template as $key => $tag ) {
 			preg_match( '|^\{\% *([^\ ]*) *\%\}$|i', $tag, $_parsed );
@@ -390,7 +392,7 @@ class WP_Meta extends Base {
 		}
 
 		// If max has no Time set it to the end of the day
-		$max_has_time = array_filter( array( $max->hour, $max->minute, $max->second ) );
+		$max_has_time = array_filter( [ $max->hour, $max->minute, $max->second ] );
 		$max_has_time = ! empty( $max_has_time );
 		if ( ! $max_has_time ) {
 			$max = $max->endOfDay();

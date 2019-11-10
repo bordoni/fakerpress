@@ -567,18 +567,6 @@ class Admin {
 			return false;
 		}
 
-		$save_500px = is_string( Variable::super( INPUT_POST, array( 'fakerpress', 'actions', 'save_500px' ), FILTER_UNSAFE_RAW ) );
-
-		if ( $save_500px ){
-			$opts = array(
-				'key' => Variable::super( INPUT_POST, array( 'fakerpress', '500px-key' ), FILTER_SANITIZE_STRING ),
-			);
-
-			Plugin::update( array( '500px' ), $opts );
-
-			return self::add_message( __( 'Updated 500px Customer Application settings', 'fakerpress' ), 'success' );
-		}
-
 		// After this point we are safe to say that we have a good POST request
 		$erase_intention = is_string( Variable::super( INPUT_POST, array( 'fakerpress', 'actions', 'delete' ), FILTER_UNSAFE_RAW ) );
 		$erase_check     = in_array( strtolower( Variable::super( INPUT_POST, array( 'fakerpress', 'erase_phrase' ), FILTER_SANITIZE_STRING ) ), array( 'let it go', 'let it go!' ) );

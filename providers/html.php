@@ -16,36 +16,33 @@ class HTML extends Base {
 		$provider = new PlaceHoldIt( $this->generator );
 		$this->generator->addProvider( $provider );
 
-		$provider = new UnsplashIt( $this->generator );
+		$provider = new LoremPicsum( $this->generator );
 		$this->generator->addProvider( $provider );
 
 		$provider = new LoremPixel( $this->generator );
 		$this->generator->addProvider( $provider );
-
-		$provider = new Image500px( $this->generator );
-		$this->generator->addProvider( $provider );
 	}
 
-	static public $sets = array(
-		'self_close' => array( 'img', 'hr', '!--more--' ),
-		'header' => array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ),
-		'list' => array( 'ul', 'ol' ),
-		'block' => array( 'div', 'p', 'blockquote' ),
-		'item' => array( 'li' ),
-		'inline' => array(
+	static public $sets = [
+		'self_close' => [ 'img', 'hr', '!--more--' ],
+		'header' => [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ],
+		'list' => [ 'ul', 'ol' ],
+		'block' => [ 'div', 'p', 'blockquote' ],
+		'item' => [ 'li' ],
+		'inline' => [
 			'b', 'big', 'i', 'small', 'tt',
 			'abbr', 'cite', 'code', 'em', 'strong',
 			'a', 'bdo', 'br', 'img', 'q', 'span', 'sub', 'sup',
 			'hr',
-		),
-		'wp' => array( '!--more--' )
-	);
+		],
+		'wp' => [ '!--more--' ]
+	];
 
 	private function filter_html_comments( $element = '' ) {
 		return ! preg_match( '/<?!--(.*?)-->?/i', $element );
 	}
 
-	private function has_element( $needle = '', $haystack = array() ) {
+	private function has_element( $needle = '', $haystack = [] ) {
 		$needle = trim( $needle );
 		$filtered = array_filter( $haystack, function( $element ) use ( $needle ){
 			return preg_match( "/<?(!--)? ?({$needle})+ ?(--)?>?/i", $element ) !== 0;
@@ -53,16 +50,16 @@ class HTML extends Base {
 		return count( $filtered ) > 0;
 	}
 
-	public function html_elements( $args = array() ) {
-		$html = array();
+	public function html_elements( $args = [] ) {
+		$html = [];
 
-		$defaults = array(
-			'qty' => array( 5, 25 ),
+		$defaults = [
+			'qty' => [ 5, 25 ],
 			'elements' => array_merge( self::$sets['header'], self::$sets['list'], self::$sets['block'] ),
-			'attr' => array(),
-			'exclude' => array( 'div' ),
+			'attr' => [],
+			'exclude' => [ 'div' ],
 			'allow_html_comments' => false,
-		);
+		];
 
 		$args = (object) wp_parse_args( $args, $defaults );
 		$args->did_more_element = false;
@@ -88,7 +85,7 @@ class HTML extends Base {
 			$elements = array_diff( $args->elements, $exclude );
 
 			if ( ! $args->allow_html_comments ) {
-				$elements = array_filter( $elements, array( $this, 'filter_html_comments' ) );
+				$elements = array_filter( $elements, [ $this, 'filter_html_comments' ] );
 			}
 
 			$els[] = $element = Base::randomElement( $elements );
@@ -111,9 +108,9 @@ class HTML extends Base {
 		return (array) $html;
 	}
 
-	private function html_element_img( $element, $sources = array( 'placeholdit', 'unsplashit' ) ) {
+	private function html_element_img( $element, $sources = [ 'placeholdit', 'lorempicsum' ] ) {
 		if ( ! isset( $element->attr['class'] ) ) {
-			$element->attr['class'][] = $this->generator->optional( 40, null )->randomElement( array( 'aligncenter', 'alignleft', 'alignright' ) );
+			$element->attr['class'][] = $this->generator->optional( 40, null )->randomElement( [ 'aligncenter', 'alignleft', 'alignright' ] );
 			$element->attr['class'] = array_filter( $element->attr['class'] );
 			$element->attr['class'] = implode( ' ', $element->attr['class'] );
 		}
@@ -131,8 +128,8 @@ class HTML extends Base {
 		return $element;
 	}
 
-	public function get_img_src( $sources = array( 'placeholdit', 'unsplashit' ) ) {
-		$images = \FakerPress\Module\Post::fetch( array( 'post_type' => 'attachment' ) );
+	public function get_img_src( $sources = [ 'placeholdit', 'lorempicsum' ] ) {
+		$images = \FakerPress\Module\Post::fetch( [ 'post_type' => 'attachment' ] );
 		$image = false;
 		$count_images = count( $images );
 		$optional = ( $count_images * 2 );
@@ -154,11 +151,11 @@ class HTML extends Base {
 	public function random_apply_element( $element = 'a', $max = 5, $text = null ) {
 		$words       = explode( ' ', $text );
 		$total_words = count( $words );
-		$sentences   = array();
+		$sentences   = [];
 
 		for ( $i = 0; $i < $total_words; $i++ ) {
 			$group    = Base::numberBetween( 1, Base::numberBetween( 3, 9 ) );
-			$sentence = array();
+			$sentence = [];
 
 			for ( $k = 0 ; $k < $group; $k++ ) {
 				$index = $i + $k;
@@ -187,18 +184,18 @@ class HTML extends Base {
 			$index = ( $indexes * $i ) + Base::numberBetween( 0, $indexes );
 
 			if ( isset( $sentences[ $index ] ) ){
-				$sentences[ $index ] = $this->element( $element, array(), $sentences[ $index ] );
+				$sentences[ $index ] = $this->element( $element, [], $sentences[ $index ] );
 			}
 		}
 
 		return implode( ' ', $sentences );
 	}
 
-	public function element( $name = 'div', $attr = array(), $text = null, $args = null ) {
-		$element = (object) array(
+	public function element( $name = 'div', $attr = [], $text = null, $args = null ) {
+		$element = (object) [
 			'name' => $name,
 			'attr' => $attr,
-		);
+		];
 
 		if ( empty( $element->name ) ) {
 			return false;
@@ -206,7 +203,7 @@ class HTML extends Base {
 
 		$element->one_liner = in_array( $element->name, self::$sets['self_close'] );
 
-		$html = array();
+		$html = [];
 
 		if ( 'a' === $element->name ) {
 			if ( ! isset( $element->attr['title'] ) ) {
@@ -218,14 +215,14 @@ class HTML extends Base {
 		}
 
 		if ( 'img' === $element->name ) {
-			$sources = array( 'placeholdit', 'unsplashit' );
+			$sources = [ 'placeholdit', 'lorempicsum' ];
 			if ( is_object( $args ) && $args->sources ) {
 				$sources = $args->sources;
 			}
 			$element = $this->html_element_img( $element, $sources );
 		}
 
-		$attributes = array();
+		$attributes = [];
 		foreach ( $element->attr as $key => $value ) {
 			$attributes[] = sprintf( '%s="%s"', $key, esc_attr( $value ) );
 		}

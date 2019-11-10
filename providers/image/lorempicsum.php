@@ -3,8 +3,9 @@ namespace Faker\Provider;
 
 /**
  * @since  0.4.2
+ * @since  0.5.0 Unsplash.it turned into Lorem Picsum
  */
-class UnsplashIt extends Base {
+class LoremPicsum extends Base {
 	/**
 	 * Constructor for the Provider
 	 *
@@ -17,10 +18,11 @@ class UnsplashIt extends Base {
 	}
 
 	/**
-	 * Generates a URL for Unsplash.it
+	 * Generates a URL for Lorem Picsum, previosuly known as Unsplash.it
 	 *
 	 * @since  0.4.2
 	 * @since  0.4.9  On this version we started to accept Array or Int in the Second Param
+	 * @since  0.5.0  Moved from Unsplash.it to Lorem Picsum
 	 *
 	 * @param  array|int        $width   A range for the images that will be generated, if a int is passed
 	 *                                   we use that value always.
@@ -29,9 +31,9 @@ class UnsplashIt extends Base {
 	 *
 	 * @return string
 	 */
-	public function unsplashit( $width = array( 800, 1440 ), $height = 1.25 ) {
+	public function lorempicsum( $width = [ 800, 1440 ], $height = 1.25 ) {
 		if ( is_array( $width ) ){
-			$width = call_user_func_array( array( $this->generator, 'numberBetween' ), $width );
+			$width = call_user_func_array( [ $this->generator, 'numberBetween' ], $width );
 		}
 
 		// Makes sure we have an Int
@@ -41,11 +43,11 @@ class UnsplashIt extends Base {
 		if ( is_float( $height ) ) {
 			$height = floor( $width / floatval( $height ) );
 		} elseif ( is_array( $height ) ) {
-			$height = call_user_func_array( array( $this->generator, 'numberBetween' ), $height );
+			$height = call_user_func_array( [ $this->generator, 'numberBetween' ], $height );
 		}
 
-		// https://unsplash.it/200/640/?random
-		$url = "https://unsplash.it/{$width}/{$height}/?random";
+		// https://picsum.photos/200/640/?random
+		$url = "https://picsum.photos/{$width}/{$height}/?random";
 
 		return $url;
 	}

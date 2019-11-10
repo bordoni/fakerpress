@@ -100,7 +100,14 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
-### 0.5.0 &mdash; 12 of November, 2019 ###
+### 0.5.0 &mdash; 09 of November, 2019 ###
+* Feature: Removed 500px as a image provider as that source was deprecated a while ago.
+* Fix: Properly handle downloading of images into WordPress, which makes this a lot safer and faster.
+* Fix: Resolved the problem where images from the Meta Attachment were been generated with 0x0 size and breaking the attachment.
+* Fix: Removed 500px as a image provider as that source was deprecated a while ago.
+* Fix: Moved from Unplash.it to their new name as Lorem Picsum.
+* Tweak: Started adding proper docblocks to the new methods. Note it will take a couple versions to have all methods with proper docblocks.
+* Tweak: Control timeout of image download with filter `fakerpress.module.attachment.download_url_timeout` defaulting to 10 seconds per attachment.
 * Tweak: Update required version of PHP to 5.6 to be more along the requirements of WordPress.
 * Tweak: Test and update the version of WordPress FakerPress was tested up to, now on 5.3.
 * Tweak: Updated the version of fzaninotto/faker (v1.6.0 => v1.8.0)

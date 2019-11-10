@@ -4,22 +4,108 @@ use FakerPress;
 
 class Attachment extends Base {
 
-	public $dependencies = array(
+	/**
+	 * Holds the key for the meta value of the original URL from where
+	 * a given attachment was downloaded from.
+	 *
+	 * @since  0.5.0
+	 *
+	 * @var string
+	 */
+	public static $meta_key_original_url = '_fakerpress_orginal_url';
+
+	public $dependencies = [
 		'\Faker\Provider\Lorem',
 		'\Faker\Provider\DateTime',
 		'\Faker\Provider\HTML',
 		'\Faker\Provider\PlaceHoldIt',
-		'\Faker\Provider\UnsplashIt',
+		'\Faker\Provider\LoremPicsum',
 		'\Faker\Provider\LoremPixel',
-		'\Faker\Provider\Image500px',
-	);
+	];
 
 	public $provider = '\Faker\Provider\WP_Attachment';
 
 	public $page = false;
 
 	public function init() {
-		add_filter( "fakerpress.module.{$this->slug}.save", array( $this, 'do_save' ), 10, 3 );
+		add_filter( "fakerpress.module.{$this->slug}.save", [ $this, 'do_save' ], 10, 3 );
+	}
+
+	/**
+	 * Handle the downloads of Attachments given a URL and Post Parent ID, which will default to 0.
+	 * Currently only support images.
+	 *
+	 * @since  0.5.0
+	 *
+	 * @param  string  $url            Which URL we are using to download.
+	 * @param  integer $post_parent_id Which post this will be attached to.
+	 *
+	 * @return int|WP_Error            Attachment ID or WP_Error.
+	 */
+	protected function handle_download( $url, $post_parent_id = 0 ) {
+		/**
+		 * Allows filtering of the attachment download_url timeout, which is here just to
+		 * prevent fakerpress timing out.
+		 *
+		 * @since  0.5.0
+		 *
+		 * @param int    $timeout         Download timeout.
+		 * @param string $url             Which url we are downloading it for.
+		 * @param int    $post_parent_id  Which post this will be attached to.
+		 */
+		$timeout = apply_filters( 'fakerpress.module.attachment.download_url_timeout', 10, $url, $post_parent_id );
+
+		// Download temp file
+		$temporary_file = download_url( $url, 10 );
+
+		// Check for download errors if there are error unlink the temp file name
+		if ( is_wp_error( $temporary_file ) ) {
+			@unlink( $temporary_file );
+			return $temporary_file;
+		}
+
+		$mime_type = wp_get_image_mime( $temporary_file );
+		if ( ! $mime_type ) {
+			return new WP_Error( 'invalid-image-mimetype', __( 'Invalid image MimeType', 'fakerpress' ) );
+		}
+
+		$allowed_mime_types = get_allowed_mime_types();
+
+		$extension = array_search( $mime_type, $allowed_mime_types );
+		if ( $extension ) {
+			$extension = explode( '|', $extension );
+		}
+
+		if ( ! $extension ) {
+			return new WP_Error( 'invalid-image-mimetype', __( 'Invalid image MimeType', 'fakerpress' ) );
+		}
+
+		// Build file name with Extension.
+		$filename = implode( '.', [ $this->faker->uuid(), reset( $extension ) ] );
+
+		$file = [
+			'name' => $filename,
+			'tmp_name' => $temporary_file,
+		];
+
+		// uploads as an attachment to WP
+		$attachment_id = media_handle_sideload( $file, $post_parent_id );
+
+		// download_url requires deleting the file
+		@unlink( $temporary_file );
+
+		/**
+		* We don't want to pass something to $id
+		* if there were upload errors.
+		* So this checks for errors
+		*/
+		if ( is_wp_error( $attachment_id ) ) {
+			@unlink( $temporary_file );
+			return $attachment_id;
+		}
+
+		// Return Attachment ID
+		return $attachment_id;
 	}
 
 	public function do_save( $return_val, $data, $module ) {
@@ -27,45 +113,15 @@ class Attachment extends Base {
 			return false;
 		}
 
-		$response = wp_remote_get( $data['attachment_url'], array( 'timeout' => 5 ) );
-
-		// Bail early if we have an error
-		if ( is_wp_error( $response ) ) {
-			return false;
-		}
-
-		$bits = wp_remote_retrieve_body( $response );
-
-		// Prevent Weird bits
-		if ( false === $bits ) {
-			return false;
-		}
-
-		$filename = $this->faker->uuid() . '.jpg';
-		$upload = wp_upload_bits( $filename, null, $bits );
-
-		$data['guid'] = $upload['url'];
-		$data['post_mime_type'] = 'image/jpeg';
-
-		// Insert the attachment.
-		$attach_id = wp_insert_attachment( $data, $upload['file'], 0 );
-
-		if ( ! is_numeric( $attach_id ) ) {
-			return false;
-		}
-
-		if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
-			// Make sure that this file is included, as wp_generate_attachment_metadata() depends on it.
-			require_once( ABSPATH . 'wp-admin/includes/image.php' );
-		}
-
-		// Generate the metadata for the attachment, and update the database record.
-		update_post_meta( $attach_id, '_wp_attachment_metadata', wp_generate_attachment_metadata( $attach_id, $upload['file'] ) );
+		$attachment_id = $this->handle_download( $data['attachment_url'] );
 
 		// Flag the Object as FakerPress
-		update_post_meta( $attach_id, self::$flag, 1 );
+		update_post_meta( $attachment_id, self::$flag, 1 );
 
-		return $attach_id;
+		// Add the Original URL to the meta of the attachment
+		update_post_meta( $attachment_id, static::$meta_key_original_url, $data['attachment_url'] );
+
+		return $attachment_id;
 	}
 
 	/**
@@ -76,26 +132,18 @@ class Attachment extends Base {
 	 * @return array  With ID, Text and Type
 	 */
 	public static function get_providers( $type = 'image' ) {
-		$providers = array(
-			array(
+		$providers = [
+			[
 				'id'   => 'placeholdit',
 				'text' => esc_attr__( 'Placehold.it', 'fakerpress' ),
 				'type' => 'image',
-			),
-			array(
-				'id'   => 'unsplashit',
-				'text' => esc_attr__( 'Unsplash.it', 'fakerpress' ),
+			],
+			[
+				'id'   => 'lorempicsum',
+				'text' => esc_attr__( 'Lorem Picsum', 'fakerpress' ),
 				'type' => 'image',
-			),
-		);
-
-		if ( FakerPress\Plugin::get( array( '500px', 'key' ), false ) ) {
-			$providers[] = array(
-				'id'   => '500px',
-				'text' => esc_attr__( '500px', 'fakerpress' ),
-				'type' => 'image',
-			);
-		}
+			],
+		];
 
 		return $providers;
 

@@ -1750,6 +1750,7 @@ class Field {
 				return implode( "\r\n", $html );
 			},
 		];
+
 		foreach ( $types as $key => $type ) {
 			$types->{$key} = (object) $type;
 		}

@@ -116,17 +116,9 @@ $_image_providers[] = array(
 );
 
 $_image_providers[] = array(
-	'id' => 'unsplashit',
-	'text' => 'Unsplash.it',
+	'id' => 'lorempicsum',
+	'text' => 'Lorem Picsum',
 );
-
-if ( Plugin::get( array( '500px', 'key' ), false ) ){
-	$_image_providers[] = array(
-		'id' => '500px',
-		'text' => '500px',
-	);
-}
-
 
 $fields[] = new Field(
 	'dropdown',

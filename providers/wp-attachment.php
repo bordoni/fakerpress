@@ -6,28 +6,35 @@ class WP_Attachment extends Base {
 		return 'attachment';
 	}
 
-	protected static $default = array(
-		'ping_status' => array( 'closed', 'open' ),
-		'comment_status' => array( 'closed', 'open' ),
-	);
+	protected static $default = [
+		'ping_status' => [ 'closed', 'open' ],
+		'comment_status' => [ 'closed', 'open' ],
+	];
 
-	private static $type_defaults = array(
-		'placeholdit' => array(
-			'width' => array( 200, 640 ),
+	/**
+	 * Hold the default width and height for the diff providers.
+	 *
+	 * @since  0.1.0
+	 * @since  0.5.0 now it's a public static var.
+	 *
+	 * @var array
+	 */
+	public static $type_defaults = [
+		'placeholdit' => [
+			'width' => [ 200, 640 ],
 			'height' => 1.25,
-		),
-		'lorempixel' => array(
-			'width' => array( 200, 640 ),
+		],
+		'lorempixel' => [
+			'width' => [ 200, 640 ],
 			'height' => 1.25,
-		),
-		'unsplashit' => array(
-			'width' => array( 1024, 1440 ),
+		],
+		'lorempicsum' => [
+			'width' => [ 1024, 1440 ],
 			'height' => 1.5,
-		),
-		'500px' => array()
-	);
+		],
+	];
 
-	public function attachment_url( $type = '500px', $args = array() ) {
+	public function attachment_url( $type = 'lorempicsum', $args = [] ) {
 		$url = '';
 
 		// Check if defaults exists
@@ -38,13 +45,11 @@ class WP_Attachment extends Base {
 		$args = wp_parse_args( $args, self::$type_defaults[ $type ] );
 
 		if ( 'placeholdit' === $type ){
-			$url = call_user_func_array( array( $this->generator, 'placeholdit' ), (array) $args );
-		} elseif ( 'unsplashit' === $type ){
-			$url = call_user_func_array( array( $this->generator, 'unsplashit' ), (array) $args );
+			$url = call_user_func_array( [ $this->generator, 'placeholdit' ], (array) $args );
+		} elseif ( 'lorempicsum' === $type ){
+			$url = call_user_func_array( [ $this->generator, 'lorempicsum' ], (array) $args );
 		} elseif ( 'lorempixel' === $type ){
-			$url = call_user_func_array( array( $this->generator, 'lorempixel' ), (array) $args );
-		} elseif ( '500px' === $type ){
-			$url = call_user_func_array( array( $this->generator, 'image_500px' ), (array) $args );
+			$url = call_user_func_array( [ $this->generator, 'lorempixel' ], (array) $args );
 		}
 
 		return $url;
@@ -57,7 +62,7 @@ class WP_Attachment extends Base {
 		return $title;
 	}
 
-	public function post_content( $html = true, $args = array() ) {
+	public function post_content( $html = true, $args = [] ) {
 		if ( true === $html ){
 			$content = implode( "\n", $this->generator->html_elements( $args ) );
 		} else {
@@ -67,14 +72,14 @@ class WP_Attachment extends Base {
 		return $content;
 	}
 
-	public function post_author( $haystack = array() ) {
+	public function post_author( $haystack = [] ) {
 		if ( empty( $haystack ) ){
 			$haystack = get_users(
-				array(
+				[
 					'blog_id' => get_current_blog_id(),
 					'count_total' => false,
 					'fields' => 'ID', // When you pass only one field it returns an array of the values
-				)
+				]
 			);
 		}
 
@@ -85,11 +90,11 @@ class WP_Attachment extends Base {
 		return 'inherit';
 	}
 
-	public function post_parent( $haystack = array(), $rate = 70 ) {
+	public function post_parent( $haystack = [], $rate = 70 ) {
 		return $this->generator->numberBetween( 0, 100 ) < absint( $rate ) ? 0 : $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function ping_status( $haystack = array() ) {
+	public function ping_status( $haystack = [] ) {
 		if ( empty( $haystack ) ){
 			$haystack = static::$default['ping_status'];
 		}
@@ -97,7 +102,7 @@ class WP_Attachment extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function comment_status( $haystack = array() ) {
+	public function comment_status( $haystack = [] ) {
 		if ( empty( $haystack ) ){
 			$haystack = static::$default['comment_status'];
 		}
@@ -105,7 +110,7 @@ class WP_Attachment extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function menu_order( $haystack = array() ) {
+	public function menu_order( $haystack = [] ) {
 		if ( empty( $haystack ) ){
 			return 0;
 		}
@@ -113,7 +118,7 @@ class WP_Attachment extends Base {
 		return $this->generator->randomElement( (array) $haystack );
 	}
 
-	public function post_password( $generator = null, $args = array() ) {
+	public function post_password( $generator = null, $args = [] ) {
 		if ( is_null( $generator ) ){
 			return '';
 		}
