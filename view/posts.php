@@ -1,7 +1,7 @@
 <?php
 namespace FakerPress;
 use Carbon\Carbon;
-use Faker\Provider\HTML;
+use FakerPress\Provider\HTML;
 
 $fields[] = new Field(
 	'range',

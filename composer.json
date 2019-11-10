@@ -1,6 +1,23 @@
 {
+    "description": "FakerPress",
     "name": "bordoni/fakerpress",
     "type": "wordpress-plugin",
+    "keywords": [
+        "wordpress",
+        "dummy data",
+        "faker",
+        "fake data",
+        "generator"
+    ],
+    "homepage": "http://fakerpress.com/",
+    "license": "GPL-2.0",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "FakerPress\\": "src/FakerPress/"
+        }
+    },
     "require": {
         "fzaninotto/faker": "^1.6",
         "nesbot/carbon": "^1.21"

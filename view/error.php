@@ -1,9 +1,9 @@
 <?php
 namespace FakerPress;
-$tweet_args = array(
+$tweet_args = [
 	'hashtags' => 'FakerPress',
 	'related' => 'webord',
-);
+];
 $locale = get_locale();
 if ( ! empty( $locale ) ){
 	$tweet_args['hashtags'] .= ',' . esc_attr( $locale );

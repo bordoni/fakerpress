@@ -19,6 +19,7 @@ class ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71
         'F' => 
         array (
             'Faker\\' => 6,
+            'FakerPress\\' => 11,
         ),
     );
 
@@ -34,6 +35,10 @@ class ComposerStaticInitf9aed2ad0a3b9b6027bdd80cf9711c71
         'Faker\\' => 
         array (
             0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
+        ),
+        'FakerPress\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/FakerPress',
         ),
     );
 

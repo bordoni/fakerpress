@@ -15,7 +15,7 @@ try {
 
 	$readme_txt_path = null;
 	while ( true ) {
-		foreach ( array( 'readme.txt', 'README.txt' ) as $readme_filename ) {
+		foreach ( [ 'readme.txt', 'README.txt' ] as $readme_filename ) {
 			if ( file_exists( $readme_filename ) ) {
 				$readme_txt_path = realpath( $readme_filename );
 				break;
@@ -36,9 +36,9 @@ try {
 
 	require_once __DIR__ . '/class-wordpress-readme-parser.php';
 
-	$readme = new WordPress_Readme_Parser( array( 'path' => $readme_txt_path ) );
+	$readme = new WordPress_Readme_Parser( [ 'path' => $readme_txt_path ] );
 
-	$md_args = array();
+	$md_args = [];
 	if ( file_exists( $readme_root . '/.travis.yml' ) ) {
 		$md_args['travis_ci_url'] = preg_replace( '/^.+?:(.+)\.git$/', 'https://travis-ci.org/$1', trim( `git config --get remote.origin.url` ) );
 	}

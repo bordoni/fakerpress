@@ -14,10 +14,10 @@ class WordPress_Readme_Parser {
 	public $source;
 	public $title = '';
 	public $short_description = '';
-	public $metadata = array();
-	public $sections = array();
+	public $metadata = [];
+	public $sections = [];
 
-	function __construct( $args = array() ) {
+	function __construct( $args = [] ) {
 		$args = array_merge( get_object_vars( $this ), $args );
 		foreach ( $args as $key => $value ) {
 			$this->$key = $value;
@@ -36,7 +36,7 @@ class WordPress_Readme_Parser {
 		$this->title = $matches[1];
 		$this->short_description = $matches[3];
 		$readme_txt_rest = $matches[4];
-		$this->metadata = array_fill_keys( array( 'Contributors', 'Tags', 'Requires at least', 'Tested up to', 'Stable tag', 'License', 'License URI' ), null );
+		$this->metadata = array_fill_keys( [ 'Contributors', 'Tags', 'Requires at least', 'Tested up to', 'Stable tag', 'License', 'License URI' ], null );
 		foreach ( explode( "\n", $matches[2] ) as $metadatum ) {
 			if ( ! preg_match( '/^(.+?):\s+(.+)$/', $metadatum, $metadataum_matches ) ) {
 				throw new Exception( "Parse error in $metadatum" );
@@ -57,7 +57,7 @@ class WordPress_Readme_Parser {
 
 			$heading     = array_shift( $section_match );
 			$body        = trim( array_shift( $section_match ) );
-			$subsections = array();
+			$subsections = [];
 
 			if ( strpos( $body, '---' ) !== false ){
 				$description = explode( '---', $body );
@@ -74,10 +74,10 @@ class WordPress_Readme_Parser {
 
 				foreach ( $subsection_matches as $subsection_match ) {
 					array_shift( $subsection_match );
-					$subsections[] = array(
+					$subsections[] = [
 						'heading' => array_shift( $subsection_match ),
 						'body' => trim( array_shift( $subsection_match ) ),
-					);
+					];
 				}
 			}
 
@@ -90,7 +90,7 @@ class WordPress_Readme_Parser {
 	 * @param array|string [$params]
 	 * @return string
 	 */
-	function to_markdown( $params = array() ) {
+	function to_markdown( $params = [] ) {
 
 		$general_section_formatter = function ( $body ) use ( $params ) {
 			$body = preg_replace(
@@ -102,7 +102,7 @@ class WordPress_Readme_Parser {
 		};
 
 		// Parse sections
-		$section_formatters = array(
+		$section_formatters = [
 			'Description' => function ( $body ) use ( $params ) {
 				if ( isset( $params['travis_ci_url'] ) ) {
 					$body .= sprintf( "\n\n[![Build Status](%s.png?branch=master)](%s)", $params['travis_ci_url'], $params['travis_ci_url'] );
@@ -116,7 +116,7 @@ class WordPress_Readme_Parser {
 					throw new Exception( 'Malformed screenshot section' );
 				}
 				foreach ( $screenshot_matches as $i => $screenshot_match ) {
-					$img_extensions = array( 'jpg', 'gif', 'png' );
+					$img_extensions = [ 'jpg', 'gif', 'png' ];
 					foreach ( $img_extensions as $ext ) {
 						$filepath = sprintf( 'assets/screenshot-%d.%s', $i + 1, $ext );
 						if ( file_exists( dirname( $this->path ) . DIRECTORY_SEPARATOR . $filepath ) ) {
@@ -138,7 +138,7 @@ class WordPress_Readme_Parser {
 				}
 				return $new_body;
 			},
-		);
+		];
 
 		// Format metadata
 		$formatted_metadata = $this->metadata;

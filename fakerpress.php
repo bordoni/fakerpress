@@ -60,5 +60,5 @@ if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
 		deactivate_plugins( __FP_FILE__ );
 	}
 } else {
-	require_once plugin_dir_path( __FP_FILE__ ) . 'inc' . DIRECTORY_SEPARATOR . 'load.php';
+	require_once plugin_dir_path( __FP_FILE__ ) . 'load.php';
 }
