@@ -102,7 +102,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 * Feature: Completely change folder structure to comply with [PSR-4](https://www.php-fig.org/psr/psr-4/) autoloading with namespaces.
 * Tweak: More well structured `composer.json` and using it's autoloader.
-* Tweak: Moved all files to use the [] array syntax.
+* Tweak: Moved all files to use the `[]` array syntax.
 
 = 0.5.0 &mdash; 09 of November, 2019 =
 

@@ -31,9 +31,85 @@ class Utils {
 	}
 
 	/**
-	 * Remove the Period on the end of the Setence from Faker
+	 * Formats an array of HTML attributes into a string.
 	 *
-	 * @param  string  $sentence  Which sentence we should remove the period from
+	 * @since  0.5.1
+	 *
+	 * @param  array  $attributes Attribures used to build the string.
+	 *
+	 * @return string             Formatted attributes.
+	 */
+	public static function attr( $attributes = []  ) {
+		if ( is_scalar( $attributes ) ) {
+			return '';
+		}
+
+		$html       = [];
+		$attributes = (array) $attributes;
+
+		foreach ( $attributes as $key => $value ) {
+			if ( is_null( $value ) || false === $value ) {
+				continue;
+			}
+
+			if ( 'label' === $key ) {
+				continue;
+			}
+
+			if ( '_' === substr( $key, 0, 1 ) ) {
+				$key = substr_replace( $key, 'data-', 0, 1 );
+			}
+
+			if ( 'class' === $key && ! is_array( $value ) ) {
+				$value = (array) $value;
+			}
+
+			$attr = $key;
+
+			if ( ! is_scalar( $value ) ) {
+				if ( 'class' === $key ) {
+					$value = array_map( [ static::class, 'abbr' ], (array) $value );
+
+					// Make sure buttons also get the `button` class
+					if ( in_array( 'fp-type-button', $value ) ) {
+						$value[] = 'button';
+					}
+
+					$value = array_map( 'sanitize_html_class', $value );
+					$value = implode( ' ', $value );
+				} else {
+					$value = htmlspecialchars( json_encode( $value ), ENT_QUOTES, 'UTF-8' );
+				}
+			}
+			if ( ! is_bool( $value ) || true !== $value ) {
+				$attr .= '="' . $value . '"';
+			}
+
+			$html[ $key ] = $attr;
+		}
+
+		return ' ' . implode( ' ', $html ) . ' ';
+	}
+
+	/**
+	 * Adds a abbriviation for the plugin to a string.
+	 * Used for preppending HTML classes.
+	 *
+	 * @since  0.5.1
+	 *
+	 * @param  string $str String to which we are adding the abbr.
+	 *
+	 * @return string      String with the abbr preppended to.
+	 */
+	public static function abbr( $str = '' ) {
+		return 'fp-' . $str;
+	}
+
+	/**
+	 * Remove the Period on the end of the Setence from Faker.
+	 *
+	 * @param  string  $sentence  Which sentence we should remove the period from.
+	 *
 	 * @return string
 	 */
 	public function remove_sentence_period( $sentence ) {

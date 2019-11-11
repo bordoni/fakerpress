@@ -1,15 +1,11 @@
 <?php
 namespace FakerPress;
 use FakerPress\Provider\HTML;
+use FakerPress\Utils;
 
 class Field {
 
 	const plugin = 'fakerpress';
-	const abbr = 'fp';
-
-	public static function abbr( $str = '' ) {
-		return self::abbr . '-' . $str;
-	}
 
 	public $type = 'raw';
 
@@ -47,8 +43,6 @@ class Field {
 		'hidden',
 		'meta',
 		'taxonomy',
-		// 'textarea',
-		// 'wysiwyg',
 		'radio',
 		'checkbox',
 		'raw',
@@ -77,7 +71,7 @@ class Field {
 		// set the ID
 		$this->type = $type;
 		if ( ! isset( $this->field->id ) ) {
-			$this->id = (array) self::abbr( uniqid() );
+			$this->id = (array) Utils::abbr( uniqid() );
 		} else {
 			$this->id = (array) $this->field->id;
 		}
@@ -135,7 +129,7 @@ class Field {
 				$_html = $block['html'];
 				unset( $block['html'] );
 			}
-			$before_content[] = '<td' . self::attr( $block ) . '>' . $_html . '</td>';
+			$before_content[] = '<td' . Utils::attr( $block ) . '>' . $_html . '</td>';
 		}
 
 		$after = array_filter( array_slice( $this->blocks, $key + 1, count( $this->blocks ) - ( $key + 1 ) ), 'is_array' );
@@ -146,7 +140,7 @@ class Field {
 				$_html = $block['html'];
 				unset( $block['html'] );
 			}
-			$after_content[] = '<td' . self::attr( $block ) . '>' . $_html . '</td>';
+			$after_content[] = '<td' . Utils::attr( $block ) . '>' . $_html . '</td>';
 		}
 
 		if ( in_array( 'heading', $this->blocks ) ) {
@@ -190,7 +184,7 @@ class Field {
 	}
 
 	public static function start_table( $container, $output = 'string', $html = [] ) {
-		$html[] = '<table class="' . self::abbr( 'table-' . implode( '-', $container->id ) ) . '">';
+		$html[] = '<table class="' . Utils::abbr( 'table-' . implode( '-', $container->id ) ) . '">';
 		if ( ! empty( $container->heads ) ) {
 			$html[] = '<thead>';
 			foreach ( $container->heads as $head ) {
@@ -199,7 +193,7 @@ class Field {
 					$_html = $head['html'];
 					unset( $head['html'] );
 				}
-				$html[] = '<th' . self::attr( $head ) . '>' . $_html . '</th>';
+				$html[] = '<th' . Utils::attr( $head ) . '>' . $_html . '</th>';
 			}
 			$html[] = '</thead>';
 		}
@@ -236,10 +230,10 @@ class Field {
 			$container->class[] = 'error';
 		}
 
-		$container->class = array_map( [ __CLASS__, 'abbr' ], $container->class );
+		$container->class = array_map( [ Utils::class, 'abbr' ], $container->class );
 
 		if ( ! in_array( 'table', $container->blocks ) ) {
-			$html[] = '<tr id="' . self::id( $container->id, true ) . '" class="' . implode( ' ', $container->class ) . '" ' . self::attr( $container->attributes ) . '>';
+			$html[] = '<tr id="' . self::id( $container->id, true ) . '" class="' . implode( ' ', $container->class ) . '" ' . Utils::attr( $container->attributes ) . '>';
 		}
 
 		$html = apply_filters( self::plugin . '/fields/field-start_container', $html, $container );
@@ -270,10 +264,10 @@ class Field {
 
 		$html = [];
 		if ( ! empty( $content ) ) {
-			$html[] = '<fieldset' . self::attr( $attributes ) . '>';
+			$html[] = '<fieldset' . Utils::attr( $attributes ) . '>';
 			$html[] = implode( "\r\n", (array) $content );
 			if ( ! empty( $field->label ) ) {
-				$html[] = '<label class="' . self::abbr( 'internal-label' ) . '">' . $field->label . '</label>';
+				$html[] = '<label class="' . Utils::abbr( 'internal-label' ) . '">' . $field->label . '</label>';
 			}
 			$html[] = '</fieldset>';
 		}
@@ -290,10 +284,10 @@ class Field {
 		$container->wrap['class'][] = 'type-' . $container->type . '-wrap';
 		if ( in_array( 'fields', $container->blocks ) ) {
 			$html[] = '<td colspan="1">';
-			$html[] = '<fieldset' . self::attr( $container->wrap ) . '>';
+			$html[] = '<fieldset' . Utils::attr( $container->wrap ) . '>';
 		} elseif ( ! in_array( 'table', $container->blocks ) ) {
 			$container->wrap['colspan'] = 2;
-			$html[] = '<td' . self::attr( $container->wrap ) . '>';
+			$html[] = '<td' . Utils::attr( $container->wrap ) . '>';
 		}
 
 		$html = apply_filters( self::plugin . '/fields/field-start_wrap', $html, $container );
@@ -334,7 +328,7 @@ class Field {
 		$html[] = '<' . ( $is_td ? 'td' : 'th' ) . ' scope="row" colspan="1">';
 
 		if ( isset( $container->label ) && false !== $container->label ) {
-			$html[] = '<label class="' . self::abbr( 'field-label' ) . '" for="' . self::id( $container->id ) . '">' . $container->label . '</label>';
+			$html[] = '<label class="' . Utils::abbr( 'field-label' ) . '" for="' . self::id( $container->id ) . '">' . $container->label . '</label>';
 		}
 
 		$html[] = '</' . ( $is_td ? 'td' : 'th' ) . '>';
@@ -352,7 +346,7 @@ class Field {
 			return ( 'string' === $output ? '' : [] );
 		}
 
-		$html[] = '<div class="' . self::abbr( 'actions' ) . '">';
+		$html[] = '<div class="' . Utils::abbr( 'actions' ) . '">';
 		foreach ( $container->actions as $action => $label ) {
 			$html[] = get_submit_button( $label, 'primary', self::plugin . '[actions][' . $action . ']', false );
 		}
@@ -368,7 +362,7 @@ class Field {
 
 	public static function description( $container, $output = 'string', $html = [] ) {
 		if ( ! empty( $container->description ) ) {
-			$html[] = '<p class="' . self::abbr( 'field-description' ) . '">' . $container->description . '</p>';;
+			$html[] = '<p class="' . Utils::abbr( 'field-description' ) . '">' . $container->description . '</p>';;
 		}
 
 		$html = apply_filters( self::plugin . '/fields/field-description', $html, $container );
@@ -403,54 +397,6 @@ class Field {
 		return self::plugin . '-field-' . implode( '-', (array) $id );
 	}
 
-	public static function attr( $attributes = [], $html = [] ) {
-		if ( is_scalar( $attributes ) ) {
-			return false;
-		}
-
-		$attributes = (array) $attributes;
-
-		foreach ( $attributes as $key => $value ) {
-			if ( is_null( $value ) || false === $value ) {
-				continue;
-			}
-
-			if ( 'label' === $key ) {
-				continue;
-			}
-
-			if ( '_' === substr( $key, 0, 1 ) ) {
-				$key = substr_replace( $key, 'data-', 0, 1 );
-			}
-
-			if ( 'class' === $key && ! is_array( $value ) ) {
-				$value = (array) $value;
-			}
-
-			$attr = $key;
-
-			if ( ! is_scalar( $value ) ) {
-				if ( 'class' === $key ) {
-					$value = array_map( [ __CLASS__, 'abbr' ], (array) $value );
-					if ( in_array( 'fp-type-button', $value ) ) {
-						$value[] = 'button';
-					}
-					$value = array_map( 'sanitize_html_class', $value );
-					$value = implode( ' ', $value );
-				} else {
-					$value = htmlspecialchars( json_encode( $value ), ENT_QUOTES, 'UTF-8' );
-				}
-			}
-			if ( ! is_bool( $value ) || true !== $value ) {
-				$attr .= '="' . $value . '"';
-			}
-
-			$html[ $key ] = $attr;
-		}
-
-		return ' ' . implode( ' ', $html );
-	}
-
 	public static function parse( $field, &$container = null ) {
 		if ( is_scalar( $field ) ) {
 			if ( ! is_string( $field ) ) {
@@ -468,7 +414,7 @@ class Field {
 			$container = (object) wp_parse_args( $container, self::$default_container );
 		}
 		if ( ! isset( $container->id ) ) {
-			$container->id = (array) self::abbr( uniqid() );
+			$container->id = (array) Utils::abbr( uniqid() );
 		}
 
 		$field = (object) wp_parse_args( $field, ( ! empty( $container->field ) ? $container->field : [] ) );
@@ -605,7 +551,7 @@ class Field {
 			return false;
 		}
 
-		$content[] = '<input' . self::attr( $field ) . '/>';
+		$content[] = '<input' . Utils::attr( $field ) . '/>';
 
 		if ( is_a( $container, __CLASS__ ) ) {
 			$html[] = $container->build( $content );
@@ -649,7 +595,7 @@ class Field {
 		$content[] = '<h3>' . $field->title . '</h3>';
 
 		if ( ! empty( $field->description ) ) {
-			$content[] = '<div class="' . self::abbr( 'field-description' ) . '">' . $field->description . '</div>';
+			$content[] = '<div class="' . Utils::abbr( 'field-description' ) . '">' . $field->description . '</div>';
 		}
 
 		if ( is_a( $container, __CLASS__ ) ) {
@@ -687,7 +633,7 @@ class Field {
 			}
 
 			$content[] = self::type_input( $radio, null, 'string', [] );
-			$content[] = '<label class="' . self::abbr( 'field-label' ) . '" for="' . self::id( $radio->_id ) . '">' . $opt['text'] . '</label><br />';
+			$content[] = '<label class="' . Utils::abbr( 'field-label' ) . '" for="' . self::id( $radio->_id ) . '">' . $opt['text'] . '</label><br />';
 		}
 
 		if ( is_a( $container, __CLASS__ ) ) {
@@ -725,7 +671,7 @@ class Field {
 			}
 
 			$content[] = self::type_input( $checkbox, null, 'string', [] );
-			$content[] = '<label class="' . self::abbr( 'field-label' ) . '" for="' . self::id( $checkbox->_id ) . '">' . $opt['text'] . '</label><br />';
+			$content[] = '<label class="' . Utils::abbr( 'field-label' ) . '" for="' . self::id( $checkbox->_id ) . '">' . $opt['text'] . '</label><br />';
 		}
 
 		if ( is_a( $container, __CLASS__ ) ) {
@@ -750,7 +696,7 @@ class Field {
 		if ( isset( $field->multiple ) && $field->multiple ) {
 			$content[] = self::type_input( $field, null, 'string', [] );
 		} else {
-			$content[] = '<select' . self::attr( $field ) . '>';
+			$content[] = '<select' . Utils::attr( $field ) . '>';
 			$content[] = '<option></option>';
 			foreach ( $field->options as $option ) {
 				$option = (array) $option;
@@ -766,7 +712,7 @@ class Field {
 				if ( isset( $field->value ) && $field->value === $option['value'] ) {
 					$option['selected'] = true;
 				}
-				$content[] = '<option' . self::attr( $option ) . '>' . esc_attr( $option['text'] ) . '</option>';
+				$content[] = '<option' . Utils::attr( $option ) . '>' . esc_attr( $option['text'] ) . '</option>';
 			}
 			$content[] = '</select>';
 		}
@@ -1166,7 +1112,7 @@ class Field {
 		// Creates Templates for generating Meta via JavaScript
 		foreach ( $type->options as $key => $ftype ) {
 			$is_callable = ( isset( $ftype->template ) && is_callable( $ftype->template ) );
-			$html[] = '<script type="text/html" data-rel="' . self::id( $container->id, true ) . '" class="' . self::abbr( 'template-' . $ftype->value ) . '"' . ( $is_callable ? ' data-callable' : '' ) . '>';
+			$html[] = '<script type="text/html" data-rel="' . self::id( $container->id, true ) . '" class="' . Utils::abbr( 'template-' . $ftype->value ) . '"' . ( $is_callable ? ' data-callable' : '' ) . '>';
 			if ( $is_callable ) {
 				$html[] = call_user_func_array( $ftype->template, [ $field, $ftype ] );
 			}
