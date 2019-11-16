@@ -1,5 +1,7 @@
 <?php
 namespace FakerPress;
+use FakerPress\Fields;
+
 $fields[] = new Field(
 	'text',
 	[
@@ -30,5 +32,7 @@ $fields[] = new Field(
 				?>
 			</tbody>
 		</table>
+
+		<?php ( new Fields\Raw( [] ) )->setup()->get_html(); ?>
 	</form>
 </div>
