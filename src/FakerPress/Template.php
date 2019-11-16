@@ -21,7 +21,7 @@ class Template {
 	public $origin;
 
 	/**
-	 * The local context for templates, mutable on every self::template() call
+	 * The local context for templates, mutable on every self::render() call
 	 *
 	 * @since  0.5.1
 	 *
@@ -86,13 +86,9 @@ class Template {
 			}
 		}
 
-		if ( empty( $origin->plugin_path ) && empty( $origin->pluginPath ) && ! is_dir( $origin ) ) {
-			throw new InvalidArgumentException( 'Invalid Origin Class for Template Instance' );
-		}
-
 		if ( ! is_string( $origin ) ) {
 			$this->origin = $origin;
-			$this->template_base_path = untrailingslashit( ! empty( $this->origin->plugin_path ) ? $this->origin->plugin_path : $this->origin->pluginPath );
+			$this->template_base_path = untrailingslashit( $this->origin->path() );
 		} else {
 			$this->template_base_path = untrailingslashit( (array) explode( '/', $origin ) );
 		}
@@ -400,7 +396,7 @@ class Template {
 		 */
 		$folders = apply_filters( 'fakerpress_template_path_list', $folders, $this );
 
-		uasort( $folders, 'fakerpress_sort_by_priority' );
+		uasort( $folders, 'fp_sort_by_priority' );
 
 		return $folders;
 	}
@@ -466,7 +462,7 @@ class Template {
 	 *
 	 * @return string|false Either the final content HTML or `false` if no template could be found.
 	 */
-	public function template( $name, $context = array(), $echo = true ) {
+	public function render( $name, $context = array(), $echo = true ) {
 		// If name is String make it an Array
 		if ( is_string( $name ) ) {
 			$name = (array) explode( '/', $name );

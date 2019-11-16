@@ -2,6 +2,7 @@
 namespace FakerPress\Fields;
 
 use FakerPress\Template;
+use FakerPress\Plugin;
 
 /**
  * Abstract for Fields.
@@ -71,6 +72,7 @@ abstract class Field_Abstract implements Field_Interface {
 	 */
 	public function __construct() {
 		$this->template = new Template();
+		$this->template->set_template_origin( Plugin::$instance )->set_template_folder( 'src/templates/fields' );
 	}
 
 	/**
@@ -105,7 +107,7 @@ abstract class Field_Abstract implements Field_Interface {
 	 * {@inheritDoc}
 	 */
 	public function get_html( $format = 'string' ) {
-		var_dump( $this );
+		$this->template->render( $this->get_slug() );
 	}
 
 	/**
@@ -152,12 +154,7 @@ abstract class Field_Abstract implements Field_Interface {
 	 * {@inheritDoc}
 	 */
 	public function sort_children() {
-		usort( $this->children, static function( $a, $b ) {
-			if ( $a->priority === $b->priority ) {
-				return 0;
-			}
-			return $a->priority < $b->priority ? -1 : 1;
-		} );
+		usort( $this->children, 'fp_sort_by_priority' );
 		return $this;
 	}
 
