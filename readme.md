@@ -102,6 +102,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ### 0.5.1 &mdash; TBD ###
 * Feature: Completely change folder structure to comply with [PSR-4](https://www.php-fig.org/psr/psr-4/) autoloading with namespaces.
+* Feature: Included a Fields API to more easily generate Fields for controlling fields used in the admin pages.
+* Feature: Included a Template class to allow better separation of HTML and PHP files.
 * Tweak: More well structured `composer.json` and using it's autoloader.
 * Tweak: Moved all files to use the `[]` array syntax.
 
