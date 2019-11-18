@@ -36,4 +36,5 @@ tmp
 # FakerPress #
 ###########
 vendor/*
-
+src/resources/css/*
+src/resources/js/*.min.js
