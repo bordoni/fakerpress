@@ -95,17 +95,17 @@ class Term extends Base {
 
 	public function parse_request( $qty, $request = [] ) {
 		if ( is_null( $qty ) ) {
-			$qty = Utils::instance()->get_qty_from_range( Variable::super( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW ) );
+			$qty = Utils::instance()->get_qty_from_range( fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW ) );
 		}
 
 		if ( 0 === $qty ){
 			return esc_attr__( 'Zero is not a good number of terms to fake...', 'fakerpress' );
 		}
 
-		$name_size = Variable::super( INPUT_POST, [ Plugin::$slug, 'size' ], FILTER_UNSAFE_RAW );
+		$name_size = fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'size' ], FILTER_UNSAFE_RAW );
 
 		// Fetch taxomies
-		$taxonomies = Variable::super( $request, [ 'taxonomies' ], FILTER_SANITIZE_STRING );
+		$taxonomies = fp_array_get( $request, [ 'taxonomies' ], FILTER_SANITIZE_STRING );
 		$taxonomies = array_map( 'trim', explode( ',', $taxonomies ) );
 		$taxonomies = array_intersect( get_taxonomies( [ 'public' => true ] ), $taxonomies );
 
@@ -113,7 +113,7 @@ class Term extends Base {
 		$has_metas = version_compare( $GLOBALS['wp_version'], '4.4-beta', '>=' );
 
 		if ( $has_metas ) {
-			$metas = Variable::super( $request, [ 'meta' ], FILTER_UNSAFE_RAW );
+			$metas = fp_array_get( $request, [ 'meta' ], FILTER_UNSAFE_RAW );
 		}
 
 		for ( $i = 0; $i < $qty; $i++ ) {
@@ -150,7 +150,7 @@ class Term extends Base {
 		}
 
 		// After this point we are safe to say that we have a good POST request
-		$results = $this->parse_request( null, Variable::super( INPUT_POST, [ Plugin::$slug ], FILTER_UNSAFE_RAW ) );
+		$results = $this->parse_request( null, fp_get_global_var( INPUT_POST, [ Plugin::$slug ], FILTER_UNSAFE_RAW ) );
 
 		if ( is_string( $results ) ) {
 			return Admin::add_message( $results, 'error' );

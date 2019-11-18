@@ -113,22 +113,22 @@ class Comment extends Base {
 
 	public function parse_request( $qty, $request = [] ) {
 		if ( is_null( $qty ) ) {
-			$qty = Utils::instance()->get_qty_from_range( Variable::super( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW ) );
+			$qty = Utils::instance()->get_qty_from_range( fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW ) );
 		}
 
 		if ( 0 === $qty ) {
 			return esc_attr__( 'Zero is not a good number of comments to fake...', 'fakerpress' );
 		}
 
-		$comment_content_size = Variable::super( $request, [ 'content_size' ], FILTER_UNSAFE_RAW, [ 1, 5 ] );
-		$comment_content_use_html = Utils::instance()->is_truthy( Variable::super( $request, [ 'use_html' ], FILTER_SANITIZE_STRING, 'off' ) );
-		$comment_content_html_tags = array_map( 'trim', explode( ',', Variable::super( $request, [ 'html_tags' ], FILTER_SANITIZE_STRING ) ) );
-		$comment_type = array_map( 'trim', explode( ',', Variable::super( $request, [ 'type' ], FILTER_SANITIZE_STRING ) ) );
-		$post_types = array_map( 'trim', explode( ',', Variable::super( $request, [ 'post_types' ], FILTER_SANITIZE_STRING ) ) );
+		$comment_content_size = fp_array_get( $request, [ 'content_size' ], FILTER_UNSAFE_RAW, [ 1, 5 ] );
+		$comment_content_use_html = Utils::instance()->is_truthy( fp_array_get( $request, [ 'use_html' ], FILTER_SANITIZE_STRING, 'off' ) );
+		$comment_content_html_tags = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'html_tags' ], FILTER_SANITIZE_STRING ) ) );
+		$comment_type = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'type' ], FILTER_SANITIZE_STRING ) ) );
+		$post_types = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'post_types' ], FILTER_SANITIZE_STRING ) ) );
 
-		$min_date = Variable::super( $request, [ 'interval_date', 'min' ] );
-		$max_date = Variable::super( $request, [ 'interval_date', 'max' ] );
-		$metas = Variable::super( $request, [ 'meta' ], FILTER_UNSAFE_RAW );
+		$min_date = fp_array_get( $request, [ 'interval_date', 'min' ] );
+		$max_date = fp_array_get( $request, [ 'interval_date', 'max' ] );
+		$metas = fp_array_get( $request, [ 'meta' ], FILTER_UNSAFE_RAW );
 
 		$results = [];
 
@@ -179,7 +179,7 @@ class Comment extends Base {
 		}
 
 		// After this point we are safe to say that we have a good POST request
-		$results = $this->parse_request( null, Variable::super( INPUT_POST, [ Plugin::$slug ], FILTER_UNSAFE_RAW ) );
+		$results = $this->parse_request( null, fp_get_global_var( INPUT_POST, [ Plugin::$slug ], FILTER_UNSAFE_RAW ) );
 
 		if ( ! empty( $results ) ){
 			return Admin::add_message(

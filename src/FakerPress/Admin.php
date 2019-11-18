@@ -1,7 +1,7 @@
 <?php
 namespace FakerPress;
 
-class Admin {
+class Admin extends Template {
 	/**
 	 * Variable holding the submenus objects
 	 *
@@ -70,11 +70,14 @@ class Admin {
 	 * @return null Construct never returns
 	 */
 	public function __construct() {
-		self::$request_method = strtolower( Variable::super( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ) );
+		$this->set_template_origin( Plugin::$instance )
+			->set_template_folder( 'src/templates/pages' );
+
+		self::$request_method = strtolower( fp_get_global_var( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ) );
 
 		self::$is_ajax = ( defined( 'DOING_AJAX' ) && DOING_AJAX );
 
-		$page = Variable::super( INPUT_GET, 'page', FILTER_SANITIZE_STRING );
+		$page = fp_get_global_var( INPUT_GET, 'page', FILTER_SANITIZE_STRING );
 		self::$in_plugin = ( ! is_null( $page ) && strtolower( $page ) === Plugin::$slug );
 
 		self::$menus[] = (object) [
@@ -134,12 +137,7 @@ class Admin {
 			'priority' => $priority === 0 ? $priority + 1 : $priority,
 		];
 
-		usort(
-			self::$menus,
-			function( $a, $b ){
-				return $a->priority - $b->priority;
-			}
-		);
+		usort( self::$menus, 'fp_sort_by_priority' );
 	}
 
 	/**
@@ -165,12 +163,7 @@ class Admin {
 			'priority' => $priority === 0 ? $priority + 1 : $priority,
 		];
 
-		usort(
-			self::$messages,
-			function( $a, $b ){
-				return $a->priority - $b->priority;
-			}
-		);
+		usort( self::$messages, 'fp_sort_by_priority' );
 	}
 
 	/**
@@ -187,17 +180,16 @@ class Admin {
 
 		// Default Page of the plugin
 		$view = (object) [
-			'slug' => Variable::super( INPUT_GET, 'view', 'file', self::$menus[0]->view ),
+			'slug' => fp_get_global_var( INPUT_GET, 'view', 'file', self::$menus[0]->view ),
 			'path' => null,
 		];
 
 		// First we check if the file exists in our plugin folder, otherwhise give the user an error
-		if ( ! file_exists( Plugin::path( "view/{$view->slug}.php" ) ) ){
+		if ( ! file_exists( Plugin::path( "src/templates/pages/{$view->slug}.php" ) ) ){
 			$view->slug = 'error';
 		}
 
 		// Define the path for the view we
-		$view->path = Plugin::path( "view/{$view->slug}.php" );
 		$view->menu = null;
 
 		// Define Menu when possible
@@ -374,7 +366,6 @@ class Admin {
 	/**
 	 * Method to include the settings page, from views folders
 	 *
-	 * @uses \FakerPress\Variable::super
 	 * @uses \FakerPress\Plugin::path
 	 * @uses do_action
 	 *
@@ -382,25 +373,12 @@ class Admin {
 	 * @return null
 	 */
 	public function _include_settings_page() {
-		$view = self::$view;
-
-		// Execute some actions before including the view, to allow others to hook in here
-		// Use these to do stuff related to the view you are working with
-		do_action( 'fakerpress.view.start', self::$view );
-		do_action( "fakerpress.view.start.{$view->slug}", self::$view );
-
 		// PHP include the view
-		include_once self::$view->path;
-
-		// Execute some actions before including the view, to allow others to hook in here
-		// Use these to do stuff related to the view you are working with
-		do_action( 'fakerpress.view.end', self::$view );
-		do_action( "fakerpress.view.end.{$view->slug}", self::$view );
+		$this->render( self::$view->slug, [ 'view' => self::$view ] );
 	}
 
-
 	public function _filter_set_view_action( $view ) {
-		$view->action = Variable::super( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
+		$view->action = fp_get_global_var( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
 		if ( empty( $view->action ) ){
 			$view->action = null;
 		}
@@ -482,7 +460,6 @@ class Admin {
 	/**
 	 * Filter the WordPress Version on plugins pages to display plugin version
 	 *
-	 * @uses \FakerPress\Variable::super
 	 * @uses \FakerPress\Plugin::$slug
 	 * @uses __
 	 *
@@ -494,9 +471,6 @@ class Admin {
 			return $text;
 		}
 
-		/**
-		 * @todo Review the links to the Official repository before release
-		 */
 		return
 			'<a target="_blank" href="http://wordpress.org/support/plugin/fakerpress#postform">' . esc_attr__( 'Contact Support', 'fakerpress' ) . '</a> | ' .
 			str_replace(
@@ -509,7 +483,6 @@ class Admin {
 	/**
 	 * Filter the WordPress Version on plugins pages to display the plugin version
 	 *
-	 * @uses \FakerPress\Variable::super
 	 * @uses \FakerPress\Plugin::$slug
 	 * @uses \FakerPress\Plugin::admin_url
 	 * @uses \FakerPress\Plugin::version
@@ -563,8 +536,8 @@ class Admin {
 		}
 
 		// After this point we are safe to say that we have a good POST request
-		$erase_intention = is_string( Variable::super( INPUT_POST, [ 'fakerpress', 'actions', 'delete' ], FILTER_UNSAFE_RAW ) );
-		$erase_check     = in_array( strtolower( Variable::super( INPUT_POST, [ 'fakerpress', 'erase_phrase' ], FILTER_SANITIZE_STRING ) ), [ 'let it go', 'let it go!' ] );
+		$erase_intention = is_string( fp_get_global_var( INPUT_POST, [ 'fakerpress', 'actions', 'delete' ], FILTER_UNSAFE_RAW ) );
+		$erase_check     = in_array( strtolower( fp_get_global_var( INPUT_POST, [ 'fakerpress', 'erase_phrase' ], FILTER_SANITIZE_STRING ) ), [ 'let it go', 'let it go!' ] );
 
 		if ( ! $erase_intention ){
 			return false;

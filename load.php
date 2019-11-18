@@ -10,6 +10,8 @@ if ( ! defined( 'WPINC' ) ) {
 require_once plugin_dir_path( __FP_FILE__ ) . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 require_once Plugin::path( 'src/functions/array.php' );
+require_once Plugin::path( 'src/functions/globals.php' );
+require_once Plugin::path( 'src/functions/filter.php' );
 require_once Plugin::path( 'src/functions/conditionals.php' );
 require_once Plugin::path( 'src/functions/sorting.php' );
 

@@ -3,6 +3,8 @@
 .ssh
 .svn
 
+vendor/*
+
 # WordPress Project
 .org
 

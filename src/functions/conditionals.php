@@ -46,3 +46,33 @@ function fp_is_truthy( $var ) {
 	// For other types (ints, floats etc) cast to bool
 	return (bool) $var;
 }
+
+/**
+ * Determines if the provided value is a regular expressions.
+ *
+ * @since  0.5.1
+ *
+ * @param  mixed  $variable  Value to be tested.
+ *
+ * @return bool
+ */
+function fp_is_regex( $variable ) {
+	// @codingStandardsIgnoreStart
+	$test = @preg_match( $variable, '' );
+	// @codingStandardsIgnoreEnd
+
+	return $test !== false;
+}
+
+/**
+ * Determines if the provided value is an IP address.
+ *
+ * @since  0.5.1
+ *
+ * @param  mixed  $variable  Value to be tested.
+ *
+ * @return bool
+ */
+function fp_is_ip_address( $variable ) {
+	return false !== WP_Http::is_ip_address( $variable );
+}

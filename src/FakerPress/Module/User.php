@@ -117,7 +117,7 @@ class User extends Base {
 
 	public function parse_request( $qty, $request = [] ) {
 		if ( is_null( $qty ) ) {
-			$qty = Variable::super( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW );
+			$qty = fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW );
 			$min = absint( $qty['min'] );
 			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
 			$qty = $this->faker->numberBetween( $min, $max );
@@ -127,13 +127,13 @@ class User extends Base {
 			return esc_attr__( 'Zero is not a good number of users to fake...', 'fakerpress' );
 		}
 
-		$description_size = Variable::super( $request, [ 'description_size' ], FILTER_UNSAFE_RAW, [ 1, 5 ] );
-		$description_use_html = Utils::instance()->is_truthy( Variable::super( $request, [ 'use_html' ], FILTER_SANITIZE_STRING, 'off' ) );
-		$description_use_html = Variable::super( $request, [ 'use_html' ], FILTER_SANITIZE_STRING, 'off' ) === 'on';
-		$description_html_tags = array_map( 'trim', explode( ',', Variable::super( $request, [ 'html_tags' ], FILTER_SANITIZE_STRING ) ) );
+		$description_size = fp_array_get( $request, [ 'description_size' ], FILTER_UNSAFE_RAW, [ 1, 5 ] );
+		$description_use_html = Utils::instance()->is_truthy( fp_array_get( $request, [ 'use_html' ], FILTER_SANITIZE_STRING, 'off' ) );
+		$description_use_html = fp_array_get( $request, [ 'use_html' ], FILTER_SANITIZE_STRING, 'off' ) === 'on';
+		$description_html_tags = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'html_tags' ], FILTER_SANITIZE_STRING ) ) );
 
-		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', Variable::super( $request, [ 'roles' ], FILTER_SANITIZE_STRING ) ) ) );
-		$metas = Variable::super( $request, [ 'meta' ], FILTER_UNSAFE_RAW );
+		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', fp_array_get( $request, [ 'roles' ], FILTER_SANITIZE_STRING ) ) ) );
+		$metas = fp_array_get( $request, [ 'meta' ], FILTER_UNSAFE_RAW );
 
 		$results = [];
 
@@ -187,7 +187,7 @@ class User extends Base {
 		}
 
 		// After this point we are safe to say that we have a good POST request
-		$results = $this->parse_request( null, Variable::super( INPUT_POST, [ Plugin::$slug ], FILTER_UNSAFE_RAW ) );
+		$results = $this->parse_request( null, fp_get_global_var( INPUT_POST, [ Plugin::$slug ], FILTER_UNSAFE_RAW ) );
 
 		if ( ! empty( $results ) ){
 			return Admin::add_message(

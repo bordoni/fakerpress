@@ -72,7 +72,9 @@ abstract class Field_Abstract implements Field_Interface {
 	 */
 	public function __construct() {
 		$this->template = new Template();
-		$this->template->set_template_origin( Plugin::$instance )->set_template_folder( 'src/templates/fields' );
+		$this->template
+			->set_template_origin( Plugin::$instance )
+			->set_template_folder( 'src/templates/fields' );
 	}
 
 	/**

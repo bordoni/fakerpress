@@ -61,10 +61,11 @@ function fp_array_set( array $array, $key, $value ) {
  * @param array|string $indexes Specify each nested index in order.
  *                                Example: array( 'lvl1', 'lvl2' );
  * @param mixed        $default Default value if the search finds nothing.
+ * @param mixed        $filter  Filter the value for security reasons.
  *
  * @return mixed The value of the specified index or the default if not found.
  */
-function fp_array_get( $variable, $indexes, $default = null ) {
+function fp_array_get( $variable, $indexes, $default = null, $filter = null ) {
 	if ( is_object( $variable ) ) {
 		$variable = (array) $variable;
 	}
@@ -80,6 +81,10 @@ function fp_array_get( $variable, $indexes, $default = null ) {
 		}
 
 		$variable = $variable[ $index ];
+	}
+
+	if ( ! is_null( $filter ) ) {
+		$variable = fb_filter_var( $variable, $filter, $default );
 	}
 
 	return $variable;

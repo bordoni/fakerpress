@@ -111,7 +111,7 @@ class Post extends Base {
 
 	public function parse_request( $qty, $request = [] ) {
 		if ( is_null( $qty ) ) {
-			$qty = Variable::super( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW );
+			$qty = fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW );
 			$min = absint( $qty['min'] );
 			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
 			$qty = $this->faker->numberBetween( $min, $max );
@@ -122,41 +122,41 @@ class Post extends Base {
 		}
 
 		// Fetch Comment Status
-		$comment_status = Variable::super( $request, [ 'comment_status' ], FILTER_SANITIZE_STRING );
+		$comment_status = fp_array_get( $request, [ 'comment_status' ], FILTER_SANITIZE_STRING );
 		$comment_status = array_map( 'trim', explode( ',', $comment_status ) );
 
 		// Fetch Post Author
-		$post_author = Variable::super( $request, [ 'author' ], FILTER_SANITIZE_STRING );
+		$post_author = fp_array_get( $request, [ 'author' ], FILTER_SANITIZE_STRING );
 		$post_author = array_map( 'trim', explode( ',', $post_author ) );
 		$post_author = array_intersect( get_users( [ 'fields' => 'ID' ] ), $post_author );
 
 		// Fetch the dates
 		$date = [
-			Variable::super( $request, [ 'interval_date', 'min' ], FILTER_SANITIZE_STRING ),
-			Variable::super( $request, [ 'interval_date', 'max' ], FILTER_SANITIZE_STRING ),
+			fp_array_get( $request, [ 'interval_date', 'min' ], FILTER_SANITIZE_STRING ),
+			fp_array_get( $request, [ 'interval_date', 'max' ], FILTER_SANITIZE_STRING ),
 		];
 
 		// Fetch Post Types
-		$post_types = Variable::super( $request, [ 'post_types' ], FILTER_SANITIZE_STRING );
+		$post_types = fp_array_get( $request, [ 'post_types' ], FILTER_SANITIZE_STRING );
 		$post_types = array_map( 'trim', explode( ',', $post_types ) );
 		$post_types = array_intersect( get_post_types( [ 'public' => true ] ), $post_types );
 
 		// Fetch Post Content
-		$post_content_size = Variable::super( $request, [ 'content_size' ], FILTER_UNSAFE_RAW, [ 5, 15 ] );
-		$post_content_use_html = Variable::super( $request, [ 'use_html' ], FILTER_SANITIZE_NUMBER_INT, 0 ) === 1;
-		$post_content_html_tags = array_map( 'trim', explode( ',', Variable::super( $request, [ 'html_tags' ], FILTER_SANITIZE_STRING ) ) );
+		$post_content_size = fp_array_get( $request, [ 'content_size' ], FILTER_UNSAFE_RAW, [ 5, 15 ] );
+		$post_content_use_html = fp_array_get( $request, [ 'use_html' ], FILTER_SANITIZE_NUMBER_INT, 0 ) === 1;
+		$post_content_html_tags = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'html_tags' ], FILTER_SANITIZE_STRING ) ) );
 
 		// Fetch and clean Post Parents
-		$post_parents = Variable::super( $request, [ 'post_parent' ], FILTER_SANITIZE_STRING );
+		$post_parents = fp_array_get( $request, [ 'post_parent' ], FILTER_SANITIZE_STRING );
 		$post_parents = array_map( 'trim', explode( ',', $post_parents ) );
 
-		$images_origin = array_map( 'trim', explode( ',', Variable::super( $request, [ 'images_origin' ], FILTER_SANITIZE_STRING ) ) );
+		$images_origin = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'images_origin' ], FILTER_SANITIZE_STRING ) ) );
 
 		// Fetch Taxonomies
-		$taxonomies_configuration = Variable::super( $request, [ 'taxonomy' ], FILTER_UNSAFE_RAW );
+		$taxonomies_configuration = fp_array_get( $request, [ 'taxonomy' ], FILTER_UNSAFE_RAW );
 
 		// Fetch Metas It will be parsed later!
-		$metas = Variable::super( $request, [ 'meta' ], FILTER_UNSAFE_RAW );
+		$metas = fp_array_get( $request, [ 'meta' ], FILTER_UNSAFE_RAW );
 
 		$results = [];
 
@@ -212,7 +212,7 @@ class Post extends Base {
 		}
 
 		// After this point we are safe to say that we have a good POST request
-		$results = $this->parse_request( null, Variable::super( INPUT_POST, [ Plugin::$slug ], FILTER_UNSAFE_RAW ) );
+		$results = $this->parse_request( null, fp_get_global_var( INPUT_POST, [ Plugin::$slug ], FILTER_UNSAFE_RAW ) );
 
 		if ( ! empty( $results ) ) {
 			return Admin::add_message(

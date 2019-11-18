@@ -150,11 +150,7 @@ class Plugin {
 
 	public static function get( $name, $default = false ) {
 		$options = self::all();
-		$value = Variable::search( $options, $name );
-
-		if ( is_null( $value ) ) {
-			return $default;
-		}
+		$value = fp_array_get( $options, $name, $default );
 
 		return $value;
 	}
