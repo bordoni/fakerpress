@@ -5,10 +5,20 @@ class Plugin {
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
-	 * @since 0.1.0
+	 * @since 0.5.1
 	 * @var string
 	 */
-	const version = '0.5.1';
+	const VERSION = '0.5.1';
+
+	/**
+	 * Plugin version, used for cache-busting of style and script file references.
+	 *
+	 * @since 0.1.0
+	 * @deprecated 0.5.1
+	 *
+	 * @var string
+	 */
+	const version = self::VERSION;
 
 	/**
 	 * A static variable that holds a dinamic instance of the class

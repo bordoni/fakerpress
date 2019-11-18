@@ -14,6 +14,7 @@ require_once Plugin::path( 'src/functions/globals.php' );
 require_once Plugin::path( 'src/functions/filter.php' );
 require_once Plugin::path( 'src/functions/conditionals.php' );
 require_once Plugin::path( 'src/functions/sorting.php' );
+require_once Plugin::path( 'src/functions/assets.php' );
 
 // Create the Plugin static instance
 $FakerPress = new Plugin;

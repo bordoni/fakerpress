@@ -9,7 +9,7 @@ class Template {
 	 *
 	 * @var array
 	 */
-	protected $folder = array();
+	protected $folder = [];
 
 	/**
 	 * The origin class for the plugin where the template lives
@@ -36,7 +36,7 @@ class Template {
 	 *
 	 * @var array
 	 */
-	protected $global = array();
+	protected $global = [];
 
 	/**
 	 * Allow chaing if class will extract data from the local context
@@ -82,7 +82,7 @@ class Template {
 		if ( is_string( $origin ) ) {
 			// Origin needs to be a class with a `instance` method
 			if ( class_exists( $origin ) && method_exists( $origin, 'instance' ) ) {
-				$origin = call_user_func( array( $origin, 'instance' ) );
+				$origin = call_user_func( [ $origin, 'instance' ] );
 			}
 		}
 
@@ -146,7 +146,7 @@ class Template {
 	 *
 	 * @return self
 	 */
-	public function add_template_globals( $context = array() ) {
+	public function add_template_globals( $context = [] ) {
 		// Cast as Array merge and save
 		$this->global = wp_parse_args( (array) $context, $this->global );
 
@@ -251,10 +251,10 @@ class Template {
 	 *
 	 * @return array
 	 */
-	public function merge_context( $context = array(), $file = null, $name = null ) {
+	public function merge_context( $context = [], $file = null, $name = null ) {
 		// Allow for simple null usage as well as array() for nothing
 		if ( is_null( $context ) ) {
-			$context = array();
+			$context = [];
 		}
 
 		// Applies local context on top of Global one
@@ -309,9 +309,9 @@ class Template {
 	 * @return array
 	 */
 	protected function get_template_public_namespace() {
-		$namespace = array(
+		$namespace = [
 			'fakerpress',
-		);
+		];
 
 		if ( ! empty( $this->origin->template_namespace ) ) {
 			$namespace[] = $this->origin->template_namespace;
@@ -363,27 +363,27 @@ class Template {
 	 * @return array
 	 */
 	protected function get_template_path_list() {
-		$folders = array();
+		$folders = [];
 
 		// Only look into public folders if we tell to use folders
 		if ( $this->template_folder_lookup ) {
-			$folders[] = array(
+			$folders[] = [
 				'id' => 'child-theme',
 				'priority' => 10,
 				'path' => $this->get_template_public_path( STYLESHEETPATH ),
-			);
-			$folders[] = array(
+			];
+			$folders[] = [
 				'id' => 'parent-theme',
 				'priority' => 15,
 				'path' => $this->get_template_public_path( TEMPLATEPATH ),
-			);
+			];
 		}
 
-		$folders[] = array(
+		$folders[] = [
 			'id' => 'plugin',
 			'priority' => 20,
 			'path' => $this->get_template_plugin_path(),
-		);
+		];
 
 		/**
 		 * Allows filtering of the list of folders in which we will look for the
@@ -462,7 +462,7 @@ class Template {
 	 *
 	 * @return string|false Either the final content HTML or `false` if no template could be found.
 	 */
-	public function render( $name, $context = array(), $echo = true ) {
+	public function render( $name, $context = [], $echo = true ) {
 		// If name is String make it an Array
 		if ( is_string( $name ) ) {
 			$name = (array) explode( '/', $name );

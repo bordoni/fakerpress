@@ -111,8 +111,8 @@ class Admin extends Template {
 		// Allow WordPress
 		add_filter( 'fakerpress.messages.allowed_html', [ $this, '_filter_messages_allowed_html' ], 1, 1 );
 
-		// This has to turn to something bigger
-		add_action( 'admin_enqueue_scripts', [ $this, '_action_enqueue_ui' ] );
+		// Register assets
+		$this->register_assets();
 	}
 
 	/**
@@ -310,57 +310,149 @@ class Admin extends Template {
 	/**
 	 * Register and enqueue the WordPress admin UI elements like JavaScript and CSS
 	 *
-	 * @uses wp_register_style
-	 * @uses wp_enqueue_style
-	 *
-	 * @since 0.1.0
+	 * @since 0.5.1
 	 *
 	 * @return null Actions do not return
 	 */
-	public function _action_enqueue_ui() {
+	public function register_assets() {
+		$plugin = Plugin::$instance;
+		$in_plugin_callback = static function () {
+			return self::$in_plugin;
+		};
+
 		// Register a global CSS files
-		wp_register_style( 'fakerpress.icon', Plugin::url( 'ui/css/font.css' ), [], Plugin::version, 'screen' );
-
-		// Enqueue a global CSS files
-		wp_enqueue_style( 'fakerpress.icon' );
-
-		if ( ! self::$in_plugin ){
-			return;
-		}
+		fp_asset(
+			$plugin,
+			'fakerpress-icon',
+			'font.css',
+			[],
+			'admin_enqueue_scripts'
+		);
 
 		// Register QS.js
-		wp_register_script( 'fakerpress.qs', Plugin::url( 'ui/vendor/qs.js' ), [], '5.1.0', true );
+		fp_asset(
+			$plugin,
+			'fakerpress-qs',
+			'vendor/qs.js',
+			[],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => $in_plugin_callback,
+			]
+		);
 
 		// Register Vendor Select2
-		wp_register_style( 'fakerpress.select2', Plugin::url( 'ui/vendor/select2/select2.css' ), [], '3.5.0', 'screen' );
-		wp_register_style( 'fakerpress.select2-wordpress', Plugin::url( 'ui/vendor/select2/select2-wordpress.css' ), [ 'fakerpress.select2' ], '3.5.0', 'screen' );
-		wp_register_script( 'fakerpress.select2', Plugin::url( 'ui/vendor/select2/select2.min.js' ), [ 'jquery' ], '3.5.0', true );
+		fp_asset(
+			$plugin,
+			'fakerpress-select2-styles',
+			'vendor/select2/select2.css',
+			[],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => $in_plugin_callback,
+			]
+		);
+		fp_asset(
+			$plugin,
+			'fakerpress-select2-wordpress',
+			'vendor/select2/select2-wordpress.css',
+			[ 'fakerpress-select2-styles' ],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => $in_plugin_callback,
+			]
+		);
+
+		fp_asset(
+			$plugin,
+			'fakerpress-select2',
+			'vendor/select2/select2.min.js',
+			[ 'jquery' ],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => $in_plugin_callback,
+			]
+		);
 
 		// Register DatePicker Skins
-		wp_register_style( 'fakerpress.jquery-ui', Plugin::url( 'ui/css/jquery-ui.css' ), [], '1.10.1', 'screen' );
-		wp_register_style( 'fakerpress.datepicker', Plugin::url( 'ui/css/datepicker.css' ), [ 'fakerpress.jquery-ui' ], Plugin::version, 'screen' );
+		fp_asset(
+			$plugin,
+			'fakerpress-jquery-ui',
+			'jquery-ui.css',
+			[],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => $in_plugin_callback,
+			]
+		);
+		fp_asset(
+			$plugin,
+			'fakerpress-datepicker',
+			'datepicker.css',
+			[ 'fakerpress-jquery-ui' ],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => $in_plugin_callback,
+			]
+		);
 
 		// Register the plugin CSS files
-		wp_register_style( 'fakerpress.messages', Plugin::url( 'ui/css/messages.css' ), [], Plugin::version, 'screen' );
-		wp_register_style( 'fakerpress.admin', Plugin::url( 'ui/css/admin.css' ), [], Plugin::version, 'screen' );
+		fp_asset(
+			$plugin,
+			'fakerpress-admin',
+			'admin.css',
+			[],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => $in_plugin_callback,
+			]
+		);
+		fp_asset(
+			$plugin,
+			'fakerpress-messages',
+			'messages.css',
+			[],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => $in_plugin_callback,
+			]
+		);
 
 		// Register the plugin JS files
-		wp_register_script( 'fakerpress.fields', Plugin::url( 'ui/js/fields.js' ), [ 'jquery', 'underscore', 'fakerpress.select2', 'jquery-ui-datepicker' ], Plugin::version, true );
-		wp_register_script( 'fakerpress.module', Plugin::url( 'ui/js/module.js' ), [ 'jquery', 'underscore', 'fakerpress.qs' ], Plugin::version, true );
+		fp_asset(
+			$plugin,
+			'fakerpress-fields',
+			'fields.js',
+			[ 'jquery', 'underscore', 'fakerpress-select2', 'jquery-ui-datepicker' ],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => $in_plugin_callback,
+			]
+		);
+		fp_asset(
+			$plugin,
+			'fakerpress-module',
+			'module.js',
+			[ 'jquery', 'underscore', 'fakerpress-qs' ],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => $in_plugin_callback,
+			]
+		);
 
 		// Enqueue DatePicker Skins
-		wp_enqueue_style( 'fakerpress.datepicker' );
+		wp_enqueue_style( 'fakerpress-datepicker' );
 
 		// Enqueue plugin CSS
-		wp_enqueue_style( 'fakerpress.messages' );
-		wp_enqueue_style( 'fakerpress.admin' );
+		wp_enqueue_style( 'fakerpress-messages' );
+		wp_enqueue_style( 'fakerpress-admin' );
 
 		// Enqueue Vendor Select2
-		wp_enqueue_style( 'fakerpress.select2-wordpress' );
+		wp_enqueue_style( 'fakerpress-select2-wordpress' );
 
 		// Enqueue JS for the plugin
-		wp_enqueue_script( 'fakerpress.fields' );
-		wp_enqueue_script( 'fakerpress.module' );
+		wp_enqueue_script( 'fakerpress-fields' );
+		wp_enqueue_script( 'fakerpress-module' );
 	}
 
 	/**
@@ -485,7 +577,7 @@ class Admin extends Template {
 	 *
 	 * @uses \FakerPress\Plugin::$slug
 	 * @uses \FakerPress\Plugin::admin_url
-	 * @uses \FakerPress\Plugin::version
+	 * @uses \FakerPress\Plugin::VERSION
 	 * @uses __
 	 *
 	 * @since 0.1.0
@@ -497,7 +589,7 @@ class Admin extends Template {
 		}
 
 		$translate = sprintf( '<a class="fp-translations-link" href="%s" title="%s"><span class="dashicons dashicons-translation"></span></a>', Plugin::ext_site_url( '/r/translate' ), esc_attr__( 'Help us with Translations for the FakerPress project', 'fakerpress' ) );
-		$version = esc_attr__( 'Version', 'fakerpress' ) . ': <a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::version ) ) ) . '">' . esc_attr( Plugin::version ) . '</a>';
+		$version = esc_attr__( 'Version', 'fakerpress' ) . ': <a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::VERSION ) ) ) . '">' . esc_attr( Plugin::VERSION ) . '</a>';
 
 		return $translate . $version;
 	}
