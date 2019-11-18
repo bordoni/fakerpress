@@ -4,12 +4,13 @@ const isProduction = yargs.argv.prod ? true : false;
 
 import gulp from 'gulp';
 import postcss from 'gulp-postcss';
-import atImport from 'gulp-import';
+import atImport from 'postcss-import';
 import autoprefixer from 'autoprefixer';
 import concat from 'gulp-concat';
 import uglify from 'gulp-uglify';
 import rename from 'gulp-rename';
 import cleanCSS from 'gulp-clean-css';
+import del from 'del';
 
 const paths = {
 	styles: {
@@ -22,23 +23,24 @@ const paths = {
 	}
 };
 
+export const clean = () => del( [ 'src/resources/js/**/*.min.js', 'src/resources/css/**/*.css' ] );
+
 /*
  * You can also declare named functions and export them as tasks
  */
 export function styles() {
 	const plugins = [
-		atImport,
 		autoprefixer,
+		atImport
 	];
 
 	return gulp.src( paths.styles.src )
 		.pipe( postcss( plugins ) )
 		.pipe( cleanCSS() )
-		.pipe( uglify() )
 		// pass in options to the stream
 		.pipe( rename( {
-			basename: 'main',
-			suffix: '.min'
+			suffix: '.min',
+			extname: '.css'
 		} ) )
 		.pipe( gulp.dest( paths.styles.dest ) );
 }
@@ -46,7 +48,6 @@ export function styles() {
 export function scripts() {
 	return gulp.src( paths.scripts.src, { sourcemaps: true } )
 		.pipe( uglify() )
-		.pipe( concat( 'main.min.js' ) )
 		.pipe( gulp.dest( paths.scripts.dest ) );
 }
 
