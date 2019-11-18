@@ -48,6 +48,9 @@ export function styles() {
 export function scripts() {
 	return gulp.src( paths.scripts.src, { sourcemaps: true } )
 		.pipe( uglify() )
+		.pipe( rename( {
+			suffix: '.min'
+		} ) )
 		.pipe( gulp.dest( paths.scripts.dest ) );
 }
 
