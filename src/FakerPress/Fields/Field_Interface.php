@@ -17,6 +17,37 @@ interface Field_Interface {
 	public function get_slug();
 
 	/**
+	 * The slug of field we dealing with.
+	 *
+	 * @since  0.5.1
+	 *
+	 * @return string Slug of field.
+	 */
+	public function get_id();
+
+	/**
+	 * The slug of field we dealing with.
+	 *
+	 * @since  0.5.1
+	 *
+	 * @param string|null $value ID of this field.
+	 *
+	 * @return string Slug of field.
+	 */
+	public function set_id( $value );
+
+	/**
+	 * Composes and return the html id of a field based on it's parents and it's own ID.
+	 *
+	 * @since  0.5.1
+	 *
+	 * @param string|null $suffix Something to be appended to the end of the html id.
+	 *
+	 * @return string HTML ID of the field.
+	 */
+	public function get_html_id( $suffix = null );
+
+	/**
 	 * Settings for this field object.
 	 *
 	 * @since  0.5.1
@@ -50,11 +81,11 @@ interface Field_Interface {
 	 *
 	 * @since  0.5.1
 	 *
-	 * @param array  $arguments   Which settings will be use configure this field.
+	 * @param array  $args        Which settings will be use configure this field.
 	 *
 	 * @return Field_Interface    Returns an instance of itself be able to chain calls.
 	 */
-	public function setup( array $arguments = [] );
+	public function setup( array $args = [] );
 
 	/**
 	 * Get field instance priority.

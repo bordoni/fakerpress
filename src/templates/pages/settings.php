@@ -37,9 +37,11 @@ $fields[] = new Field(
 					$field->output( true );
 				}
 				?>
+
+				<?php
+					( new Fields\Raw )->setup( [ 'id' => 'development' ] )->get_html();
+				?>
 			</tbody>
 		</table>
-
-		<?php ( new Fields\Raw( [] ) )->setup()->get_html(); ?>
 	</form>
 </div>

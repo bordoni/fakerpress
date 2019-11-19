@@ -326,7 +326,10 @@ class Admin extends Template {
 			'fakerpress-icon',
 			'font.css',
 			[],
-			'admin_enqueue_scripts'
+			'admin_enqueue_scripts',
+			[
+				'in_footer' => false,
+			]
 		);
 
 		// Register QS.js
@@ -439,20 +442,6 @@ class Admin extends Template {
 				'conditionals' => $in_plugin_callback,
 			]
 		);
-
-		// Enqueue DatePicker Skins
-		wp_enqueue_style( 'fakerpress-datepicker' );
-
-		// Enqueue plugin CSS
-		wp_enqueue_style( 'fakerpress-messages' );
-		wp_enqueue_style( 'fakerpress-admin' );
-
-		// Enqueue Vendor Select2
-		wp_enqueue_style( 'fakerpress-select2-wordpress' );
-
-		// Enqueue JS for the plugin
-		wp_enqueue_script( 'fakerpress-fields' );
-		wp_enqueue_script( 'fakerpress-module' );
 	}
 
 	/**
