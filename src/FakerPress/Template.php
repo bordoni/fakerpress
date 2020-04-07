@@ -209,7 +209,7 @@ class Template {
 			return $value;
 		}
 
-		return fp_array_get( $context, $index, $default );
+		return fp_array_get( $context, $index, null, $default );
 	}
 
 	/**
