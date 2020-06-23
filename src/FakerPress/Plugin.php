@@ -160,7 +160,7 @@ class Plugin {
 
 	public static function get( $name, $default = false ) {
 		$options = self::all();
-		$value = fp_array_get( $options, $name, $default );
+		$value = fp_array_get( $options, $name, null, $default );
 
 		return $value;
 	}
