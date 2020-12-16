@@ -369,11 +369,11 @@ class Assets {
 			}
 		}
 
-		$path = $resource_path . $asset->file;
-		$file = wp_normalize_path( $asset->plugin_path . $path );
+		$resource = $resource_path . $asset->file;
+		$file     = wp_normalize_path( $asset->origin_path . $resource );
 
 		// Turn the Path into a URL
-		$url = plugins_url( $file, $asset->origin_file );
+		$url = plugins_url( $asset->file, $file );
 
 		/**
 		 * Filters the resource URL
