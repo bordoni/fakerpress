@@ -30,8 +30,8 @@ fi
 git_root=$(pwd)
 
 current_branch=$(git rev-parse --abbrev-ref HEAD)
-if [ $current_branch != 'master' ]; then
-	git checkout master
+if [ $current_branch != 'main' ]; then
+	git checkout main
 fi
 
 bin/generate-markdown-readme
@@ -41,8 +41,8 @@ if [ -n "$(git status --porcelain readme.md)" ]; then
 	exit 1
 fi
 
-git pull origin master
-git push origin master
+git pull origin main
+git push origin main
 svn_url=$(cat svn-url)
 svn_repo_dir=/tmp/svn-$(basename $git_root)-$(md5 <<< $git_root | cut -c1-32)
 
@@ -73,7 +73,7 @@ fi
 
 if [ -z "$has_tag" ]; then
 	echo "Tagging plugin version $plugin_version"
-	git tag "$plugin_version" master
+	git tag "$plugin_version" main
 	git push origin "$plugin_version"
 else
 	echo "Skipping plugin tag $plugin_version since already exists"
