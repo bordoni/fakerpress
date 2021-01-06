@@ -20,8 +20,7 @@ require_once Plugin::path( 'src/functions/assets.php' );
 $FakerPress = new Plugin;
 
 // Require our Administration Class
-Plugin::$admin = new Admin;;
+Plugin::$admin = new Admin;
 
 // Require our Ajax Class
 Plugin::$ajax = new Ajax;
-
