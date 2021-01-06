@@ -100,20 +100,18 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
-### 0.5.2 &mdash; 05 of January &mdash; , 2021 ###
-* Tweak: Include compatibility with PHP 8+
-* Fix: Make sure WordPress 5.6+ administration proper display fields.
-* Fix: Menu icon is properly displayed on version of WordPress 5.5 or higher
-
-### 0.5.1 &mdash; 29 of June, 2020 ###
+### 0.5.1 &mdash; 05 of January 2021 ###
 * Feature: Completely change folder structure to comply with [PSR-4](https://www.php-fig.org/psr/psr-4/) autoloading with namespaces.
 * Feature: Included a Fields API to more easily generate Fields for controlling fields used in the admin pages.
 * Feature: Included a Template class to allow better separation of HTML and PHP files.
+* Tweak: Include compatibility with PHP 8+
 * Tweak: More well structured `composer.json` and using it's autoloader.
 * Tweak: All PHP files now live inside of `src` folder.
 * Tweak: Moved all files to use the `[]` array syntax.
 * Tweak: GitHub repository no longer tracks the `vendor` folder.
 * Fix: Correctly order the `fp_array_get` params with it's usage props @henrikwirth.
+* Fix: Make sure WordPress 5.6+ administration proper display fields.
+* Fix: Menu icon is properly displayed on version of WordPress 5.5 or higher
 
 ### 0.5.0 &mdash; 09 of November, 2019 ###
 * Feature: Removed 500px as a image provider as that source was deprecated a while ago.
