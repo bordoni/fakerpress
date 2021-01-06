@@ -8,7 +8,7 @@ class Plugin {
 	 * @since 0.5.1
 	 * @var string
 	 */
-	const VERSION = '0.5.2';
+	const VERSION = '0.5.1';
 
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.
