@@ -30,7 +30,7 @@ define( '__FP_FILE__', __FILE__ );
 function _fp_l10n() {
 	// Doing that to use the real folder that the plugin is living, not a static string
 	$plugin_folder = str_replace( DIRECTORY_SEPARATOR . basename( __FILE__ ), '', plugin_basename( __FP_FILE__ ) );
-	load_plugin_textdomain( 'fakerpress', false, $plugin_folder . DIRECTORY_SEPARATOR . 'l10n' . DIRECTORY_SEPARATOR );
+	load_plugin_textdomain( 'fakerpress', false, $plugin_folder . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR );
 }
 add_action( 'plugins_loaded', '_fp_l10n' );
 
