@@ -7,7 +7,7 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Contributors:** [bordoni](http://profiles.wordpress.org/bordoni)  
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy content), [dummy data](http://wordpress.org/plugins/tags/dummy data), [lorem ipsun](http://wordpress.org/plugins/tags/lorem ipsun), [admin](http://wordpress.org/plugins/tags/admin), [exemples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [images](http://wordpress.org/plugins/tags/images), [attachments](http://wordpress.org/plugins/tags/attachments), [featured image](http://wordpress.org/plugins/tags/featured image), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake data), [random](http://wordpress.org/plugins/tags/random), [developer](http://wordpress.org/plugins/tags/developer), [dev](http://wordpress.org/plugins/tags/dev), [development](http://wordpress.org/plugins/tags/development), [test](http://wordpress.org/plugins/tags/test), [tests](http://wordpress.org/plugins/tags/tests)  
 **Requires at least:** 4.7  
-**Tested up to:** 5.3  
+**Tested up to:** 5.6  
 **Stable tag:** trunk (master)  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 **Requires PHP:** 5.6  
@@ -18,7 +18,7 @@ Whenever you create a new Theme or Plugin you will always need to create custom 
 
 Our goal with this plugin is to fill this gap where you have problem with a good solution both for Developers and for Users of WordPress.
 
-> **Note: This plugin requires PHP 5.3 or higher to be activated.**
+> **Note: This plugin requires PHP 5.6 or higher to be activated.**
 
 [**Checkout our GitHub Repository**](http://fakerpress.com/r/github)
 
@@ -99,6 +99,11 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 
 ## Changelog ##
+
+### 0.5.2 &mdash; 05 of January &mdash; , 2021 ###
+* Tweak: Include compatibility with PHP 8+
+* Fix: Make sure WordPress 5.6+ administration proper display fields.
+* Fix: Menu icon is properly displayed on version of WordPress 5.5 or higher
 
 ### 0.5.1 &mdash; 29 of June, 2020 ###
 * Feature: Completely change folder structure to comply with [PSR-4](https://www.php-fig.org/psr/psr-4/) autoloading with namespaces.
