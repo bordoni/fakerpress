@@ -369,7 +369,7 @@ class Admin extends Template {
 		fp_asset(
 			$plugin,
 			'fakerpress-select2',
-			'vendor/select2/select2.min.js',
+			'vendor/select2/select2.js',
 			[ 'jquery' ],
 			'admin_enqueue_scripts',
 			[

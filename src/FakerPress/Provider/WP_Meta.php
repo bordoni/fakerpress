@@ -137,6 +137,7 @@ class WP_Meta extends Base {
 
 	public function meta_type_attachment( $type, $providers, $weight = 50, $width = [], $height = [] ) {
 		$providers = array_map( 'esc_attr', array_map( 'trim', explode( ',', $providers ) ) );
+
 		$provider = $this->generator->randomElement( $providers );
 
 		$attachment = FakerPress\Module\Attachment::instance();

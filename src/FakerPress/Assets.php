@@ -8,7 +8,7 @@ namespace FakerPress;
  */
 class Assets {
 	/**
-	 * A static variable that holds a dinamic instance of the class
+	 * A static variable that holds a dynamic instance of the class
 	 *
 	 * @since 0.5.1
 	 * @var null|object The dynamic version of this class
@@ -290,53 +290,81 @@ class Assets {
 	 * @return string|false The url to the minified version or false, if file not found.
 	 */
 	public static function maybe_get_min_file( $url ) {
-		$urls            = [];
-		$wpmu_plugin_url = set_url_scheme( WPMU_PLUGIN_URL );
-		$wp_plugin_url   = set_url_scheme( WP_PLUGIN_URL );
-		$wp_content_url  = set_url_scheme( WP_CONTENT_URL );
-		$plugins_url     = plugins_url();
+		static $wpmu_plugin_url;
+		static $wp_plugin_url;
+		static $wp_content_url;
+		static $plugins_url;
+		static $base_dirs;
+
+		$urls = [];
+		if ( ! isset( $wpmu_plugin_url ) ) {
+			$wpmu_plugin_url = set_url_scheme( WPMU_PLUGIN_URL );
+		}
+
+		if ( ! isset( $wp_plugin_url ) ) {
+			$wp_plugin_url = set_url_scheme( WP_PLUGIN_URL );
+		}
+
+		if ( ! isset( $wp_content_url ) ) {
+			$wp_content_url = set_url_scheme( WP_CONTENT_URL );
+		}
+
+		if ( ! isset( $plugins_url ) ) {
+			$plugins_url = plugins_url();
+		}
+
+		if ( ! isset( $base_dirs ) ) {
+			$base_dirs[ WPMU_PLUGIN_DIR ] = wp_normalize_path( WPMU_PLUGIN_DIR );
+			$base_dirs[ WP_PLUGIN_DIR ]   = wp_normalize_path( WP_PLUGIN_DIR );
+			$base_dirs[ WP_CONTENT_DIR ]  = wp_normalize_path( WP_CONTENT_DIR );
+		}
 
 		if ( 0 === strpos( $url, $wpmu_plugin_url ) ) {
 			// URL inside WPMU plugin dir.
-			$base_dir = wp_normalize_path( WPMU_PLUGIN_DIR );
+			$base_dir = $base_dirs[ WPMU_PLUGIN_DIR ];
 			$base_url = $wpmu_plugin_url;
 		} elseif ( 0 === strpos( $url, $wp_plugin_url ) ) {
 			// URL inside WP plugin dir.
-			$base_dir = wp_normalize_path( WP_PLUGIN_DIR );
+			$base_dir = $base_dirs[ WP_PLUGIN_DIR ];
 			$base_url = $wp_plugin_url;
 		} elseif ( 0 === strpos( $url, $wp_content_url ) ) {
 			// URL inside WP content dir.
-			$base_dir = wp_normalize_path( WP_CONTENT_DIR );
+			$base_dir = $base_dirs[ WP_CONTENT_DIR ];
 			$base_url = $wp_content_url;
 		} elseif ( 0 === strpos( $url, $plugins_url ) ) {
-			$base_dir = wp_normalize_path( WP_PLUGIN_DIR );
+			$base_dir = $base_dirs[ WP_PLUGIN_DIR ];
 			$base_url = $plugins_url;
 		} else {
 			// Resource needs to be inside wp-content or a plugins dir.
 			return false;
 		}
 
+		$script_debug = defined( 'SCRIPT_DEBUG' ) && fp_is_truthy( SCRIPT_DEBUG );
+
 		// Strip the plugin URL and make this relative.
 		$relative_location = str_replace( $base_url, '', $url );
 
-		// If needed add the Min Files.
-		if ( ! defined( 'SCRIPT_DEBUG' ) || SCRIPT_DEBUG === false ) {
-			if ( substr( $relative_location, - 3, 3 ) === '.js' ) {
-				$urls[] = substr_replace( $relative_location, '.min', - 3, 0 );
-			}
-
-			if ( substr( $relative_location, - 4, 4 ) === '.css' ) {
-				$urls[] = substr_replace( $relative_location, '.min', - 4, 0 );
-			}
+		if ( $script_debug ) {
+			// Add the actual url after having the min file added.
+			$urls[] = $relative_location;
 		}
 
-		// Add the actual url after having the min file added.
-		$urls[] = $relative_location;
+		// If needed add the Min Files.
+		if ( substr( $relative_location, -3, 3 ) === '.js' ) {
+			$urls[] = substr_replace( $relative_location, '.min', - 3, 0 );
+		} elseif ( substr( $relative_location, -4, 4 ) === '.css' ) {
+			$urls[] = substr_replace( $relative_location, '.min', - 4, 0 );
+		}
+
+		if ( ! $script_debug ) {
+			// Add the actual url after having the min file added.
+			$urls[] = $relative_location;
+		}
 
 		// Check for all Urls added to the array.
 		foreach ( $urls as $partial_path ) {
 			$file_path = wp_normalize_path( $base_dir . $partial_path );
-			$file_url  = plugins_url( basename( $file_path ), $file_path );
+			$file_url  = $base_url . $partial_path;
 
 			if ( file_exists( $file_path ) ) {
 				return $file_url;
@@ -373,7 +401,7 @@ class Assets {
 		$file     = wp_normalize_path( $asset->origin_path . $resource );
 
 		// Turn the Path into a URL
-		$url = plugins_url( $asset->file, $file );
+		$url = plugins_url( basename( $asset->file ), $file );
 
 		/**
 		 * Filters the resource URL

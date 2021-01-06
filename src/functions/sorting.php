@@ -23,5 +23,9 @@ function fp_sort_by_priority( $a, $b ) {
 		$b_priority = $b->priority;
 	}
 
-	return (int) $a_priority === (int) $b_priority ? 0 : (int) $a_priority > (int) $b_priority;
+	if ( (int) $a_priority === (int) $b_priority ) {
+		return 0;
+	}
+
+	return (int) $a_priority < (int) $b_priority ? -1 : 1;
 }

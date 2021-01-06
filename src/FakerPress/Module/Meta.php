@@ -148,7 +148,7 @@ class Meta extends Base {
 		$this->faker->set_meta_object( $this->object_name, $this->object_id );
 
 		if ( is_callable( [ $this->faker, 'meta_type_' . $type ] ) ) {
-			$this->data['meta_value'] = call_user_func_array( [ $this->faker, 'meta_type_' . $type ], $args );
+			$this->data['meta_value'] = call_user_func_array( [ $this->faker, 'meta_type_' . $type ], array_values( $args ) );
 		} else {
 			$this->data['meta_value'] = reset( $args );
 		}

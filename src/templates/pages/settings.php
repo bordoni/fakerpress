@@ -32,15 +32,9 @@ $fields[] = new Field(
 		<?php wp_nonce_field( Plugin::$slug . '.request.' . $view->slug . ( isset( $view->action ) ? '.' . $view->action : '' ) ); ?>
 		<table class="form-table" style="display: table;">
 			<tbody>
-				<?php
-				foreach ( $fields as $field ) {
-					$field->output( true );
-				}
-				?>
-
-				<?php
-					( new Fields\Raw )->setup( [ 'id' => 'development' ] )->get_html();
-				?>
+				<?php foreach ( $fields as $field ) : ?>
+					<?php $field->output( true ); ?>
+				<?php endforeach; ?>
 			</tbody>
 		</table>
 	</form>

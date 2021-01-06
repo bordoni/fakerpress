@@ -8,7 +8,7 @@ class Plugin {
 	 * @since 0.5.1
 	 * @var string
 	 */
-	const VERSION = '0.5.1';
+	const VERSION = '0.5.2';
 
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.
@@ -153,7 +153,8 @@ class Plugin {
 		$_file = self::$_file;
 
 		if ( is_link( $_link ) && readlink( $_link ) == dirname( $_file ) ) {
-			$_file = $_link . '/' . end( explode( '/', $_file ) );
+			$basename = explode( '/', $_file );
+			$_file = $_link . '/' . end( $basename );
 		}
 		return (string) plugin_basename( $_file );
 	}

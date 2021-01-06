@@ -2,7 +2,7 @@
 Contributors:      bordoni
 Tags:              generator, dummy content, dummy data, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
 Requires at least: 4.7
-Tested up to:      5.3
+Tested up to:      5.6
 Requires PHP:      5.6
 Stable tag:        trunk
 License:           GPLv2 or later
@@ -16,7 +16,7 @@ Whenever you create a new Theme or Plugin you will always need to create custom 
 
 Our goal with this plugin is to fill this gap where you have problem with a good solution both for Developers and for Users of WordPress.
 
-> **Note: This plugin requires PHP 5.3 or higher to be activated.**
+> **Note: This plugin requires PHP 5.6 or higher to be activated.**
 
 [**Checkout our GitHub Repository**](http://fakerpress.com/r/github)
 
@@ -97,6 +97,12 @@ Great! There are several ways you can get involved to help make FakerPress bette
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
+
+= 0.5.2 &mdash; 05 of January &mdash; , 2021 =
+
+* Tweak: Include compatibility with PHP 8+
+* Fix: Make sure WordPress 5.6+ administration proper display fields.
+* Fix: Menu icon is properly displayed on version of WordPress 5.5 or higher
 
 = 0.5.1 &mdash; 29 of June, 2020 =
 
