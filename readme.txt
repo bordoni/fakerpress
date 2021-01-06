@@ -98,7 +98,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
-= 0.5.2 &mdash; 05 of January &mdash; , 2021 =
+= 0.5.1 &mdash; 05 of January 2021 =
 
 * Feature: Completely change folder structure to comply with [PSR-4](https://www.php-fig.org/psr/psr-4/) autoloading with namespaces.
 * Feature: Included a Fields API to more easily generate Fields for controlling fields used in the admin pages.
