@@ -70,7 +70,7 @@ abstract class Field_Abstract implements Field_Interface {
 	 *
 	 * @since  0.5.1
 	 *
-	 * @var FakerPress\Template
+	 * @var Template
 	 */
 	protected $template;
 
@@ -132,6 +132,13 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * {@inheritDoc}
 	 */
+	public function get_setting( $index, $default = null ) {
+		return fp_array_get( $this->get_settings(), $index, null, $default );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_settings() {
 		return $this->settings;
 	}
@@ -181,8 +188,35 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * {@inheritDoc}
 	 */
+	public function find_children( $search, $operator = 'and' ) {
+		if ( $search instanceof Field_Interface ) {
+			$args = [
+				'id' => $search->id,
+			];
+		} elseif ( is_string( $search ) || is_numeric( $search ) ) {
+			$args = [
+				'id' => $search,
+			];
+		} elseif ( is_array( $search ) ) {
+			$args = $search;
+		} else {
+			return [];
+		}
+
+		$found = wp_filter_object_list( $this->children, $args, $operator, false );
+
+		if ( empty( $found ) ) {
+			return [];
+		}
+
+		return reset( $found );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function add_children( $children ) {
-		// Remove non intances of Field_Interface.
+		// Remove non instances of Field_Interface.
 		$children = array_filter( (array) $children, static function ( $children ) {
 			return $children instanceof Field_Interface;
 		} );
@@ -200,11 +234,18 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function remove_children( $search ) {
+	public function remove_children( $search = [], $operator = 'and' ) {
+		$found = $this->find_children( $search, $operator );
 
-		/**
-		 * @todo  @bordoni remove children method needs to be implemented.
-		 */
+		if ( empty( $found ) ) {
+			return $this;
+		}
+
+		$key = array_search( $found, $this->children );
+
+		if ( isset( $this->children[ $key ] ) ) {
+			unset( $this->children[ $key ] );
+		}
 
 		return $this->sort_children();
 	}

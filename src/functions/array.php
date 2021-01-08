@@ -57,7 +57,7 @@ function fp_array_set( array $array, $key, $value ) {
  *
  * @since 0.5.1
  *
- * @param array        $variable Array or object to search within.
+ * @param array|object $variable Array or object to search within.
  * @param array|string $indexes Specify each nested index in order.
  *                                Example: array( 'lvl1', 'lvl2' );
  * @param mixed        $filter  Filter the value for security reasons.

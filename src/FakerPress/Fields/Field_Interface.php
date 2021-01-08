@@ -77,6 +77,18 @@ interface Field_Interface {
 	public function get_settings();
 
 	/**
+	 * A given setting from the settings on this field.
+	 *
+	 * @since  0.5.2
+	 *
+	 * @param array|string $index   Index passed to fp_array_get.
+	 * @param mixed        $default Default value for the setting.
+	 *
+	 * @return mixed Setting you are looking for.
+	 */
+	public function get_setting( $index, $default = null );
+
+	/**
 	 * Configure this field and it's childs.
 	 *
 	 * @since  0.5.1
@@ -106,6 +118,23 @@ interface Field_Interface {
 	public function get_children();
 
 	/**
+	 * Finds a children from this field instance.
+	 *
+	 * @since  0.5.2
+	 *
+	 * @uses wp_filter_object_list
+	 *
+	 * @param Field_Interface|array|string|int $search   Search for a given children to remove.
+	 * @param string                           $operator Optional. The logical operation to perform. 'or' means
+	 *                                                   only one element from the array needs to match; 'and'
+	 *                                                   means all elements must match; 'not' means no elements may
+	 *                                                   match. Default 'and'.
+	 *
+	 * @return Field_Interface|array                     Returns an instance of itself be able to chain calls.
+	 */
+	public function find_children( $search, $operator = 'and' );
+
+	/**
 	 * Add a children to this field instance.
 	 *
 	 * @since  0.5.1
@@ -121,11 +150,17 @@ interface Field_Interface {
 	 *
 	 * @since  0.5.1
 	 *
-	 * @param Field_Interface|array|string|int $search Search for a given children to remove.
+	 * @uses Field_Interface::find_children
 	 *
-	 * @return Field_Interface                 Returns an instance of itself be able to chain calls.
+	 * @param Field_Interface|array|string|int $search   Search for a given children to remove.
+	 * @param string                           $operator Optional. The logical operation to perform. 'or' means
+	 *                                                   only one element from the array needs to match; 'and'
+	 *                                                   means all elements must match; 'not' means no elements may
+	 *                                                   match. Default 'and'.
+	 *
+	 * @return Field_Interface|array                     Returns an instance of itself be able to chain calls.
 	 */
-	public function remove_children( $search );
+	public function remove_children( $search = [], $operator = 'and' );
 
 	/**
 	 * Sort this Field's children array by priority

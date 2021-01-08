@@ -1,1 +1,0 @@
-Pull requests should be opened with the `main` branch as the base.

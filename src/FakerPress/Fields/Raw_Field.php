@@ -1,7 +1,7 @@
 <?php
 namespace FakerPress\Fields;
 
-class Raw extends Field_Abstract {
+class Raw_Field extends Field_Abstract {
 	/**
 	 * {@inheritDoc}
 	 */

@@ -21,25 +21,28 @@ class Plugin {
 	const version = self::VERSION;
 
 	/**
-	 * A static variable that holds a dinamic instance of the class
+	 * A static variable that holds a dynamic instance of the class
 	 *
 	 * @since 0.1.0
+	 *
 	 * @var null|object The dynamic version of this class
 	 */
 	public static $instance = null;
 
 	/**
-	 * A static variable that holds a dinamic instance of the class of the admin
+	 * A static variable that holds a dynamic instance of the class of the admin
 	 *
 	 * @since 0.1.0
+	 *
 	 * @var null|object The dynamic version of this class
 	 */
 	public static $admin = null;
 
 	/**
-	 * A static variable that holds a dinamic instance of the class of the AJAX methods
+	 * A static variable that holds a dynamic instance of the class of the AJAX methods
 	 *
 	 * @since 0.2.0
+	 *
 	 * @var null|object The dynamic version of this class
 	 */
 	public static $ajax = null;
@@ -48,6 +51,7 @@ class Plugin {
 	 * Variable holding the folder name of the plugin
 	 *
 	 * @since 0.1.0
+	 *
 	 * @var string
 	 */
 	public static $folder = 'fakerpress';
@@ -56,6 +60,7 @@ class Plugin {
 	 * Variable holding the slug name of the plugin
 	 *
 	 * @since 0.1.0
+	 *
 	 * @var string
 	 */
 	public static $slug = 'fakerpress';
@@ -64,7 +69,8 @@ class Plugin {
 	 * The __FILE__ that initialized the plugin
 	 *
 	 * @since 0.1.0
-	 * @var string/path
+	 *
+	 * @var string
 	 */
 	public static $_file = __FP_FILE__;
 
@@ -73,6 +79,7 @@ class Plugin {
 	 * The Plugin external website base domain
 	 *
 	 * @since 0.3.2
+	 *
 	 * @var string
 	 */
 	public static $_ext_domain = 'http://fakerpress.com';
@@ -81,8 +88,11 @@ class Plugin {
 	 * Return a Path relative to the plugin root
 	 *
 	 * @since 0.1.0
-	 * @param  string $append A string to be appended to the root path
+	 *
 	 * @uses plugin_dir_path
+	 *
+	 * @param  string $append A string to be appended to the root path
+	 *
 	 * @return string         The path after been appended by the variable
 	 */
 	public static function path( $append = '' ) {
@@ -102,15 +112,18 @@ class Plugin {
 	}
 
 	/**
-	 * Return a URL relative to the plugin's administration page
+	 * Return a URL relative to the plugin's administration page.
 	 *
 	 * @since 0.1.0
-	 * @param  string|array $args Arguments for the admin URL
-	 * @param  string $hash Hash for the admin URL
+	 *
 	 * @uses admin_url
 	 * @uses wp_parse_args
 	 * @uses add_query_arg
-	 * @return string         The url to the file
+	 *
+	 * @param  string|array $args Arguments for the admin URL
+	 * @param  string       $hash Hash for the admin URL
+	 *
+	 * @return string       The url to the file
 	 */
 	public static function admin_url( $args = '', $hash = false ) {
 		/**
@@ -142,10 +155,12 @@ class Plugin {
 	}
 
 	/**
-	 * Return the plugin basename
+	 * Return the plugin basename.
 	 *
 	 * @since 0.1.0
+	 *
 	 * @uses plugin_basename
+	 *
 	 * @return string plugin_basename from __FILE__
 	 */
 	public static function basename() {
@@ -196,9 +211,7 @@ class Plugin {
 
 	public static function all() {
 		$defaults = [];
-		$options = get_option( self::$slug . '-plugin-options', $defaults );
-
-		return $options;
+		return get_option( self::$slug . '-plugin-options', $defaults );
 	}
 
 	/**
