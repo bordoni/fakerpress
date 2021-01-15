@@ -11,7 +11,7 @@ class HTML extends Base {
 	 * @param \Faker\Generator $generator
 	 */
 	public function __construct( \Faker\Generator $generator ) {
-		$this->generator = $generator;
+		parent::__construct( $generator );
 
 		$provider = new Internet( $this->generator );
 		$this->generator->addProvider( $provider );
@@ -47,7 +47,7 @@ class HTML extends Base {
 
 	private function has_element( $needle = '', $haystack = [] ) {
 		$needle = trim( $needle );
-		$filtered = array_filter( $haystack, function( $element ) use ( $needle ){
+		$filtered = array_filter( $haystack, static function( $element ) use ( $needle ){
 			return preg_match( "/<?(!--)? ?({$needle})+ ?(--)?>?/i", $element ) !== 0;
 		} );
 		return count( $filtered ) > 0;

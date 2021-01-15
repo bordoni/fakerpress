@@ -19,7 +19,11 @@ $fields[] = new Field(
 
 $fields[] = new Field(
 	'range',
-	'size',
+    [
+		'id' => 'size',
+		'min' => 2,
+		'max' => 5,
+	],
 	[
 		'label' => __( 'Name Size', 'fakerpress' ),
 		'description' => __( 'What is the size of the Term name', 'fakerpress' ),
@@ -41,6 +45,7 @@ $fields[] = new Field(
 	[
 		'id' => 'taxonomies',
 		'multiple' => true,
+		'value' => 'category, post_tag',
 		'data-options' => $_json_taxonomies_output,
 	],
 	[

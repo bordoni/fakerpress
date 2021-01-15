@@ -9,17 +9,6 @@ use Faker\Provider\Base;
  */
 class PlaceHoldIt extends Base {
 	/**
-	 * Constructor for the Provider
-	 *
-	 * @since  0.1.5
-	 *
-	 * @param \Faker\Generator $generator An instance of the Faker Generator class
-	 */
-	public function __construct( \Faker\Generator $generator ) {
-		$this->generator = $generator;
-	}
-
-	/**
 	 * Generates a URL for Placehold.it
 	 *
 	 * @since  0.1.5

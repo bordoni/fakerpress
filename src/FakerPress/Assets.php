@@ -196,7 +196,7 @@ class Assets {
 				$enqueue = [];
 
 				// Which is the operator?
-				$conditional_operator = fp_array_get( $asset->conditionals, 'operator', 'OR' );
+				$conditional_operator = fp_array_get( $asset->conditionals, 'operator', null, 'OR' );
 
 				// If we have a set of conditionals we loop on then and get if they are true.
 				foreach ( $asset->conditionals as $key => $conditional ) {

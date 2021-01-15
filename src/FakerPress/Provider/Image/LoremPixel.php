@@ -10,17 +10,6 @@ use Faker\Provider\Base;
  */
 class LoremPixel extends Base {
 	/**
-	 * Constructor for the LoremPixel provider
-	 *
-	 * @since  0.3.2
-	 *
-	 * @param \Faker\Generator $generator An instance of the Faker Generator class
-	 */
-	public function __construct( \Faker\Generator $generator ) {
-		$this->generator = $generator;
-	}
-
-	/**
 	 * Generate an URL for an image from LoremPixel
 	 *
 	 * @since  0.3.2

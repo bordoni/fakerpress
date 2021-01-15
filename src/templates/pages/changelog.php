@@ -5,6 +5,9 @@ $view = $this->get( 'view' );
 if ( ! $view ) {
 	return;
 }
+$readme = new FakerPress\Readme;
+
+var_dump( $readme->parse_readme( FakerPress\Plugin::path( 'readme.txt' ) ) );
 ?>
 <div class='wrap about-wrap'>
 	<h1><?php esc_attr_e( 'What has Changed in FakerPress', 'fakerpress' ); ?></h1>
