@@ -102,7 +102,6 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 * Feature: Proper changelog page for users trying to figure out what has changed in the latest version of FakerPress.
 
-
 = 0.5.1 &mdash; 05 of January 2021 =
 
 * Feature: Completely change folder structure to comply with [PSR-4](https://www.php-fig.org/psr/psr-4/) autoloading with namespaces.
