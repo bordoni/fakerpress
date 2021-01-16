@@ -18,7 +18,7 @@
  *
  * @return mixed
  */
-function fp_get_request_var( $variable, $default = null, $filter = null ) {
+function fp_get_request_var( $variable, $default = null, $filter = FILTER_UNSAFE_RAW ) {
 	$unsafe = fp_get_global_var( [ INPUT_GET, INPUT_POST ], $variable, $filter, $default );
 	return $unsafe;
 }
