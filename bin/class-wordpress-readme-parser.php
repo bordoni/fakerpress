@@ -45,10 +45,7 @@ class WordPress_Readme_Parser {
 			$this->metadata[ $name ] = $value;
 		}
 		$this->metadata['Contributors'] = preg_split( '/\s*,\s*/', $this->metadata['Contributors'] );
-		var_dump( $this->metadata['Tags'] );
 		$this->metadata['Tags'] = preg_split( '/\s*,\s*/', $this->metadata['Tags'] );
-		var_dump( $this->metadata['Tags'] );
-
 
 		$syntax_ok = preg_match_all( '/(?:^|\n)== (.+?) ==\n(.+?)(?=\n== |$)/s', $readme_txt_rest, $section_matches, PREG_SET_ORDER );
 		if ( ! $syntax_ok ) {
@@ -145,7 +142,7 @@ class WordPress_Readme_Parser {
 
 		// Format metadata
 		$formatted_metadata = $this->metadata;
-		$formatted_metadata['Contributors'] = join(
+		$formatted_metadata['Contributors'] = implode(
 			', ',
 			array_map(
 				static function ( $contributor ) {
@@ -156,11 +153,11 @@ class WordPress_Readme_Parser {
 				$this->metadata['Contributors']
 			)
 		);
-		$formatted_metadata['Tags'] = join(
+		$formatted_metadata['Tags'] = implode(
 			', ',
 			array_map(
 				static function ( $tag ) {
-					return sprintf( '[%1$s](http://wordpress.org/plugins/tags/%1$s)', $tag );
+					return sprintf( '[%1$s](http://wordpress.org/plugins/tags/%2$s)', $tag, urlencode( $tag ) );
 				},
 				$this->metadata['Tags']
 			)
