@@ -1,0 +1,27 @@
+name: 'Readme Auto Generator'
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'readme.txt'
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    name: Generate Readme
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Run php-cs-fixer
+      run: bin/generate-markdown-readme
+
+    - name: Commit Reamde file
+      uses: stefanzweifel/git-auto-commit-action@v2.3.0
+      with:
+        commit_message: Apply readme.md Changes
+        branch: ${{ github.head_ref }}
+        file_pattern: readme.md
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
