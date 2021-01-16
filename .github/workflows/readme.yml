@@ -10,10 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Generate Readme
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
       with:
         fetch-depth: 1
-        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Execute the markdown Readme generation script
       run: bin/generate-markdown-readme
