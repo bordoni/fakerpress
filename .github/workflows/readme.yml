@@ -13,8 +13,9 @@ jobs:
     - uses: actions/checkout@v1
       with:
         fetch-depth: 1
+        token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Run php-cs-fixer
+    - name: Execute the markdown Readme generation script
       run: bin/generate-markdown-readme
 
     - name: Commit readme file
