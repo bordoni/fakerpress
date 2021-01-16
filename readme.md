@@ -21,10 +21,6 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 > **Note: This plugin requires PHP 5.6 or higher to be activated.**
 
 [**Checkout our GitHub Repository**](http://fakerpress.com/r/github)
-
-
-
-[![Build Status](https://travis-ci.org/bordoni/fakerpress.png?branch=master)](https://travis-ci.org/bordoni/fakerpress)
 ### Components Included ###
 * Posts
 * Custom Post Types
@@ -99,6 +95,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 
 ## Changelog ##
+
+### 0.5.2 &mdash; TBD ###
+* Feature: Proper changelog page for users trying to figure out what has changed in the latest version of FakerPress.
 
 ### 0.5.1 &mdash; 05 of January 2021 ###
 * Feature: Completely change folder structure to comply with [PSR-4](https://www.php-fig.org/psr/psr-4/) autoloading with namespaces.
@@ -252,9 +251,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Fix: `admin_title` been overwritten ([#14](https://github.com/bordoni/fakerpress/issues/14))
 
 ### 0.1.1 &mdash; 17 of June, 2014 ###
-* Fatal Error gerated by a missing file Carbon related fixed
+* Fatal Error generate by a missing file Carbon related fixed
 
 ### 0.1.0 &mdash; 17 of June, 2014 ###
-* First initial concept of using [Faker](https://github.com/fzaninotto/Faker) to gerenate data on WordPress
+* First initial concept of using [Faker](https://github.com/fzaninotto/Faker) to generate data on WordPress
 
 
