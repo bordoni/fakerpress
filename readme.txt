@@ -23,6 +23,7 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 
 ---
 
+
 = Components Included =
 
 * Posts
