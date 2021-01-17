@@ -1,13 +1,13 @@
 <?php
-namespace FakerPress;
+namespace FakerPress\Dev;
 
 Class Readme {
-	public function parse_readme( $file, $version = null ) {
+	public function parse_readme( $file ) {
 		$file_contents = @implode( '', @file( $file ) );
-		return $this->parse_readme_contents( $file_contents, $version );
+		return $this->parse_readme_contents( $file_contents );
 	}
 
-	public function parse_readme_contents( $file_contents, $version = false ) {
+	public function parse_readme_contents( $file_contents ) {
 		$file_contents = str_replace( [ "\r\n", "\r" ], "\n", $file_contents );
 		$file_contents = trim( $file_contents );
 		if ( 0 === strpos( $file_contents, "\xEF\xBB\xBF" ) )
@@ -63,7 +63,7 @@ Class Readme {
 		$sections[ strtolower( $last_name ) ]['content'] = $content;
 
 		if ( isset( $sections['changelog'] ) ) {
-			$sections['changelog']['versions'] = $this->parse_changelog_section( $sections['changelog']['content'], $version );
+			$sections['changelog']['versions'] = $this->parse_changelog_section( $sections['changelog']['content'] );
 		}
 
 		return $sections;
@@ -78,7 +78,7 @@ Class Readme {
 		return $subject;
 	}
 
-	public function parse_changelog_section( $content, $only_version = null ) {
+	public function parse_changelog_section( $content ) {
 		$versions = [];
 
 		if ( ! preg_match_all('/^(?:[=]*) ([^=]*) (?:[=]*)/im', $content, $versions_search ) ) {
@@ -86,7 +86,6 @@ Class Readme {
 		}
 
 		$versions_titles = $versions_search[1];
-		$count = 0;
 
 		foreach ( $versions_titles as $versions_title ) {
 			$separator = false;
@@ -121,7 +120,6 @@ Class Readme {
 			$last_version = $version['number'];
 
 			$versions[ $version['number'] ] = $version;
-			$count++;
 		}
 
 		$versions[ $last_version ]['content'] = $content;
@@ -129,12 +127,13 @@ Class Readme {
 		// Dont parse headers.
 		Utils\Slimdown::remove_rule( '/(#+)(.*)/' );
 
+		$count = 0;
 		foreach ( $versions as &$version ) {
-			if ( ! is_null( $only_version ) && ! in_array( $version['number'], (array) $only_version ) ) {
-				continue;
+			$contents = explode( "\n", $version['content'] );
+			if ( 10 === $count ) {
+				break;
 			}
 
-			$contents = explode( "\n", $version['content'] );
 			$html = [
 				'<ul>',
 			];
@@ -151,6 +150,7 @@ Class Readme {
 			$html[] = '</ul>';
 
 			$version['html'] = implode( "\n", $html );
+			$count++;
 		}
 
 		$versions = array_filter( $versions, static function( $version ) {

@@ -577,10 +577,26 @@ class Admin extends Template {
 			return $text;
 		}
 
-		$translate = sprintf( '<a class="fp-translations-link" href="%s" title="%s"><span class="dashicons dashicons-translation"></span></a>', Plugin::ext_site_url( '/r/translate' ), esc_attr__( 'Help us with Translations for the FakerPress project', 'fakerpress' ) );
-		$version = esc_attr__( 'Version', 'fakerpress' ) . ': <a title="' . __( 'View what changed in this version', 'fakerpress' ) . '" href="' . esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::VERSION ) ) ) . '">' . esc_attr( Plugin::VERSION ) . '</a>';
+		$sponsor   = sprintf(
+			'<a class="fp-link-footer fp-sponsor-link" href="%2$s" title="%3$s" target="_blank"><span class="dashicons dashicons-money-alt"></span> %1$s</a> | ',
+			esc_html__( 'Sponsor the project on GitHub', 'fakerpress' ),
+			Plugin::ext_site_url( '/r/sponsor' ),
+			esc_attr__( 'Help by sponsoring the Project on GitHub', 'fakerpress' )
+		);
+		$translate = sprintf(
+			'<a class="fp-link-footer fp-translations-link" href="%2$s" title="%3$s" target="_blank"><span class="dashicons dashicons-translation"></span> %1$s</a> | ',
+			esc_html__( 'Translate', 'fakerpress' ),
+			Plugin::ext_site_url( '/r/translate' ),
+			esc_attr__( 'Help us with Translations for the FakerPress project', 'fakerpress' )
+		);
+		$version = sprintf(
+			'<a class="fp-link-footer fp-version-link" href="%2$s" title="%3$s" target="_blank">%1$s</a>',
+			esc_html__( 'Version: ', 'fakerpress' ) . esc_attr( Plugin::VERSION ),
+			esc_url( Plugin::admin_url( 'view=changelog&version=' . esc_attr( Plugin::VERSION ) ) ),
+			esc_attr__( 'View what changed in this version', 'fakerpress' )
+		);
 
-		return $translate . $version;
+		return $sponsor . $translate . $version;
 	}
 
 	public function _filter_body_class( $classes ) {

@@ -1,5 +1,11 @@
 #!/usr/bin/env php
 <?php
+
+$base_directory = dirname( __DIR__ );
+require_once $base_directory . '/vendor/autoload.php';
+
+use FakerPress\Dev;
+
 /**
  * Look for WordPress readme in current directory or above and convert into markdown readme in same directory
  * @version 1.0.1
@@ -34,9 +40,7 @@ try {
 	$readme_root = dirname( $readme_txt_path );
 	$readme_md_path = preg_replace( '/txt$/', 'md', $readme_txt_path );
 
-	require_once __DIR__ . '/class-wordpress-readme-parser.php';
-
-	$readme = new WordPress_Readme_Parser( [ 'path' => $readme_txt_path ] );
+	$readme = new Dev\WordPress_Readme_Parser( [ 'path' => $readme_txt_path ] );
 
 	$md_args = [];
 	$markdown = $readme->to_markdown( $md_args );
@@ -47,6 +51,21 @@ try {
 	}
 	fwrite( STDERR, 'Successfully converted WordPress README to Markdown' . PHP_EOL );
 	fwrite( STDOUT, $readme_md_path . PHP_EOL );
+
+	$readme = new Dev\Readme;
+	$readme = $readme->parse_readme( $readme_txt_path );
+
+	$version_php_contents = '<?php return json_decode( \'' . json_encode( $readme, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE ) . '\' );';
+	$changelog_php_path   = $base_directory . '/src/data/readme.php';
+
+	$is_written = file_put_contents( $changelog_php_path, $version_php_contents );
+	if ( ! $is_written ) {
+		throw new Exception( sprintf( 'Failed to write to %s', $changelog_php_path ) );
+	}
+	fwrite( STDERR, 'Successfully converted WordPress README to PHP data' . PHP_EOL );
+	fwrite( STDOUT, $changelog_php_path . PHP_EOL );
+
+
 }
 catch( Exception $e ) {
 	fwrite( STDERR, $e->getMessage() . PHP_EOL );

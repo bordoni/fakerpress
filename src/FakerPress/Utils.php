@@ -22,20 +22,11 @@ class Utils {
 	}
 
 	/**
-	 * Prevents the class to be called from "new" structure
-	 *
-	 * @return void
-	 */
-	private function __construct() {
-
-	}
-
-	/**
 	 * Formats an array of HTML attributes into a string.
 	 *
 	 * @since  0.5.1
 	 *
-	 * @param  array  $attributes Attribures used to build the string.
+	 * @param  array  $attributes Attributes used to build the string.
 	 *
 	 * @return string             Formatted attributes.
 	 */
@@ -92,21 +83,21 @@ class Utils {
 	}
 
 	/**
-	 * Adds a abbriviation for the plugin to a string.
-	 * Used for preppending HTML classes.
+	 * Adds a abbreviation for the plugin to a string.
+	 * Used for prepending HTML classes.
 	 *
 	 * @since  0.5.1
 	 *
 	 * @param  string $str String to which we are adding the abbr.
 	 *
-	 * @return string      String with the abbr preppended to.
+	 * @return string      String with the abbr prepended to.
 	 */
 	public static function abbr( $str = '' ) {
 		return 'fp-' . $str;
 	}
 
 	/**
-	 * Remove the Period on the end of the Setence from Faker.
+	 * Remove the Period on the end of the sentence from Faker.
 	 *
 	 * @param  string  $sentence  Which sentence we should remove the period from.
 	 *

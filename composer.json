@@ -15,7 +15,8 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "FakerPress\\": "src/FakerPress/"
+            "FakerPress\\": "src/FakerPress/",
+            "FakerPress\\Dev\\": "dev/src/"
         }
     },
     "require": {

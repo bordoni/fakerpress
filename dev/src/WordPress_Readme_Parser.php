@@ -1,4 +1,6 @@
 <?php
+namespace FakerPress\Dev;
+
 /**
  * Lightweight WordPress readme.txt parser and converter to Markdown
  * The WordPress-Plugin-Readme-Parser project is too heavy and has too many dependencies for what we need (we don't need conversion to HTML)

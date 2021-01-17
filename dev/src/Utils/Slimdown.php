@@ -1,5 +1,5 @@
 <?php
-namespace FakerPress\Utils;
+namespace FakerPress\Dev\Utils;
 
 /**
  * Slimdown - A very basic regex-based Markdown parser. Supports the
@@ -21,7 +21,14 @@ namespace FakerPress\Utils;
  * License: MIT
  */
 class Slimdown {
-	public static $rules = [
+	/**
+	 * All of the rules for replacement.
+	 *
+	 * @since 0.5.2
+	 *
+	 * @var array
+	 */
+	protected static $rules = [
 		'/`(.*?)`/' => 'self::code',                              // inline code
 		'/(#+)(.*)/' => 'self::header',                           // headers
 		'/\[([^\[]+)\]\(([^\)]+)\)/' => '<a href=\'\2\'>\1</a>',  // links
@@ -37,13 +44,31 @@ class Slimdown {
 		'/<\/ul>\s?<ul>/' => '',                                  // fix extra ul
 		'/<\/ol>\s?<ol>/' => '',                                  // fix extra ol
 		'/<\/blockquote><blockquote>/' => "\n",                   // fix extra blockquote
-		'/<\/code><code>/' => "",                               // fix extra code
-		'/<code>(.*?)<\/code>/' => 'self::code_contents',          // put the contents back into code
+		'/<\/code><code>/' => "",                                 // fix extra code
+		'/<code>(.*?)<\/code>/' => 'self::code_contents',         // put the contents back into code
 	];
 
-	private static $code_values = [];
+	/**
+	 * Replacement for the codeblocks, which prevent problems with inline elements inside of the codeblocks.
+	 *
+	 * @since 0.5.2
+	 *
+	 * @param array $regs Which elements
+	 *
+	 * @return string
+	 */
+	protected static $code_values = [];
 
-	private static function code( $regs ) {
+	/**
+	 * Renders the inline code from Markdown.
+	 *
+	 * @since 0.5.2
+	 *
+	 * @param array $regs Regular EXP results.
+	 *
+	 * @return string
+	 */
+	protected static function code( $regs ) {
 		$item = $regs[1];
 		$key = md5( $item );
 		static::$code_values[ $key ] = $item;
@@ -51,12 +76,30 @@ class Slimdown {
 		return sprintf( "<code>%s</code>", $key );
 	}
 
-	private static function code_contents( $regs ) {
+	/**
+	 * Renders the code contents replacements from the values code blocks from Markdown.
+	 *
+	 * @since 0.5.2
+	 *
+	 * @param array $regs Regular EXP results.
+	 *
+	 * @return string
+	 */
+	protected static function code_contents( $regs ) {
 		$key = $regs[1];
 		return sprintf( "<code>%s</code>", static::$code_values[ $key ] );
 	}
 
-	private static function para( $regs ) {
+	/**
+	 * Renders the paragraph from Markdown.
+	 *
+	 * @since 0.5.2
+	 *
+	 * @param array $regs Regular EXP results.
+	 *
+	 * @return string
+	 */
+	protected static function para( $regs ) {
 		$line = $regs[1];
 		$trimmed = trim( $line );
 		if ( preg_match( '/^<\/?(ul|ol|li|h|p|bl)/', $trimmed ) ) {
@@ -65,22 +108,58 @@ class Slimdown {
 		return sprintf( "\n<p>%s</p>\n", $trimmed );
 	}
 
-	private static function ul_list( $regs ) {
+	/**
+	 * Renders the UL list from Markdown.
+	 *
+	 * @since 0.5.2
+	 *
+	 * @param array $regs Regular EXP results.
+	 *
+	 * @return string
+	 */
+	protected static function ul_list( $regs ) {
 		$item = $regs[1];
 		return sprintf( "\n<ul>\n\t<li>%s</li>\n</ul>", trim( $item ) );
 	}
 
-	private static function ol_list( $regs ) {
+	/**
+	 * Renders the OL list from Markdown.
+	 *
+	 * @since 0.5.2
+	 *
+	 * @param array $regs Regular EXP results.
+	 *
+	 * @return string
+	 */
+	protected static function ol_list( $regs ) {
 		$item = $regs[1];
 		return sprintf( "\n<ol>\n\t<li>%s</li>\n</ol>", trim( $item ) );
 	}
 
-	private static function blockquote( $regs ) {
+	/**
+	 * Renders the Blockquotes from Markdown.
+	 *
+	 * @since 0.5.2
+	 *
+	 * @param array $regs Regular EXP results.
+	 *
+	 * @return string
+	 */
+	protected static function blockquote( $regs ) {
 		$item = $regs[2];
 		return sprintf( "\n<blockquote>%s</blockquote>", trim( $item ) );
 	}
 
-	private static function header( $regs ) {
+	/**
+	 * Renders the Headers from Markdown.
+	 *
+	 * @since 0.5.2
+	 *
+	 * @param array $regs Regular EXP results.
+	 *
+	 * @return string
+	 */
+	protected static function header( $regs ) {
 		list( $tmp, $chars, $header ) = $regs;
 		$level = strlen( $chars );
 		return sprintf( '<h%d>%s</h%d>', $level, trim( $header ), $level );
@@ -88,28 +167,48 @@ class Slimdown {
 
 	/**
 	 * Add a rule.
+	 *
+	 * @since 0.5.2
+	 *
+	 * @param string          $regex       Which regex we are adding to the list.
+	 * @param string|callable $replacement Replacement for the regex passed.
+	 *
+	 * @return void
 	 */
 	public static function add_rule( $regex, $replacement ) {
-		self::$rules[ $regex ] = $replacement;
+		static::$rules[ $regex ] = $replacement;
 	}
 
 	/**
-	 * Add a rule.
+	 * Remove a rule.
+	 *
+	 * @since 0.5.2
+	 *
+	 * @param string $regex Which regex we are deleting from the list.
+	 *
+	 * @return bool
 	 */
 	public static function remove_rule( $regex ) {
-		if ( ! isset( self::$rules[ $regex ] ) ) {
+		if ( ! isset( static::$rules[ $regex ] ) ) {
 			return false;
 		}
 
-		unset( self::$rules[ $regex ] );
+		unset( static::$rules[ $regex ] );
+		return true;
 	}
 
 	/**
 	 * Render some Markdown into HTML.
+	 *
+	 * @since 0.5.2
+	 *
+	 * @param string $text Text to convert form Markdown to HTML.
+	 *
+	 * @return string
 	 */
 	public static function render( $text ) {
 		$text = "\n" . $text . "\n";
-		foreach ( self::$rules as $regex => $replacement ) {
+		foreach ( static::$rules as $regex => $replacement ) {
 			if ( is_callable( $replacement ) ) {
 				$text = preg_replace_callback( $regex, $replacement, $text );
 			} else {

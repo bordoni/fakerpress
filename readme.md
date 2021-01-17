@@ -11,6 +11,7 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Stable tag:** trunk (master)  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 **Requires PHP:** 5.6  
+**Donate link:** https://fakerpress.com/r/sponsor  
 
 ## Description ##
 
