@@ -21,7 +21,7 @@ jobs:
         version: 1
 
     - name: Execute the markdown Readme generation script
-      run: bin/generate-markdown-readme
+      run: dev/generate-markdown-readme
 
     - name: Commit readme file
       uses: stefanzweifel/git-auto-commit-action@v4
