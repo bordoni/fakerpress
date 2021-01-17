@@ -29,3 +29,10 @@ jobs:
         commit_message: Apply readme.md Changes
         branch: main
         file_pattern: readme.md
+
+    - name: Commit readme.php file
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Apply data/readme.php Changes
+        branch: main
+        file_pattern: src/data/readme.php
