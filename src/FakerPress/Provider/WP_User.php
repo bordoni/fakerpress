@@ -16,7 +16,7 @@ class WP_User extends Base {
 	public function user_pass( $pass = null, $qty = 10 ) {
 		if ( is_null( $pass ) ) {
 			if ( function_exists( 'wp_generate_password' ) ) {
-				$pass = wp_generate_password();
+				$pass = wp_generate_password( $qty );
 			} else {
 				$pass = $this->generator->randomNumber( $qty - 1 ) . $this->generator->randomLetter();
 			}
