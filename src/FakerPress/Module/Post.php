@@ -146,6 +146,9 @@ class Post extends Base {
 		$post_content_use_html = fp_array_get( $request, [ 'use_html' ], FILTER_SANITIZE_NUMBER_INT, 0 ) === 1;
 		$post_content_html_tags = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'html_tags' ], FILTER_SANITIZE_STRING ) ) );
 
+		// Fetch Post Excerpt.
+		$post_excerpt_size = fp_array_get( $request, [ 'excerpt_size' ], FILTER_UNSAFE_RAW, [ 1, 3 ] );
+
 		// Fetch and clean Post Parents
 		$post_parents = fp_array_get( $request, [ 'post_parent' ], FILTER_SANITIZE_STRING );
 		$post_parents = array_map( 'trim', explode( ',', $post_parents ) );
@@ -174,7 +177,7 @@ class Post extends Base {
 					'sources'  => $images_origin,
 				]
 			);
-			$this->set( 'post_excerpt' );
+			$this->set( 'post_excerpt'. $post_excerpt_size );
 			$this->set( 'post_author', $post_author );
 			$this->set( 'post_type', $post_types );
 			$this->set( 'comment_status', $comment_status );

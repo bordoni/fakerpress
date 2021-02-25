@@ -102,6 +102,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 = 0.5.2 &mdash; TBD =
 
 * Feature: Proper changelog page for users trying to figure out what has changed in the latest version of FakerPress.
+* Feature: Excerpt size field added to ensure better control over Post generation prop @gtsantos
 * Fix: One more PHP 8 compatibility problem related to the generation of passwords props @DumahX
 
 = 0.5.1 &mdash; 05 of January 2021 =

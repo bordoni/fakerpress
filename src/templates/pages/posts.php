@@ -199,6 +199,19 @@ $fields[] = new Field(
 	]
 );
 
+$fields[] = new Field(
+	'range',
+	[
+		'id' => 'excerpt_size',
+		'min' => 1,
+		'max' => 3,
+	],
+	[
+		'label' => __( 'Excerpt Size', 'fakerpress' ),
+		'description' => __( 'How many paragraphs we are going to generate of excerpt.', 'fakerpress' ),
+	]
+);
+
 
 $fields[] = new Field(
 	'taxonomy',
