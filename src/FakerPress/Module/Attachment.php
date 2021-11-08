@@ -1,5 +1,6 @@
 <?php
 namespace FakerPress\Module;
+use WP_Error;
 use FakerPress;
 use Faker;
 

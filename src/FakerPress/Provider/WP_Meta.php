@@ -145,7 +145,7 @@ class WP_Meta extends Base {
 		$arguments = [];
 
 		// Specially for Meta we do the Randomization here
-		if ( ! empty( $width )&& $this->meta_parse_qty( $width ) ) {
+		if ( ! empty( $width ) && $this->meta_parse_qty( $width ) ) {
 			$arguments['width'] = $this->meta_parse_qty( $width );
 		}
 
@@ -375,7 +375,7 @@ class WP_Meta extends Base {
 	public function meta_type_date( $interval, $format = 'Y-m-d H:i:s', $weight = 50 ) {
 		$interval = (array) $interval;
 
-		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 		try {
 			$min = new \Carbon\Carbon( $interval['min'] );
 		} catch ( \Exception $e ) {
@@ -384,7 +384,7 @@ class WP_Meta extends Base {
 		}
 
 		if ( ! empty( $interval ) ) {
-			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 			try {
 				$max = new \Carbon\Carbon( $interval['max'] );
 			} catch ( \Exception $e ) {}
