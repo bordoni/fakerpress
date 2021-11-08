@@ -1,4 +1,5 @@
 if ( 'undefined' === typeof window.fakerpress ){
+if ( 'undefined' === typeof window.fakerpress ){
 	window.fakerpress = {};
 }
 

@@ -177,7 +177,7 @@ class Post extends Base {
 					'sources'  => $images_origin,
 				]
 			);
-			$this->set( 'post_excerpt'. $post_excerpt_size );
+			$this->set( 'post_excerpt', $post_excerpt_size );
 			$this->set( 'post_author', $post_author );
 			$this->set( 'post_type', $post_types );
 			$this->set( 'comment_status', $comment_status );
