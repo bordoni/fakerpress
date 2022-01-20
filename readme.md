@@ -102,6 +102,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Feature: Excerpt size field added to ensure better control over Post generation prop @gtsantos
 * Fix: Prevent warning around post_excerpt usage introduced earlier on in the year. props @pattisahusiwa
 * Fix: One more PHP 8 compatibility problem related to the generation of passwords props @DumahX
+* Fix: Prevent PHP 8 from throwing a warning because of unnecessary `unlink()` call for attachments props @wpuzman
 
 ### 0.5.1 &mdash; 05 of January 2021 ###
 * Feature: Completely change folder structure to comply with [PSR-4](https://www.php-fig.org/psr/psr-4/) autoloading with namespaces.
