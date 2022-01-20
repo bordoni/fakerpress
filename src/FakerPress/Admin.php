@@ -157,13 +157,15 @@ class Admin extends Template {
 		 * @filter fakerpress.messages.allowed_html
 		 * @since 0.1.2
 		 */
-		self::$messages[] = (object) [
+		self::$messages[] = $message = (object) [
 			'html' => wp_kses( wpautop( $html ), apply_filters( 'fakerpress.messages.allowed_html', [] ), [ 'http', 'https' ] ),
 			'type' => esc_attr( $type ),
 			'priority' => $priority === 0 ? $priority + 1 : $priority,
 		];
 
 		usort( self::$messages, 'fp_sort_by_priority' );
+
+		return $message;
 	}
 
 	/**

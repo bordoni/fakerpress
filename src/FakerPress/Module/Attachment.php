@@ -60,13 +60,8 @@ class Attachment extends Base {
 		// Download temp file
 		$temporary_file = download_url( $url, 10 );
 
-
-
 		// Check for download errors if there are error unlink the temp file name
 		if ( is_wp_error( $temporary_file ) ) {
-			if ( PHP_MAJOR_VERSION <= 8 ) {
-				@unlink( $temporary_file );
-			}
 			return $temporary_file;
 		}
 
