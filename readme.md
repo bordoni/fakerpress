@@ -7,7 +7,7 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Contributors:** [bordoni](http://profiles.wordpress.org/bordoni)  
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy+content), [dummy data](http://wordpress.org/plugins/tags/dummy+data), [lorem ipsun](http://wordpress.org/plugins/tags/lorem+ipsun), [admin](http://wordpress.org/plugins/tags/admin), [exemples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [images](http://wordpress.org/plugins/tags/images), [attachments](http://wordpress.org/plugins/tags/attachments), [featured image](http://wordpress.org/plugins/tags/featured+image), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post+type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake+data), [random](http://wordpress.org/plugins/tags/random), [developer](http://wordpress.org/plugins/tags/developer), [dev](http://wordpress.org/plugins/tags/dev), [development](http://wordpress.org/plugins/tags/development), [test](http://wordpress.org/plugins/tags/test), [tests](http://wordpress.org/plugins/tags/tests)  
 **Requires at least:** 4.7  
-**Tested up to:** 5.6  
+**Tested up to:** 5.9  
 **Stable tag:** trunk (master)  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 **Requires PHP:** 5.6  
@@ -97,12 +97,14 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
-### 0.5.2 &mdash; TBD ###
+### 0.5.2 &mdash; 27 of January 2022 ###
 * Feature: Proper changelog page for users trying to figure out what has changed in the latest version of FakerPress.
 * Feature: Excerpt size field added to ensure better control over Post generation prop @gtsantos
+* Tweak: jQuery 3.5.X compatibility
 * Fix: Prevent warning around post_excerpt usage introduced earlier on in the year. props @pattisahusiwa
 * Fix: One more PHP 8 compatibility problem related to the generation of passwords props @DumahX
 * Fix: Prevent PHP 8 from throwing a warning because of unnecessary `unlink()` call for attachments props @wpuzman
+* Fix: Resolve problems around failed inline images that were unavailable which would cause a PHP Warning.
 
 ### 0.5.1 &mdash; 05 of January 2021 ###
 * Feature: Completely change folder structure to comply with [PSR-4](https://www.php-fig.org/psr/psr-4/) autoloading with namespaces.
