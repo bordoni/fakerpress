@@ -2,7 +2,7 @@
 Contributors:      bordoni
 Tags:              generator, dummy content, dummy data, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
 Requires at least: 4.7
-Tested up to:      5.6
+Tested up to:      5.9
 Requires PHP:      5.6
 Stable tag:        trunk
 License:           GPLv2 or later
@@ -99,13 +99,15 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
-= 0.5.2 &mdash; TBD =
+= 0.5.2 &mdash; 27 of January 2022 =
 
 * Feature: Proper changelog page for users trying to figure out what has changed in the latest version of FakerPress.
 * Feature: Excerpt size field added to ensure better control over Post generation prop @gtsantos
+* Tweak: jQuery 3.5.X compatibility
 * Fix: Prevent warning around post_excerpt usage introduced earlier on in the year. props @pattisahusiwa
 * Fix: One more PHP 8 compatibility problem related to the generation of passwords props @DumahX
 * Fix: Prevent PHP 8 from throwing a warning because of unnecessary `unlink()` call for attachments props @wpuzman
+* Fix: Resolve problems around failed inline images that were unavailable which would cause a PHP Warning.
 
 = 0.5.1 &mdash; 05 of January 2021 =
 

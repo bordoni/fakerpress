@@ -1,347 +1,340 @@
-if ( 'undefined' === typeof window.fakerpress ){
-	window.fakerpress = {};
-}
-window.fakerpress.fields = {};
-window.fakerpress.ready_class = 'fp-js-ready';
-window.fakerpress.plugin = 'fakerpress';
-window.fakerpress.abbr = 'fp';
-
-window.fakerpress.fieldName = function( pieces ){
-	pieces = pieces.map( function( piece ) {
-		return new String( piece );
-	} );
-
-	return this.plugin + '[' + pieces.join( '][' ) + ']';
-};
-
-window.fakerpress.fieldId = function( pieces ){
-	return this.plugin + '-field-' + pieces.join( '-' );
-};
-
-window.fakerpress.searchId = function ( e ) {
-	var id = null;
-
-	if ( 'undefined' !== typeof e.id ){
-		id = e.id;
-	} else if ( 'undefined' !== typeof e.ID ){
-		id = e.ID;
-	} else if ( 'undefined' !== typeof e.value ){
-		id = e.value;
-	}
-	return e == undefined ? null : id;
-};
-
-
-// Date Fields
-window.fakerpress.fields.dates = function( $, _ ){
+( function( $, _, fp ){
 	'use strict';
-	var datepicker_args = {
-			after: ['attr'],
-			constrainInput: false,
-			dateFormat: 'yy-mm-dd',
-		};
 
-	$( '.fp-type-date' ).not( '.hasDatepicker' ).datepicker( datepicker_args );
-	$( '.fp-type-interval-wrap' ).each( function(){
-		var $container = $( this ),
-			$interval = $container.find( '.fp-type-dropdown' ),
-			$min = $container.find( '[data-type="min"]' ),
-			$max = $container.find( '[data-type="max"]' );
+	const isNumeric = ( n ) => {
+		return ! isNaN( parseFloat( n ) ) && isFinite( n );
+	};
 
-		if ( $container.hasClass( window.fakerpress.ready_class ) ){
-			return;
+	fp.fields = {};
+	fp.ready_class = 'fp-js-ready';
+	fp.plugin = 'fakerpress';
+	fp.abbr = 'fp';
+
+	fp.fieldName = function( pieces ){
+		pieces = pieces.map( function( piece ) {
+			return new String( piece );
+		} );
+
+		return this.plugin + '[' + pieces.join( '][' ) + ']';
+	};
+
+	fp.fieldId = function( pieces ){
+		return this.plugin + '-field-' + pieces.join( '-' );
+	};
+
+	fp.searchId = function ( e ) {
+		var id = null;
+
+		if ( 'undefined' !== typeof e.id ){
+			id = e.id;
+		} else if ( 'undefined' !== typeof e.ID ){
+			id = e.ID;
+		} else if ( 'undefined' !== typeof e.value ){
+			id = e.value;
 		}
-		$container.addClass( window.fakerpress.ready_class );
+		return e == undefined ? null : id;
+	};
 
-		$min.on({
-			'change': function(e){
-				$min.parents( '.fp-field-wrap' ).find( '[data-type="max"]' ).datepicker( 'option', 'minDate', $( this ).val() ).datepicker( 'refresh' );
-				$( '.fp-type-date.hasDatepicker' ).datepicker( 'refresh' );
-			}
-		});
-
-		$max.on({
-			'change': function(e){
-				$max.parents( '.fp-field-wrap' ).find( '[data-type="min"]' ).datepicker( 'option', 'maxDate', $( this ).val() ).datepicker( 'refresh' );
-				$( '.fp-type-date.hasDatepicker' ).datepicker( 'refresh' );
-			}
-		});
-
-		$interval.on({
-			'change': function(e){
-				var $selected = $interval.find(':selected'),
-					min = $selected.attr('min'),
-					max = $selected.attr('max');
-
-				$min.datepicker( 'setDate', min );
-				$max.datepicker( 'setDate', max );
-			}
-		}).trigger( 'change' );
-	} );
-};
-
-// Select2 Fields
-window.fakerpress.fields.dropdown = function( $, _ ){
-	'use strict';
-	var $elements = $( '.fp-type-dropdown' ).not( '.select2-offscreen, .select2-container' ),
-		config = {
-			wp_query_title: []
-		};
-
-	config.wp_query_title.push( "ID: &quot;<%= ID %>&quot;" );
-	config.wp_query_title.push( "Title: &quot;<%= post_title %>&quot;" );
-	config.wp_query_title.push( "Post Type: &quot;<%= post_type.labels.singular_name %>&quot;" );
-	config.wp_query_title.push( "Author: &quot;<%= post_author %>&quot;" );
-
-	$elements.each(function(){
-		var $select = $(this),
-			args = {
-				width: 420
+	// Date Fields
+	fp.fields.dates = function( $, _ ){
+		'use strict';
+		var datepicker_args = {
+				after: ['attr'],
+				constrainInput: false,
+				dateFormat: 'yy-mm-dd',
 			};
 
-		if ( $select.is( '[multiple]' ) ){
-			args.multiple = true;
+		$( '.fp-type-date' ).not( '.hasDatepicker' ).datepicker( datepicker_args );
+		$( '.fp-type-interval-wrap' ).each( function(){
+			var $container = $( this ),
+				$interval = $container.find( '.fp-type-dropdown' ),
+				$min = $container.find( '[data-type="min"]' ),
+				$max = $container.find( '[data-type="max"]' );
 
-			if ( ! $select.is( '[data-tags]' ) ){
-				args.data = function(){
-					return { 'results': $select.data( 'options' ) };
-				};
+			if ( $container.hasClass( fp.ready_class ) ){
+				return;
 			}
+			$container.addClass( fp.ready_class );
 
-			if ( ! _.isArray( $select.data( 'separator' ) ) ){
-				args.tokenSeparators = [ $select.data( 'separator' ) ];
-			} else {
-				args.tokenSeparators = $select.data( 'separator' );
-			}
-			args.separator = $select.data( 'separator' );
-
-			// Define the regular Exp based on
-			args.regexSeparatorElements = [ '^(' ];
-			args.regexSplitElements = [ '(?:' ];
-			$.each( args.tokenSeparators, function ( i, token ){
-				args.regexSeparatorElements.push( '[^' + token + ']+' );
-				args.regexSplitElements.push( '[' + token + ']' );
-			} );
-			args.regexSeparatorElements.push( ')$' );
-			args.regexSplitElements.push( ')' );
-
-			args.regexSeparatorString = args.regexSeparatorElements.join( '' )
-			args.regexSplitString = args.regexSplitElements.join( '' )
-
-			args.regexToken = new RegExp( args.regexSeparatorString, 'ig');
-			args.regexSplit = new RegExp( args.regexSplitString, 'ig');
-
-			args.id = window.fakerpress.searchId;
-
-		} else {
-			args.width = 200;
-		}
-
-		args.matcher = function( term, text ) {
-			var result = text.toUpperCase().indexOf( term.toUpperCase() ) == 0;
-
-			if ( ! result && 'undefined' !== typeof args.tags ){
-				var possible = _.where( args.tags, { text: text } );
-				if ( args.tags.length > 0  && _.isObject( possible ) ){
-					var test_value = window.fakerpress.searchId( possible[0] );
-					result = test_value.toUpperCase().indexOf( term.toUpperCase() ) == 0;
+			$min.on({
+				'change': function(e){
+					$min.parents( '.fp-field-wrap' ).find( '[data-type="max"]' ).datepicker( 'option', 'minDate', $( this ).val() ).datepicker( 'refresh' );
+					$( '.fp-type-date.hasDatepicker' ).datepicker( 'refresh' );
 				}
-			}
+			});
 
-			return result;
-		};
+			$max.on({
+				'change': function(e){
+					$max.parents( '.fp-field-wrap' ).find( '[data-type="min"]' ).datepicker( 'option', 'maxDate', $( this ).val() ).datepicker( 'refresh' );
+					$( '.fp-type-date.hasDatepicker' ).datepicker( 'refresh' );
+				}
+			});
 
-		if ( $select.is( '[data-tags]' ) ){
-			args.tags = $select.data( 'options' );
+			$interval.on({
+				'change': function(e){
+					var $selected = $interval.find(':selected'),
+						min = $selected.attr('min'),
+						max = $selected.attr('max');
 
-			args.initSelection = function ( element, callback ) {
-				var data = [];
-				$( element.val().split( args.regexSplit ) ).each( function () {
-					var obj = { id: this, text: this };
-					if ( args.tags.length > 0  && _.isObject( args.tags[0] ) ){
-						var _obj = _.where( args.tags, { value: this } );
-						if ( _obj.length > 0 ){
-							obj = _obj[0];
-							obj = {
-								id: obj.value,
-								text: obj.text,
-							};
-						}
-					}
+					$min.datepicker( 'setDate', min );
+					$max.datepicker( 'setDate', max );
+				}
+			}).trigger( 'change' );
+		} );
+	};
 
-					data.push( obj );
+	// Select2 Fields
+	fp.fields.dropdown = function( $, _ ){
+		'use strict';
+		var $elements = $( '.fp-type-dropdown' ).not( '.select2-offscreen, .select2-container' ),
+			config = {
+				wp_query_title: []
+			};
 
+		config.wp_query_title.push( "ID: &quot;<%= ID %>&quot;" );
+		config.wp_query_title.push( "Title: &quot;<%= post_title %>&quot;" );
+		config.wp_query_title.push( "Post Type: &quot;<%= post_type.labels.singular_name %>&quot;" );
+		config.wp_query_title.push( "Author: &quot;<%= post_author %>&quot;" );
+
+		$elements.each(function(){
+			var $select = $(this),
+				args = {
+					width: 420
+				};
+
+			if ( $select.is( '[multiple]' ) ){
+				args.multiple = true;
+
+				if ( ! $select.is( '[data-tags]' ) ){
+					args.data = function(){
+						return { 'results': $select.data( 'options' ) };
+					};
+				}
+
+				if ( ! _.isArray( $select.data( 'separator' ) ) ){
+					args.tokenSeparators = [ $select.data( 'separator' ) ];
+				} else {
+					args.tokenSeparators = $select.data( 'separator' );
+				}
+				args.separator = $select.data( 'separator' );
+
+				// Define the regular Exp based on
+				args.regexSeparatorElements = [ '^(' ];
+				args.regexSplitElements = [ '(?:' ];
+				$.each( args.tokenSeparators, function ( i, token ){
+					args.regexSeparatorElements.push( '[^' + token + ']+' );
+					args.regexSplitElements.push( '[' + token + ']' );
 				} );
-				callback( data );
-			};
+				args.regexSeparatorElements.push( ')$' );
+				args.regexSplitElements.push( ')' );
 
-			args.createSearchChoice = function(term, data) {
-				if ( term.match( args.regexToken ) ){
-					return { id: term, text: term };
-				}
-			};
+				args.regexSeparatorString = args.regexSeparatorElements.join( '' )
+				args.regexSplitString = args.regexSplitElements.join( '' )
 
-			if ( 0 === args.tags.length ){
-				args.formatNoMatches = function(  ){
-					return $select.attr( 'placeholder' );
-				};
+				args.regexToken = new RegExp( args.regexSeparatorString, 'ig');
+				args.regexSplit = new RegExp( args.regexSplitString, 'ig');
+
+				args.id = fp.searchId;
+
+			} else {
+				args.width = 200;
 			}
-		}
 
+			args.matcher = function( term, text ) {
+				var result = text.toUpperCase().indexOf( term.toUpperCase() ) == 0;
 
-		if ( $select.is( '[data-source]' ) ){
-			var source = $select.data( 'source' );
-
-			args.data = { results: [] };
-			args.allowClear = true;
-
-			args.escapeMarkup = function (m) {
-				return m;
-			};
-
-			args.ajax = { // instead of writing the function to execute the request we use Select2's convenient helper
-				dataType: 'json',
-				type: 'POST',
-				url: window.ajaxurl,
-				results: function ( data ) { // parse the results into the format expected by Select2.
-					$.each( data.results, function( k, result ){
-						result.id = result.ID;
-					} );
-					return data;
+				if ( ! result && 'undefined' !== typeof args.tags ){
+					var possible = _.where( args.tags, { text: text } );
+					if ( args.tags.length > 0  && _.isObject( possible ) ){
+						var test_value = fp.searchId( possible[0] );
+						result = test_value.toUpperCase().indexOf( term.toUpperCase() ) == 0;
+					}
 				}
+
+				return result;
 			};
 
-			// Now we set the data for the source we are looking
-			if ( 'WP_Query' === source ){
-				args.formatSelection = function ( post ){
-					return _.template('<abbr title="' + config.wp_query_title.join( '&#13;&#10;' ) + '"><%= post_type.labels.singular_name %>: <%= ID %>')( post )
-				};
-				args.formatResult = function ( post ){
-					return _.template('<abbr title="' + config.wp_query_title.join( '&#13;&#10;' ) + '"><%= post_type.labels.singular_name %>: <%= ID %> <b>[</b> <em><%= post_title %></em> <b>]</b></abbr>')( post )
-				};
+			if ( $select.is( '[data-tags]' ) ){
+				args.tags = $select.data( 'options' );
 
-				args.ajax.data = function( search, page ) {
-					var post_types = _.intersection( $( '#fakerpress-field-post_types' ).val().split( ',' ), _.pluck( _.where( $( '#fakerpress-field-post_types' ).data( 'options' ), { hierarchical: true } ) , 'id' ) );
-
-					return {
-						action: 'fakerpress.select2-' + source,
-						query: {
-							s: search,
-							posts_per_page: 10,
-							paged: page,
-							post_type: post_types
+				args.initSelection = function ( element, callback ) {
+					var data = [];
+					$( element.val().split( args.regexSplit ) ).each( function () {
+						var obj = { id: this, text: this };
+						if ( args.tags.length > 0  && _.isObject( args.tags[0] ) ){
+							var _obj = _.where( args.tags, { value: this } );
+							if ( _obj.length > 0 ){
+								obj = _obj[0];
+								obj = {
+									id: obj.value,
+									text: obj.text,
+								};
+							}
 						}
+
+						data.push( obj );
+
+					} );
+					callback( data );
+				};
+
+				args.createSearchChoice = function(term, data) {
+					if ( term.match( args.regexToken ) ){
+						return { id: term, text: term };
+					}
+				};
+
+				if ( 0 === args.tags.length ){
+					args.formatNoMatches = function(  ){
+						return $select.attr( 'placeholder' );
 					};
 				}
-			} else {
-				args.ajax.data = function( search, page ) {
-					var $container = $select.parents( '.fp-table-taxonomy' ).eq( 0 );
-					return {
-						action: 'fakerpress.select2-' + source,
-						search: search,
-						page: page,
-						page_limit: 25,
-						taxonomies: $container.find( '.fp-taxonomies' ).select2( 'val' ),
-						exclude: $( this ).select2( 'val' )
+			}
+
+
+			if ( $select.is( '[data-source]' ) ){
+				var source = $select.data( 'source' );
+
+				args.data = { results: [] };
+				args.allowClear = true;
+
+				args.escapeMarkup = function (m) {
+					return m;
+				};
+
+				args.ajax = { // instead of writing the function to execute the request we use Select2's convenient helper
+					dataType: 'json',
+					type: 'POST',
+					url: window.ajaxurl,
+					results: function ( data ) { // parse the results into the format expected by Select2.
+						$.each( data.results, function( k, result ){
+							result.id = result.ID;
+						} );
+						return data;
+					}
+				};
+
+				// Now we set the data for the source we are looking
+				if ( 'WP_Query' === source ){
+					args.formatSelection = function ( post ){
+						return _.template('<abbr title="' + config.wp_query_title.join( '&#13;&#10;' ) + '"><%= post_type.labels.singular_name %>: <%= ID %>')( post )
 					};
-				}
+					args.formatResult = function ( post ){
+						return _.template('<abbr title="' + config.wp_query_title.join( '&#13;&#10;' ) + '"><%= post_type.labels.singular_name %>: <%= ID %> <b>[</b> <em><%= post_title %></em> <b>]</b></abbr>')( post )
+					};
 
-				args.formatSelection = function ( result ){
-					return _.template( '<%= taxonomy %>: <%= name %>' )( result );
-				};
-				args.formatResult = function ( result ){
-					return _.template( '<%= taxonomy %>: <%= name %>' )( result );
-				};
-			}
-		}
+					args.ajax.data = function( search, page ) {
+						var post_types = _.intersection( $( '#fakerpress-field-post_types' ).val().split( ',' ), _.pluck( _.where( $( '#fakerpress-field-post_types' ).data( 'options' ), { hierarchical: true } ) , 'id' ) );
 
-		$select.select2( args );
-	})
-	.on( 'change', function( event ) {
-		var $select = $(this),
-			data = $( this ).data( 'value' );
-
-		if ( ! $select.is( '[multiple]' ) ){
-			return;
-		}
-		if ( ! $select.is( '[data-source]' ) ){
-			return;
-		}
-
-		if ( event.added ){
-			if ( _.isArray( data ) ) {
-				data.push( event.added );
-			} else {
-				data = [ event.added ];
-			}
-		} else {
-			if ( _.isArray( data ) ) {
-				data = _.without( data, event.removed );
-			} else {
-				data = [];
-			}
-		}
-		$select.data( 'value', data ).attr( 'data-value', JSON.stringify( data ) );
-	} );
-};
-
-// Quantity Range Fields
-window.fakerpress.fields.range = function( $, _ ){
-	'use strict';
-
-	$( '.fp-type-range-wrap' ).each(function(){
-		var $container = $( this );
-		var $minField = $container.find( '.fp-type-number[data-type="min"]' );
-		var $maxField = $container.find( '.fp-type-number[data-type="max"]' );
-
-		if ( $container.hasClass( window.fakerpress.ready_class ) ){
-			return;
-		}
-		$container.addClass( window.fakerpress.ready_class );
-
-		$minField.on( {
-			'change keyup': function(e){
-				var minValue = parseInt( $minField.val(), 10 );
-				var maxValue = parseInt( $maxField.val(), 10 );
-
-				if ( $.isNumeric( minValue ) ) {
-					$maxField.prop( 'disabled', false );
-
-					// When we have max value we don't allow min to be bigger than max
-					if ( maxValue && $.isNumeric( maxValue ) && minValue > maxValue ){
-						$minField.val( maxValue );
+						return {
+							action: 'fakerpress.select2-' + source,
+							query: {
+								s: search,
+								posts_per_page: 10,
+								paged: page,
+								post_type: post_types
+							}
+						};
 					}
 				} else {
-					$maxField.prop( 'disabled', true );
-					$minField.val( '' );
+					args.ajax.data = function( search, page ) {
+						var $container = $select.parents( '.fp-table-taxonomy' ).eq( 0 );
+						return {
+							action: 'fakerpress.select2-' + source,
+							search: search,
+							page: page,
+							page_limit: 25,
+							taxonomies: $container.find( '.fp-taxonomies' ).select2( 'val' ),
+							exclude: $( this ).select2( 'val' )
+						};
+					}
+
+					args.formatSelection = function ( result ){
+						return _.template( '<%= taxonomy %>: <%= name %>' )( result );
+					};
+					args.formatResult = function ( result ){
+						return _.template( '<%= taxonomy %>: <%= name %>' )( result );
+					};
 				}
 			}
-		} ).trigger( 'change' );
 
-		$maxField.on( {
-			'change keyup': function(e){
-				var minValue = parseInt( $minField.val(), 10 );
-				var maxValue = parseInt( $maxField.val(), 10 );
+			$select.select2( args );
+		})
+		.on( 'change', function( event ) {
+			var $select = $(this),
+				data = $( this ).data( 'value' );
 
-				if ( $.isNumeric( maxValue ) && minValue > maxValue ) {
-					$minField.val( maxValue );
+			if ( ! $select.is( '[multiple]' ) ){
+				return;
+			}
+			if ( ! $select.is( '[data-source]' ) ){
+				return;
+			}
+
+			if ( event.added ){
+				if ( _.isArray( data ) ) {
+					data.push( event.added );
+				} else {
+					data = [ event.added ];
+				}
+			} else {
+				if ( _.isArray( data ) ) {
+					data = _.without( data, event.removed );
+				} else {
+					data = [];
 				}
 			}
-		} ).trigger( 'change' );
-	} );
-};
-
-( function( $ ){
-	$( document ).ready( function(){
-		$.each( window.fakerpress.fields, function( key, callback ){
-			callback( window.jQuery, window._ );
+			$select.data( 'value', data ).attr( 'data-value', JSON.stringify( data ) );
 		} );
-	} );
-}( jQuery ) );
+	};
 
-( function( $, _ ){
-	'use strict';
-	window.fakerpress.fieldset = {
+	// Quantity Range Fields
+	fp.fields.range = function( $, _ ){
+		'use strict';
+
+		$( '.fp-type-range-wrap' ).each(function(){
+			var $container = $( this );
+			var $minField = $container.find( '.fp-type-number[data-type="min"]' );
+			var $maxField = $container.find( '.fp-type-number[data-type="max"]' );
+
+			if ( $container.hasClass( fp.ready_class ) ){
+				return;
+			}
+			$container.addClass( fp.ready_class );
+
+			$minField.on( {
+				'change keyup': function(e){
+					var minValue = parseInt( $minField.val(), 10 );
+					var maxValue = parseInt( $maxField.val(), 10 );
+
+					if ( isNumeric( minValue ) ) {
+						$maxField.prop( 'disabled', false );
+
+						// When we have max value we don't allow min to be bigger than max
+						if ( maxValue && isNumeric( maxValue ) && minValue > maxValue ){
+							$minField.val( maxValue );
+						}
+					} else {
+						$maxField.prop( 'disabled', true );
+						$minField.val( '' );
+					}
+				}
+			} ).trigger( 'change' );
+
+			$maxField.on( {
+				'change keyup': function(e){
+					var minValue = parseInt( $minField.val(), 10 );
+					var maxValue = parseInt( $maxField.val(), 10 );
+
+					if ( isNumeric( maxValue ) && minValue > maxValue ) {
+						$minField.val( maxValue );
+					}
+				}
+			} ).trigger( 'change' );
+		} );
+	};
+
+	fp.fieldset = {
 		items: [
 			{
 				name: 'meta',
@@ -378,7 +371,7 @@ window.fakerpress.fields.range = function( $, _ ){
 						$type_container = $item.find( fieldset.selector.type_container ),
 						$conf_container = $item.find( fieldset.selector.conf_container ),
 
-						$place = $conf_container.find( window.fakerpress.fieldset.selector.wrap ),
+						$place = $conf_container.find( fp.fieldset.selector.wrap ),
 						config = $conf_container.data( 'config' ),
 
 						$template,
@@ -421,7 +414,7 @@ window.fakerpress.fields.range = function( $, _ ){
 				configure: function( $conf ) {
 					var fieldset = this;
 					var config = $conf.data( 'config' );
-					var $fields = $conf.find( window.fakerpress.fieldset.selector.field );
+					var $fields = $conf.find( fp.fieldset.selector.field );
 
 					// Reset the Configuration, only happens once!
 					// $conf.removeAttr( 'data-config', false ).data( 'config', {} );
@@ -430,11 +423,11 @@ window.fakerpress.fields.range = function( $, _ ){
 					$fields.each( function() {
 						var $field = $( this );
 						var $fieldset = $field.parents( fieldset.selector.item ).eq( 0 );
-						var $label = $field.next( window.fakerpress.fieldset.selector.label );
-						var $internal_label = $field.next( window.fakerpress.fieldset.selector.internal_label );
+						var $label = $field.next( fp.fieldset.selector.label );
+						var $internal_label = $field.next( fp.fieldset.selector.internal_label );
 
 						var name = $field.data( 'name' );
-						var index = parseInt( $fieldset.find( window.fakerpress.fieldset.selector.order ).val(), 10 ) - 1;
+						var index = parseInt( $fieldset.find( fp.fieldset.selector.order ).val(), 10 ) - 1;
 						var key = name[ index ];
 						var __name = $field.data( 'name' );
 						var __id = $field.data( 'id' );
@@ -443,7 +436,7 @@ window.fakerpress.fields.range = function( $, _ ){
 
 						// If didn't find a label inside of the parent element
 						if ( 0 === $label.length ){
-							$label = $field.parents( window.fakerpress.fieldset.selector.field_container ).eq( 0 ).find( window.fakerpress.fieldset.selector.label );
+							$label = $field.parents( fp.fieldset.selector.field_container ).eq( 0 ).find( fp.fieldset.selector.label );
 						}
 
 						_.each( __id, function( value, key, list ) {
@@ -461,13 +454,13 @@ window.fakerpress.fields.range = function( $, _ ){
 						} );
 
 						if ( 0 !== id.length ){
-							$field.attr( 'id', window.fakerpress.fieldId( id ) );
-							$label.attr( 'for', window.fakerpress.fieldId( id ) );
-							$internal_label.attr( 'for', window.fakerpress.fieldId( id ) );
+							$field.attr( 'id', fp.fieldId( id ) );
+							$label.attr( 'for', fp.fieldId( id ) );
+							$internal_label.attr( 'for', fp.fieldId( id ) );
 						}
 
 						if ( 0 !== name.length ){
-							$field.attr( 'name', window.fakerpress.fieldName( name ) );
+							$field.attr( 'name', fp.fieldName( name ) );
 						}
 
 						if ( 'undefined' === typeof config || 'undefined' === typeof config[ key ] ) {
@@ -502,7 +495,7 @@ window.fakerpress.fields.range = function( $, _ ){
 						fieldset.render( $field );
 
 						// Update all the required information
-						window.fakerpress.fieldset.update( fieldset, false );
+						fp.fieldset.update( fieldset, false );
 					} );
 				},
 
@@ -582,7 +575,7 @@ window.fakerpress.fields.range = function( $, _ ){
 			fieldset.$.container = $tbody.children( fieldset.selector.container );
 
 			// Get the Field Wrapper
-			fieldset.$.wrap = fieldset.$.container.children( window.fakerpress.fieldset.selector.wrap );
+			fieldset.$.wrap = fieldset.$.container.children( fp.fieldset.selector.wrap );
 
 			// Setup the Duplicate action
 			fieldset.$.container.on( 'click', this.selector.duplicate, [], function( event ){
@@ -595,13 +588,13 @@ window.fakerpress.fields.range = function( $, _ ){
 					.end().find( '.fp-type-dropdown' ).removeClass( 'select2-offscreen' )
 					.filter( '.select2-container' ).remove();
 
-				window.fakerpress.fieldset.reset( fieldset, $clone );
+				fp.fieldset.reset( fieldset, $clone );
 
 				// Append the new Meta to the Wrap
 				fieldset.$.wrap.append( $clone );
 
 				// Update all the required information
-				window.fakerpress.fieldset.update( fieldset );
+				fp.fieldset.update( fieldset );
 			} );
 
 			// Setup the Remove action
@@ -611,14 +604,14 @@ window.fakerpress.fields.range = function( $, _ ){
 
 				// Prevent remove when there is just one meta
 				if ( 1 === fieldset.$.items.length ){
-					window.fakerpress.fieldset.reset( fieldset, fieldset.$.items.eq( 0 ) );
+					fp.fieldset.reset( fieldset, fieldset.$.items.eq( 0 ) );
 				} else {
 					// Remove the Meta where the remove was clicked
 					$item.remove();
 				}
 
 				// Update all the required information
-				window.fakerpress.fieldset.update( fieldset );
+				fp.fieldset.update( fieldset );
 			} );
 
 			fieldset.setup();
@@ -628,7 +621,7 @@ window.fakerpress.fields.range = function( $, _ ){
 		},
 
 		reset: function( fieldset, $item ) {
-			var $fields = $item.find( 'tbody' ).find( window.fakerpress.fieldset.selector.field );
+			var $fields = $item.find( 'tbody' ).find( fp.fieldset.selector.field );
 
 			$fields.each( function() {
 				var $field = $( this );
@@ -652,27 +645,27 @@ window.fakerpress.fields.range = function( $, _ ){
 			// If there is just one meta, disable the remove button
 			if ( fieldset.is_removeable() ) {
 				fieldset.$.items.eq( 0 )
-					.find( window.fakerpress.fieldset.selector.remove ).prop( 'disabled', true )
+					.find( fp.fieldset.selector.remove ).prop( 'disabled', true )
 					.end().find( fieldset.selector.name ).prop( 'required', false );
 			} else {
 				fieldset.$.items
-					.find( window.fakerpress.fieldset.selector.remove ).prop( 'disabled', false )
+					.find( fp.fieldset.selector.remove ).prop( 'disabled', false )
 					.end().find( fieldset.selector.name ).prop( 'required', true );
 			}
 
 			// Regenerate Order Index
 			fieldset.$.items.each( function( index ){
 				var	$item = $( this ),
-					$index = $item.find( window.fakerpress.fieldset.selector.order ),
-					$fields = $item.find( window.fakerpress.fieldset.selector.field );
+					$index = $item.find( fp.fieldset.selector.order ),
+					$fields = $item.find( fp.fieldset.selector.field );
 
 				// Change the index first
 				$index.val( index + 1 );
 
 				$fields.filter( 'input, textarea, select' ).each( function(  ){
 					var $field = $( this ),
-						$label = $field.next( window.fakerpress.fieldset.selector.label ),
-						$internal_label = $field.next( window.fakerpress.fieldset.selector.internal_label ),
+						$label = $field.next( fp.fieldset.selector.label ),
+						$internal_label = $field.next( fp.fieldset.selector.internal_label ),
 
 						__name = $field.data( 'name' ),
 						__id = $field.data( 'id' ),
@@ -681,7 +674,7 @@ window.fakerpress.fields.range = function( $, _ ){
 
 					// If didn't find a label inside of the parent element
 					if ( 0 === $label.length ){
-						$label = $field.parents( window.fakerpress.fieldset.selector.field_container ).eq(0).find( window.fakerpress.fieldset.selector.label );
+						$label = $field.parents( fp.fieldset.selector.field_container ).eq(0).find( fp.fieldset.selector.label );
 					}
 
 					_.each( __id, function( value, key, list ) {
@@ -699,33 +692,37 @@ window.fakerpress.fields.range = function( $, _ ){
 					} );
 
 					if ( 0 !== id.length ){
-						$field.attr( 'id', window.fakerpress.fieldId( id ) );
-						$label.attr( 'for', window.fakerpress.fieldId( id ) );
-						$internal_label.attr( 'for', window.fakerpress.fieldId( id ) );
+						$field.attr( 'id', fp.fieldId( id ) );
+						$label.attr( 'for', fp.fieldId( id ) );
+						$internal_label.attr( 'for', fp.fieldId( id ) );
 					}
 
 					if ( 0 !== name.length ){
-						$field.attr( 'name', window.fakerpress.fieldName( name ) );
+						$field.attr( 'name', fp.fieldName( name ) );
 					}
 				} );
 
 				fieldset.update( $item );
 			} );
 
-			$.each( window.fakerpress.fields, function( key, callback ){
+			$.each( fp.fields, function( key, callback ){
 				callback( window.jQuery, window._ );
 			} );
 		}
 	};
 
-
 	$( document ).ready( function() {
-		$.each( window.fakerpress.fieldset.items, function( index, fieldset ) {
-			window.fakerpress.fieldset.setup( fieldset );
+		$.each( fp.fieldset.items, function( index, fieldset ) {
+			fp.fieldset.setup( fieldset );
 			fieldset.$.container.each( function( _index, container ) {
 				// We need this to avoid having a `this` variable been a HTML element
-				window.fakerpress.fieldset.update( fieldset );
+				fp.fieldset.update( fieldset );
 			} );
 		} );
+
+		$.each( fp.fields, function( key, callback ){
+			callback( window.jQuery, window._ );
+		} );
 	} );
-}( window.jQuery, window._ ) );
+
+}( window.jQuery, window._, window.fakerpress ) );

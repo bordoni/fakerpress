@@ -123,7 +123,13 @@ class HTML extends Base {
 		}
 
 		if ( ! isset( $element->attr['src'] ) ) {
-			$element->attr['src'] = $this->get_img_src( $sources );
+			$image_src = $this->get_img_src( $sources );
+			if ( is_wp_error( $image_src ) ) {
+				return $image_src;
+			}
+
+			$element->attr['src'] = $image_src;
+
 		}
 
 		$element->attr = array_filter( $element->attr );
@@ -146,6 +152,10 @@ class HTML extends Base {
 			$image = \FakerPress\Module\Attachment::instance()
 				->set( 'attachment_url', $this->generator->randomElement( $sources ) )
 				->generate()->save();
+		}
+
+		if ( is_wp_error( $image ) ) {
+			return $image;
 		}
 
 		return wp_get_attachment_url( $image );
@@ -223,6 +233,11 @@ class HTML extends Base {
 				$sources = $args->sources;
 			}
 			$element = $this->html_element_img( $element, $sources );
+
+			// When we fail to create the image we just bail.
+			if ( is_wp_error( $element ) ) {
+				return false;
+			}
 		}
 
 		$attributes = [];

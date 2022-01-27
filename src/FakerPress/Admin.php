@@ -428,7 +428,7 @@ class Admin extends Template {
 			$plugin,
 			'fakerpress-fields',
 			'fields.js',
-			[ 'jquery', 'underscore', 'fakerpress-select2', 'jquery-ui-datepicker' ],
+			[ 'jquery', 'underscore', 'fakerpress-select2', 'jquery-ui-datepicker', 'fakerpress-module' ],
 			'admin_enqueue_scripts',
 			[
 				'conditionals' => $in_plugin_callback,

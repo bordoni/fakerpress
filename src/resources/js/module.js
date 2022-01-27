@@ -1,15 +1,11 @@
-if ( 'undefined' === typeof window.fakerpress ){
-if ( 'undefined' === typeof window.fakerpress ){
-	window.fakerpress = {};
-}
+window.fakerpress = window.fakerpress || {};
 
-( function( $, _ ){
+( function( $, _, fp ){
 	'use strict';
-	// Creates a Shortcut
-	var fp = window.fakerpress;
 
-	// Setup the Selectors
-	fp._module_generator = '.fp-module-generator';
+	fp.selectors = {
+		moduleGenerator:  '.fp-module-generator',
+	};
 
 	fp.log = function ( $element, html, data, attrClass ){
 		if ( 'undefined' === typeof attrClass ){
@@ -38,7 +34,7 @@ if ( 'undefined' === typeof window.fakerpress ){
 		return $element.append( $notice );
 	};
 
-	fp.moduleGenerate = function ( $form, _POST ){
+	fp.moduleGenerate = ( $form, _POST ) => {
 		if ( 'undefined' === typeof _POST ){
 			_POST = Qs.parse( $form.serialize() );
 		}
@@ -95,9 +91,9 @@ if ( 'undefined' === typeof window.fakerpress ){
 	};
 
 	// Document Ready Actions
-	$( document ).ready( function(){
-		var $forms = $( fp._module_generator ).each( function() {
-			var $form = $( this );
+	$( document ).ready( () => {
+		const $forms = $( fp.selectors.moduleGenerator ).each( function() {
+			const $form = $( this );
 
 			$form.on( 'submit', function ( event ) {
 				fp.moduleGenerate( $form );
@@ -107,4 +103,4 @@ if ( 'undefined' === typeof window.fakerpress ){
 			} );
 		} );
 	} );
-}( jQuery, _ ) );
+}( jQuery, _, window.fakerpress ) );
