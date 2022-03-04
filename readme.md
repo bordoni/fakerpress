@@ -7,7 +7,7 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Contributors:** [bordoni](http://profiles.wordpress.org/bordoni)  
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy+content), [dummy data](http://wordpress.org/plugins/tags/dummy+data), [lorem ipsun](http://wordpress.org/plugins/tags/lorem+ipsun), [admin](http://wordpress.org/plugins/tags/admin), [exemples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [images](http://wordpress.org/plugins/tags/images), [attachments](http://wordpress.org/plugins/tags/attachments), [featured image](http://wordpress.org/plugins/tags/featured+image), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post+type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake+data), [random](http://wordpress.org/plugins/tags/random), [developer](http://wordpress.org/plugins/tags/developer), [dev](http://wordpress.org/plugins/tags/dev), [development](http://wordpress.org/plugins/tags/development), [test](http://wordpress.org/plugins/tags/test), [tests](http://wordpress.org/plugins/tags/tests)  
 **Requires at least:** 4.7  
-**Tested up to:** 5.9  
+**Tested up to:** 5.9.1  
 **Stable tag:** trunk (master)  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 **Requires PHP:** 5.6  
@@ -96,6 +96,10 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 
 ## Changelog ##
+
+### 0.5.3 &mdash; 04 of March 2022 ###
+* Fix - Ensure Select2 usage of AJAX search properly encodes on all usages props @MrMustacheMan3
+* Fix - Ensure Select2 usage of AJAX properly checks for nonces and permissions props @MrMustacheMan3
 
 ### 0.5.2 &mdash; 27 of January 2022 ###
 * Feature: Proper changelog page for users trying to figure out what has changed in the latest version of FakerPress.
