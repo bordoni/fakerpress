@@ -45,6 +45,12 @@ class Ajax {
 		// Here we have a Secure Call
 		$module_class_name = '\FakerPress\Module\\' . rtrim( ucfirst( $view ), 's' );
 		$module = call_user_func_array( [ $module_class_name, 'instance' ], [] );
+		$permission_required = $module::get_permission_required();
+
+		if ( current_user_can( $permission_required ) ) {
+			$response->message = sprintf( __( 'Your user needs the "%s" permission to execute the generation for this module.', 'fakerpress' ), $permission_required );
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
 
 		$response->allowed = $module->get_amount_allowed();
 		$response->offset = absint( fp_get_global_var( INPUT_POST, [ 'offset' ], FILTER_UNSAFE_RAW ) );
@@ -108,10 +114,21 @@ class Ajax {
 				'exclude' => isset( $_POST['exclude'] ) ? $_POST['exclude'] : [],
 				'page' => absint( isset( $_POST['page'] ) ? $_POST['page'] : 0 ),
 				'page_limit' => absint( isset( $_POST['page_limit'] ) ? $_POST['page_limit'] : 10 ),
+				'nonce' => fp_array_get( $_POST, [ 'nonce' ], FILTER_UNSAFE_RAW ),
 			]
 		);
 
-		if ( is_null( $request->post_type ) || empty( $request->post_type ) ){
+		if ( ! wp_verify_nonce( $request->nonce, Plugin::$slug . '-select-search_terms' ) ) {
+			$response->message = esc_attr__( 'Invalid nonce verification', 'fakerpress' );
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
+
+		if ( ! current_user_can( 'publish_posts' ) ) {
+			$response->message = esc_attr__( 'Your user needs the "publish_posts" permissions to search for terms.', 'fakerpress' );
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
+
+		if ( empty( $request->post_type ) ){
 			$request->post_type = get_post_types( [ 'public' => true ] );
 		}
 
@@ -171,6 +188,16 @@ class Ajax {
 
 		$request = (object) $_POST;
 
+		if ( empty( $request->nonce ) || ! wp_verify_nonce( $request->nonce, Plugin::$slug . '-select2-WP_Query' ) ) {
+			$response->message = esc_attr__( 'Invalid nonce verification', 'fakerpress' );
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
+
+		if ( ! current_user_can( 'publish_posts' ) ) {
+			$response->message = esc_attr__( 'Your user needs the "publish_posts" permissions to use WP_Query.', 'fakerpress' );
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
+
 		if ( isset( $request->query['post_type'] ) && ! is_array( $request->query['post_type'] ) ){
 			$request->query['post_type'] = array_map( 'trim', (array) explode( ',', $request->query['post_type'] ) );
 		}
@@ -215,8 +242,19 @@ class Ajax {
 				'search' => isset( $_POST['search'] ) ? $_POST['search'] : '',
 				'page' => absint( isset( $_POST['page'] ) ? $_POST['page'] : 0 ),
 				'page_limit' => absint( isset( $_POST['page_limit'] ) ? $_POST['page_limit'] : 10 ),
+				'nonce' => fp_array_get( $_POST, [ 'nonce' ], FILTER_UNSAFE_RAW ),
 			]
 		);
+
+		if ( ! wp_verify_nonce( $request->nonce, Plugin::$slug . '-select2-search_authors' ) ) {
+			$response->message = esc_attr__( 'Invalid nonce verification', 'fakerpress' );
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
+
+		if ( ! current_user_can( 'publish_posts' ) ) {
+			$response->message = esc_attr__( 'Your user needs the "publish_posts" permissions to search for authors.', 'fakerpress' );
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
 
 		$response->status  = true;
 		$response->message = __( 'Request successful', 'fakerpress' );

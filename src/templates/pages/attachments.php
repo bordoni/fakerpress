@@ -39,6 +39,7 @@ $fields[] = new Field(
 		'id' => 'post_parent',
 		'multiple' => true,
 		'data-source' => 'WP_Query',
+		'data-nonce' => wp_create_nonce( Plugin::$slug . '-select2-WP_Query' ),
 	],
 	[
 		'label' => __( 'Parents', 'fakerpress' ),

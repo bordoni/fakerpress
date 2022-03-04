@@ -28,6 +28,17 @@ class User extends Base {
 		add_filter( "fakerpress.module.{$this->slug}.save", [ $this, 'do_save' ], 10, 3 );
 	}
 
+	/**
+	 * To use the User Module the current user must have at least the `create_users` permission.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_permission_required() {
+		return 'create_users';
+	}
+
 	public function format_link( $id ) {
 		return '<a href="' . esc_url( get_edit_user_link( $id ) ) . '">' . absint( $id ) . '</a>';
 	}

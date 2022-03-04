@@ -27,6 +27,17 @@ class Term extends Base {
 		add_filter( "fakerpress.module.{$this->slug}.save", [ $this, 'do_save' ], 10, 3 );
 	}
 
+	/**
+	 * To use the User Module the current user must have at least the `create_users` permission.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_permission_required() {
+		return 'publish_posts';
+	}
+
 	public function format_link( $id ) {
 		return absint( $id );
 	}

@@ -34,6 +34,17 @@ class Attachment extends Base {
 	}
 
 	/**
+	 * To use the Attachment Module the current user must have at least the `upload_files` permission.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_permission_required() {
+		return 'upload_files';
+	}
+
+	/**
 	 * Handle the downloads of Attachments given a URL and Post Parent ID, which will default to 0.
 	 * Currently only support images.
 	 *
@@ -58,7 +69,7 @@ class Attachment extends Base {
 		$timeout = apply_filters( 'fakerpress.module.attachment.download_url_timeout', 10, $url, $post_parent_id );
 
 		// Download temp file
-		$temporary_file = download_url( $url, 10 );
+		$temporary_file = download_url( $url, $timeout );
 
 		// Check for download errors if there are error unlink the temp file name
 		if ( is_wp_error( $temporary_file ) ) {

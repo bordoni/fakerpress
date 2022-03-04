@@ -100,6 +100,16 @@ abstract class Base {
 	 */
 	abstract public function init();
 
+	/**
+	 * Any module requires by default the publish_posts permissions.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_permission_required() {
+		return 'publish_posts';
+	}
 
 	/**
 	 * Amount of instaces of the module that are allowed to be generated in one single request

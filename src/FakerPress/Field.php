@@ -912,6 +912,7 @@ class Field {
 		$terms->multiple = true;
 		$terms->description = esc_html__( 'If you do not select any, the plugin will choose from all the existing terms.', 'fakerpress' );
 		$terms->{'data-source'} = 'search_terms';
+		$terms->{'data-nonce'} = wp_create_nonce( Plugin::$slug . '-select2-search_terms' );
 
 		$terms->placeholder = esc_attr__( 'Which terms can be used', 'fakerpress' );
 

@@ -194,6 +194,7 @@
 
 			if ( $select.is( '[data-source]' ) ){
 				var source = $select.data( 'source' );
+				var nonce = $select.data( 'nonce' );
 
 				args.data = { results: [] };
 				args.allowClear = true;
@@ -228,6 +229,7 @@
 
 						return {
 							action: 'fakerpress.select2-' + source,
+							nonce: nonce,
 							query: {
 								s: search,
 								posts_per_page: 10,
@@ -242,6 +244,7 @@
 						return {
 							action: 'fakerpress.select2-' + source,
 							search: search,
+							nonce: nonce,
 							page: page,
 							page_limit: 25,
 							taxonomies: $container.find( '.fp-taxonomies' ).select2( 'val' ),

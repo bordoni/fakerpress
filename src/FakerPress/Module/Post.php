@@ -27,6 +27,17 @@ class Post extends Base {
 	}
 
 	/**
+	 * To use the Posts Module the current user must have at least the `edit_posts` permission.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_permission_required() {
+		return 'publish_posts';
+	}
+
+	/**
 	 * Fetches all the FakerPress related Posts
 	 * @return array IDs of the Posts
 	 */
