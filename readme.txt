@@ -101,8 +101,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 = 0.5.3 &mdash; 04 of March 2022 =
 
-* Fix - Ensure Select2 usage of AJAX search properly encodes on all usages props @MrMustacheMan3
-* Fix - Ensure Select2 usage of AJAX properly checks for nonces and permissions props @MrMustacheMan3
+* Fix - Ensure Select2 usage of AJAX search properly encodes on all usages props @TheMMMdev
+* Fix - Ensure Select2 usage of AJAX properly checks for nonces and permissions props @TheMMMdev
 
 = 0.5.2 &mdash; 27 of January 2022 =
 
