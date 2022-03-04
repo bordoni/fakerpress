@@ -47,7 +47,7 @@ class Ajax {
 		$module = call_user_func_array( [ $module_class_name, 'instance' ], [] );
 		$permission_required = $module::get_permission_required();
 
-		if ( current_user_can( $permission_required ) ) {
+		if ( ! current_user_can( $permission_required ) ) {
 			$response->message = sprintf( __( 'Your user needs the "%s" permission to execute the generation for this module.', 'fakerpress' ), $permission_required );
 			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
 		}
