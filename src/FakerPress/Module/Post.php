@@ -1,109 +1,108 @@
 <?php
+
 namespace FakerPress\Module;
+
 use FakerPress\Admin;
-use FakerPress\Variable;
 use FakerPress\Plugin;
 use Faker;
 use FakerPress;
+use function FakerPress\make;
 
-class Post extends Base {
-
-	public $dependencies = [
+class Post extends Abstract_Module {
+	/**
+	 * @inheritDoc
+	 */
+	protected $dependencies = [
 		Faker\Provider\Lorem::class,
 		Faker\Provider\DateTime::class,
 		FakerPress\Provider\HTML::class,
 	];
 
-	public $provider = FakerPress\Provider\WP_Post::class;
+	/**
+	 * @inheritDoc
+	 */
+	protected $provider_class = FakerPress\Provider\WP_Post::class;
 
-	public function init() {
-		$this->page = (object) [
-			'menu' => esc_attr__( 'Posts', 'fakerpress' ),
-			'title' => esc_attr__( 'Generate Posts', 'fakerpress' ),
-			'view' => 'posts',
-		];
-
-		add_filter( "fakerpress.module.{$this->slug}.save", [ $this, 'do_save' ], 10, 4 );
+	/**
+	 * @inheritDoc
+	 */
+	public static function get_slug(): string {
+		return 'posts';
 	}
 
 	/**
-	 * To use the Posts Module the current user must have at least the `edit_posts` permission.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
+	 * @inheritDoc
 	 */
-	public static function get_permission_required() {
-		return 'publish_posts';
+	public function hook(): void {
+
 	}
 
 	/**
-	 * Fetches all the FakerPress related Posts
-	 * @return array IDs of the Posts
+	 * @inheritDoc
 	 */
-	public static function fetch( $overwrite = [] ) {
+	public static function fetch( array $args = [] ): array {
 		$defaults = [
-			'post_type' => 'any',
-			'post_status' => 'any',
-			'nopaging' => true,
-			'posts_per_page' => -1,
-			'fields' => 'ids',
-			'meta_query' => [
+			'post_type'      => 'any',
+			'post_status'    => 'any',
+			'nopaging'       => true,
+			'posts_per_page' => - 1,
+			'fields'         => 'ids',
+			'meta_query'     => [
 				[
-					'key' => self::$flag,
+					'key'   => static::get_flag(),
 					'value' => true,
-					'type' => 'BINARY',
+					'type'  => 'BINARY',
 				],
 			],
 		];
 
-		$args = wp_parse_args( $overwrite, $defaults );
+		$args        = wp_parse_args( $args, $defaults );
 		$query_posts = new \WP_Query( $args );
 
 		return array_map( 'absint', $query_posts->posts );
 	}
 
 	/**
-	 * Use this method to prevent excluding something that was not configured by FakerPress
-	 *
-	 * @param  array|int|\WP_Post $post The ID for the Post or the Object
-	 * @return bool
+	 * @inheritDoc
 	 */
-	public static function delete( $post ) {
-		if ( is_array( $post ) ) {
+	public static function delete( $item ) {
+		if ( is_array( $item ) ) {
 			$deleted = [];
 
-			foreach ( $post as $id ) {
+			foreach ( $item as $id ) {
 				$id = $id instanceof \WP_Post ? $id->ID : $id;
 
 				if ( ! is_numeric( $id ) ) {
 					continue;
 				}
 
-				$deleted[ $id ] = self::delete( $id );
+				$deleted[ $id ] = static::delete( $id );
 			}
 
 			return $deleted;
 		}
 
-		if ( is_numeric( $post ) ) {
-			$post = \WP_Post::get_instance( $post );
+		if ( is_numeric( $item ) ) {
+			$item = \WP_Post::get_instance( $item );
 		}
 
-		if ( ! $post instanceof \WP_Post ) {
+		if ( ! $item instanceof \WP_Post ) {
 			return false;
 		}
 
-		$flag = (bool) get_post_meta( $post->ID, self::$flag, true );
+		$flag = (bool) get_post_meta( $item->ID, static::get_flag(), true );
 
 		if ( true !== $flag ) {
 			return false;
 		}
 
-		return wp_delete_post( $post->ID, true );
+		return wp_delete_post( $item->ID, true );
 	}
 
-	public function do_save( $return_val, $data, $module ) {
+	/**
+	 * @inheritDoc
+	 */
+	public function filter_save_response( $response, array $data, Abstract_Module $module ) {
 		$post_id = wp_insert_post( $data );
 
 		if ( ! is_numeric( $post_id ) ) {
@@ -111,21 +110,27 @@ class Post extends Base {
 		}
 
 		// Flag the Object as FakerPress
-		update_post_meta( $post_id, self::$flag, 1 );
+		update_post_meta( $post_id, static::get_flag(), 1 );
 
 		return $post_id;
 	}
 
-	public function format_link( $id ) {
-		return '<a href="' . esc_url( get_edit_post_link( $id ) ) . '">' . absint( $id ) . '</a>';
-	}
-
+	/**
+	 * @since TBD
+	 *
+	 * @throws \Exception
+	 *
+	 * @param $request
+	 * @param $qty
+	 *
+	 * @return array|string
+	 */
 	public function parse_request( $qty, $request = [] ) {
 		if ( is_null( $qty ) ) {
 			$qty = fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW );
 			$min = absint( $qty['min'] );
 			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
-			$qty = $this->faker->numberBetween( $min, $max );
+			$qty = $this->get_faker()->numberBetween( $min, $max );
 		}
 
 		if ( 0 === $qty ) {
@@ -153,8 +158,8 @@ class Post extends Base {
 		$post_types = array_intersect( get_post_types( [ 'public' => true ] ), $post_types );
 
 		// Fetch Post Content
-		$post_content_size = fp_array_get( $request, [ 'content_size' ], FILTER_UNSAFE_RAW, [ 5, 15 ] );
-		$post_content_use_html = fp_array_get( $request, [ 'use_html' ], FILTER_SANITIZE_NUMBER_INT, 0 ) === 1;
+		$post_content_size      = fp_array_get( $request, [ 'content_size' ], FILTER_UNSAFE_RAW, [ 5, 15 ] );
+		$post_content_use_html  = fp_array_get( $request, [ 'use_html' ], FILTER_SANITIZE_NUMBER_INT, 0 ) === 1;
 		$post_content_html_tags = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'html_tags' ], FILTER_SANITIZE_STRING ) ) );
 
 		// Fetch Post Excerpt.
@@ -174,7 +179,7 @@ class Post extends Base {
 
 		$results = [];
 
-		for ( $i = 0; $i < $qty; $i++ ) {
+		for ( $i = 0; $i < $qty; $i ++ ) {
 			$this->set( 'post_title' );
 			$this->set( 'post_status', 'publish' );
 			$this->set( 'post_date', $date );
@@ -183,7 +188,7 @@ class Post extends Base {
 				'post_content',
 				$post_content_use_html,
 				[
-					'qty' => $post_content_size,
+					'qty'      => $post_content_size,
 					'elements' => $post_content_html_tags,
 					'sources'  => $images_origin,
 				]
@@ -196,12 +201,12 @@ class Post extends Base {
 			$this->set( 'tax_input', $taxonomies_configuration );
 
 			$generated = $this->generate();
-			$post_id = $generated->save();
+			$post_id   = $generated->save();
 
 			if ( $post_id && is_numeric( $post_id ) ) {
 				foreach ( $metas as $meta_index => $meta ) {
 					if ( isset( $meta['type'] ) && isset( $meta['name'] ) ) {
-						Meta::instance()->object( $post_id )->generate( $meta['type'], $meta['name'], $meta )->save();
+						make( Meta::class )->object( $post_id )->generate( $meta['type'], $meta['name'], $meta )->save();
 					}
 				}
 			}
@@ -212,31 +217,5 @@ class Post extends Base {
 		$results = array_filter( (array) $results, 'absint' );
 
 		return $results;
-	}
-
-	public function _action_parse_request( $view ) {
-		if ( 'post' !== Admin::$request_method || empty( $_POST ) ) {
-			return false;
-		}
-
-		$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
-
-		if ( ! check_admin_referer( $nonce_slug ) ) {
-			return false;
-		}
-
-		// After this point we are safe to say that we have a good POST request
-		$results = $this->parse_request( null, fp_get_global_var( INPUT_POST, [ Plugin::$slug ], FILTER_UNSAFE_RAW ) );
-
-		if ( ! empty( $results ) ) {
-			return Admin::add_message(
-				sprintf(
-					__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),
-					count( $results ),
-					_n( 'post', 'posts', count( $results ), 'fakerpress' ),
-					implode( ', ', array_map( [ $this, 'format_link' ], $results ) )
-				)
-			);
-		}
 	}
 }

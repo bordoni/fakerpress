@@ -1,10 +1,4 @@
 <?php
-// Fetch view from Template Vars
-$view = $this->get( 'view' );
-
-if ( ! $view ) {
-	return;
-}
 $only_version = fp_get_request_var( 'version', null );
 
 $readme = include FakerPress\Plugin::path( 'src/data/readme.php' );

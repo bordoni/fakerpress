@@ -1,6 +1,9 @@
 <?php
 namespace FakerPress;
 
+use FakerPress\Module\Factory;
+use FakerPress\Admin\View\Factory as View_Factory;
+
 class Ajax {
 
 	public function __construct() {
@@ -34,7 +37,11 @@ class Ajax {
 			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
 		}
 
-		$view = fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'view' ], FILTER_SANITIZE_STRING );
+		$view = get_request_var( [ Plugin::$slug, 'view' ] );
+		if ( empty( $view ) ) {
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
+
 		$nonce_slug = Plugin::$slug . '.request.' . $view;
 
 		if ( ! check_admin_referer( $nonce_slug ) ) {
@@ -43,8 +50,11 @@ class Ajax {
 		}
 
 		// Here we have a Secure Call
-		$module_class_name = '\FakerPress\Module\\' . rtrim( ucfirst( $view ), 's' );
-		$module = call_user_func_array( [ $module_class_name, 'instance' ], [] );
+		$module = make( Factory::class )->get( $view );
+		if ( empty( $module ) ) {
+			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		}
+
 		$permission_required = $module::get_permission_required();
 
 		if ( ! current_user_can( $permission_required ) ) {
@@ -62,7 +72,7 @@ class Ajax {
 			if ( is_array( $qty ) ) {
 				$min = absint( $qty['min'] );
 				$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
-				$qty = $module->faker->numberBetween( $min, $max );
+				$qty = $module->get_faker()->numberBetween( $min, $max );
 			}
 			$response->total = $qty;
 		}
@@ -79,14 +89,16 @@ class Ajax {
 			$response->is_capped = false;
 		}
 
-		$results = $module->parse_request( $qty, fp_get_global_var( INPUT_POST, [ Plugin::$slug ], FILTER_UNSAFE_RAW ) );
+		$data = get_request_var( 'fakerpress', [] );
+
+		$results = $module->parse_request( $qty, $data );
 		$response->offset += $qty;
 
 		if ( is_string( $results ) ){
 			$response->message = $results;
 		} else {
 			$response->status = true;
-			$response->message = implode( ', ', array_map( [ $module, 'format_link' ], $results ) );
+			$response->message = implode( ', ', array_map( [ make( View_Factory::class )->get( $view ), 'format_link' ], $results ) );
 			$response->results = $results;
 		}
 

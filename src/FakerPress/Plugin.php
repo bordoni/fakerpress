@@ -1,51 +1,36 @@
 <?php
 namespace FakerPress;
 
-class Plugin {
+class Plugin extends \tad_DI52_ServiceProvider {
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
 	 * @since 0.5.1
-	 * @var string
-	 */
-	const VERSION = '0.5.2';
-
-	/**
-	 * Plugin version, used for cache-busting of style and script file references.
-	 *
-	 * @since 0.1.0
-	 * @deprecated 0.5.1
 	 *
 	 * @var string
 	 */
-	const version = self::VERSION;
+	const VERSION = '0.6.0';
 
 	/**
-	 * A static variable that holds a dynamic instance of the class
+	 * @since 0.6.0
 	 *
-	 * @since 0.1.0
-	 *
-	 * @var null|object The dynamic version of this class
+	 * @var string Plugin Directory.
 	 */
-	public static $instance = null;
+	public $plugin_dir;
 
 	/**
-	 * A static variable that holds a dynamic instance of the class of the admin
+	 * @since 0.6.0
 	 *
-	 * @since 0.1.0
-	 *
-	 * @var null|object The dynamic version of this class
+	 * @var string Plugin path.
 	 */
-	public static $admin = null;
+	public $plugin_path;
 
 	/**
-	 * A static variable that holds a dynamic instance of the class of the AJAX methods
+	 * @since 0.6.0
 	 *
-	 * @since 0.2.0
-	 *
-	 * @var null|object The dynamic version of this class
+	 * @var string Plugin URL.
 	 */
-	public static $ajax = null;
+	public $plugin_url;
 
 	/**
 	 * Variable holding the folder name of the plugin
@@ -74,7 +59,6 @@ class Plugin {
 	 */
 	public static $_file = __FP_FILE__;
 
-
 	/**
 	 * The Plugin external website base domain
 	 *
@@ -82,7 +66,76 @@ class Plugin {
 	 *
 	 * @var string
 	 */
-	public static $_ext_domain = 'http://fakerpress.com';
+	public static $_ext_domain = 'https://fakerpress.com';
+
+	/**
+	 * Set up the Plugin's properties.
+	 *
+	 * This always executes even if the required plugins are not present.
+	 *
+	 * @since TBD
+	 */
+	public function register() {
+		$this->plugin_path = trailingslashit( dirname( static::$_file ) );
+		$this->plugin_dir  = trailingslashit( basename( $this->plugin_path ) );
+		$this->plugin_url  = plugins_url( $this->plugin_dir, $this->plugin_path );
+
+		// Register this provider as the main one and use a bunch of aliases.
+		$this->container->singleton( static::class, $this );
+
+		$this->bind_implementations();
+		$this->register_hooks();
+		$this->register_assets();
+
+		/**
+		 * Triggers an action for loading of functionality.
+		 *
+		 * @since 0.6.0
+		 */
+		do_action( 'fakerpress.plugin_loaded' );
+	}
+
+	/**
+	 * Register the implementations of the plugin with the container.
+	 *
+	 * @since TBD
+	 */
+	protected function bind_implementations() {
+		$this->container->singleton( Admin::class, Admin::class );
+		$this->container->singleton( Admin\Menu::class, Admin\Menu::class );
+		$this->container->singleton( Ajax::class, Ajax::class );
+		$this->container->singleton( Utils\Assets::class, Utils\Assets::class );
+		$this->container->singleton( Utils::class, Utils::class );
+
+		// Register all the Service Providers.
+		$this->container->register( Module\Factory::class );
+		$this->container->register( Admin\View\Factory::class );
+	}
+
+	/**
+	 * Registers the provider handling all the 1st level filters and actions for Tickets.
+	 *
+	 * @since TBD
+	 */
+	protected function register_assets() {
+		$assets = new Assets( $this->container );
+		$assets->register();
+
+		$this->container->singleton( Assets::class, $assets );
+	}
+
+	/**
+	 * Registers the provider handling all the 1st level filters and actions for Tickets.
+	 *
+	 * @since TBD
+	 */
+	protected function register_hooks() {
+		$hooks = new Hooks( $this->container );
+		$hooks->register();
+
+		// Allow Hooks to be removed, by having them registered to the container
+		$this->container->singleton( Hooks::class, $hooks );
+	}
 
 	/**
 	 * Return a Path relative to the plugin root
@@ -93,10 +146,10 @@ class Plugin {
 	 *
 	 * @param  string $append A string to be appended to the root path
 	 *
-	 * @return string         The path after been appended by the variable
+	 * @return string         The path after being appended by the variable
 	 */
 	public static function path( $append = '' ) {
-		return (string) plugin_dir_path( self::$_file ) . str_replace( '/', DIRECTORY_SEPARATOR, $append );
+		return (string) make( static::class )->plugin_path . str_replace( '/', DIRECTORY_SEPARATOR, $append );
 	}
 
 	/**
@@ -108,7 +161,7 @@ class Plugin {
 	 * @return string         The url to the file
 	 */
 	public static function url( $file = '' ) {
-		return (string) plugins_url( $file, self::basename() );
+		return (string) make( static::class )->plugin_url .  $file;
 	}
 
 	/**
@@ -130,7 +183,7 @@ class Plugin {
 		 * Define the array of defaults
 		 */
 		$defaults = [
-			'page' => self::$slug,
+			'page' => static::$slug,
 		];
 
 		/**
@@ -151,38 +204,18 @@ class Plugin {
 	 * @return string         The url the external website with the appended $path
 	 */
 	public static function ext_site_url( $path = '/' ) {
-		return esc_url_raw( self::$_ext_domain . ( ! empty( $path ) ? $path : '/' ), [ 'http', 'https' ] );
-	}
-
-	/**
-	 * Return the plugin basename.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @uses plugin_basename
-	 *
-	 * @return string plugin_basename from __FILE__
-	 */
-	public static function basename() {
-		$_link = WP_PLUGIN_DIR . '/' . self::$folder;
-		$_file = self::$_file;
-
-		if ( is_link( $_link ) && readlink( $_link ) == dirname( $_file ) ) {
-			$basename = explode( '/', $_file );
-			$_file = $_link . '/' . end( $basename );
-		}
-		return (string) plugin_basename( $_file );
+		return esc_url_raw( static::$_ext_domain . ( ! empty( $path ) ? $path : '/' ), [ 'http', 'https' ] );
 	}
 
 	public static function get( $name, $default = false ) {
-		$options = self::all();
+		$options = static::all();
 		$value = fp_array_get( $options, $name, null, $default );
 
 		return $value;
 	}
 
 	public static function update( $name = null, $value = false ) {
-		$options = self::all();
+		$options = static::all();
 		$opts = [];
 
 		foreach ( (array) $name as $k => $index ) {
@@ -202,7 +235,7 @@ class Plugin {
 		}
 		$opts[ $k ] = $value;
 
-		return update_option( self::$slug . '-plugin-options', $options );
+		return update_option( static::$slug . '-plugin-options', $options );
 	}
 
 	public static function remove( $name = null ) {
@@ -211,16 +244,6 @@ class Plugin {
 
 	public static function all() {
 		$defaults = [];
-		return get_option( self::$slug . '-plugin-options', $defaults );
-	}
-
-	/**
-	 * The initialization of the static and dynamic variables
-	 *
-	 * @since 0.1.0
-	 */
-	public function __construct() {
-		// Setup the global version of the class, this only runs once...
-		null === self::$instance && self::$instance = &$this;
+		return get_option( static::$slug . '-plugin-options', $defaults );
 	}
 }

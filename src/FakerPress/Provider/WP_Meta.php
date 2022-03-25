@@ -4,6 +4,7 @@ namespace FakerPress\Provider;
 use Faker\Provider\Base;
 use FakerPress;
 use FakerPress\Utils;
+use function FakerPress\make;
 
 class WP_Meta extends Base {
 	public $meta_object = [
@@ -79,7 +80,7 @@ class WP_Meta extends Base {
 		$qty = $this->meta_parse_qty( $qty );
 		$sentence = $this->generator->optional( (int) $weight, '' )->sentence( $qty );
 
-		return Utils::instance()->remove_sentence_period( $sentence );
+		return make( Utils::class )->remove_sentence_period( $sentence );
 	}
 
 	public function meta_type_text( $type = 'sentences', $qty = 3, $separator = "\r\n\r\n", $weight = 50 ) {
@@ -140,7 +141,7 @@ class WP_Meta extends Base {
 
 		$provider = $this->generator->randomElement( $providers );
 
-		$attachment = FakerPress\Module\Attachment::instance();
+		$attachment = make( FakerPress\Module\Attachment::class );
 
 		$arguments = [];
 

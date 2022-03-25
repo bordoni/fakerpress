@@ -1,13 +1,11 @@
 <?php
 namespace FakerPress;
+use FakerPress\Admin\View\Abstract_View;
 use FakerPress\Fields;
 
-// Fetch view from Template Vars
-$view = $this->get( 'view' );
-
-if ( ! $view ) {
-	return;
-}
+/**
+ * @var Abstract_View $this The instance of the Template that we are using to build this view.
+ */
 
 $fields[] = new Field(
 	'text',
@@ -17,7 +15,7 @@ $fields[] = new Field(
 	],
 	[
 		'label' => __( 'Erase faked data', 'fakerpress' ),
-		'description' => __( 'To erase all data generated type "<b>Let it Go!</b>".', 'fakerpress' ),
+		'description' => __( 'To erase all data generated type "<b>Let it Go!</b>", <i>please back up your database before you proceed!</i>', 'fakerpress' ),
 		'actions' => [
 			'delete' => __( 'Delete!', 'fakerpress' ),
 		],
@@ -26,10 +24,10 @@ $fields[] = new Field(
 
 ?>
 <div class='wrap'>
-	<h2><?php echo esc_attr( $view->title ); ?></h2>
+	<h2><?php echo esc_attr( $this->get_title() ); ?></h2>
 
 	<form method='post'>
-		<?php wp_nonce_field( Plugin::$slug . '.request.' . $view->slug . ( isset( $view->action ) ? '.' . $view->action : '' ) ); ?>
+		<?php wp_nonce_field( Plugin::$slug . '.request.' . $this::get_slug() ); ?>
 		<table class="form-table" style="display: table;">
 			<tbody>
 				<?php foreach ( $fields as $field ) : ?>

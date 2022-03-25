@@ -1,6 +1,8 @@
 <?php
 namespace FakerPress;
 
+use function FakerPress\is_truthy;
+
 class Template {
 	/**
 	 * The folders into which we will look for the template.
@@ -132,7 +134,7 @@ class Template {
 	 * @return self
 	 */
 	public function set_template_folder_lookup( $value = true ) {
-		$this->template_folder_lookup = fp_is_truthy( $value );
+		$this->template_folder_lookup = is_truthy( $value );
 
 		return $this;
 	}
@@ -164,7 +166,7 @@ class Template {
 	 */
 	public function set_template_context_extract( $value = false ) {
 		// Cast as bool and save
-		$this->template_context_extract = fp_is_truthy( $value );
+		$this->template_context_extract = is_truthy( $value );
 
 		return $this;
 	}

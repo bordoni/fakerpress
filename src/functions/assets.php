@@ -1,10 +1,11 @@
 <?php
+namespace FakerPress;
+
 /**
- * Shortcut for FakerPress\Assets::register(), include a single asset
+ * Shortcut for FakerPress\Utils\Assets::register(), include a single asset
  *
  * @since 0.5.1
  *
- * @param object            $origin    The main object for the plugin you are enqueueing the asset for.
  * @param string            $slug      Slug to save the asset - passes through `sanitize_title_with_dashes()`.
  * @param string            $file      The asset file to load (CSS or JS), including non-minified file extension.
  * @param array             $deps      The list of dependencies.
@@ -14,8 +15,9 @@
  *
  * @return object|false     The asset that got registered or false on error.
  */
-function fp_asset( $origin, $slug, $file, $deps = [], $action = null, $arguments = [] ) {
-	$assets = FakerPress\Assets::instance();
+function register_asset( $slug, $file, $deps = [], $action = null, $arguments = [] ) {
+	$origin = make( Plugin::class );
+	$assets = make( Utils\Assets::class );
 
 	return $assets->register( $origin, $slug, $file, $deps, $action, $arguments );
 }
@@ -27,9 +29,8 @@ function fp_asset( $origin, $slug, $file, $deps = [], $action = null, $arguments
  *
  * @param string|array $slug Slug to enqueue
  */
-function fp_asset_enqueue( $slug ) {
-	/** @var Tribe__Assets $assets */
-	$assets = FakerPress\Assets::instance();
+function enqueue_asset( $slug ) {
+	$assets = make( Utils\Assets::class );
 
 	$assets->enqueue( $slug );
 }
@@ -41,8 +42,7 @@ function fp_asset_enqueue( $slug ) {
  *
  * @param string|array  $group  Which group(s) should be enqueued.
  */
-function fp_asset_enqueue_group( $group ) {
-	$assets = FakerPress\Assets::instance();
-
+function enqueue_asset_group( $group ) {
+	$assets = make( Utils\Assets::class );
 	$assets->enqueue_group( $group );
 }
