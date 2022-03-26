@@ -8,6 +8,7 @@ use FakerPress\Module\Post;
 use FakerPress\Module\Term;
 use FakerPress\Module\User;
 use FakerPress\Plugin;
+use function FakerPress\get_request_var;
 use function FakerPress\make;
 
 /**
@@ -84,8 +85,8 @@ class Settings_View extends Abstract_View {
 		}
 
 		// After this point we are safe to say that we have a good POST request
-		$erase_intention = is_string( fp_get_global_var( INPUT_POST, [ 'fakerpress', 'actions', 'delete' ], FILTER_UNSAFE_RAW ) );
-		$erase_check     = in_array( strtolower( fp_get_global_var( INPUT_POST, [ 'fakerpress', 'erase_phrase' ], FILTER_SANITIZE_STRING ) ), [
+		$erase_intention = is_string( get_request_var( [ 'fakerpress', 'actions', 'delete' ] ) );
+		$erase_check     = in_array( strtolower( get_request_var( [ 'fakerpress', 'erase_phrase' ] ) ), [
 			'let it go',
 			'let it go!'
 		] );

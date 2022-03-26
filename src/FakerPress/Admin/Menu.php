@@ -25,6 +25,13 @@ class Menu {
 	 */
 	protected static $items = [];
 
+	/**
+	 * Determines if the list of menus needs sorting.
+	 *
+	 * @since 0.6.0
+	 *
+	 * @var bool
+	 */
 	protected static $needs_sorting = false;
 
 	/**
@@ -66,7 +73,17 @@ class Menu {
 		static::$needs_sorting = true;
 	}
 
-	public function update( string $slug, $update_with ) {
+	/**
+	 * Given a slug updates that menu object with the new variables.
+	 *
+	 * @since 0.6.0
+	 *
+	 * @param string $slug
+	 * @param array  $update_with
+	 *
+	 * @return bool
+	 */
+	public function update( string $slug, array $update_with ) {
 		$menu = $this->get( $slug );
 
 		if ( empty( $menu ) ) {
@@ -80,15 +97,31 @@ class Menu {
 		return true;
 	}
 
-	public function get_all() {
+	/**
+	 * Gets all the menu items sorted by their priority.
+	 *
+	 * @since 0.6.0
+	 *
+	 * @return array
+	 */
+	public function get_all(): array {
 		if ( static::$needs_sorting ) {
-			uasort( static::$items, 'fp_sort_by_priority' );
+			uasort( static::$items, 'FakerPress\sort_by_priority' );
 			static::$needs_sorting = false;
 		}
 
 		return static::$items;
 	}
 
+	/**
+	 * Gets a specific item from the menu, using its slug.
+	 *
+	 * @since 0.6.0
+	 *
+	 * @param string $slug
+	 *
+	 * @return object|null
+	 */
 	public function get( string $slug ) {
 		$all = $this->get_all();
 
@@ -170,6 +203,16 @@ class Menu {
 		}
 	}
 
+	/**
+	 * Properly sets the current screen, this is a hacky solution because of how poorly WordPress handles Admin menus not
+	 * using the page param.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Screen $screen Which screen are we in?
+	 *
+	 * @return void
+	 */
 	public function correctly_set_current_screen( $screen ) {
 		$view = make( View_Factory::class )->get_current_view();
 		if ( ! $view ) {

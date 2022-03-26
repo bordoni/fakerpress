@@ -7,6 +7,9 @@ use FakerPress\Utils;
 use Faker;
 use FakerPress;
 use function FakerPress\make;
+use function FakerPress\get;
+use function FakerPress\get_request_var;
+use function FakerPress\is_truthy;
 
 class Comment extends Abstract_Module {
 	/**
@@ -118,22 +121,22 @@ class Comment extends Abstract_Module {
 
 	public function parse_request( $qty, $request = [] ) {
 		if ( is_null( $qty ) ) {
-			$qty = make( Utils::class )->get_qty_from_range( fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW ) );
+			$qty = make( Utils::class )->get_qty_from_range( get_request_var( [ Plugin::$slug, 'qty' ] ) );
 		}
 
 		if ( 0 === $qty ) {
 			return esc_attr__( 'Zero is not a good number of comments to fake...', 'fakerpress' );
 		}
 
-		$comment_content_size      = fp_array_get( $request, [ 'content_size' ], FILTER_UNSAFE_RAW, [ 1, 5 ] );
-		$comment_content_use_html  = make( Utils::class )->is_truthy( fp_array_get( $request, [ 'use_html' ], FILTER_SANITIZE_STRING, 'off' ) );
-		$comment_content_html_tags = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'html_tags' ], FILTER_SANITIZE_STRING ) ) );
-		$comment_type              = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'type' ], FILTER_SANITIZE_STRING ) ) );
-		$post_types                = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'post_types' ], FILTER_SANITIZE_STRING ) ) );
+		$comment_content_size      = get( $request, 'content_size', [ 1, 5 ] );
+		$comment_content_use_html  = is_truthy( get( $request, 'use_html', 'off' ) );
+		$comment_content_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags' ) ) );
+		$comment_type              = array_map( 'trim', explode( ',', get( $request, 'type' ) ) );
+		$post_types                = array_map( 'trim', explode( ',', get( $request, 'post_types' ) ) );
 
-		$min_date = fp_array_get( $request, [ 'interval_date', 'min' ] );
-		$max_date = fp_array_get( $request, [ 'interval_date', 'max' ] );
-		$metas    = fp_array_get( $request, [ 'meta' ], FILTER_UNSAFE_RAW );
+		$min_date = get( $request, [ 'interval_date', 'min' ] );
+		$max_date = get( $request, [ 'interval_date', 'max' ] );
+		$metas    = get( $request, 'meta', [] );
 
 		$results = [];
 

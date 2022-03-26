@@ -1,6 +1,8 @@
 <?php
 namespace FakerPress\Module;
 use function FakerPress\make;
+use function FakerPress\get;
+use function FakerPress\get_request_var;
 use FakerPress\Plugin;
 use FakerPress\Utils;
 use Faker;
@@ -96,17 +98,17 @@ class Term extends Abstract_Module {
 
 	public function parse_request( $qty, $request = [] ) {
 		if ( is_null( $qty ) ) {
-			$qty = make( Utils::class )->get_qty_from_range( fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW ) );
+			$qty = make( Utils::class )->get_qty_from_range( get_request_var( [ Plugin::$slug, 'qty' ] ) );
 		}
 
 		if ( 0 === $qty ){
 			return esc_attr__( 'Zero is not a good number of terms to fake...', 'fakerpress' );
 		}
 
-		$name_size = fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'size' ], FILTER_UNSAFE_RAW );
+		$name_size = get_request_var( [ Plugin::$slug, 'size' ] );
 
 		// Fetch taxomies
-		$taxonomies = fp_array_get( $request, [ 'taxonomies' ], FILTER_SANITIZE_STRING );
+		$taxonomies = get( $request, 'taxonomies' );
 		$taxonomies = array_map( 'trim', explode( ',', $taxonomies ) );
 		$taxonomies = array_intersect( get_taxonomies( [ 'public' => true ] ), $taxonomies );
 
@@ -114,7 +116,7 @@ class Term extends Abstract_Module {
 		$has_metas = version_compare( $GLOBALS['wp_version'], '4.4-beta', '>=' );
 
 		if ( $has_metas ) {
-			$metas = fp_array_get( $request, [ 'meta' ], FILTER_UNSAFE_RAW );
+			$metas = get( $request, 'meta' );
 		}
 
 		for ( $i = 0; $i < $qty; $i++ ) {

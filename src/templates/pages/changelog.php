@@ -1,5 +1,7 @@
 <?php
-$only_version = fp_get_request_var( 'version', null );
+use function FakerPress\get_request_var;
+
+$only_version = get_request_var( 'version', null );
 
 $readme = include FakerPress\Plugin::path( 'src/data/readme.php' );
 

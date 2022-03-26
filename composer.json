@@ -18,9 +18,6 @@
           "src/functions/load.php",
           "src/functions/container.php",
           "src/functions/variables.php",
-          "src/functions/array.php",
-          "src/functions/globals.php",
-          "src/functions/filter.php",
           "src/functions/conditionals.php",
           "src/functions/sorting.php",
           "src/functions/assets.php"

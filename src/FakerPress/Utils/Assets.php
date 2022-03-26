@@ -1,6 +1,7 @@
 <?php
 namespace FakerPress\Utils;
 
+use function FakerPress\get;
 use function FakerPress\is_truthy;
 
 /**
@@ -53,7 +54,7 @@ class Assets {
 			$assets = [ $assets ];
 		}
 
-		uasort( $assets, 'fp_sort_by_priority' );
+		uasort( $assets, 'FakerPress\sort_by_priority' );
 
 		foreach ( $assets as $asset ) {
 			// Asset is already registered.
@@ -176,7 +177,7 @@ class Assets {
 				$enqueue = [];
 
 				// Which is the operator?
-				$conditional_operator = fp_array_get( $asset->conditionals, 'operator', null, 'OR' );
+				$conditional_operator = get( $asset->conditionals, 'operator', 'OR' );
 
 				// If we have a set of conditionals we loop on then and get if they are true.
 				foreach ( $asset->conditionals as $key => $conditional ) {
@@ -566,7 +567,7 @@ class Assets {
 		$this->assets[ $slug ] = $asset;
 
 		// Sorts by priority.
-		uasort( $this->assets, 'fp_sort_by_priority' );
+		uasort( $this->assets, 'FakerPress\sort_by_priority' );
 
 		// Return the Slug because it might be modified.
 		return $asset;
@@ -636,7 +637,7 @@ class Assets {
 	 *                           it was not in the array of objects.
 	 */
 	public function get( $slug = null ) {
-		uasort( $this->assets, 'fp_sort_by_priority' );
+		uasort( $this->assets, 'FakerPress\sort_by_priority' );
 
 		if ( is_null( $slug ) ) {
 			return $this->assets;

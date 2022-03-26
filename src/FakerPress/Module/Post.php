@@ -7,6 +7,8 @@ use FakerPress\Plugin;
 use Faker;
 use FakerPress;
 use function FakerPress\make;
+use function FakerPress\get_request_var;
+use function FakerPress\get;
 
 class Post extends Abstract_Module {
 	/**
@@ -127,7 +129,7 @@ class Post extends Abstract_Module {
 	 */
 	public function parse_request( $qty, $request = [] ) {
 		if ( is_null( $qty ) ) {
-			$qty = fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW );
+			$qty = get_request_var( [ Plugin::$slug, 'qty' ] );
 			$min = absint( $qty['min'] );
 			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
 			$qty = $this->get_faker()->numberBetween( $min, $max );
@@ -138,44 +140,44 @@ class Post extends Abstract_Module {
 		}
 
 		// Fetch Comment Status
-		$comment_status = fp_array_get( $request, [ 'comment_status' ], FILTER_SANITIZE_STRING );
+		$comment_status = get( $request, 'comment_status' );
 		$comment_status = array_map( 'trim', explode( ',', $comment_status ) );
 
 		// Fetch Post Author
-		$post_author = fp_array_get( $request, [ 'author' ], FILTER_SANITIZE_STRING );
+		$post_author = get( $request, 'author' );
 		$post_author = array_map( 'trim', explode( ',', $post_author ) );
 		$post_author = array_intersect( get_users( [ 'fields' => 'ID' ] ), $post_author );
 
 		// Fetch the dates
 		$date = [
-			fp_array_get( $request, [ 'interval_date', 'min' ], FILTER_SANITIZE_STRING ),
-			fp_array_get( $request, [ 'interval_date', 'max' ], FILTER_SANITIZE_STRING ),
+			get( $request, [ 'interval_date', 'min' ] ),
+			get( $request, [ 'interval_date', 'max' ] ),
 		];
 
 		// Fetch Post Types
-		$post_types = fp_array_get( $request, [ 'post_types' ], FILTER_SANITIZE_STRING );
+		$post_types = get( $request, 'post_types' );
 		$post_types = array_map( 'trim', explode( ',', $post_types ) );
 		$post_types = array_intersect( get_post_types( [ 'public' => true ] ), $post_types );
 
 		// Fetch Post Content
-		$post_content_size      = fp_array_get( $request, [ 'content_size' ], FILTER_UNSAFE_RAW, [ 5, 15 ] );
-		$post_content_use_html  = fp_array_get( $request, [ 'use_html' ], FILTER_SANITIZE_NUMBER_INT, 0 ) === 1;
-		$post_content_html_tags = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'html_tags' ], FILTER_SANITIZE_STRING ) ) );
+		$post_content_size      = get( $request, 'content_size', [ 5, 15 ] );
+		$post_content_use_html  = get( $request, 'use_html', 0 ) === 1;
+		$post_content_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags' ) ) );
 
 		// Fetch Post Excerpt.
-		$post_excerpt_size = fp_array_get( $request, [ 'excerpt_size' ], FILTER_UNSAFE_RAW, [ 1, 3 ] );
+		$post_excerpt_size = get( $request, 'excerpt_size', [ 1, 3 ] );
 
 		// Fetch and clean Post Parents
-		$post_parents = fp_array_get( $request, [ 'post_parent' ], FILTER_SANITIZE_STRING );
+		$post_parents = get( $request, 'post_parent' );
 		$post_parents = array_map( 'trim', explode( ',', $post_parents ) );
 
-		$images_origin = array_map( 'trim', explode( ',', fp_array_get( $request, [ 'images_origin' ], FILTER_SANITIZE_STRING ) ) );
+		$images_origin = array_map( 'trim', explode( ',', get( $request, 'images_origin' ) ) );
 
 		// Fetch Taxonomies
-		$taxonomies_configuration = fp_array_get( $request, [ 'taxonomy' ], FILTER_UNSAFE_RAW );
+		$taxonomies_configuration = get( $request, 'taxonomy' );
 
 		// Fetch Metas It will be parsed later!
-		$metas = fp_array_get( $request, [ 'meta' ], FILTER_UNSAFE_RAW );
+		$metas = get( $request, 'meta', [] );
 
 		$results = [];
 

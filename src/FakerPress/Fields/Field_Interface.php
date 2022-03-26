@@ -81,7 +81,7 @@ interface Field_Interface {
 	 *
 	 * @since  0.5.2
 	 *
-	 * @param array|string $index   Index passed to fp_array_get.
+	 * @param array|string $index   Index passed to get.
 	 * @param mixed        $default Default value for the setting.
 	 *
 	 * @return mixed Setting you are looking for.

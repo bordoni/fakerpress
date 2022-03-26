@@ -25,15 +25,6 @@ class Admin extends Template {
 	public static $view = null;
 
 	/**
-	 * Easier way to determine which method originated the request
-	 *
-	 * @since 0.1.2
-	 *
-	 * @var string
-	 */
-	public static $request_method = 'get';
-
-	/**
 	 * Makes it easier to check if is AJAX
 	 *
 	 * @since 0.1.2
@@ -63,8 +54,6 @@ class Admin extends Template {
 		$this->set_template_origin( make( Plugin::class ) )
 			 ->set_template_folder( 'src/templates/pages' );
 
-		self::$request_method = strtolower( fp_get_global_var( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ) );
-
 		self::$is_ajax = ( defined( 'DOING_AJAX' ) && DOING_AJAX );
 	}
 
@@ -93,7 +82,7 @@ class Admin extends Template {
 			'priority' => $priority === 0 ? $priority + 1 : $priority,
 		];
 
-		usort( self::$messages, 'fp_sort_by_priority' );
+		usort( self::$messages, 'FakerPress\sort_by_priority' );
 
 		return $message;
 	}

@@ -209,7 +209,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 
 	public static function get( $name, $default = false ) {
 		$options = static::all();
-		$value = fp_array_get( $options, $name, null, $default );
+		$value = get( $options, $name, $default );
 
 		return $value;
 	}
