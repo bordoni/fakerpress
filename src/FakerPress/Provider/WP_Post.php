@@ -3,6 +3,8 @@ namespace FakerPress\Provider;
 
 use Faker\Provider\Base;
 use FakerPress;
+use FakerPress\Utils;
+use function FakerPress\make;
 
 class WP_Post extends Base {
 
@@ -81,7 +83,7 @@ class WP_Post extends Base {
 		if ( true === $html ) {
 			$content = implode( "\n", $this->generator->html_elements( $args ) );
 		} else {
-			$content = implode( "\r\n\r\n", $this->generator->paragraphs( FakerPress\Utils::instance()->get_qty_from_range( $args['qty'] ) ) );
+			$content = implode( "\r\n\r\n", $this->generator->paragraphs( make( Utils::class )->get_qty_from_range( $args['qty'] ) ) );
 		}
 
 		return $content;
@@ -99,7 +101,7 @@ class WP_Post extends Base {
 	 * @return string
 	 */
 	public function post_excerpt( $qty = [ 25, 75 ], $html = false, $weight = 60 ) {
-		$words = FakerPress\Utils::instance()->get_qty_from_range( $qty );
+		$words = make( Utils::class )->get_qty_from_range( $qty );
 		$paragraphs = $this->generator->randomElement( [ 1, 1, 1, 1, 1, 2, 2, 2, 3, 4 ] );
 
 		for ( $i = 0; $i < $paragraphs; $i++ ) {
@@ -205,9 +207,9 @@ class WP_Post extends Base {
 				$terms = array_filter( array_map( 'absint', $terms ) );
 
 				if ( ! isset( $settings->qty ) ) {
-					$qty = FakerPress\Utils::instance()->get_qty_from_range( ( isset( $ranges[ $taxonomy ] ) ? $ranges[ $taxonomy ] : $ranges['__default'] ), $terms );
+					$qty = make( Utils::class )->get_qty_from_range( ( isset( $ranges[ $taxonomy ] ) ? $ranges[ $taxonomy ] : $ranges['__default'] ), $terms );
 				} else {
-					$qty = (int) FakerPress\Utils::instance()->get_qty_from_range( $settings->qty, $terms );
+					$qty = (int) make( Utils::class )->get_qty_from_range( $settings->qty, $terms );
 				}
 
 				if ( ! isset( $settings->rate ) ) {

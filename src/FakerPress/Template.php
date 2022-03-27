@@ -1,6 +1,10 @@
 <?php
 namespace FakerPress;
 
+use function FakerPress\is_truthy;
+use function FakerPress\set;
+use function FakerPress\get;
+
 class Template {
 	/**
 	 * The folders into which we will look for the template.
@@ -132,7 +136,7 @@ class Template {
 	 * @return self
 	 */
 	public function set_template_folder_lookup( $value = true ) {
-		$this->template_folder_lookup = fp_is_truthy( $value );
+		$this->template_folder_lookup = is_truthy( $value );
 
 		return $this;
 	}
@@ -164,7 +168,7 @@ class Template {
 	 */
 	public function set_template_context_extract( $value = false ) {
 		// Cast as bool and save
-		$this->template_context_extract = fp_is_truthy( $value );
+		$this->template_context_extract = is_truthy( $value );
 
 		return $this;
 	}
@@ -175,7 +179,7 @@ class Template {
 	 *
 	 * @since  0.5.1
 	 *
-	 * @see    fp_array_set
+	 * @see    \FakerPress\get
 	 *
 	 * @param  array    $index     Specify each nested index in order.
 	 *                             Example: array( 'lvl1', 'lvl2' );
@@ -209,7 +213,7 @@ class Template {
 			return $value;
 		}
 
-		return fp_array_get( $context, $index, null, $default );
+		return get( $context, $index, $default );
 	}
 
 	/**
@@ -230,12 +234,12 @@ class Template {
 	 */
 	final public function set( $index, $value = null, $is_local = true ) {
 		if ( true === $is_local ) {
-			$this->context = fp_array_set( $this->context, $index, $value );
+			$this->context = set( $this->context, $index, $value );
 
 			return $this->context;
 		}
 
-		$this->global = fp_array_set( $this->global, $index, $value );
+		$this->global = set( $this->global, $index, $value );
 
 		return $this->global;
 	}
@@ -396,7 +400,7 @@ class Template {
 		 */
 		$folders = apply_filters( 'fakerpress_template_path_list', $folders, $this );
 
-		uasort( $folders, 'fp_sort_by_priority' );
+		uasort( $folders, 'FakerPress\sort_by_priority' );
 
 		return $folders;
 	}

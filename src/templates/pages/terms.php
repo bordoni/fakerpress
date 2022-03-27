@@ -1,13 +1,6 @@
 <?php
 namespace FakerPress;
 
-// Fetch view from Template Vars
-$view = $this->get( 'view' );
-
-if ( ! $view ) {
-	return;
-}
-
 $fields[] = new Field(
 	'range',
 	'qty',
@@ -69,10 +62,10 @@ if ( version_compare( $GLOBALS['wp_version'], '4.4-beta', '>=' ) ) {
 
 ?>
 <div class='wrap'>
-	<h2><?php echo esc_attr( $view->title ); ?></h2>
+	<h2><?php echo esc_attr( $this->get_title() ); ?></h2>
 	<form method='post' class='fp-module-generator'>
-		<?php wp_nonce_field( Plugin::$slug . '.request.' . $view->slug . ( isset( $view->action ) ? '.' . $view->action : '' ) ); ?>
-		<input type="hidden" name="fakerpress[view]" value="<?php echo esc_attr( $view->slug ); ?>">
+		<?php wp_nonce_field( Plugin::$slug . '.request.' . $this::get_slug() ); ?>
+		<input type="hidden" name="fakerpress[view]" value="<?php echo esc_attr( $this::get_slug() ); ?>">
 
 		<table class="form-table" style="display: table;">
 			<tbody>

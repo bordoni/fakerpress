@@ -1,10 +1,12 @@
 <?php
 namespace FakerPress\Provider;
 
+use FakerPress\Module\Attachment;
 use FakerPress\Utils;
 use Faker\Provider\Base;
 use Faker\Provider\Lorem;
 use Faker\Provider\Internet;
+use function FakerPress\make;
 
 class HTML extends Base {
 	/**
@@ -68,7 +70,7 @@ class HTML extends Base {
 		$args->did_more_element = false;
 
 		// Randomize the quantity based on range
-		$args->qty = Utils::instance()->get_qty_from_range( $args->qty );
+		$args->qty = make( Utils::class )->get_qty_from_range( $args->qty );
 
 		$max_to_more = ( $args->qty / 2 ) + $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
 		$min_to_more = ( $args->qty / 2 ) - $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
@@ -149,7 +151,7 @@ class HTML extends Base {
 		}
 
 		if ( false === $image ) {
-			$image = \FakerPress\Module\Attachment::instance()
+			$image = make( Attachment::class )
 				->set( 'attachment_url', $this->generator->randomElement( $sources ) )
 				->generate()->save();
 		}

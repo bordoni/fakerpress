@@ -3,6 +3,8 @@ namespace FakerPress\Provider;
 
 use Faker\Provider\Base;
 use FakerPress;
+use FakerPress\Utils;
+use function FakerPress\make;
 
 class WP_User extends Base {
 
@@ -90,7 +92,7 @@ class WP_User extends Base {
 		if ( true === $html ) {
 			$content = implode( "\n", $this->generator->html_elements( $args ) );
 		} else {
-			$content = implode( "\r\n\r\n", $this->generator->paragraphs( FakerPress\Utils::instance()->get_qty_from_range( $args['qty'] ) ) );
+			$content = implode( "\r\n\r\n", $this->generator->paragraphs( make( Utils::class )->get_qty_from_range( $args['qty'] ) ) );
 		}
 
 		return $content;

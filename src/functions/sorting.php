@@ -1,5 +1,7 @@
 <?php
 
+namespace FakerPress;
+
 /**
  * Sorting function based on Priority
  *
@@ -10,7 +12,7 @@
  *
  * @return int
  */
-function fp_sort_by_priority( $a, $b ) {
+function sort_by_priority( $a, $b ) {
 	if ( is_array( $a ) ) {
 		$a_priority = $a['priority'];
 	} else {

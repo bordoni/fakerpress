@@ -3,10 +3,12 @@ namespace FakerPress\Provider;
 
 use Faker\Provider\Base;
 use FakerPress;
+use FakerPress\Utils;
+use function FakerPress\make;
 
 class WP_Term extends Base {
 	public function name( $qty = 4 ) {
-		$qty = FakerPress\Utils::instance()->get_qty_from_range( $qty );
+		$qty = make( Utils::class )->get_qty_from_range( $qty );
 		$name = $this->generator->sentence( $qty );
 
 		// This removes the last dot on the end of the sentence

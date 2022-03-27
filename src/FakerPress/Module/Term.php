@@ -1,64 +1,53 @@
 <?php
 namespace FakerPress\Module;
-use FakerPress\Admin;
-use FakerPress\Variable;
+use function FakerPress\make;
+use function FakerPress\get;
+use function FakerPress\get_request_var;
 use FakerPress\Plugin;
 use FakerPress\Utils;
 use Faker;
 use FakerPress;
 
-class Term extends Base {
-
-	public $dependencies = [
+class Term extends Abstract_Module {
+	/**
+	 * @inheritDoc
+	 */
+	protected $dependencies = [
 		Faker\Provider\Lorem::class,
 	];
 
 	public $meta = false;
 
-	public $provider = FakerPress\Provider\WP_Term::class;
+	/**
+	 * @inheritDoc
+	 */
+	protected $provider_class = FakerPress\Provider\WP_Term::class;
 
-	public function init() {
-		$this->page = (object) [
-			'menu' => esc_attr__( 'Terms', 'fakerpress' ),
-			'title' => esc_attr__( 'Generate Terms', 'fakerpress' ),
-			'view' => 'terms',
-		];
-
-		add_filter( "fakerpress.module.{$this->slug}.save", [ $this, 'do_save' ], 10, 3 );
+	/**
+	 * @inheritDoc
+	 */
+	public static function get_slug(): string {
+		return 'terms';
 	}
 
 	/**
-	 * To use the User Module the current user must have at least the `create_users` permission.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
+	 * @inheritDoc
 	 */
-	public static function get_permission_required() {
-		return 'publish_posts';
-	}
+	public function hook(): void {
 
-	public function format_link( $id ) {
-		return absint( $id );
 	}
 
 	/**
-	 * Fetches all the FakerPress related Terms
-	 * @return array IDs of the Terms with
+	 * @inheritDoc
 	 */
-	public static function fetch() {
+	public static function fetch( array $args = [] ): array {
 		$terms = get_option( 'fakerpress.module_flag.term', [] );
 
 		return $terms;
 	}
 
 	/**
-	 * Use this method to prevent excluding something that was not configured by FakerPress
-	 *
-	 * @todo  Improve this to allow better checking
-	 *
-	 * @param  array $items The array of arrays, first level has taxonomy as keys, second level only ids
-	 * @return bool
+	 * @inheritDoc
 	 */
 	public static function delete( $items ) {
 		$deleted = [];
@@ -75,7 +64,10 @@ class Term extends Base {
 		return $deleted;
 	}
 
-	public function do_save( $return_val, $data, $module ) {
+	/**
+	 * @inheritDoc
+	 */
+	public function filter_save_response( $response, array $data, Abstract_Module $module ) {
 		$args = [
 			'description' => $data['description'],
 			'parent' => $data['parent_term'],
@@ -86,7 +78,7 @@ class Term extends Base {
 			return false;
 		}
 
-		$flagged = get_option( 'fakerpress.module_flag.' . $this->slug, [] );
+		$flagged = get_option( 'fakerpress.module_flag.' . $this::get_slug(), [] );
 
 		// Ensure that this option is an Array by reseting the variable.
 		if ( ! is_array( $flagged ) ){
@@ -99,24 +91,24 @@ class Term extends Base {
 		$flagged[ $data['taxonomy'] ] = array_merge( $flagged[ $data['taxonomy'] ], (array) $term_object['term_id'] );
 
 		// When in posts relating is harder so we store in the Options Table
-		update_option( 'fakerpress.module_flag.' . $this->slug, $flagged );
+		update_option( 'fakerpress.module_flag.' . $this::get_slug(), $flagged );
 
 		return $term_object['term_id'];
 	}
 
 	public function parse_request( $qty, $request = [] ) {
 		if ( is_null( $qty ) ) {
-			$qty = Utils::instance()->get_qty_from_range( fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'qty' ], FILTER_UNSAFE_RAW ) );
+			$qty = make( Utils::class )->get_qty_from_range( get_request_var( [ Plugin::$slug, 'qty' ] ) );
 		}
 
 		if ( 0 === $qty ){
 			return esc_attr__( 'Zero is not a good number of terms to fake...', 'fakerpress' );
 		}
 
-		$name_size = fp_get_global_var( INPUT_POST, [ Plugin::$slug, 'size' ], FILTER_UNSAFE_RAW );
+		$name_size = get_request_var( [ Plugin::$slug, 'size' ] );
 
 		// Fetch taxomies
-		$taxonomies = fp_array_get( $request, [ 'taxonomies' ], FILTER_SANITIZE_STRING );
+		$taxonomies = get( $request, 'taxonomies' );
 		$taxonomies = array_map( 'trim', explode( ',', $taxonomies ) );
 		$taxonomies = array_intersect( get_taxonomies( [ 'public' => true ] ), $taxonomies );
 
@@ -124,7 +116,7 @@ class Term extends Base {
 		$has_metas = version_compare( $GLOBALS['wp_version'], '4.4-beta', '>=' );
 
 		if ( $has_metas ) {
-			$metas = fp_array_get( $request, [ 'meta' ], FILTER_UNSAFE_RAW );
+			$metas = get( $request, 'meta' );
 		}
 
 		for ( $i = 0; $i < $qty; $i++ ) {
@@ -137,7 +129,7 @@ class Term extends Base {
 
 			if ( $has_metas && $term_id && is_numeric( $term_id ) ){
 				foreach ( $metas as $meta_index => $meta ) {
-					Meta::instance()->object( $term_id, 'term' )->generate( $meta['type'], $meta['name'], $meta )->save();
+					make( Meta::class )->object( $term_id, 'term' )->generate( $meta['type'], $meta['name'], $meta )->save();
 				}
 			}
 
@@ -147,34 +139,5 @@ class Term extends Base {
 		$results = array_filter( (array) $results, 'absint' );
 
 		return $results;
-	}
-
-	public function _action_parse_request( $view ) {
-		if ( 'post' !== Admin::$request_method || empty( $_POST ) ) {
-			return false;
-		}
-
-		$nonce_slug = Plugin::$slug . '.request.' . Admin::$view->slug . ( isset( Admin::$view->action ) ? '.' . Admin::$view->action : '' );
-
-		if ( ! check_admin_referer( $nonce_slug ) ) {
-			return false;
-		}
-
-		// After this point we are safe to say that we have a good POST request
-		$results = $this->parse_request( null, fp_get_global_var( INPUT_POST, [ Plugin::$slug ], FILTER_UNSAFE_RAW ) );
-
-		if ( is_string( $results ) ) {
-			return Admin::add_message( $results, 'error' );
-		} else {
-			return Admin::add_message(
-				sprintf(
-					__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),
-					count( $results ),
-					_n( 'term', 'terms', count( $results ), 'fakerpress' ),
-					implode( ', ', array_map( [ $this, 'format_link' ], $results ) )
-				)
-			);
-		}
-
 	}
 }

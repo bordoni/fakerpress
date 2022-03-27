@@ -1,14 +1,12 @@
 <?php
 namespace FakerPress;
 use Carbon\Carbon;
+use FakerPress\Admin\View\Abstract_View;
 use FakerPress\Provider\HTML;
 
-// Fetch view from Template Vars
-$view = $this->get( 'view' );
-
-if ( ! $view ) {
-	return;
-}
+/**
+ * @var Abstract_View $this The instance of the Template that we are using to build this view.
+ */
 
 $fields[] = new Field(
 	'range',
@@ -247,11 +245,11 @@ $fields[] = new Field(
 
 ?>
 <div class='wrap'>
-	<h2><?php echo esc_attr( $view->title ); ?></h2>
+	<h2><?php echo esc_attr( $this->get_title() ); ?></h2>
 
 	<form method='post' class='fp-module-generator'>
-		<?php wp_nonce_field( Plugin::$slug . '.request.' . $view->slug . ( isset( $view->action ) ? '.' . $view->action : '' ) ); ?>
-		<input type="hidden" name="fakerpress[view]" value="<?php echo esc_attr( $view->slug ); ?>">
+		<?php wp_nonce_field( Plugin::$slug . '.request.' . $this::get_slug() ); ?>
+		<input type="hidden" name="fakerpress[view]" value="<?php echo esc_attr( $this::get_slug() ); ?>">
 
 		<table class="form-table" style="display: table;">
 			<tbody>

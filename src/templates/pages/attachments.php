@@ -3,12 +3,9 @@ namespace FakerPress;
 use Carbon\Carbon;
 use FakerPress\Provider\HTML;
 
-// Fetch view from Template Vars
-$view = $this->get( 'view' );
-
-if ( ! $view ) {
-	return;
-}
+/**
+ * NOT IN USE YET!
+ */
 
 $fields[] = new Field(
 	'range',
@@ -190,10 +187,10 @@ $fields[] = new Field(
 
 ?>
 <div class='wrap'>
-	<h2><?php echo esc_attr( $view->title ); ?></h2>
+	<h2><?php echo esc_attr( $this->get_title() ); ?></h2>
 
 	<form method='post'>
-		<?php wp_nonce_field( Plugin::$slug . '.request.' . $view->slug . ( isset( $view->action ) ? '.' . $view->action : '' ) ); ?>
+		<?php wp_nonce_field( Plugin::$slug . '.request.' . $this::get_slug() ); ?>
 		<table class="form-table" style="display: table;">
 			<tbody>
 				<?php foreach ( $fields as $field ) { $field->output( true ); } ?>

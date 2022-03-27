@@ -1,14 +1,17 @@
 <?php
+
+namespace FakerPress;
+
 /**
  * Determines if the provided value should be regarded as 'true'.
  *
  * @since  0.5.1
  *
- * @param  mixed  $var  Value to be tested.
+ * @param mixed $var Value to be tested.
  *
  * @return bool
  */
-function fp_is_truthy( $var ) {
+function is_truthy( $var ): bool {
 	if ( is_bool( $var ) ) {
 		return $var;
 	}
@@ -52,13 +55,14 @@ function fp_is_truthy( $var ) {
  *
  * @since  0.5.1
  *
- * @param  mixed  $variable  Value to be tested.
+ * @param mixed $variable Value to be tested.
  *
  * @return bool
  */
-function fp_is_regex( $variable ) {
+function is_regex( $variable ) {
 	// @codingStandardsIgnoreStart
 	$test = @preg_match( $variable, '' );
+
 	// @codingStandardsIgnoreEnd
 
 	return $test !== false;
@@ -69,10 +73,60 @@ function fp_is_regex( $variable ) {
  *
  * @since  0.5.1
  *
- * @param  mixed  $variable  Value to be tested.
+ * @param mixed $variable Value to be tested.
  *
  * @return bool
  */
-function fp_is_ip_address( $variable ) {
+function is_ip_address( $variable ) {
 	return false !== WP_Http::is_ip_address( $variable );
+}
+
+/**
+ * Determines if we are doing an AJAX request.
+ *
+ * @since 0.6.0
+ *
+ * @return bool
+ */
+function is_ajax(): bool {
+	if ( defined( 'DOING_AJAX' ) ) {
+		return DOING_AJAX;
+	}
+
+	return false;
+}
+
+/**
+ * Check if it's a given request method.
+ *
+ * @since 0.6.0
+ *
+ * @param string $type Which type of request we are checking against.
+ *
+ * @return bool
+ */
+function is_request_method( string $type ): bool {
+	return strtoupper( $type ) === get_request_method();
+}
+
+/**
+ * Check if it's a POST request.
+ *
+ * @since 0.6.0
+ *
+ * @return bool
+ */
+function is_post_request(): bool {
+	return is_request_method( 'POST' );
+}
+
+/**
+ * Check if it's a GET request.
+ *
+ * @since 0.6.0
+ *
+ * @return bool
+ */
+function is_get_request(): bool {
+	return is_request_method( 'GET' );
 }

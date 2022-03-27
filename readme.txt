@@ -1,10 +1,10 @@
 === FakerPress ===
 Contributors:      bordoni
 Tags:              generator, dummy content, dummy data, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
-Requires at least: 4.7
+Requires at least: 5.0
 Tested up to:      5.9.1
-Requires PHP:      5.6
-Stable tag:        trunk
+Requires PHP:      7.1
+Stable tag:        0.6.0
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -17,7 +17,7 @@ Whenever you create a new Theme or Plugin you will always need to create custom 
 
 Our goal with this plugin is to fill this gap where you have problem with a good solution both for Developers and for Users of WordPress.
 
-> **Note: This plugin requires PHP 5.6 or higher to be activated.**
+> **Note: This plugin requires PHP 7.1 or higher to be activated.**
 
 [**Checkout our GitHub Repository**](http://fakerpress.com/r/github)
 
@@ -98,6 +98,15 @@ Great! There are several ways you can get involved to help make FakerPress bette
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
+
+= 0.6.0 &mdash; 21 of March 2022 =
+
+* Requirement - PHP Version 7.1 required for usage of FakerPress, important step to allow further improvements and tests.
+* Feature - Modifications to the internal Modules of FakerPress to enable future work around WP-CLI.
+* Feature - Include a new way to handle Administration Pages, included here to enable future work.
+* Enhancement - Modifications to Select2 Styles for better accessibility usage.
+* Tweak - Move everything into the FakerPress namespace.
+* Tweak - Autoload using Composer properly.
 
 = 0.5.3 &mdash; 04 of March 2022 =
 

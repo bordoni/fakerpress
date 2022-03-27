@@ -9,11 +9,19 @@
         "fake data",
         "generator"
     ],
-    "homepage": "http://fakerpress.com/",
+    "homepage": "https://fakerpress.com/",
     "license": "GPL-2.0",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "autoload": {
+        "files": [
+          "src/functions/load.php",
+          "src/functions/container.php",
+          "src/functions/variables.php",
+          "src/functions/conditionals.php",
+          "src/functions/sorting.php",
+          "src/functions/assets.php"
+        ],
         "psr-4": {
             "FakerPress\\": "src/FakerPress/",
             "FakerPress\\Dev\\": "dev/src/"
@@ -21,6 +29,7 @@
     },
     "require": {
         "php": ">=7.1.8",
+        "lucatume/di52": "~2.1.5",
         "fakerphp/faker": "^1.13",
         "nesbot/carbon": "^2.0"
     },

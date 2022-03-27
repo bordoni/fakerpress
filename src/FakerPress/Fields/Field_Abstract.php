@@ -3,6 +3,7 @@ namespace FakerPress\Fields;
 
 use FakerPress\Template;
 use FakerPress\Plugin;
+use function FakerPress\get;
 
 /**
  * Abstract for Fields.
@@ -133,7 +134,7 @@ abstract class Field_Abstract implements Field_Interface {
 	 * {@inheritDoc}
 	 */
 	public function get_setting( $index, $default = null ) {
-		return fp_array_get( $this->get_settings(), $index, null, $default );
+		return get( $this->get_settings(), $index, $default );
 	}
 
 	/**
@@ -173,7 +174,7 @@ abstract class Field_Abstract implements Field_Interface {
 	public function setup( array $args = [] ) {
 		$this->setup_template();
 
-		$this->set_id( fp_array_get( $args, 'id' ) );
+		$this->set_id( get( $args, 'id' ) );
 
 		return $this;
 	}
@@ -254,7 +255,7 @@ abstract class Field_Abstract implements Field_Interface {
 	 * {@inheritDoc}
 	 */
 	public function sort_children() {
-		usort( $this->children, 'fp_sort_by_priority' );
+		usort( $this->children, 'FakerPress\sort_by_priority' );
 		return $this;
 	}
 
