@@ -288,6 +288,14 @@
 				}
 			}
 			$select.data( 'value', data ).attr( 'data-value', JSON.stringify( data ) );
+		} )
+		.on( 'select2-open', ( event ) => {
+			const $target = $( event.target );
+			const select2 = $target.data( 'select2' );
+			const width = select2.dropdown.width();
+
+			select2.dropdown.width( width+2 ).css( 'margin-left', '-1px' );
+
 		} );
 	};
 
