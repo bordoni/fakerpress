@@ -15,32 +15,18 @@ class Ajax {
 	}
 
 	public static function module_generate( $request = null ) {
-		/**
-		 * Allows us to prevent `_encloseme` and `_pingme` meta when generating Posts
-		 *
-		 * @since  0.4.9
-		 *
-		 * @param bool $prevent_enclose_ping_meta
-		 */
-		$prevent_enclose_ping_meta = (bool) apply_filters( 'fakerpress.module.generate.prevent_enclose_ping_meta', true );
-
-		// This will prevent us having `_encloseme` and `_pingme`
-		if ( $prevent_enclose_ping_meta ) {
-			define( 'WP_IMPORTING', true );
-		}
-
 		$response = (object) [
 			'status'  => false,
 			'message' => __( 'Your request has failed', 'fakerpress' ),
 		];
 
-		if ( ( ! Admin::$is_ajax && is_null( $request ) ) || ! is_user_logged_in() ) {
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		if ( ( ! is_ajax() && is_null( $request ) ) || ! is_user_logged_in() ) {
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		$view = get_request_var( [ Plugin::$slug, 'view' ] );
 		if ( empty( $view ) ) {
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		$nonce_slug = Plugin::$slug . '.request.' . $view;
@@ -48,13 +34,13 @@ class Ajax {
 		if ( ! check_admin_referer( $nonce_slug ) ) {
 			$response->message = __( 'Security fail, refresh the page and try again!', 'fakerpress' );
 
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		// Here we have a Secure Call
 		$module = make( Factory::class )->get( $view );
 		if ( empty( $module ) ) {
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		$permission_required = $module::get_permission_required();
@@ -62,7 +48,7 @@ class Ajax {
 		if ( ! current_user_can( $permission_required ) ) {
 			$response->message = sprintf( __( 'Your user needs the "%s" permission to execute the generation for this module.', 'fakerpress' ), $permission_required );
 
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		$response->allowed = $module->get_amount_allowed();
@@ -105,7 +91,7 @@ class Ajax {
 			$response->results = $results;
 		}
 
-		return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 	}
 
 	public static function search_terms( $request = null ) {
@@ -116,8 +102,8 @@ class Ajax {
 			'more'    => true,
 		];
 
-		if ( ( ! Admin::$is_ajax && is_null( $request ) ) || ! is_user_logged_in() ) {
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		if ( ( ! is_ajax() && is_null( $request ) ) || ! is_user_logged_in() ) {
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		$request = (object) wp_parse_args(
@@ -136,13 +122,13 @@ class Ajax {
 		if ( ! wp_verify_nonce( $request->nonce, Plugin::$slug . '-select-search_terms' ) ) {
 			$response->message = esc_attr__( 'Invalid nonce verification', 'fakerpress' );
 
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		if ( ! current_user_can( 'publish_posts' ) ) {
 			$response->message = esc_attr__( 'Your user needs the "publish_posts" permissions to search for terms.', 'fakerpress' );
 
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		if ( empty( $request->post_type ) ) {
@@ -188,7 +174,7 @@ class Ajax {
 			$response->more = false;
 		}
 
-		return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 	}
 
 	public static function query_posts( $request = null ) {
@@ -199,8 +185,8 @@ class Ajax {
 			'more'    => true,
 		];
 
-		if ( ( ! Admin::$is_ajax && is_null( $request ) ) || ! is_user_logged_in() ) {
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		if ( ( ! is_ajax() && is_null( $request ) ) || ! is_user_logged_in() ) {
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		$request = (object) $_POST;
@@ -208,13 +194,13 @@ class Ajax {
 		if ( empty( $request->nonce ) || ! wp_verify_nonce( $request->nonce, Plugin::$slug . '-select2-WP_Query' ) ) {
 			$response->message = esc_attr__( 'Invalid nonce verification', 'fakerpress' );
 
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		if ( ! current_user_can( 'publish_posts' ) ) {
 			$response->message = esc_attr__( 'Your user needs the "publish_posts" permissions to use WP_Query.', 'fakerpress' );
 
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		if ( isset( $request->query['post_type'] ) && ! is_array( $request->query['post_type'] ) ) {
@@ -224,7 +210,7 @@ class Ajax {
 		$query = new \WP_Query( $request->query );
 
 		if ( ! $query->have_posts() ) {
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		$response->status  = true;
@@ -240,7 +226,7 @@ class Ajax {
 			$response->more = false;
 		}
 
-		return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 	}
 
 	public static function search_authors( $request = null ) {
@@ -251,8 +237,8 @@ class Ajax {
 			'more'    => true,
 		];
 
-		if ( ( ! Admin::$is_ajax && is_null( $request ) ) || ! is_user_logged_in() ) {
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		if ( ( ! is_ajax() && is_null( $request ) ) || ! is_user_logged_in() ) {
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		$request = (object) wp_parse_args(
@@ -268,13 +254,13 @@ class Ajax {
 		if ( ! wp_verify_nonce( $request->nonce, Plugin::$slug . '-select2-search_authors' ) ) {
 			$response->message = esc_attr__( 'Invalid nonce verification', 'fakerpress' );
 
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		if ( ! current_user_can( 'publish_posts' ) ) {
 			$response->message = esc_attr__( 'Your user needs the "publish_posts" permissions to search for authors.', 'fakerpress' );
 
-			return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 		}
 
 		$response->status  = true;
@@ -306,6 +292,6 @@ class Ajax {
 			$response->more = false;
 		}
 
-		return ( Admin::$is_ajax ? exit( json_encode( $response ) ) : $response );
+		return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
 	}
 }

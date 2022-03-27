@@ -53,8 +53,6 @@ class Admin extends Template {
 	public function __construct() {
 		$this->set_template_origin( make( Plugin::class ) )
 			 ->set_template_folder( 'src/templates/pages' );
-
-		self::$is_ajax = ( defined( 'DOING_AJAX' ) && DOING_AJAX );
 	}
 
 	/**

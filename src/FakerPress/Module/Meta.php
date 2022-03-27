@@ -43,15 +43,6 @@ class Meta extends Abstract_Module {
 	protected $provider_class = FakerPress\Provider\WP_Meta::class;
 
 	/**
-	 * Whether FakerPress will generate a page for this
-	 *
-	 * @since  0.3.0
-	 *
-	 * @var boolean
-	 */
-	public $page = false;
-
-	/**
 	 * Which type of object we are saving to
 	 *
 	 * @since  0.3.0
@@ -75,6 +66,7 @@ class Meta extends Abstract_Module {
 	public static function get_slug(): string {
 		return 'meta';
 	}
+
 	/**
 	 * @inheritDoc
 	 */

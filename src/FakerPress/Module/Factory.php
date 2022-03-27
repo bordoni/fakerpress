@@ -73,6 +73,7 @@ class Factory extends \tad_DI52_ServiceProvider {
 
 		return reset( $views );
 	}
+
 	/**
 	 * Register all the Modules as Singletons and initializes them.
 	 *

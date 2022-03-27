@@ -4,6 +4,7 @@ namespace FakerPress\Module;
 
 use Faker\Generator;
 use Faker\Provider\Base;
+use function FakerPress\is_truthy;
 
 /**
  * Class Abstract_Module.
@@ -303,6 +304,20 @@ abstract class Abstract_Module implements Interface_Module {
 			} else {
 				$data[ $key ] = $item;
 			}
+		}
+
+		/**
+		 * Allows us to prevent `_encloseme` and `_pingme` meta when generating Posts
+		 *
+		 * @since  0.4.9
+		 *
+		 * @param bool $prevent_enclose_ping_meta
+		 */
+		$prevent_enclose_ping_meta = is_truthy( apply_filters( 'fakerpress.module.generate.prevent_enclose_ping_meta', true ) );
+
+		// This will prevent us having `_encloseme` and `_pingme`.
+		if ( $prevent_enclose_ping_meta && ! defined( 'WP_IMPORTING' ) ) {
+			define( 'WP_IMPORTING', true );
 		}
 
 		$response = $this->filter_save_response( false, $data, $this );

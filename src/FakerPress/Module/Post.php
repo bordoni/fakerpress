@@ -8,6 +8,7 @@ use Faker;
 use FakerPress;
 use function FakerPress\make;
 use function FakerPress\get_request_var;
+use function FakerPress\is_truthy;
 use function FakerPress\get;
 
 class Post extends Abstract_Module {

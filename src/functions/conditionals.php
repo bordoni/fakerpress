@@ -82,6 +82,21 @@ function is_ip_address( $variable ) {
 }
 
 /**
+ * Determines if we are doing an AJAX request.
+ *
+ * @since 0.6.0
+ *
+ * @return bool
+ */
+function is_ajax(): bool {
+	if ( defined( 'DOING_AJAX' ) ) {
+		return DOING_AJAX;
+	}
+
+	return false;
+}
+
+/**
  * Check if it's a given request method.
  *
  * @since 0.6.0
@@ -104,6 +119,7 @@ function is_request_method( string $type ): bool {
 function is_post_request(): bool {
 	return is_request_method( 'POST' );
 }
+
 /**
  * Check if it's a GET request.
  *
