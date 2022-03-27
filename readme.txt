@@ -99,7 +99,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
-= 0.6.0 &mdash; 21 of March 2022 =
+= 0.6.0 &mdash; 30 of March 2022 =
 
 * Requirement - PHP Version 7.1 required for usage of FakerPress, important step to allow further improvements and tests.
 * Feature - Modifications to the internal Modules of FakerPress to enable future work around WP-CLI.
