@@ -102,6 +102,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 = 0.6.0 &mdash; 21 of March 2022 =
 
 * Requirement - PHP Version 7.1 required for usage of FakerPress, important step to allow further improvements and tests.
+* Feature - Modifications to the internal Modules of FakerPress to enable future work around WP-CLI.
+* Feature - Include a new way to handle Administration Pages, included here to enable future work.
+* Enhancement - Modifications to Select2 Styles for better accessibility usage.
 * Tweak - Move everything into the FakerPress namespace.
 * Tweak - Autoload using Composer properly.
 
