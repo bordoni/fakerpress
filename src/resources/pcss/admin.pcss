@@ -23,30 +23,47 @@
         border: 2px solid #2271b1;
         border-top: 0;
     }
+
+    .select2-search {
+        &:after {
+            content: "\f179";
+            display: block;
+            position: absolute;
+            top: 9px;
+            text-align: center;
+            font: normal 20px/1 dashicons !important;
+            right: 13px;
+            speak: never;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        input[type="text"] {
+            background: #fff !important;
+            padding-right: 30px;
+        }
+    }
 }
 
 .__fakerpress {
-
-    &:not(.version-5-3) {
-        input[type="text"],
-        input[type="password"],
-        input[type="color"],
-        input[type="date"],
-        input[type="datetime"],
-        input[type="datetime-local"],
-        input[type="email"],
-        input[type="month"],
-        input[type="number"],
-        input[type="password"],
-        input[type="search"],
-        input[type="tel"],
-        input[type="text"],
-        input[type="time"],
-        input[type="url"],
-        input[type="week"],
-        select {
-            padding: 5px 5px 4px;
-        }
+    input[type="text"],
+    input[type="password"],
+    input[type="color"],
+    input[type="date"],
+    input[type="datetime"],
+    input[type="datetime-local"],
+    input[type="email"],
+    input[type="month"],
+    input[type="number"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="text"],
+    input[type="time"],
+    input[type="url"],
+    input[type="week"],
+    select {
+        padding: 5px 5px 4px;
     }
 
     .fp-submit {
@@ -214,16 +231,11 @@
         margin: 0 auto;
         top: 10px;
         width: 22px;
-        height: 22px;
+        height: 23px;
         min-height: 22px;
         line-height: 20px;
         padding: 0;
         font-weight: bold;
-        font-size: 14px;
-    }
-
-
-    .fp-action-order {
         font-size: 13px;
     }
 
@@ -249,6 +261,17 @@
                 outline: 2px solid transparent;
                 border-radius: 4px 4px 0 0;
             }
+
+            .select2-choice {
+                .select2-arrow {
+                    b {
+                        &:after {
+                            content: "\f343";
+                        }
+                    }
+                }
+            }
+
         }
 
         .select2-choice {
@@ -264,11 +287,26 @@
 
             .select2-arrow {
                 width: 30px;
+                background: transparent;
+                border: 0;
 
                 b {
                     width: 20px;
                     height: 20px;
                     margin: 6px auto;
+                    background: transparent !important; /** Select2 uses important so we do too. **/
+
+                    &:after {
+                        content: "\f347";
+                        display: block;
+                        position: relative;
+                        top: 3px;
+                        text-align: center;
+                        font: normal 20px/1 dashicons !important;
+                        speak: never;
+                        -webkit-font-smoothing: antialiased;
+                        -moz-osx-font-smoothing: grayscale;
+                    }
                 }
             }
         }
