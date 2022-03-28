@@ -101,7 +101,7 @@ class Meta extends Abstract_Module {
 	/**
 	 * @inheritDoc
 	 */
-	public function parse_request( $qty, $request = [] ) {
+	public function generate(): Interface_Module {
 		// Allow a bunch of params
 		$arguments = func_get_args();
 

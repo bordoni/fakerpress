@@ -1,8 +1,6 @@
 <?php
-$field = $this->get( 'field' );
-
 $container_classes[] = 'field-container';
-$container_classes[] = 'type-' . $field->get_slug() . '-container';
+$container_classes[] = 'type-' . $field::get_slug() . '-container';
 
 ?>
 <tr

@@ -432,7 +432,7 @@ abstract class Abstract_Module implements Interface_Module {
 			return reset( $item->arguments );
 		}
 
-		return call_user_func_array( [ $this->faker, $item->generator ], ( isset( $item->arguments ) ? (array) $item->arguments : [] ) );
+		return call_user_func_array( [ $this->get_faker(), $item->generator ], ( isset( $item->arguments ) ? (array) $item->arguments : [] ) );
 	}
 
 	/**

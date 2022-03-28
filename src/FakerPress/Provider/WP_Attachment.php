@@ -22,11 +22,7 @@ class WP_Attachment extends Base {
 	 * @var array
 	 */
 	public static $type_defaults = [
-		'placeholdit' => [
-			'width' => [ 200, 640 ],
-			'height' => 1.25,
-		],
-		'lorempixel' => [
+		'placeholder_image' => [
 			'width' => [ 200, 640 ],
 			'height' => 1.25,
 		],
@@ -46,12 +42,10 @@ class WP_Attachment extends Base {
 
 		$args = wp_parse_args( $args, self::$type_defaults[ $type ] );
 
-		if ( 'placeholdit' === $type ){
-			$url = call_user_func_array( [ $this->generator, 'placeholdit' ], (array) $args );
+		if ( 'placeholder_image' === $type ){
+			$url = call_user_func_array( [ $this->generator, 'placeholder_image' ], (array) $args );
 		} elseif ( 'lorempicsum' === $type ){
 			$url = call_user_func_array( [ $this->generator, 'lorempicsum' ], (array) $args );
-		} elseif ( 'lorempixel' === $type ){
-			$url = call_user_func_array( [ $this->generator, 'lorempixel' ], (array) $args );
 		}
 
 		return $url;
@@ -129,7 +123,7 @@ class WP_Attachment extends Base {
 	}
 
 	public function post_date( $min = 'now', $max = null ) {
-		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 		try {
 			$min = new \Carbon\Carbon( $min );
 		} catch ( \Exception $e ) {
@@ -137,7 +131,7 @@ class WP_Attachment extends Base {
 		}
 
 		if ( ! is_null( $max ) ){
-			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 			try {
 				$max = new \Carbon\Carbon( $max );
 			} catch ( \Exception $e ) {

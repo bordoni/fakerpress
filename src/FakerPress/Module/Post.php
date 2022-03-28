@@ -162,7 +162,7 @@ class Post extends Abstract_Module {
 
 		// Fetch Post Content
 		$post_content_size      = get( $request, 'content_size', [ 5, 15 ] );
-		$post_content_use_html  = get( $request, 'use_html', 0 ) === 1;
+		$post_content_use_html  = ( (int) get( $request, 'use_html', 0 ) ) === 1;
 		$post_content_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags' ) ) );
 
 		// Fetch Post Excerpt.
@@ -208,9 +208,12 @@ class Post extends Abstract_Module {
 
 			if ( $post_id && is_numeric( $post_id ) ) {
 				foreach ( $metas as $meta_index => $meta ) {
-					if ( isset( $meta['type'] ) && isset( $meta['name'] ) ) {
-						make( Meta::class )->object( $post_id )->generate( $meta['type'], $meta['name'], $meta )->save();
+					if ( ! isset( $meta['type'], $meta['name'] ) ) {
+						continue;
 					}
+
+					make( Meta::class )->object( $post_id )->generate( $meta['type'], $meta['name'], $meta )->save();
+
 				}
 			}
 

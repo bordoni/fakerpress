@@ -110,6 +110,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		// Register all the Service Providers.
 		$this->container->register( Module\Factory::class );
 		$this->container->register( Admin\View\Factory::class );
+		$this->container->register( Fields\Factory::class );
 	}
 
 	/**

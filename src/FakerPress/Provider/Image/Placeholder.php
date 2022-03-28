@@ -5,11 +5,11 @@ use Faker\Provider\Base;
 
 
 /**
- * @since  0.1.5
+ * @since  0.6.0
  */
-class PlaceHoldIt extends Base {
+class Placeholder extends Base {
 	/**
-	 * Generates a URL for Placehold.it
+	 * Generates a URL for Placeholder.com
 	 *
 	 * @since  0.1.5
 	 * @since  0.4.9  On this version we started to accept Array or Int in the Second Param
@@ -21,7 +21,7 @@ class PlaceHoldIt extends Base {
 	 *
 	 * @return string
 	 */
-	public function placeholdit( $width = [ 200, 640 ], $height = 1.25 ) {
+	public function placeholder_image( $width = [ 200, 640 ], $height = 1.25 ) {
 		if ( is_array( $width ) ){
 			$width = call_user_func_array( [ $this->generator, 'numberBetween' ], $width );
 		}
@@ -36,7 +36,7 @@ class PlaceHoldIt extends Base {
 			$height = call_user_func_array( [ $this->generator, 'numberBetween' ], $height );
 		}
 
-		$url = "http://placehold.it/{$width}x{$height}/";
+		$url = "https://via.placeholder.com/{$width}x{$height}/";
 
 		return $url;
 	}

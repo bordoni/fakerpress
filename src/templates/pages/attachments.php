@@ -184,6 +184,17 @@ $fields[] = new Field(
 	]
 );
 
+$new_fields = [
+	'type' => 'fieldset',
+	'children' => [
+		[
+			'type' => 'raw',
+			'id' => 'my-own-raw',
+			'html' => 'From RAW!'
+		]
+	]
+];
+
 
 ?>
 <div class='wrap'>
@@ -194,6 +205,8 @@ $fields[] = new Field(
 		<table class="form-table" style="display: table;">
 			<tbody>
 				<?php foreach ( $fields as $field ) { $field->output( true ); } ?>
+
+				<?php make( Fields\Factory::class )->make( $new_fields )->get_html() ?>
 			</tbody>
 		</table>
 		<?php submit_button( __( 'Generate', 'fakerpress' ), 'primary' ); ?>

@@ -20,14 +20,11 @@ class Attachment extends Abstract_Module {
 		Faker\Provider\Lorem::class,
 		Faker\Provider\DateTime::class,
 		FakerPress\Provider\HTML::class,
-		FakerPress\Provider\Image\PlaceHoldIt::class,
+		FakerPress\Provider\Image\Placeholder::class,
 		FakerPress\Provider\Image\LoremPicsum::class,
-		FakerPress\Provider\Image\LoremPixel::class,
 	];
 
 	protected $provider_class = FakerPress\Provider\WP_Attachment::class;
-
-	public $page = false;
 
 	public static function get_slug(): string {
 		return 'attachments';
@@ -166,8 +163,8 @@ class Attachment extends Abstract_Module {
 	public static function get_providers( $type = 'image' ) {
 		$providers = [
 			[
-				'id'   => 'placeholdit',
-				'text' => esc_attr__( 'Placehold.it', 'fakerpress' ),
+				'id'   => 'placeholder_image',
+				'text' => esc_attr__( 'Placeholder.com', 'fakerpress' ),
 				'type' => 'image',
 			],
 			[

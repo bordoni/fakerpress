@@ -1,4 +1,5 @@
 <?php
+
 namespace FakerPress\Provider;
 
 use FakerPress\Module\Attachment;
@@ -18,40 +19,79 @@ class HTML extends Base {
 		$provider = new Internet( $this->generator );
 		$this->generator->addProvider( $provider );
 
-		$provider = new Image\PlaceHoldIt( $this->generator );
+		$provider = new Image\Placeholder( $this->generator );
 		$this->generator->addProvider( $provider );
 
 		$provider = new Image\LoremPicsum( $this->generator );
 		$this->generator->addProvider( $provider );
-
-		$provider = new Image\LoremPixel( $this->generator );
-		$this->generator->addProvider( $provider );
 	}
 
-	static public $sets = [
+	/**
+	 * Set of elements based on a grouping.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var string[][]
+	 */
+	public static $sets = [
 		'self_close' => [ 'img', 'hr', '!--more--' ],
-		'header' => [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ],
-		'list' => [ 'ul', 'ol' ],
-		'block' => [ 'div', 'p', 'blockquote' ],
-		'item' => [ 'li' ],
-		'inline' => [
-			'b', 'big', 'i', 'small', 'tt',
-			'abbr', 'cite', 'code', 'em', 'strong',
-			'a', 'bdo', 'br', 'img', 'q', 'span', 'sub', 'sup',
+		'header'     => [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ],
+		'list'       => [ 'ul', 'ol' ],
+		'block'      => [ 'div', 'p', 'blockquote' ],
+		'item'       => [ 'li' ],
+		'inline'     => [
+			'b',
+			'big',
+			'i',
+			'small',
+			'tt',
+			'abbr',
+			'cite',
+			'code',
+			'em',
+			'strong',
+			'a',
+			'bdo',
+			'br',
+			'img',
+			'q',
+			'span',
+			'sub',
+			'sup',
 			'hr',
 		],
-		'wp' => [ '!--more--' ]
+		'wp'         => [ '!--more--' ]
 	];
 
+	/**
+	 * Prevents HTML comments to be included in our codebase.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param $element
+	 *
+	 * @return bool
+	 */
 	private function filter_html_comments( $element = '' ) {
 		return ! preg_match( '/<?!--(.*?)-->?/i', $element );
 	}
 
+	/**
+	 * Checks if a haystack of elements contains the needle provided.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $needle
+	 * @param array $haystack
+	 *
+	 * @return bool
+	 */
 	private function has_element( $needle = '', $haystack = [] ) {
-		$needle = trim( $needle );
-		$filtered = array_filter( $haystack, static function( $element ) use ( $needle ){
+		$needle   = trim( $needle );
+		$filtered = array_filter( $haystack, static function ( $element ) use ( $needle ) {
 			return preg_match( "/<?(!--)? ?({$needle})+ ?(--)?>?/i", $element ) !== 0;
 		} );
+
 		return count( $filtered ) > 0;
 	}
 
@@ -59,14 +99,14 @@ class HTML extends Base {
 		$html = [];
 
 		$defaults = [
-			'qty' => [ 5, 25 ],
-			'elements' => array_merge( self::$sets['header'], self::$sets['list'], self::$sets['block'] ),
-			'attr' => [],
-			'exclude' => [ 'div' ],
+			'qty'                 => [ 5, 25 ],
+			'elements'            => array_merge( self::$sets['header'], self::$sets['list'], self::$sets['block'] ),
+			'attr'                => [],
+			'exclude'             => [ 'div' ],
 			'allow_html_comments' => false,
 		];
 
-		$args = (object) wp_parse_args( $args, $defaults );
+		$args                   = (object) wp_parse_args( $args, $defaults );
 		$args->did_more_element = false;
 
 		// Randomize the quantity based on range
@@ -75,7 +115,7 @@ class HTML extends Base {
 		$max_to_more = ( $args->qty / 2 ) + $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
 		$min_to_more = ( $args->qty / 2 ) - $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
 
-		for ( $i = 0; $i < $args->qty; $i++ ) {
+		for ( $i = 0; $i < $args->qty; $i ++ ) {
 			$exclude = $args->exclude;
 			if ( isset( $element ) ) {
 				// Here we check if we need to exclude some elements from the next
@@ -103,9 +143,9 @@ class HTML extends Base {
 				&& $args->qty > 2
 				&& $this->has_element( '!--more--', $args->elements )
 				&& $i < $max_to_more
-				&&	$i > $min_to_more
+				&& $i > $min_to_more
 			) {
-				$html[] = $this->element( '!--more--' );
+				$html[]                 = $this->element( '!--more--' );
 				$args->did_more_element = true;
 			}
 		}
@@ -113,11 +153,25 @@ class HTML extends Base {
 		return (array) $html;
 	}
 
-	private function html_element_img( $element, $sources = [ 'placeholdit', 'lorempicsum' ] ) {
+	/**
+	 * Generates the HTML for the <img> element.
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param object|array $element
+	 * @param string[] $sources
+	 *
+	 * @return false|string
+	 */
+	private function html_element_img( $element, $sources = [ 'placeholder_image', 'lorempicsum' ] ) {
+		if ( is_array( $element ) ) {
+			$element = (object) $element;
+		}
+
 		if ( ! isset( $element->attr['class'] ) ) {
 			$element->attr['class'][] = $this->generator->optional( 40, null )->randomElement( [ 'aligncenter', 'alignleft', 'alignright' ] );
-			$element->attr['class'] = array_filter( $element->attr['class'] );
-			$element->attr['class'] = implode( ' ', $element->attr['class'] );
+			$element->attr['class']   = array_filter( $element->attr['class'] );
+			$element->attr['class']   = implode( ' ', $element->attr['class'] );
 		}
 
 		if ( ! isset( $element->attr['alt'] ) ) {
@@ -139,15 +193,22 @@ class HTML extends Base {
 		return $element;
 	}
 
-	public function get_img_src( $sources = [ 'placeholdit', 'lorempicsum' ] ) {
-		$images = \FakerPress\Module\Post::fetch( [ 'post_type' => 'attachment' ] );
-		$image = false;
+	/**
+	 * Generates image URLs for the <img> elements, will fetch attachments as a basis for the inline images.
+	 *
+	 * @since 0.4.0
+	 *
+	 * @param string[] $sources
+	 *
+	 * @return false|string
+	 */
+	public function get_img_src( $sources = [ 'placeholder_image', 'lorempicsum' ] ) {
+		$images       = \FakerPress\Module\Post::fetch( [ 'post_type' => 'attachment' ] );
+		$image        = false;
 		$count_images = count( $images );
-		$optional = ( $count_images * 2 );
-		$optional = $optional > 100 ? 100 : $optional;
 
 		if ( $count_images > 0 ) {
-			$image = $this->generator->optional( $optional, $image )->randomElement( $images );
+			$image = $this->generator->optional( 20, $image )->randomElement( $images );
 		}
 
 		if ( false === $image ) {
@@ -163,19 +224,30 @@ class HTML extends Base {
 		return wp_get_attachment_url( $image );
 	}
 
+	/**
+	 * Randomly apply a given element to an existing text.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string      $element
+	 * @param int         $max
+	 * @param string|null $text
+	 *
+	 * @return string|null
+	 */
 	public function random_apply_element( $element = 'a', $max = 5, $text = null ) {
 		$words       = explode( ' ', $text );
 		$total_words = count( $words );
 		$sentences   = [];
 
-		for ( $i = 0; $i < $total_words; $i++ ) {
+		for ( $i = 0; $i < $total_words; $i ++ ) {
 			$group    = Base::numberBetween( 1, Base::numberBetween( 3, 9 ) );
 			$sentence = [];
 
-			for ( $k = 0 ; $k < $group; $k++ ) {
+			for ( $k = 0; $k < $group; $k ++ ) {
 				$index = $i + $k;
 
-				if ( ! isset( $words[ $index ] ) ){
+				if ( ! isset( $words[ $index ] ) ) {
 					break;
 				}
 
@@ -189,16 +261,16 @@ class HTML extends Base {
 
 		$qty = $max - Base::numberBetween( 0, $max );
 
-		if ( 0 === $qty ){
+		if ( 0 === $qty ) {
 			return $text;
 		}
 
 		$indexes = floor( count( $sentences ) / $qty );
 
-		for ( $i = 0; $i < $qty; $i++ ) {
+		for ( $i = 0; $i < $qty; $i ++ ) {
 			$index = ( $indexes * $i ) + Base::numberBetween( 0, $indexes );
 
-			if ( isset( $sentences[ $index ] ) ){
+			if ( isset( $sentences[ $index ] ) ) {
 				$sentences[ $index ] = $this->element( $element, [], $sentences[ $index ] );
 			}
 		}
@@ -206,6 +278,18 @@ class HTML extends Base {
 		return implode( ' ', $sentences );
 	}
 
+	/**
+	 * Generates a given Element by name with a set of attrs and text based on a set of arguments.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string      $name
+	 * @param array       $attr
+	 * @param string|null $text
+	 * @param array|null  $args
+	 *
+	 * @return false|string
+	 */
 	public function element( $name = 'div', $attr = [], $text = null, $args = null ) {
 		$element = (object) [
 			'name' => $name,
@@ -230,7 +314,7 @@ class HTML extends Base {
 		}
 
 		if ( 'img' === $element->name ) {
-			$sources = [ 'placeholdit', 'lorempicsum' ];
+			$sources = [ 'placeholder_image', 'lorempicsum' ];
 			if ( is_object( $args ) && $args->sources ) {
 				$sources = $args->sources;
 			}
@@ -259,12 +343,12 @@ class HTML extends Base {
 				$text   = Lorem::text( Base::numberBetween( 10, 60 ) );
 				$html[] = substr( $text, 0, strlen( $text ) - 1 );
 			} elseif ( in_array( $element->name, self::$sets['list'] ) ) {
-				for ( $i = 0; $i < Base::numberBetween( 1, 15 ); $i++ ) {
+				for ( $i = 0; $i < Base::numberBetween( 1, 15 ); $i ++ ) {
 					$html[] = $this->element( 'li' );
 				}
 			} elseif ( in_array( $element->name, self::$sets['header'] ) ) {
 				$text   = Lorem::text( Base::numberBetween( 60, 200 ) );
-				$html[] = substr( $text, 0, strlen( $text ) - 1 );
+				$html[] = substr( $text, 0, - 1 );
 			} else {
 				$html[] = $this->random_apply_element( 'a', Base::numberBetween( 0, 10 ), Lorem::paragraph( Base::numberBetween( 2, 40 ) ) );
 			}

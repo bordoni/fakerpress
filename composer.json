@@ -30,7 +30,7 @@
     "require": {
         "php": ">=7.1.8",
         "lucatume/di52": "~2.1.5",
-        "fakerphp/faker": "^1.13",
+        "fakerphp/faker": "^1.19",
         "nesbot/carbon": "^2.0"
     },
     "config": {

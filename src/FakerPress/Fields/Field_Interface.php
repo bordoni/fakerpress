@@ -1,4 +1,5 @@
 <?php
+
 namespace FakerPress\Fields;
 
 /**
@@ -14,7 +15,7 @@ interface Field_Interface {
 	 *
 	 * @return string Slug of field.
 	 */
-	public function get_slug();
+	public static function get_slug(): string;
 
 	/**
 	 * The slug of field we dealing with.
@@ -89,15 +90,15 @@ interface Field_Interface {
 	public function get_setting( $index, $default = null );
 
 	/**
-	 * Configure this field and it's childs.
+	 * Configure this field and it's children.
 	 *
 	 * @since  0.5.1
 	 *
-	 * @param array  $args        Which settings will be use configure this field.
+	 * @param array $args Which settings will be use configure this field.
 	 *
 	 * @return Field_Interface    Returns an instance of itself be able to chain calls.
 	 */
-	public function setup( array $args = [] );
+	public function init( array $args = [] );
 
 	/**
 	 * Get field instance priority.
@@ -122,7 +123,7 @@ interface Field_Interface {
 	 *
 	 * @since  0.5.2
 	 *
-	 * @uses wp_filter_object_list
+	 * @uses   wp_filter_object_list
 	 *
 	 * @param Field_Interface|array|string|int $search   Search for a given children to remove.
 	 * @param string                           $operator Optional. The logical operation to perform. 'or' means
@@ -150,7 +151,7 @@ interface Field_Interface {
 	 *
 	 * @since  0.5.1
 	 *
-	 * @uses Field_Interface::find_children
+	 * @uses   Field_Interface::find_children
 	 *
 	 * @param Field_Interface|array|string|int $search   Search for a given children to remove.
 	 * @param string                           $operator Optional. The logical operation to perform. 'or' means
@@ -185,7 +186,7 @@ interface Field_Interface {
 	 *
 	 * @since  0.5.1
 	 *
-	 * @param Field_Interface   $parent Which field is the parent of this one.
+	 * @param Field_Interface $parent Which field is the parent of this one.
 	 *
 	 * @return Field_Interface  Returns an instance of itself be able to chain calls.
 	 */
