@@ -102,6 +102,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Feature - Modifications to the internal Modules of FakerPress to enable future work around WP-CLI.
 * Feature - Include a new way to handle Administration Pages, included here to enable future work.
 * Enhancement - Modifications to Select2 Styles for better accessibility usage.
+* Tweak - Faker version dependency updated from `fzaninotto/Faker` to `fakerphp/Faker/`.
 * Tweak - Move everything into the FakerPress namespace.
 * Tweak - Autoload using Composer properly.
 
