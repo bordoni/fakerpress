@@ -1,7 +1,11 @@
 <?php
+
 namespace FakerPress\Provider;
 
 use Faker\Provider\Base;
+use FakerPress\Provider\Image\LoremPicsum;
+use FakerPress\Provider\Image\Placeholder;
+use function FakerPress\carbon;
 
 class WP_Attachment extends Base {
 	public function post_type() {
@@ -9,7 +13,7 @@ class WP_Attachment extends Base {
 	}
 
 	protected static $default = [
-		'ping_status' => [ 'closed', 'open' ],
+		'ping_status'    => [ 'closed', 'open' ],
 		'comment_status' => [ 'closed', 'open' ],
 	];
 
@@ -22,30 +26,30 @@ class WP_Attachment extends Base {
 	 * @var array
 	 */
 	public static $type_defaults = [
-		'placeholder_image' => [
-			'width' => [ 200, 640 ],
+		Placeholder::ID => [
+			'width'  => [ 200, 640 ],
 			'height' => 1.25,
 		],
-		'lorempicsum' => [
-			'width' => [ 1024, 1440 ],
+		LoremPicsum::ID       => [
+			'width'  => [ 1024, 1440 ],
 			'height' => 1.5,
 		],
 	];
 
-	public function attachment_url( $type = 'lorempicsum', $args = [] ) {
+	public function attachment_url( $type = LoremPicsum::ID, $args = [] ) {
 		$url = '';
 
 		// Check if defaults exists
-		if ( ! isset( self::$type_defaults[ $type ] ) ){
+		if ( ! isset( self::$type_defaults[ $type ] ) ) {
 			return $url;
 		}
 
-		$args = wp_parse_args( $args, self::$type_defaults[ $type ] );
+		$args = wp_parse_args( $args, static::$type_defaults[ $type ] );
 
-		if ( 'placeholder_image' === $type ){
-			$url = call_user_func_array( [ $this->generator, 'placeholder_image' ], (array) $args );
-		} elseif ( 'lorempicsum' === $type ){
-			$url = call_user_func_array( [ $this->generator, 'lorempicsum' ], (array) $args );
+		if ( Placeholder::ID === $type ) {
+			$url = call_user_func_array( [ $this->generator, Placeholder::ID ], (array) $args );
+		} elseif ( LoremPicsum::ID === $type ) {
+			$url = call_user_func_array( [ $this->generator, LoremPicsum::ID ], (array) $args );
 		}
 
 		return $url;
@@ -59,7 +63,7 @@ class WP_Attachment extends Base {
 	}
 
 	public function post_content( $html = true, $args = [] ) {
-		if ( true === $html ){
+		if ( true === $html ) {
 			$content = implode( "\n", $this->generator->html_elements( $args ) );
 		} else {
 			$content = implode( "\r\n\r\n", $this->generator->paragraphs( $this->generator->randomDigitNotNull() ) );
@@ -69,12 +73,12 @@ class WP_Attachment extends Base {
 	}
 
 	public function post_author( $haystack = [] ) {
-		if ( empty( $haystack ) ){
+		if ( empty( $haystack ) ) {
 			$haystack = get_users(
 				[
-					'blog_id' => get_current_blog_id(),
+					'blog_id'     => get_current_blog_id(),
 					'count_total' => false,
-					'fields' => 'ID', // When you pass only one field it returns an array of the values
+					'fields'      => 'ID', // When you pass only one field it returns an array of the values
 				]
 			);
 		}
@@ -91,7 +95,7 @@ class WP_Attachment extends Base {
 	}
 
 	public function ping_status( $haystack = [] ) {
-		if ( empty( $haystack ) ){
+		if ( empty( $haystack ) ) {
 			$haystack = static::$default['ping_status'];
 		}
 
@@ -99,7 +103,7 @@ class WP_Attachment extends Base {
 	}
 
 	public function comment_status( $haystack = [] ) {
-		if ( empty( $haystack ) ){
+		if ( empty( $haystack ) ) {
 			$haystack = static::$default['comment_status'];
 		}
 
@@ -107,7 +111,7 @@ class WP_Attachment extends Base {
 	}
 
 	public function menu_order( $haystack = [] ) {
-		if ( empty( $haystack ) ){
+		if ( empty( $haystack ) ) {
 			return 0;
 		}
 
@@ -115,7 +119,7 @@ class WP_Attachment extends Base {
 	}
 
 	public function post_password( $generator = null, $args = [] ) {
-		if ( is_null( $generator ) ){
+		if ( is_null( $generator ) ) {
 			return '';
 		}
 
@@ -123,20 +127,13 @@ class WP_Attachment extends Base {
 	}
 
 	public function post_date( $min = 'now', $max = null ) {
-		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
-		try {
-			$min = new \Carbon\Carbon( $min );
-		} catch ( \Exception $e ) {
+		$min = carbon( $min );
+		if ( is_wp_error( $min ) ) {
 			return null;
 		}
 
-		if ( ! is_null( $max ) ){
-			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
-			try {
-				$max = new \Carbon\Carbon( $max );
-			} catch ( \Exception $e ) {
-				return null;
-			}
+		if ( ! is_null( $max ) ) {
+			$max = carbon( $max );
 		}
 
 		if ( ! is_null( $max ) ) {

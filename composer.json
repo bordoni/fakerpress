@@ -17,6 +17,7 @@
         "files": [
           "src/functions/load.php",
           "src/functions/container.php",
+          "src/functions/date.php",
           "src/functions/variables.php",
           "src/functions/conditionals.php",
           "src/functions/sorting.php",

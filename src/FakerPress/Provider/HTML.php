@@ -3,6 +3,8 @@
 namespace FakerPress\Provider;
 
 use FakerPress\Module\Attachment;
+use FakerPress\Provider\Image\LoremPicsum;
+use FakerPress\Provider\Image\Placeholder;
 use FakerPress\Utils;
 use Faker\Provider\Base;
 use Faker\Provider\Lorem;
@@ -163,7 +165,7 @@ class HTML extends Base {
 	 *
 	 * @return false|string
 	 */
-	private function html_element_img( $element, $sources = [ 'placeholder_image', 'lorempicsum' ] ) {
+	private function html_element_img( $element, $sources = [ Placeholder::ID, LoremPicsum::ID ] ) {
 		if ( is_array( $element ) ) {
 			$element = (object) $element;
 		}
@@ -202,7 +204,7 @@ class HTML extends Base {
 	 *
 	 * @return false|string
 	 */
-	public function get_img_src( $sources = [ 'placeholder_image', 'lorempicsum' ] ) {
+	public function get_img_src( $sources = [ Placeholder::ID, LoremPicsum::ID ] ) {
 		$images       = \FakerPress\Module\Post::fetch( [ 'post_type' => 'attachment' ] );
 		$image        = false;
 		$count_images = count( $images );
@@ -314,7 +316,7 @@ class HTML extends Base {
 		}
 
 		if ( 'img' === $element->name ) {
-			$sources = [ 'placeholder_image', 'lorempicsum' ];
+			$sources = [ LoremPicsum::ID, Placeholder::ID ];
 			if ( is_object( $args ) && $args->sources ) {
 				$sources = $args->sources;
 			}

@@ -1,5 +1,7 @@
 <?php
 namespace FakerPress\Module;
+use FakerPress\Provider\Image\Placeholder;
+use FakerPress\Provider\Image\LoremPicsum;
 use WP_Error;
 use FakerPress;
 use Faker;
@@ -163,12 +165,12 @@ class Attachment extends Abstract_Module {
 	public static function get_providers( $type = 'image' ) {
 		$providers = [
 			[
-				'id'   => 'placeholder_image',
+				'id'   => Placeholder::ID,
 				'text' => esc_attr__( 'Placeholder.com', 'fakerpress' ),
 				'type' => 'image',
 			],
 			[
-				'id'   => 'lorempicsum',
+				'id'   => LoremPicsum::ID,
 				'text' => esc_attr__( 'Lorem Picsum', 'fakerpress' ),
 				'type' => 'image',
 			],

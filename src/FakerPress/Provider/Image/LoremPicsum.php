@@ -8,6 +8,8 @@ use Faker\Provider\Base;
  * @since  0.5.0 Unsplash.it turned into Lorem Picsum
  */
 class LoremPicsum extends Base {
+	const ID = 'lorempicsum';
+
 	/**
 	 * Generates a URL for Lorem Picsum, previosuly known as Unsplash.it
 	 *
