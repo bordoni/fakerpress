@@ -17,7 +17,7 @@ class LoremPicsum extends Base {
 	 * @since  0.4.9  On this version we started to accept Array or Int in the Second Param
 	 * @since  0.5.0  Moved from Unsplash.it to Lorem Picsum
 	 *
-	 * @param  array|int        $width   A range for the images that will be generated, if a int is passed
+	 * @param  array|int        $width   A range for the images that will be generated, if an int is passed
 	 *                                   we use that value always.
 	 * @param  float|array|int  $height  Image height, int for fixed size, array for randomized and
 	 *                                   float to use a ratio

@@ -473,7 +473,7 @@ class Template {
 		}
 
 		// Clean this Variable
-		$name = array_map( 'sanitize_title_with_dashes', $name );
+		$name = array_map( 'sanatize_key', $name );
 
 		if ( ! empty( $this->origin->template_namespace ) ) {
 			$namespace = array_merge( (array) $this->origin->template_namespace, $name );
