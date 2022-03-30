@@ -3,6 +3,7 @@
 namespace FakerPress\Module;
 
 use function FakerPress\get_request_var;
+use function FakerPress\get;
 use function FakerPress\make;
 use FakerPress\Plugin;
 use Faker;
@@ -135,12 +136,12 @@ class User extends Abstract_Module {
 			return esc_attr__( 'Zero is not a good number of users to fake...', 'fakerpress' );
 		}
 
-		$description_size      = get_request_var( 'description_size', [ 1, 5 ] );
-		$description_use_html  = get_request_var( 'use_html', 'off' ) === 'on';
-		$description_html_tags = array_map( 'trim', explode( ',', get_request_var( 'html_tags' ) ) );
+		$description_size      = get( $request, 'description_size', [ 1, 5 ] );
+		$description_use_html  = get( $request, 'use_html', 'off' ) === 'on';
+		$description_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags' ) ) );
 
-		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', get_request_var( 'roles' ) ) ) );
-		$metas = get_request_var(  'meta', [] );
+		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', get( $request, 'roles' ) ) ) );
+		$metas = get( $request, 'meta', [] );
 
 		$results = [];
 
