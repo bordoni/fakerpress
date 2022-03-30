@@ -473,7 +473,7 @@ class Template {
 		}
 
 		// Clean this Variable
-		$name = array_map( 'sanatize_key', $name );
+		$name = array_map( 'sanitize_key', $name );
 
 		if ( ! empty( $this->origin->template_namespace ) ) {
 			$namespace = array_merge( (array) $this->origin->template_namespace, $name );
