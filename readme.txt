@@ -1,10 +1,10 @@
 === FakerPress ===
 Contributors:      bordoni
 Tags:              generator, dummy content, dummy data, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
-Requires at least: 5.0
-Tested up to:      5.9.1
-Requires PHP:      7.1
-Stable tag:        0.6.0
+Requires at least: 5.5
+Tested up to:      6.2
+Requires PHP:      7.4
+Stable tag:        0.6.1
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -98,6 +98,15 @@ Great! There are several ways you can get involved to help make FakerPress bette
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
+
+= 0.6.1 &mdash; 04 of April 2023 =
+
+* Requirement - PHP Version 7.4 required for usage of FakerPress, important step to allow further improvements and tests.
+* Version - Updated composer dependency `lucatume/di52` to version `3.3.1`.
+* Version - Updated composer dependency `fakerphp/faker` to version `1.21`.
+* Version - Updated composer dependency `nesbot/carbon to version `2.66`.
+* Fix - Resolve some errors happening with Carbon and version 8.2 of PHP.
+
 
 = 0.6.0 &mdash; 30 of March 2022 =
 
