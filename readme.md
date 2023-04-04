@@ -6,11 +6,11 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 
 **Contributors:** [bordoni](http://profiles.wordpress.org/bordoni)  
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy+content), [dummy data](http://wordpress.org/plugins/tags/dummy+data), [lorem ipsun](http://wordpress.org/plugins/tags/lorem+ipsun), [admin](http://wordpress.org/plugins/tags/admin), [exemples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [images](http://wordpress.org/plugins/tags/images), [attachments](http://wordpress.org/plugins/tags/attachments), [featured image](http://wordpress.org/plugins/tags/featured+image), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post+type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake+data), [random](http://wordpress.org/plugins/tags/random), [developer](http://wordpress.org/plugins/tags/developer), [dev](http://wordpress.org/plugins/tags/dev), [development](http://wordpress.org/plugins/tags/development), [test](http://wordpress.org/plugins/tags/test), [tests](http://wordpress.org/plugins/tags/tests)  
-**Requires at least:** 5.0  
-**Tested up to:** 5.9.1  
-**Stable tag:** 0.6.0  
+**Requires at least:** 5.5  
+**Tested up to:** 6.2  
+**Stable tag:** 0.6.1  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
-**Requires PHP:** 7.1  
+**Requires PHP:** 7.4  
 **Donate link:** https://fakerpress.com/r/sponsor  
 
 ## Description ##
@@ -96,6 +96,13 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 
 ## Changelog ##
+
+### 0.6.1 &mdash; 04 of April 2023 ###
+* Requirement - PHP Version 7.4 required for usage of FakerPress, important step to allow further improvements and tests.
+* Version - Updated composer dependency `lucatume/di52` to version `3.3.1`.
+* Version - Updated composer dependency `fakerphp/faker` to version `1.21`.
+* Version - Updated composer dependency `nesbot/carbon to version `2.66`.
+* Fix - Resolve some errors happening with Carbon and version 8.2 of PHP.
 
 ### 0.6.0 &mdash; 30 of March 2022 ###
 * Requirement - PHP Version 7.1 required for usage of FakerPress, important step to allow further improvements and tests.
