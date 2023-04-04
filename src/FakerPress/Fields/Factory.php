@@ -2,6 +2,7 @@
 
 namespace FakerPress\Fields;
 
+use lucatume\DI52\ServiceProvider;
 use function FakerPress\get;
 use function FakerPress\make;
 
@@ -12,7 +13,7 @@ use function FakerPress\make;
  *
  * @package FakerPress\Fields
  */
-class Factory extends \tad_DI52_ServiceProvider {
+class Factory extends ServiceProvider {
 	protected $types = [];
 
 	/**

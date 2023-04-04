@@ -2,6 +2,9 @@
 
 namespace FakerPress;
 
+use lucatume\DI52\ServiceProvider;
+use Symfony\Contracts\Service\ServiceProviderInterface;
+
 /**
  * Registers a class as a singleton.
  *
@@ -241,11 +244,11 @@ function isset_var( $slug ) {
 /**
  * Registers a service provider in the container.
  *
- * Service providers must implement the `tad_DI52_ServiceProviderInterface` interface or extend
- * the `tad_DI52_ServiceProvider` class.
+ * Service providers must implement the `ServiceProviderInterface` interface or extend
+ * the `ServiceProvider` class.
  *
- * @see    tad_DI52_ServiceProvider
- * @see    tad_DI52_ServiceProviderInterface
+ * @see    ServiceProvider
+ * @see    ServiceProviderInterface
  *
  * @since  0.6.0
  *

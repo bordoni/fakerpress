@@ -15,9 +15,13 @@ class Field {
 
 	public $container;
 
+	public $heads;
+
 	public $has_container = true;
 
 	public $has_wrap = true;
+
+	public $has_label = false;
 
 	public static $default_container = [
 		'label' => '',
@@ -48,6 +52,96 @@ class Field {
 		'raw',
 	];
 
+	/**
+	 * Stores the Error structure
+	 *
+	 * @since 0.6.1
+	 *
+	 * @var mixed
+	 */
+	public $error;
+
+	/**
+	 *
+	 *
+	 * @since 0.6.1
+	 *
+	 * @var mixed
+	 */
+	public $callback;
+
+	/**
+	 *
+	 *
+	 * @since 0.6.1
+	 *
+	 * @var mixed
+	 */
+	public $conditional;
+
+	/**
+	 *
+	 *
+	 * @since 0.6.1
+	 *
+	 * @var mixed
+	 */
+	public $label;
+
+	/**
+	 *
+	 *
+	 * @since 0.6.1
+	 *
+	 * @var mixed
+	 */
+	public $description;
+
+	/**
+	 *
+	 *
+	 * @since 0.6.1
+	 *
+	 * @var mixed
+	 */
+	public $attributes;
+
+	/**
+	 *
+	 *
+	 * @since 0.6.1
+	 *
+	 * @var mixed
+	 */
+	public $actions;
+
+	/**
+	 *
+	 *
+	 * @since 0.6.1
+	 *
+	 * @var mixed
+	 */
+	public $blocks;
+
+	/**
+	 *
+	 *
+	 * @since 0.6.1
+	 *
+	 * @var mixed
+	 */
+	public $class;
+
+	/**
+	 *
+	 *
+	 * @since 0.6.1
+	 *
+	 * @var mixed
+	 */
+	public $wrap;
+
 	public function __construct( $type, $field, $container = [] ) {
 		// Default Error Structure
 		$this->error = false;
@@ -71,7 +165,7 @@ class Field {
 		// set the ID
 		$this->type = $type;
 		if ( ! isset( $this->field->id ) ) {
-			$this->id = (array) Utils::abbr( uniqid() );
+			$this->id = (array) Utils::abbr( uniqid( '', true ) );
 		} else {
 			$this->id = (array) $this->field->id;
 		}

@@ -2,6 +2,8 @@
 
 namespace FakerPress;
 
+use lucatume\DI52\ServiceProvider;
+
 /**
  * Class Assets.
  *
@@ -9,7 +11,7 @@ namespace FakerPress;
  *
  * @package StellarWP\Jobvite
  */
-class Assets extends \tad_DI52_ServiceProvider{
+class Assets extends ServiceProvider {
 
 	public function register() {
 		$admin = make( Admin::class );

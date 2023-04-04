@@ -107,7 +107,7 @@ abstract class Field_Abstract implements Field_Interface {
 		$ids[] = $this->get_id();
 
 		$plugin = Plugin::$slug;
-		$type = static::get_slug();
+		$type   = static::get_slug();
 
 		$id = "{$plugin}-field-{$type}-" . implode( '-', (array) $ids );
 
@@ -254,23 +254,21 @@ abstract class Field_Abstract implements Field_Interface {
 	 * {@inheritDoc}
 	 */
 	public function add_children( $children ) {
-		$i=1;
-		$children = array_map( static function( $child ) {
+		$children = array_map( static function ( $child ) {
 			return make( Factory::class )->make( $child );
 		}, $children );
-		$i=1;
 
 		// Remove non instances of Field_Interface.
 		$children = array_filter( (array) $children, static function ( $child ) {
 			return $child instanceof Field_Interface;
 		} );
 
-		$this->children = array_merge( $this->children, $children );
-
 		// Set the parent of all children to the current field.
-		$this->children = array_map( function ( $children ) {
+		$children = array_map( function ( $children ) {
 			return $children->set_parent( $this );
-		}, $this->children );
+		}, $children );
+
+		$this->children = array_merge( $this->children, $children );
 
 		return $this->sort_children();
 	}

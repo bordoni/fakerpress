@@ -1,7 +1,9 @@
 <?php
 namespace FakerPress;
 
-class Plugin extends \tad_DI52_ServiceProvider {
+use lucatume\DI52\ServiceProvider;
+
+class Plugin extends ServiceProvider {
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *

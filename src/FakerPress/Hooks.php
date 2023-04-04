@@ -17,6 +17,7 @@ namespace FakerPress;
 
 use FakerPress\Admin\Menu;
 use FakerPress\Admin\View\Factory as View_Factory;
+use lucatume\DI52\ServiceProvider;
 
 /**
  * Class Hooks.
@@ -25,7 +26,7 @@ use FakerPress\Admin\View\Factory as View_Factory;
  *
  * @package FakerPress
  */
-class Hooks extends \tad_DI52_ServiceProvider {
+class Hooks extends ServiceProvider {
 
 	/**
 	 * Binds and sets up implementations.

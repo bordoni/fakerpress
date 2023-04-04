@@ -9,7 +9,7 @@ namespace FakerPress;
  *
  * Stellar Dependency Injection Container.
  */
-class Container extends \tad_DI52_Container {
+class Container extends \lucatume\DI52\Container {
 
 	/**
 	 * @since 0.6.0
