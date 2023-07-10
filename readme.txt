@@ -101,6 +101,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 = 0.6.2 &mdash; 10 of July 2023 =
 
+* Version - Updated composer dependency `fakerphp/faker` to version `1.23`.
+* Tweak - Include `lucatume/di52` and `nesbot/carbon` Strauss dependencies, which prevents conflicts with other plugins.
+* Fix - Prevent namespace problems with nonexistent classes, specially around Exceptions.
 * Fix - Resolve a problem with Numbers Meta throwing errors on PHP 8.0+ [#168]
 
 = 0.6.1 &mdash; 04 of April 2023 =
@@ -108,7 +111,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Requirement - PHP Version 7.4 required for usage of FakerPress, important step to allow further improvements and tests.
 * Version - Updated composer dependency `lucatume/di52` to version `3.3.1`.
 * Version - Updated composer dependency `fakerphp/faker` to version `1.21`.
-* Version - Updated composer dependency `nesbot/carbon to version `2.66`.
+* Version - Updated composer dependency `nesbot/carbon` to version `2.66`.
 * Fix - Resolve some errors happening with Carbon and version 8.2 of PHP.
 
 = 0.6.0 &mdash; 30 of March 2022 =
