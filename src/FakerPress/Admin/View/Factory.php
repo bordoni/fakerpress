@@ -3,7 +3,7 @@
 namespace FakerPress\Admin\View;
 
 use FakerPress\Plugin;
-use lucatume\DI52\ServiceProvider;
+use FakerPress\Contracts\Service_Provider;
 use function FakerPress\get_request_var;
 
 /**
@@ -13,7 +13,7 @@ use function FakerPress\get_request_var;
  *
  * @package FakerPress\Admin\View
  */
-class Factory extends ServiceProvider {
+class Factory extends Service_Provider {
 	/**
 	 * Store the views that were initialized.
 	 *

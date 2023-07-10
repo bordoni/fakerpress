@@ -1,9 +1,9 @@
 <?php
 namespace FakerPress;
 
-use lucatume\DI52\ServiceProvider;
+use FakerPress\Contracts\Service_Provider;
 
-class Plugin extends ServiceProvider {
+class Plugin extends Service_Provider {
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
@@ -11,7 +11,7 @@ class Plugin extends ServiceProvider {
 	 *
 	 * @var string
 	 */
-	const VERSION = '0.6.0';
+	const VERSION = '0.6.2';
 
 	/**
 	 * @since 0.6.0

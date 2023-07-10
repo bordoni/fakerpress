@@ -9,15 +9,13 @@
  * remove_action( 'some_action', [ make( FakerPress\Hooks::class ), 'some_method' ] );
  *
  * @since   0.6.0
- *
- * @package StellarWP\Jobvite
  */
 
 namespace FakerPress;
 
 use FakerPress\Admin\Menu;
 use FakerPress\Admin\View\Factory as View_Factory;
-use lucatume\DI52\ServiceProvider;
+use FakerPress\Contracts\Service_Provider;
 
 /**
  * Class Hooks.
@@ -26,7 +24,7 @@ use lucatume\DI52\ServiceProvider;
  *
  * @package FakerPress
  */
-class Hooks extends ServiceProvider {
+class Hooks extends Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.
