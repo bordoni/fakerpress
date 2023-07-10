@@ -1,4 +1,5 @@
 <?php
+
 namespace FakerPress\Provider;
 
 use Faker\Provider\Base;
@@ -9,19 +10,19 @@ use function FakerPress\make;
 class WP_Meta extends Base {
 	public $meta_object = [
 		'name' => 'post',
-		'id' => 0,
+		'id'   => 0,
 	];
 
 	public function set_meta_object( $name, $id ) {
 		$this->meta_object = (object) $this->meta_object;
 
 		$this->meta_object->name = $name;
-		$this->meta_object->id = $id;
+		$this->meta_object->id   = $id;
 	}
 
 	private function meta_parse_qty( $qty, $elements = null ) {
 		$_qty = array_filter( (array) $qty );
-		$min = reset( $_qty );
+		$min  = reset( $_qty );
 
 		$qty = (int) ( is_array( $qty ) && count( $_qty ) > 1 ? call_user_func_array( [ $this->generator, 'numberBetween' ], $qty ) : reset( $_qty ) );
 		if ( $qty < $min ) {
@@ -38,22 +39,36 @@ class WP_Meta extends Base {
 	private function meta_parse_separator( $separator ) {
 		$separator = stripcslashes( $separator );
 
-		$search = [
+		$search    = [
 			'\n',
 			'\r',
 			'\t',
 		];
-		$replace = [
+		$replace   = [
 			"\n",
 			"\r",
 			"\t",
 		];
 		$separator = str_replace( $search, $replace, $separator );
+
 		return $separator;
 	}
 
+	/**
+	 * Given a number or an array of numbers, return a random number between them, and take into account the weight.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string[]|int[]|int|string $number Range of numbers or a single number.
+	 * @param string|int                $weight Weight of the number.
+	 *
+	 * @return string|int
+	 */
 	public function meta_type_numbers( $number = [ 0, 9 ], $weight = 50 ) {
-		$number = ( is_array( $number ) ? call_user_func_array( [ $this->generator, 'numberBetween' ], $number ) : $number );
+		// If the number is an array, then we assume it's a range.
+		if ( is_array( $number ) && count( $number ) > 1 ) {
+			$this->generator->numberBetween( ...$number );
+		}
 
 		return $this->generator->optional( (int) $weight, null )->randomElement( (array) $number );
 	}
@@ -62,7 +77,7 @@ class WP_Meta extends Base {
 		$separator = $this->meta_parse_separator( $separator );
 
 		$elements = explode( ',', $elements );
-		$qty = $this->meta_parse_qty( $qty, $elements );
+		$qty      = $this->meta_parse_qty( $qty, $elements );
 
 		$value = $this->generator->optional( (int) $weight, null )->randomElements( (array) $elements, $qty );
 		if ( is_null( $value ) ) {
@@ -77,7 +92,7 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_words( $qty = 8, $weight = 50 ) {
-		$qty = $this->meta_parse_qty( $qty );
+		$qty      = $this->meta_parse_qty( $qty );
 		$sentence = $this->generator->optional( (int) $weight, '' )->sentence( $qty );
 
 		return make( Utils::class )->remove_sentence_period( $sentence );
@@ -85,7 +100,7 @@ class WP_Meta extends Base {
 
 	public function meta_type_text( $type = 'sentences', $qty = 3, $separator = "\r\n\r\n", $weight = 50 ) {
 		$separator = $this->meta_parse_separator( $separator );
-		$qty = $this->meta_parse_qty( $qty );
+		$qty       = $this->meta_parse_qty( $qty );
 
 		if ( 'sentences' === $type ) {
 			$value = $this->generator->optional( (int) $weight, null )->sentences( $qty );
@@ -101,12 +116,12 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_html( $elements, $qty = 6, $weight = 50 ) {
-		$qty = $this->meta_parse_qty( $qty );
+		$qty      = $this->meta_parse_qty( $qty );
 		$elements = explode( ',', $elements );
 
 		$value = $this->generator->optional( (int) $weight, null )->html_elements( [
 			'elements' => $elements,
-			'qty' => $qty,
+			'qty'      => $qty,
 		] );
 
 		if ( is_null( $value ) ) {
@@ -117,7 +132,7 @@ class WP_Meta extends Base {
 	}
 
 	public function meta_type_wp_query( $query, $weight = 50 ) {
-		$args = wp_parse_args( $query, [] );
+		$args           = wp_parse_args( $query, [] );
 		$args['fields'] = 'ids';
 
 		// Make easier for Attachment Queries
@@ -221,7 +236,7 @@ class WP_Meta extends Base {
 		foreach ( $template as $key => $tag ) {
 			preg_match( '|^\{\% *([^\ ]*) *\%\}$|i', $tag, $_parsed );
 			if ( ! empty( $_parsed ) ) {
-				list( $element, $term ) = $_parsed;
+				[ $element, $term ] = $_parsed;
 				switch ( $term ) {
 					case 'suffix':
 						$text[] = $this->generator->companySuffix;
@@ -261,7 +276,7 @@ class WP_Meta extends Base {
 		foreach ( $template as $key => $tag ) {
 			preg_match( '|^\{\% *([^\ ]*) *\%\}$|i', $tag, $_parsed );
 			if ( ! empty( $_parsed ) ) {
-				list( $element, $term ) = $_parsed;
+				[ $element, $term ] = $_parsed;
 				switch ( $term ) {
 					case 'title':
 						$text[] = $this->generator->title( $gender );
@@ -288,7 +303,7 @@ class WP_Meta extends Base {
 
 	public function meta_type_geo( $template, $weight = 50 ) {
 		$template = explode( '|', $template );
-		$tags = [
+		$tags     = [
 			'country',
 			'country_code',
 			'country_abbr',
@@ -312,7 +327,7 @@ class WP_Meta extends Base {
 		foreach ( $template as $key => $tag ) {
 			preg_match( '|^\{\% *([^\ ]*) *\%\}$|i', $tag, $_parsed );
 			if ( ! empty( $_parsed ) ) {
-				list( $element, $term ) = $_parsed;
+				[ $element, $term ] = $_parsed;
 				switch ( $term ) {
 					case 'country':
 						$text[] = $this->generator->country;
@@ -388,7 +403,8 @@ class WP_Meta extends Base {
 			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 			try {
 				$max = new \Carbon\Carbon( $interval['max'] );
-			} catch ( \Exception $e ) {}
+			} catch ( \Exception $e ) {
+			}
 		}
 
 		if ( ! isset( $max ) ) {
