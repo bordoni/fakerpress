@@ -99,6 +99,10 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
+= 0.6.2 &mdash; 10 of July 2023 =
+
+* Fix - Resolve a problem with Numbers Meta throwing errors on PHP 8.0+ [#168]
+
 = 0.6.1 &mdash; 04 of April 2023 =
 
 * Requirement - PHP Version 7.4 required for usage of FakerPress, important step to allow further improvements and tests.
