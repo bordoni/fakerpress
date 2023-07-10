@@ -27,7 +27,7 @@ if ( PHP_VERSION_ID < 70400 ) {
 		if ( ! is_plugin_active( plugin_basename( __FP_FILE__ ) ) ) {
 			wp_print_styles( 'open-sans' );
 			echo "<style>body{margin: 0 2px;font-family: 'Open Sans',sans-serif;font-size: 13px;line-height: 1.5em;}</style>";
-			echo '<b>FakerPress</b> requires PHP 7.1 or higher, and the plugin has now disabled itself.' .
+			echo '<b>FakerPress</b> requires PHP 7.4 or higher, and the plugin has now disabled itself.' .
 			     '<br />' .
 			     'To allow better control over dates, advanced security improvements and performance gain.' .
 			     '<br />' .

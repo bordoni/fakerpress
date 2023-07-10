@@ -17,7 +17,7 @@ Whenever you create a new Theme or Plugin you will always need to create custom 
 
 Our goal with this plugin is to fill this gap where you have problem with a good solution both for Developers and for Users of WordPress.
 
-> **Note: This plugin requires PHP 7.1 or higher to be activated.**
+> **Note: This plugin requires PHP 7.4 or higher to be activated.**
 
 [**Checkout our GitHub Repository**](http://fakerpress.com/r/github)
 
@@ -106,7 +106,6 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Version - Updated composer dependency `fakerphp/faker` to version `1.21`.
 * Version - Updated composer dependency `nesbot/carbon to version `2.66`.
 * Fix - Resolve some errors happening with Carbon and version 8.2 of PHP.
-
 
 = 0.6.0 &mdash; 30 of March 2022 =
 
