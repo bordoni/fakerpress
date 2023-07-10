@@ -63,13 +63,10 @@
       "packages": [
         "lucatume/di52",
         "fakerphp/faker",
-        "nesbot/carbon",
-        "psr/container"
+        "nesbot/carbon"
       ],
       "exclude_from_prefix": {
-        "file_patterns": []
-      },
-      "delete_vendor_files": true
+      }
     }
   }
 }

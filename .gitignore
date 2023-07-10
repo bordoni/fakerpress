@@ -2,7 +2,7 @@
 ###########
 .ssh
 .svn
-.bin
+bin/
 
 # WordPress Project
 .org
