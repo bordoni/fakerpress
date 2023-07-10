@@ -1,45 +1,75 @@
 {
-    "description": "FakerPress",
-    "name": "bordoni/fakerpress",
-    "type": "wordpress-plugin",
-    "keywords": [
-        "wordpress",
-        "dummy data",
-        "faker",
-        "fake data",
-        "generator"
+  "description": "FakerPress",
+  "name": "bordoni/fakerpress",
+  "type": "wordpress-plugin",
+  "keywords": [
+    "wordpress",
+    "dummy data",
+    "faker",
+    "fake data",
+    "generator"
+  ],
+  "homepage": "https://fakerpress.com/",
+  "license": "GPL-2.0",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "autoload": {
+    "files": [
+      "src/functions/load.php",
+      "src/functions/container.php",
+      "src/functions/date.php",
+      "src/functions/variables.php",
+      "src/functions/conditionals.php",
+      "src/functions/sorting.php",
+      "src/functions/assets.php"
     ],
-    "homepage": "https://fakerpress.com/",
-    "license": "GPL-2.0",
-    "minimum-stability": "stable",
-    "prefer-stable": true,
-    "autoload": {
-        "files": [
-          "src/functions/load.php",
-          "src/functions/container.php",
-          "src/functions/date.php",
-          "src/functions/variables.php",
-          "src/functions/conditionals.php",
-          "src/functions/sorting.php",
-          "src/functions/assets.php"
-        ],
-        "psr-4": {
-            "FakerPress\\": "src/FakerPress/",
-            "FakerPress\\Dev\\": "dev/src/"
-        }
-    },
-    "require": {
-        "lucatume/di52": "~3.3.1",
-        "fakerphp/faker": "^1.21",
-        "nesbot/carbon": "^2.66"
-    },
-    "config": {
-        "preferred-install": {
-            "*": "dist"
-        },
-        "sort-packages": true,
-        "platform":{
-            "php":"7.4"
-        }
+    "psr-4": {
+      "FakerPress\\": "src/FakerPress/",
+      "FakerPress\\Dev\\": "dev/src/"
     }
+  },
+  "require": {
+    "lucatume/di52": "~3.3.1",
+    "fakerphp/faker": "^1.21",
+    "nesbot/carbon": "^2.66"
+  },
+  "config": {
+    "preferred-install": {
+      "*": "dist"
+    },
+    "sort-packages": true,
+    "platform": {
+      "php": "7.4"
+    }
+  },
+  "scripts": {
+    "strauss": [
+      "test -f ./bin/strauss.phar || mkdir -p ./bin/ && curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.0/strauss.phar",
+      "@php bin/strauss.phar"
+    ],
+    "post-install-cmd": [
+      "@strauss"
+    ],
+    "post-update-cmd": [
+      "@strauss"
+    ]
+  },
+  "extra": {
+    "strauss": {
+      "target_directory": "vendor/vendor-prefixed",
+      "namespace_prefix": "FakerPress\\ThirdParty\\",
+      "classmap_prefix": "FakerPress_ThirdParty_",
+      "constant_prefix": "FAKERPRESS__",
+      "packages": [
+        "lucatume/di52",
+        "fakerphp/faker",
+        "nesbot/carbon",
+        "psr/container"
+      ],
+      "exclude_from_prefix": {
+        "file_patterns": []
+      },
+      "delete_vendor_files": true
+    }
+  }
 }
