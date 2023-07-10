@@ -1,7 +1,7 @@
 <?php
 namespace FakerPress;
 
-use \Carbon\Carbon;
+use FakerPress\ThirdParty\Carbon\Carbon;
 
 Class Dates {
 

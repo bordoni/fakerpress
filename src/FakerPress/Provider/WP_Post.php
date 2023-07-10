@@ -43,23 +43,23 @@ class WP_Post extends Base {
 
 		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 		try {
-			$min = new \Carbon\Carbon( array_shift( $interval ) );
+			$min = new \FakerPress\ThirdParty\Carbon\Carbon( array_shift( $interval ) );
 		} catch ( \Exception $e ) {
-			$min = new \Carbon\Carbon( 'today' );
+			$min = new \FakerPress\ThirdParty\Carbon\Carbon( 'today' );
 			$min = $min->startOfDay();
 		}
 
 		if ( ! empty( $interval ) ) {
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = new \Carbon\Carbon( array_shift( $interval ) );
+				$max = new \FakerPress\ThirdParty\Carbon\Carbon( array_shift( $interval ) );
 			} catch ( \Exception $e ) {
 
 			}
 		}
 
 		if ( ! isset( $max ) ) {
-			$max = new \Carbon\Carbon( 'now' );
+			$max = new \FakerPress\ThirdParty\Carbon\Carbon( 'now' );
 		}
 
 		// If max has no Time set it to the end of the day

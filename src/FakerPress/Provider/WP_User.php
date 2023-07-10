@@ -100,16 +100,16 @@ class WP_User extends Base {
 
 	public function user_registered( $min = 'now', $max = null ) {
 		try {
-			$min = new \Carbon\Carbon( $min );
-		} catch ( Exception $e ) {
+			$min = new \FakerPress\ThirdParty\Carbon\Carbon( $min );
+		} catch ( \Exception $e ) {
 			return null;
 		}
 
 		if ( ! is_null( $max ) ) {
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = new \Carbon\Carbon( $max );
-			} catch ( Exception $e ) {
+				$max = new \FakerPress\ThirdParty\Carbon\Carbon( $max );
+			} catch ( \Exception $e ) {
 				return null;
 			}
 		}
