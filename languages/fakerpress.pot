@@ -24,7 +24,7 @@ msgid "https://fakerpress.com"
 msgstr ""
 
 #. Description of the plugin
-msgid "FakerPress is a clean way to generate fake data to your WordPress instalation, great for developers who need testing"
+msgid "FakerPress is a clean way to generate fake data to your WordPress installation, great for developers who need testing"
 msgstr ""
 
 #. Author of the plugin
@@ -1644,7 +1644,7 @@ msgstr ""
 
 #: src/templates/pages/attachments.php:45
 #: src/templates/pages/posts.php:76
-msgid "What posts can be choosen as Parent to the ones created"
+msgid "What posts can be chosen as Parent to the ones created"
 msgstr ""
 
 #: src/templates/pages/attachments.php:58
