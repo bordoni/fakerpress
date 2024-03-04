@@ -3,7 +3,7 @@ Contributors:      bordoni
 Tags:              generator, dummy content, dummy data, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
 Requires at least: 5.5
 Tested up to:      6.2
-Requires PHP:      7.4
+Requires PHP:      8.1
 Stable tag:        0.6.2
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -17,7 +17,7 @@ Whenever you create a new Theme or Plugin you will always need to create custom 
 
 Our goal with this plugin is to fill this gap where you have problem with a good solution both for Developers and for Users of WordPress.
 
-> **Note: This plugin requires PHP 7.4 or higher to be activated.**
+> **Note: This plugin requires PHP 8.1 or higher to be activated.**
 
 [**Checkout our GitHub Repository**](http://fakerpress.com/r/github)
 

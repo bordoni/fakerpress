@@ -29,13 +29,13 @@
     }
   },
   "require": {
-    "lucatume/di52": "~3.3",
-    "fakerphp/faker": "^1.23",
-    "nesbot/carbon": "^2.66"
+    "lucatume/di52": "^3.3.5",
+    "fakerphp/faker": "^v1.23.1",
+    "nesbot/carbon": "^3.0.2"
   },
   "config": {
     "platform": {
-      "php": "7.4"
+      "php": "8.1"
     }
   },
   "scripts": {
