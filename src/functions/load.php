@@ -1,21 +1,14 @@
 <?php
-namespace FakerPress;
-
-use function \FakerPress\register_provider;
-
 /**
- * Provides functions to handle the loading operations of the plugin.
+ * Loads the whole FakerPress plugin.
  *
- * The functions are defined in the global namespace to allow easier loading in the main plugin file.
+ * Please keep in mind that this is the only function that should be called from the main plugin file.
+ * This function will load the plugin, all its dependencies, and it will boot the plugin.
+ * Only function or class that is not namespaced.
  *
  * @since 0.6.0
  */
-
-/**
- * Register and load the service provider for loading the plugin.
- *
- * @since 0.6.0
- */
-function load_plugin() {
-	register_provider( Plugin::class );
+function fakerpress_load_plugin(): FakerPress\Plugin {
+	require_once dirname( __FP_FILE__ ) . '/src/FakerPress/Plugin.php';
+	return FakerPress\Plugin::boot();
 }

@@ -14,6 +14,8 @@ use FakerPress\Contracts\Service_Provider;
 class Assets extends Service_Provider {
 
 	public function register() {
+		singleton( static::class, $this );
+
 		$admin = make( Admin::class );
 
 		// Register a global CSS files

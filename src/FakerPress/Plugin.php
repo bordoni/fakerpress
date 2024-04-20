@@ -1,9 +1,10 @@
 <?php
+
 namespace FakerPress;
 
 use FakerPress\Contracts\Service_Provider;
 
-class Plugin extends Service_Provider {
+class Plugin {
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
@@ -11,7 +12,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * @var string
 	 */
-	const VERSION = '0.6.2';
+	public const VERSION = '0.6.2';
 
 	/**
 	 * @since 0.6.0
@@ -71,23 +72,64 @@ class Plugin extends Service_Provider {
 	public static $_ext_domain = 'https://fakerpress.com';
 
 	/**
-	 * Set up the Plugin's properties.
+	 * Store if the plugin has been booted or not.
 	 *
-	 * This always executes even if the required plugins are not present.
+	 * @since 0.6.2
 	 *
-	 * @since TBD
+	 * @var bool Whether the plugin has been booted or not.
 	 */
-	public function register() {
+	protected static bool $booted = false;
+
+	/**
+	 * Boots the plugin.
+	 *
+	 * @since 0.6.2
+	 *
+	 * @return Plugin
+	 */
+	public static function boot(): Plugin {
+		// We assume that if we have the booted variable autoloading is complete.
+		if ( static::$booted ) {
+			return make( static::class );
+		}
+
+		static::$booted = true;
+
+		$plugin = new static();
+		$plugin->register();
+
+		return $plugin;
+	}
+
+	/**
+	 * Plugin constructor.
+	 *
+	 * This is intentionally empty and protected to prevent direct instantiation, please use the `boot` method.
+	 *
+	 * @since 0.6.2
+	 */
+	protected function __construct() {
+		// Intentionally empty.
+	}
+
+	/**
+	 * Registers the plugin.
+	 *
+	 * Do not attempt to interact with FakerPress before this method is called.
+	 *
+	 * @since 0.6.2
+	 */
+	protected function register(): void {
 		$this->plugin_path = trailingslashit( dirname( static::$_file ) );
 		$this->plugin_dir  = trailingslashit( basename( $this->plugin_path ) );
 		$this->plugin_url  = plugins_url( $this->plugin_dir, $this->plugin_path );
 
-		// Register this provider as the main one and use a bunch of aliases.
-		$this->container->singleton( static::class, $this );
+		$this->autoload();
+
+		// Register this as a singleton on the container.
+		singleton( static::class, $this );
 
 		$this->bind_implementations();
-		$this->register_hooks();
-		$this->register_assets();
 
 		/**
 		 * Triggers an action for loading of functionality.
@@ -98,46 +140,39 @@ class Plugin extends Service_Provider {
 	}
 
 	/**
+	 * Autoload the classes for the plugin via Composer.
+	 *
+	 * @since 0.6.2
+	 *
+	 * @return void
+	 */
+	protected function autoload(): void {
+		// Load Composer Vendor Modules
+		require_once $this->plugin_path . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+
+		// Load Composer Vendor Modules
+		require_once $this->plugin_path . 'vendor-prefixed' . DIRECTORY_SEPARATOR . 'autoload.php';
+	}
+
+	/**
 	 * Register the implementations of the plugin with the container.
 	 *
-	 * @since TBD
+	 * @since 0.6.2
 	 */
-	protected function bind_implementations() {
-		$this->container->singleton( Admin::class, Admin::class );
-		$this->container->singleton( Admin\Menu::class, Admin\Menu::class );
-		$this->container->singleton( Ajax::class, Ajax::class );
-		$this->container->singleton( Utils\Assets::class, Utils\Assets::class );
-		$this->container->singleton( Utils::class, Utils::class );
+	protected function bind_implementations(): void {
+		singleton( Admin::class, Admin::class );
+		singleton( Admin\Menu::class, Admin\Menu::class );
+		singleton( Ajax::class, Ajax::class );
+		singleton( Utils\Assets::class, Utils\Assets::class );
+		singleton( Utils::class, Utils::class );
 
 		// Register all the Service Providers.
-		$this->container->register( Module\Factory::class );
-		$this->container->register( Admin\View\Factory::class );
-		$this->container->register( Fields\Factory::class );
-	}
+		register( Assets::class );
+		register( Hooks::class );
 
-	/**
-	 * Registers the provider handling all the 1st level filters and actions for Tickets.
-	 *
-	 * @since TBD
-	 */
-	protected function register_assets() {
-		$assets = new Assets( $this->container );
-		$assets->register();
-
-		$this->container->singleton( Assets::class, $assets );
-	}
-
-	/**
-	 * Registers the provider handling all the 1st level filters and actions for Tickets.
-	 *
-	 * @since TBD
-	 */
-	protected function register_hooks() {
-		$hooks = new Hooks( $this->container );
-		$hooks->register();
-
-		// Allow Hooks to be removed, by having them registered to the container
-		$this->container->singleton( Hooks::class, $hooks );
+		register( Module\Factory::class );
+		register( Admin\View\Factory::class );
+		register( Fields\Factory::class );
 	}
 
 	/**
@@ -145,13 +180,13 @@ class Plugin extends Service_Provider {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @uses plugin_dir_path
+	 * @uses  plugin_dir_path
 	 *
-	 * @param  string $append A string to be appended to the root path
+	 * @param string $append A string to be appended to the root path
 	 *
 	 * @return string         The path after being appended by the variable
 	 */
-	public static function path( $append = '' ) {
+	public static function path( string $append = '' ): string {
 		return (string) make( static::class )->plugin_path . str_replace( '/', DIRECTORY_SEPARATOR, $append );
 	}
 
@@ -159,12 +194,14 @@ class Plugin extends Service_Provider {
 	 * Return a URL relative to the plugin root
 	 *
 	 * @since 0.1.0
-	 * @param  string $file   A string to be appended to the root url
-	 * @uses plugins_url
+	 * @uses  plugins_url
+	 *
+	 * @param string $file A string to be appended to the root url
+	 *
 	 * @return string         The url to the file
 	 */
-	public static function url( $file = '' ) {
-		return (string) make( static::class )->plugin_url .  $file;
+	public static function url( string $file = '' ): string {
+		return (string) make( static::class )->plugin_url . $file;
 	}
 
 	/**
@@ -172,16 +209,16 @@ class Plugin extends Service_Provider {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @uses admin_url
-	 * @uses wp_parse_args
-	 * @uses add_query_arg
+	 * @uses  admin_url
+	 * @uses  wp_parse_args
+	 * @uses  add_query_arg
 	 *
-	 * @param  string|array $args Arguments for the admin URL
-	 * @param  string       $hash Hash for the admin URL
+	 * @param string|array $args Arguments for the admin URL
+	 * @param string       $hash Hash for the admin URL
 	 *
 	 * @return string       The url to the file
 	 */
-	public static function admin_url( $args = '', $hash = false ) {
+	public static function admin_url( $args = '', $hash = false ): string {
 		/**
 		 * Define the array of defaults
 		 */
@@ -201,29 +238,30 @@ class Plugin extends Service_Provider {
 	 * Returns a URL for the external project website
 	 *
 	 * @since 0.3.2
-	 * @param  string $path Hash for the admin URL
-	 * @uses esc_url_raw
+	 * @uses  esc_url_raw
+	 *
+	 * @param string $path Hash for the admin URL
 	 *
 	 * @return string         The url the external website with the appended $path
 	 */
-	public static function ext_site_url( $path = '/' ) {
+	public static function ext_site_url( string $path = '/' ): string {
 		return esc_url_raw( static::$_ext_domain . ( ! empty( $path ) ? $path : '/' ), [ 'http', 'https' ] );
 	}
 
 	public static function get( $name, $default = false ) {
 		$options = static::all();
-		$value = get( $options, $name, $default );
+		$value   = get( $options, $name, $default );
 
 		return $value;
 	}
 
 	public static function update( $name = null, $value = false ) {
 		$options = static::all();
-		$opts = [];
+		$opts    = [];
 
 		foreach ( (array) $name as $k => $index ) {
 			if ( 0 === $k ) {
-				$opts[ -1 ] = &$options;
+				$opts[ - 1 ] = &$options;
 			}
 
 			if ( count( $name ) - 1 !== $k && ! isset( $opts[ $k - 1 ][ $index ] ) ) {
@@ -247,6 +285,7 @@ class Plugin extends Service_Provider {
 
 	public static function all() {
 		$defaults = [];
+
 		return get_option( static::$slug . '-plugin-options', $defaults );
 	}
 }

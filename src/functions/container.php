@@ -2,8 +2,8 @@
 
 namespace FakerPress;
 
-use lucatume\DI52\ServiceProvider;
-use Symfony\Contracts\Service\ServiceProviderInterface;
+use FakerPress\Contracts\Service_Provider;
+use FakerPress\Contracts\Container;
 
 /**
  * Registers a class as a singleton.
@@ -65,7 +65,6 @@ function singleton( $slug, $class, array $after_build_methods = null ) {
 	Container::init()->singleton( $slug, $class, $after_build_methods );
 }
 
-
 /**
  * Registers a class.
  *
@@ -126,7 +125,7 @@ function singleton( $slug, $class, array $after_build_methods = null ) {
  *                                                    the built object after the `__construct` method; the methods
  *                                                    will be called each time after the instance construction.
  */
-function register( $slug, $class, array $after_build_methods = null ) {
+function bind( $slug, $class, array $after_build_methods = null ) {
 	Container::init()->bind( $slug, $class, $after_build_methods );
 }
 
@@ -244,17 +243,15 @@ function isset_var( $slug ) {
 /**
  * Registers a service provider in the container.
  *
- * Service providers must implement the `ServiceProviderInterface` interface or extend
- * the `ServiceProvider` class.
+ * Service providers must extend the `Service_Provider` class.
  *
- * @see    ServiceProvider
- * @see    ServiceProviderInterface
+ * @see    Service_Provider
  *
  * @since  0.6.0
  *
  * @param string $provider_class
  */
-function register_provider( $provider_class ) {
+function register( string $provider_class ): void {
 	Container::init()->register( $provider_class );
 }
 

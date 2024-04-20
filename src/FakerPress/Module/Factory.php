@@ -2,7 +2,7 @@
 
 namespace FakerPress\Module;
 
-use lucatume\DI52\ServiceProvider;
+use FakerPress\Contracts\Service_Provider;
 
 /**
  * Class Factory
@@ -11,7 +11,7 @@ use lucatume\DI52\ServiceProvider;
  *
  * @package FakerPress\Module
  */
-class Factory extends ServiceProvider {
+class Factory extends Service_Provider {
 	/**
 	 * Store the modules that were initialized.
 	 *

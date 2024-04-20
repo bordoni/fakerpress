@@ -38,12 +38,7 @@ if ( PHP_VERSION_ID < 70400 ) {
 		deactivate_plugins( __FP_FILE__ );
 	}
 } else {
-	// Load Composer Vendor Modules
-	require_once plugin_dir_path( __FP_FILE__ ) . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-
-	// Load Composer Vendor Modules
-	require_once plugin_dir_path( __FP_FILE__ ) . 'vendor-prefixed' . DIRECTORY_SEPARATOR . 'autoload.php';
-
+	require_once dirname( __FP_FILE__ ) . '/src/functions/load.php';
 	// Add a second action to handle the case where Common is not loaded, we still want to let the user know what is happening.
-	add_action( 'plugins_loaded', '\FakerPress\load_plugin', 50 );
+	add_action( 'plugins_loaded', 'fakerpress_load_plugin', 50 );
 }

@@ -2,7 +2,7 @@
 Contributors:      bordoni
 Tags:              generator, dummy content, dummy data, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
 Requires at least: 5.5
-Tested up to:      6.2
+Tested up to:      6.5.2
 Requires PHP:      7.4
 Stable tag:        0.6.2
 License:           GPLv2 or later
@@ -99,9 +99,10 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
-= 0.6.2 &mdash; 10 of July 2023 =
+= 0.6.2 &mdash; 22 of April 2024 =
 
 * Version - Updated composer dependency `fakerphp/faker` to version `1.23`.
+* Tweak - Include properly use Composer for autoloading and dependencies without conflicting with other plugins.
 * Tweak - Include `lucatume/di52` and `nesbot/carbon` Strauss dependencies, which prevents conflicts with other plugins.
 * Fix - Prevent namespace problems with nonexistent classes, specially around Exceptions.
 * Fix - Resolve a problem with Numbers Meta throwing errors on PHP 8.0+ [#168]

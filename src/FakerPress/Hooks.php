@@ -32,6 +32,8 @@ class Hooks extends Service_Provider {
 	 * @since 0.6.0
 	 */
 	public function register() {
+		singleton( static::class, $this );
+
 		$this->add_actions();
 		$this->add_filters();
 	}

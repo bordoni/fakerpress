@@ -15,7 +15,6 @@
   "prefer-stable": true,
   "autoload": {
     "files": [
-      "src/functions/load.php",
       "src/functions/container.php",
       "src/functions/date.php",
       "src/functions/variables.php",
@@ -40,7 +39,7 @@
   },
   "scripts": {
     "strauss": [
-      "test -f ./bin/strauss.phar || mkdir -p ./bin/ && curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.0/strauss.phar",
+      "test -f ./bin/strauss.phar || mkdir -p ./bin/ && curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.17.0/strauss.phar",
       "@php -d display_errors=on bin/strauss.phar"
     ],
     "post-install-cmd": [
