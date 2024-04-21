@@ -101,7 +101,12 @@ class Meta extends Abstract_Module {
 	/**
 	 * @inheritDoc
 	 */
-	public function generate(): Interface_Module {
+	public function generate( bool $force = false ): Interface_Module {
+		// Only regenerate if there is no data, or we are forcing it.
+		if ( isset( $this->data['meta_value'] ) && ! $force ) {
+			return $this;
+		}
+
 		// Allow a bunch of params
 		$arguments = func_get_args();
 
