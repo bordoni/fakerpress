@@ -102,6 +102,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 = 0.6.2 &mdash; 22 of April 2024 =
 
 * Version - Updated composer dependency `fakerphp/faker` to version `1.23`.
+* Feature - Include consistent user generation, to avoid users feeling a disjointed props @helgatheviking
+* Tweak - Include the ability to regenerate module data, allowing us to fetch values from earlier generations.
 * Tweak - Include properly use Composer for autoloading and dependencies without conflicting with other plugins.
 * Tweak - Include `lucatume/di52` and `nesbot/carbon` Strauss dependencies, which prevents conflicts with other plugins.
 * Fix - Prevent namespace problems with nonexistent classes, specially around Exceptions.
