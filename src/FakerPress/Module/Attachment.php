@@ -16,7 +16,7 @@ class Attachment extends Abstract_Module {
 	 *
 	 * @var string
 	 */
-	public static $meta_key_original_url = '_fakerpress_orginal_url';
+	public static $meta_key_original_url = '_fakerpress_original_url';
 
 	protected $dependencies = [
 		Faker\Provider\Lorem::class,

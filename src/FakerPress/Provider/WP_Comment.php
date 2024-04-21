@@ -151,7 +151,7 @@ class WP_Comment extends Base {
 	}
 
 	public function comment_date( $min = 'now', $max = null ) {
-		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 		try {
 			$min = new \FakerPress\ThirdParty\Carbon\Carbon( $min );
 		} catch ( \Exception $e ) {
@@ -159,7 +159,7 @@ class WP_Comment extends Base {
 		}
 
 		if ( ! is_null( $max ) ) {
-			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 			try {
 				$max = new \FakerPress\ThirdParty\Carbon\Carbon( $max );
 			} catch ( \Exception $e ) {
