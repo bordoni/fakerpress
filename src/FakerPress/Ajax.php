@@ -119,7 +119,7 @@ class Ajax {
 			]
 		);
 
-		if ( ! wp_verify_nonce( $request->nonce, Plugin::$slug . '-select-search_terms' ) ) {
+		if ( ! wp_verify_nonce( $request->nonce, Plugin::$slug . '-select2-search_terms' ) ) {
 			$response->message = esc_attr__( 'Invalid nonce verification', 'fakerpress' );
 
 			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
