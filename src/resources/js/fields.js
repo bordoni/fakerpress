@@ -482,7 +482,7 @@
 					} );
 				},
 
-				is_removeable: function() {
+				is_removable: function() {
 					if ( 1 === this.$.items.length ){
 						var $item = this.$.items.eq( 0 );
 
@@ -537,7 +537,7 @@
 
 				},
 
-				is_removeable: function() {
+				is_removable: function() {
 					if ( 1 === this.$.items.length ){
 						var $item = this.$.items.eq( 0 );
 
@@ -654,7 +654,7 @@
 			fieldset.$.items = fieldset.$.wrap.children( fieldset.selector.item );
 
 			// If there is just one meta, disable the remove button
-			if ( fieldset.is_removeable() ) {
+			if ( fieldset.is_removable() ) {
 				fieldset.$.items.eq( 0 )
 					.find( fp.fieldset.selector.remove ).prop( 'disabled', true )
 					.end().find( fieldset.selector.name ).prop( 'required', false );

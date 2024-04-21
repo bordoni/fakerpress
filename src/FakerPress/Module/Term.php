@@ -80,7 +80,7 @@ class Term extends Abstract_Module {
 
 		$flagged = get_option( 'fakerpress.module_flag.' . $this::get_slug(), [] );
 
-		// Ensure that this option is an Array by reseting the variable.
+		// Ensure that this option is an Array by resetting the variable.
 		if ( ! is_array( $flagged ) ){
 			$flagged = [];
 		}

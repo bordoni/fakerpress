@@ -16,7 +16,7 @@ The [issue tracker](https://github.com/bordoni/fakerpress/issues) is the preferr
 <a name="tracker-labels"></a>
 ## Labels on issue tracker
 
-There is an idea behind this naming convetion, and we will stick to it because it's faily important to keep thing tidy if we want to move forward fast and clean.
+There is an idea behind this naming convention, and we will stick to it because it's faily important to keep thing tidy if we want to move forward fast and clean.
 
 We will split the labels in two pieces, groups of labels and a label name, following the pattern below:
 

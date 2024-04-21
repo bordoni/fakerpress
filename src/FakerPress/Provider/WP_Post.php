@@ -41,7 +41,7 @@ class WP_Post extends Base {
 		$format = 'Y-m-d H:i:s';
 		$interval = (array) $interval;
 
-		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 		try {
 			$min = new \FakerPress\ThirdParty\Carbon\Carbon( array_shift( $interval ) );
 		} catch ( \Exception $e ) {
@@ -50,7 +50,7 @@ class WP_Post extends Base {
 		}
 
 		if ( ! empty( $interval ) ) {
-			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
+			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 			try {
 				$max = new \FakerPress\ThirdParty\Carbon\Carbon( array_shift( $interval ) );
 			} catch ( \Exception $e ) {

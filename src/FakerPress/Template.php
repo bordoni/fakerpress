@@ -43,7 +43,7 @@ class Template {
 	protected $global = [];
 
 	/**
-	 * Allow chaing if class will extract data from the local context
+	 * Allow chaining if class will extract data from the local context
 	 *
 	 * @since  0.5.1
 	 *
@@ -197,7 +197,7 @@ class Template {
 
 		/**
 		 * Allows filtering the the getting of Context variables, also short circuiting
-		 * Following the same strucuture as WP Core
+		 * Following the same structure as WP Core
 		 *
 		 * @since  4.6.2
 		 *
@@ -441,7 +441,7 @@ class Template {
 				 * A more Specific Filter that will include the template name
 				 *
 				 * @since  4.6.2
-				 * @since  4.7.20   The $name param no longers contains the extension
+				 * @since  4.7.20   The $name param no longer contains the extension
 				 *
 				 * @param string $file      Complete path to include the PHP File
 				 * @param array  $name      Template name
@@ -531,7 +531,7 @@ class Template {
 
 		// Only do this if really needed (by default it wont).
 		if ( true === $this->template_context_extract && ! empty( $this->context ) ) {
-			// We don't allow Extrating of a variable called $name
+			// We don't allow extracting of a variable called $name
 			if ( isset( $this->context['name'] ) ) {
 				unset( $this->context['name'] );
 			}

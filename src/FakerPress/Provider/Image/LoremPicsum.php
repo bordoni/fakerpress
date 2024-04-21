@@ -11,7 +11,7 @@ class LoremPicsum extends Base {
 	const ID = 'lorempicsum';
 
 	/**
-	 * Generates a URL for Lorem Picsum, previosuly known as Unsplash.it
+	 * Generates a URL for Lorem Picsum, previously known as Unsplash.it
 	 *
 	 * @since  0.4.2
 	 * @since  0.4.9  On this version we started to accept Array or Int in the Second Param
