@@ -278,4 +278,28 @@ class Admin extends Template {
 
 		return implode( ' ', $more );
 	}
+
+	/**
+	 * Filters the array of row meta for each plugin in the Plugins list table.
+	 *
+	 * @since 0.6.3
+	 *
+	 * @param array<int, string> $plugin_meta An array of the plugin's metadata.
+	 * @param string             $plugin_file Path to the plugin file relative to the plugins directory.
+	 *
+	 * @return array<int, string> Updated array of the plugin's metadata.
+	 */
+	public function filter_plugin_row_meta( array $plugin_meta, $plugin_file ) {
+		if ( 'fakerpress/fakerpress.php' !== $plugin_file ) {
+			return $plugin_meta;
+		}
+
+		$plugin_meta[] = sprintf(
+			'<a href="%1$s"><span class="dashicons dashicons-star-filled" aria-hidden="true" style="font-size:14px;line-height:1.3"></span>%2$s</a>',
+			'https://fakerpress.com/r/sponsor',
+			esc_html_x( 'Sponsor', 'verb', 'fakerpress' )
+		);
+
+		return $plugin_meta;
+	}
 }

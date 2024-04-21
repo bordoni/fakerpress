@@ -80,6 +80,7 @@ class Hooks extends Service_Provider {
 
 		add_filter( 'admin_title', [ $admin, '_filter_set_admin_page_title' ], 15, 2 );
 
+		add_filter( 'plugin_row_meta', [ $admin, 'filter_plugin_row_meta' ], 10, 2 );
 
 		// Allow WordPress
 		add_filter( 'fakerpress.messages.allowed_html', [ $admin, '_filter_messages_allowed_html' ], 1, 1 );
