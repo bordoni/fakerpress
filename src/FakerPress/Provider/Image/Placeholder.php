@@ -38,7 +38,7 @@ class Placeholder extends Base {
 			$height = call_user_func_array( [ $this->generator, 'numberBetween' ], $height );
 		}
 
-		$url = "https://via.placeholder.com/{$width}x{$height}/";
+		$url = "https://placehold.co/{$width}x{$height}/";
 
 		return $url;
 	}

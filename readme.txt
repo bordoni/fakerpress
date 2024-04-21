@@ -106,6 +106,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Tweak - Include the ability to regenerate module data, allowing us to fetch values from earlier generations.
 * Tweak - Include properly use Composer for autoloading and dependencies without conflicting with other plugins.
 * Tweak - Include `lucatume/di52` and `nesbot/carbon` Strauss dependencies, which prevents conflicts with other plugins.
+* Fix - Switch from using Placeholder.com to Placehold.co, as the first one was not working properly anymore. props @cgarofalo
 * Fix - Searching terms nonce had a typo, preventing terms search from working as expected. props @cyrusdavid
 * Fix - Prevent namespace problems with nonexistent classes, specially around Exceptions.
 * Fix - Resolve a problem with Numbers Meta throwing errors on PHP 8.0+ [#168]
