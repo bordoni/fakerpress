@@ -32,6 +32,23 @@
     "fakerphp/faker": "^1.23",
     "nesbot/carbon": "^2.66"
   },
+  "authors": [
+      {
+          "name": "Gustavo Bordoni",
+          "homepage": "https://bordoni.me/"
+      }
+  ],
+  "support": {
+      "issues": "https://fakerpress.com/r/github/issues",
+      "forum": "https://wordpress.org/support/plugin/fakerpress",
+      "source": "https://fakerpress.com/r/github"
+  },
+  "funding": [
+      {
+          "type": "github",
+          "url": "https://fakerpress.com/r/sponsor"
+      }
+  ],
   "config": {
     "platform": {
       "php": "7.4"
