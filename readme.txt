@@ -1,6 +1,6 @@
 === FakerPress ===
 Contributors:      bordoni
-Tags:              generator, dummy content, dummy data, lorem ipsun, admin, exemples, testing, images, attachments, featured image, taxonomies, users, post type, faker, fake data, random, developer, dev, development, test, tests
+Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 5.5
 Tested up to:      6.5.2
 Requires PHP:      7.4
