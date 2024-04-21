@@ -97,6 +97,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
+### 0.6.3 &mdash; 21 of April 2024 ###
+* Fix - Prevent fatal errors because of malformed composer autoload files.
+
 ### 0.6.2 &mdash; 21 of April 2024 ###
 * Version - Updated composer dependency `fakerphp/faker` to version `1.23`.
 * Feature - Include consistent user generation, to avoid users feeling a disjointed. props @helgatheviking

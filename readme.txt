@@ -4,7 +4,7 @@ Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 5.5
 Tested up to:      6.5.2
 Requires PHP:      7.4
-Stable tag:        0.6.2
+Stable tag:        0.6.3
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -98,6 +98,10 @@ Great! There are several ways you can get involved to help make FakerPress bette
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
+
+= 0.6.3 &mdash; 21 of April 2024 =
+
+* Fix - Prevent fatal errors because of malformed composer autoload files.
 
 = 0.6.2 &mdash; 21 of April 2024 =
 
