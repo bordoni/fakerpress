@@ -8,14 +8,132 @@ use function FakerPress\make;
 
 class WP_User extends Base {
 
-	public function user_login( $login = null ) {
-		if ( is_null( $login ) ) {
-			$login = $this->generator->userName;
-		}
-		return $login;
+	/**
+	 * Returns a first name, if nothing was passed, it will generate a random one.
+	 *
+	 * @since 0.1.0
+	 * @since 0.6.2 Introduced type safety.
+	 *
+	 * @param string|null $first_name
+	 * @param string[]    $gender
+	 *
+	 * @return string|null
+	 */
+	public function first_name( ?string $first_name = null, array $gender = [ 'male', 'female' ] ): ?string {
+		return $first_name ?? $this->generator->firstName( $this->generator->randomElements( $gender, 1 ) );
 	}
 
-	public function user_pass( $pass = null, $qty = 10 ) {
+	/**
+	 * Returns a last name, if nothing was passed, it will generate a random one.
+	 *
+	 * @since 0.1.0
+	 * @since 0.6.2 Introduced type safety.
+	 *
+	 * @param string|null $last_name
+	 *
+	 * @return string|null
+	 */
+	public function last_name( ?string $last_name = null ): ?string {
+		return $last_name ?? $this->generator->lastName;
+	}
+
+	/**
+	 * Returns a random username, if nothing was passed, it will generate a random one.
+	 *
+	 * @since 0.1.0
+	 * @since 0.6.2 Introduced type safety.
+	 *
+	 * @param string|null $login
+	 *
+	 * @return string|null
+	 */
+	public function user_login( ?string $login = null ): ?string {
+		return $login ?? $this->generator->userName;
+	}
+
+	/**
+	 * Returns a random nicename, if nothing was passed, it will generate a random one.
+	 *
+	 * @since 0.1.0
+	 * @since 0.6.2 Introduced type safety.
+	 *
+	 * @param string|null $nicename
+	 *
+	 * @return string|null
+	 */
+	public function user_nicename( ?string $nicename = null ): ?string {
+		return $nicename ?? $this->generator->userName;
+	}
+
+	/**
+	 * Returns a random URL, if nothing was passed, it will generate a random one.
+	 *
+	 * @since 0.1.0
+	 * @since 0.6.2 Introduced type safety.
+	 *
+	 * @param string|null $url
+	 *
+	 * @return string|null
+	 */
+	public function user_url( ?string $url = null ): ?string {
+		return $url ?? $this->generator->url;
+	}
+
+	/**
+	 * Returns a random email, if nothing was passed, it will generate a random one.
+	 *
+	 * @since 0.1.0
+	 * @since 0.6.2 Introduced type safety.
+	 *
+	 * @param string|null $email
+	 *
+	 * @return string|null
+	 */
+	public function user_email( ?string $email = null ): ?string {
+		return $email ?? $this->generator->safeEmail;
+	}
+
+	/**
+	 * Returns a random display name, if nothing was passed, it will generate a random one.
+	 *
+	 * @since 0.1.0
+	 * @since 0.6.2 Introduced type safety.
+	 *
+	 * @param string|null $display_name
+	 * @param string[]    $gender
+	 *
+	 * @return string|null
+	 */
+	public function display_name( ?string $display_name = null, array $gender = [ 'male', 'female' ] ): ?string {
+		return $display_name ?? $this->generator->firstName( $this->generator->randomElements( $gender, 1 ) );
+	}
+
+	/**
+	 * Returns a random nickname, if nothing was passed, it will generate a random one.
+	 *
+	 * @since 0.1.0
+	 * @since 0.6.2 Introduced type safety.
+	 *
+	 * @param string|null $nickname
+	 *
+	 * @return string|null
+	 */
+	public function nickname( ?string $nickname = null ): ?string {
+		return $nickname ?? $this->generator->userName;
+	}
+
+	/**
+	 * Returns a random password, if nothing was passed, it will generate a random one.
+	 *
+	 * @since 0.1.0
+	 * @since 0.6.2 Introduced type safety.
+	 *
+	 * @param string|null $pass
+	 * @param int		 $qty
+	 *
+	 * @return string|null
+	 */
+	public function user_pass( ?string $pass = null, int $qty = 10 ): ?string {
 		if ( is_null( $pass ) ) {
 			if ( function_exists( 'wp_generate_password' ) ) {
 				$pass = wp_generate_password( $qty );
@@ -26,64 +144,18 @@ class WP_User extends Base {
 		return $pass;
 	}
 
-	public function role( $role = null ) {
-		if ( is_null( $role ) ) {
-			$role = array_keys( get_editable_roles() );
-		}
-
-		return $this->generator->randomElement( $role );
-	}
-
-	public function user_nicename( $nicename = null ) {
-		if ( is_null( $nicename ) ) {
-			$nicename = $this->generator->userName;
-		}
-		return $nicename;
-	}
-
-	public function user_url( $url = null ) {
-		if ( is_null( $url ) ) {
-			$url = $this->generator->url;
-		}
-		return $url;
-	}
-
-	public function user_email( $email = null ) {
-		if ( is_null( $email ) ) {
-			$email = $this->generator->safeEmail;
-		}
-		return $email;
-	}
-
-	public function display_name( $display_name = null, $gender = [ 'male', 'female' ] ) {
-		if ( is_null( $display_name ) ) {
-			$display_name = $this->generator->firstName( $this->generator->randomElements( $gender, 1 ) );
-		}
-		return $display_name;
-	}
-
-	public function nickname( $nickname = null ) {
-		if ( is_null( $nickname ) ) {
-			$nickname = $this->generator->userName;
-		}
-		return $nickname;
-	}
-
-	public function first_name( $first_name = null, $gender = [ 'male', 'female' ] ) {
-		if ( is_null( $first_name ) ) {
-			$first_name = $this->generator->firstName( $this->generator->randomElements( $gender, 1 ) );
-		}
-		return $first_name;
-	}
-
-	public function last_name( $last_name = null ) {
-		if ( is_null( $last_name ) ) {
-			$last_name = $this->generator->lastName;
-		}
-		return $last_name;
-	}
-
-	public function description( $html = true, $args = [] ) {
+	/**
+	 * Returns a random description.
+	 *
+	 * @since 0.1.0
+	 * @since 0.6.2 Introduced type safety.
+	 *
+	 * @param bool $html Whether to return HTML or plain text.
+	 * @param array $args
+	 *
+	 * @return string|null
+	 */
+	public function description( $html = true, $args = [] ): ?string {
 		$defaults = [
 			'qty' => [ 5, 15 ],
 		];
@@ -96,6 +168,20 @@ class WP_User extends Base {
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Returns a random role, if nothing was passed, it will pick a random one from the available roles.
+	 *
+	 * @since 0.1.0
+	 * @since 0.6.2 Introduced type safety.
+	 *
+	 * @param string[] $role
+	 *
+	 * @return string
+	 */
+	public function role( array $role = [] ): string {
+		return $this->generator->randomElement( $role ?? array_keys( get_editable_roles() ) );
 	}
 
 	public function user_registered( $min = 'now', $max = null ) {

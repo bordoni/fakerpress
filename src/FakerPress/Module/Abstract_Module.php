@@ -409,8 +409,12 @@ abstract class Abstract_Module implements Interface_Module {
 	/**
 	 * @inheritDoc
 	 */
-	public function generate(): Interface_Module {
+	public function generate( bool $force = false ): Interface_Module {
 		foreach ( $this->data as $name => $item ) {
+			if ( ! $force && $this->has_value( $name ) ) {
+				continue;
+			}
+
 			$this->data[ $name ]->value = $this->apply( $item );
 		}
 
@@ -446,5 +450,28 @@ abstract class Abstract_Module implements Interface_Module {
 		}
 
 		return $values;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function get( string $key ): ?object {
+		return $this->data[ $key ] ?? null;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function get_value( string $key ) {
+		$data = $this->get( $key );
+		return $data->value ?? null;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function has_value( string $key ): bool {
+		$data = $this->get( $key );
+		return isset( $data->value );
 	}
 }

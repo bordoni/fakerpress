@@ -158,16 +158,21 @@ class User extends Abstract_Module {
 			$this->set( 'user_registered', 'yesterday', 'now' );
 
 			$this->set( [
-				'user_login',
-				'user_pass',
-				'user_nicename',
-				'user_url',
-				'user_email',
-				'display_name',
-				'nickname',
 				'first_name',
 				'last_name',
+				'user_pass',
+				'user_url',
 			] );
+
+			$this->generate();
+
+			$username_from_generated_first_last = strtolower( implode( '.', [ $this->get_value( 'first_name' ), $this->get_value( 'last_name' ) ] ) );
+
+			$this->set( 'user_login', $username_from_generated_first_last );
+			$this->set( 'user_nicename', $username_from_generated_first_last );
+			$this->set( 'user_email', $username_from_generated_first_last . '@' . Faker\Provider\Internet::safeEmailDomain() );
+			$this->set( 'display_name', $this->get_value( 'first_name' ) );
+			$this->set( 'nickname', $username_from_generated_first_last );
 
 			$user_id = $this->generate()->save();
 
