@@ -261,7 +261,7 @@ abstract class Abstract_Module implements Interface_Module {
 	 * Modules extending this Abstract should use this module to make sure their data is properly saved as the actual
 	 * save method is final.
 	 *
-	 * @since TBD
+	 * @since 0.6.4
 	 *
 	 * @param mixed           $response
 	 * @param array           $data

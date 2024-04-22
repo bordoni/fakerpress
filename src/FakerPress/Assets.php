@@ -7,7 +7,7 @@ use FakerPress\Contracts\Service_Provider;
 /**
  * Class Assets.
  *
- * @since   TBD
+ * @since   0.6.4
  *
  * @package StellarWP\Jobvite
  */

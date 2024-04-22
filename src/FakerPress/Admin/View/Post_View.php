@@ -11,7 +11,7 @@ use function FakerPress\make;
 /**
  * Class Post_View
  *
- * @since   TBD
+ * @since   0.6.4
  *
  * @package FakerPress\Admin\View
  */

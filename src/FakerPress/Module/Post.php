@@ -119,7 +119,7 @@ class Post extends Abstract_Module {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 0.6.4
 	 *
 	 * @throws \Exception
 	 *
