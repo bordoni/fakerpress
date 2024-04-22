@@ -10,28 +10,29 @@ jobs:
     runs-on: ubuntu-latest
     name: Generate Readme
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 1
 
     - name: Install composer
-      uses: php-actions/composer@v5
+      uses: php-actions/composer@v6
+      env:
+        COMPOSER_PROCESS_TIMEOUT: 2000
       with:
-        php_version: 7.3
-        version: 1
+        php_version: 7.4
 
     - name: Execute the markdown Readme generation script
       run: dev/generate-markdown-readme
 
     - name: Commit readme file
-      uses: stefanzweifel/git-auto-commit-action@v4
+      uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: Apply readme.md Changes
         branch: main
         file_pattern: readme.md
 
     - name: Commit readme.php file
-      uses: stefanzweifel/git-auto-commit-action@v4
+      uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: Apply data/readme.php Changes
         branch: main
