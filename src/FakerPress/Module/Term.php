@@ -5,7 +5,7 @@ use function FakerPress\get;
 use function FakerPress\get_request_var;
 use FakerPress\Plugin;
 use FakerPress\Utils;
-use Faker;
+use FakerPress\ThirdParty\Faker;
 use FakerPress;
 
 class Term extends Abstract_Module {
@@ -13,7 +13,7 @@ class Term extends Abstract_Module {
 	 * @inheritDoc
 	 */
 	protected $dependencies = [
-		Faker\Provider\Lorem::class,
+		FakerPress\ThirdParty\Faker\Provider\Lorem::class,
 	];
 
 	public $meta = false;

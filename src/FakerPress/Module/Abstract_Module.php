@@ -2,8 +2,8 @@
 
 namespace FakerPress\Module;
 
-use Faker\Generator;
-use Faker\Provider\Base;
+use FakerPress\ThirdParty\Faker\Generator;
+use FakerPress\ThirdParty\Faker\Provider\Base;
 use function FakerPress\is_truthy;
 
 /**
@@ -109,7 +109,7 @@ abstract class Abstract_Module implements Interface_Module {
 	 */
 	public function get_faker(): Generator {
 		if ( ! $this->faker ) {
-			$this->faker = \Faker\Factory::create();
+			$this->faker = \FakerPress\ThirdParty\Faker\Factory::create();
 
 			// We need to merge the Provider to the Dependencies, so everything is loaded.
 			$providers = array_merge( $this->get_dependencies(), (array) $this->get_provider_class() );

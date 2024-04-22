@@ -4,7 +4,7 @@ namespace FakerPress\Module;
 
 use FakerPress\Admin;
 use FakerPress\Plugin;
-use Faker;
+use FakerPress\ThirdParty\Faker;
 use FakerPress;
 use function FakerPress\make;
 use function FakerPress\get_request_var;
@@ -16,8 +16,8 @@ class Post extends Abstract_Module {
 	 * @inheritDoc
 	 */
 	protected $dependencies = [
-		Faker\Provider\Lorem::class,
-		Faker\Provider\DateTime::class,
+		FakerPress\ThirdParty\Faker\Provider\Lorem::class,
+		FakerPress\ThirdParty\Faker\Provider\DateTime::class,
 		FakerPress\Provider\HTML::class,
 	];
 
@@ -212,8 +212,7 @@ class Post extends Abstract_Module {
 						continue;
 					}
 
-					make( Meta::class )->object( $post_id )->generate( $meta['type'], $meta['name'], $meta )->save();
-
+					make( Meta::class )->object( $post_id )->with( $meta['type'], $meta['name'], $meta )->generate()->save();
 				}
 			}
 

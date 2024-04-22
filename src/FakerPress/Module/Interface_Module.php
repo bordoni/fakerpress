@@ -2,8 +2,8 @@
 
 namespace FakerPress\Module;
 
-use Faker\Generator;
-use Faker\Provider\Base;
+use FakerPress\ThirdParty\Faker\Generator;
+use FakerPress\ThirdParty\Faker\Provider\Base;
 
 interface Interface_Module {
 

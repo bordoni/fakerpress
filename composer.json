@@ -75,7 +75,8 @@
       "packages": [
         "lucatume/di52",
         "nesbot/carbon",
-        "psr/container"
+        "psr/container",
+        "fakerphp/faker"
       ],
       "exclude_from_prefix": {
         "file_patterns": []

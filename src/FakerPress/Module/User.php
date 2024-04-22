@@ -6,7 +6,7 @@ use function FakerPress\get_request_var;
 use function FakerPress\get;
 use function FakerPress\make;
 use FakerPress\Plugin;
-use Faker;
+use FakerPress\ThirdParty\Faker;
 use FakerPress;
 
 class User extends Abstract_Module {
@@ -15,8 +15,8 @@ class User extends Abstract_Module {
 	 * @inheritDoc
 	 */
 	protected $dependencies = [
-		Faker\Provider\Lorem::class,
-		Faker\Provider\DateTime::class,
+		FakerPress\ThirdParty\Faker\Provider\Lorem::class,
+		FakerPress\ThirdParty\Faker\Provider\DateTime::class,
 		FakerPress\Provider\HTML::class,
 	];
 
@@ -170,7 +170,7 @@ class User extends Abstract_Module {
 
 			$this->set( 'user_login', $username_from_generated_first_last );
 			$this->set( 'user_nicename', $username_from_generated_first_last );
-			$this->set( 'user_email', $username_from_generated_first_last . '@' . Faker\Provider\Internet::safeEmailDomain() );
+			$this->set( 'user_email', $username_from_generated_first_last . '@' . FakerPress\ThirdParty\Faker\Provider\Internet::safeEmailDomain() );
 			$this->set( 'display_name', $this->get_value( 'first_name' ) );
 			$this->set( 'nickname', $username_from_generated_first_last );
 

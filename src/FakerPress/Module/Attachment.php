@@ -4,7 +4,7 @@ use FakerPress\Provider\Image\Placeholder;
 use FakerPress\Provider\Image\LoremPicsum;
 use WP_Error;
 use FakerPress;
-use Faker;
+use FakerPress\ThirdParty\Faker;
 
 class Attachment extends Abstract_Module {
 
@@ -19,8 +19,8 @@ class Attachment extends Abstract_Module {
 	public static $meta_key_original_url = '_fakerpress_orginal_url';
 
 	protected $dependencies = [
-		Faker\Provider\Lorem::class,
-		Faker\Provider\DateTime::class,
+		FakerPress\ThirdParty\Faker\Provider\Lorem::class,
+		FakerPress\ThirdParty\Faker\Provider\DateTime::class,
 		FakerPress\Provider\HTML::class,
 		FakerPress\Provider\Image\Placeholder::class,
 		FakerPress\Provider\Image\LoremPicsum::class,
@@ -120,7 +120,9 @@ class Attachment extends Abstract_Module {
 		$attachment_id = media_handle_sideload( $file, $post_parent_id );
 
 		// download_url requires deleting the file
-		@unlink( $temporary_file );
+		if ( file_exists( $temporary_file ) ) {
+			 unlink( $temporary_file );
+		}
 
 		/**
 		* We don't want to pass something to $id
@@ -128,7 +130,9 @@ class Attachment extends Abstract_Module {
 		* So this checks for errors
 		*/
 		if ( is_wp_error( $attachment_id ) ) {
-			@unlink( $temporary_file );
+			if ( file_exists( $temporary_file ) ) {
+				 unlink( $temporary_file );
+			}
 			return $attachment_id;
 		}
 
@@ -162,11 +166,11 @@ class Attachment extends Abstract_Module {
 	 *
 	 * @return array  With ID, Text and Type
 	 */
-	public static function get_providers( $type = 'image' ) {
+	public static function get_providers( string $type = 'image' ): array {
 		$providers = [
 			[
 				'id'   => Placeholder::ID,
-				'text' => esc_attr__( 'Placeholder.com', 'fakerpress' ),
+				'text' => esc_attr__( 'Placehold.co', 'fakerpress' ),
 				'type' => 'image',
 			],
 			[

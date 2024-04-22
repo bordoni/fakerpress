@@ -2,7 +2,7 @@
 
 namespace FakerPress;
 
-use Faker;
+use FakerPress\ThirdParty\Faker;
 
 class Utils {
 	/**

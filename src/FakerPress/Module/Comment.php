@@ -4,7 +4,7 @@ namespace FakerPress\Module;
 
 use FakerPress\Plugin;
 use FakerPress\Utils;
-use Faker;
+use FakerPress\ThirdParty\Faker;
 use FakerPress;
 use function FakerPress\make;
 use function FakerPress\get;
@@ -16,8 +16,8 @@ class Comment extends Abstract_Module {
 	 * @inheritDoc
 	 */
 	protected $dependencies = [
-		Faker\Provider\Lorem::class,
-		Faker\Provider\DateTime::class,
+		FakerPress\ThirdParty\Faker\Provider\Lorem::class,
+		FakerPress\ThirdParty\Faker\Provider\DateTime::class,
 		FakerPress\Provider\HTML::class,
 	];
 

@@ -1,7 +1,7 @@
 <?php
 namespace FakerPress\Provider;
 
-use Faker\Provider\Base;
+use FakerPress\ThirdParty\Faker\Provider\Base;
 use FakerPress;
 use FakerPress\Utils;
 use function FakerPress\make;
@@ -110,7 +110,7 @@ class WP_Post extends Base {
 
 		$excerpt = implode( "\n\n", $excerpt );
 
-		return $this->generator->optional( $weight, '' )->randomElement( (array) $excerpt );
+		return $this->generator->optional( $weight / 100, '' )->randomElement( (array) $excerpt );
 	}
 
 	public function post_author( $haystack = [] ) {
@@ -128,7 +128,7 @@ class WP_Post extends Base {
 	}
 
 	public function post_parent( $haystack = [], $weight = 70 ) {
-		return $this->generator->optional( $weight, 0 )->randomElement( (array) $haystack );
+		return $this->generator->optional( $weight / 100, 0 )->randomElement( (array) $haystack );
 	}
 
 	public function ping_status( $haystack = [] ) {
@@ -219,7 +219,7 @@ class WP_Post extends Base {
 				}
 
 				// Select the elements based on qty
-				$output[ $taxonomy ] = $this->generator->optional( (int) $rate, null )->randomElements( $terms, (int) $qty );
+				$output[ $taxonomy ] = $this->generator->optional( ( (int) $rate ) / 100, null )->randomElements( $terms, (int) $qty );
 			}
 		}
 

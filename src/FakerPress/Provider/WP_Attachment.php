@@ -2,7 +2,7 @@
 
 namespace FakerPress\Provider;
 
-use Faker\Provider\Base;
+use FakerPress\ThirdParty\Faker\Provider\Base;
 use FakerPress\Provider\Image\LoremPicsum;
 use FakerPress\Provider\Image\Placeholder;
 use function FakerPress\carbon;

@@ -2,7 +2,7 @@
 
 namespace FakerPress\Module;
 
-use Faker;
+use FakerPress\ThirdParty\Faker;
 use FakerPress;
 
 /**
@@ -21,15 +21,15 @@ class Meta extends Abstract_Module {
 	 * @var string[]
 	 */
 	protected $dependencies = [
-		Faker\Provider\Base::class,
-		Faker\Provider\Lorem::class,
-		Faker\Provider\DateTime::class,
+		FakerPress\ThirdParty\Faker\Provider\Base::class,
+		FakerPress\ThirdParty\Faker\Provider\Lorem::class,
+		FakerPress\ThirdParty\Faker\Provider\DateTime::class,
 		FakerPress\Provider\HTML::class,
-		Faker\Provider\Internet::class,
-		Faker\Provider\UserAgent::class,
-		Faker\Provider\en_US\Company::class,
-		Faker\Provider\en_US\Address::class,
-		Faker\Provider\en_US\Person::class,
+		FakerPress\ThirdParty\Faker\Provider\Internet::class,
+		FakerPress\ThirdParty\Faker\Provider\UserAgent::class,
+		FakerPress\ThirdParty\Faker\Provider\en_US\Company::class,
+		FakerPress\ThirdParty\Faker\Provider\en_US\Address::class,
+		FakerPress\ThirdParty\Faker\Provider\en_US\Person::class,
 	];
 
 
@@ -98,23 +98,7 @@ class Meta extends Abstract_Module {
 		return $this;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public function generate( bool $force = false ): Interface_Module {
-		// Only regenerate if there is no data, or we are forcing it.
-		if ( isset( $this->data['meta_value'] ) && ! $force ) {
-			return $this;
-		}
-
-		// Allow a bunch of params
-		$arguments = func_get_args();
-
-		// Remove $key and $name
-		$type = array_shift( $arguments );
-		$name = array_shift( $arguments );
-		$args = array_shift( $arguments );
-
+	public function with( string $type, string $name, $args ): Interface_Module {
 		$this->data['meta_key']   = null;
 		$this->data['meta_value'] = null;
 
@@ -126,18 +110,40 @@ class Meta extends Abstract_Module {
 			return $this;
 		}
 
-		$this->data['meta_key'] = $name;
-
-		unset( $args['name'], $args['type'] );
+		$this->data['meta_type'] = $type;
+		$this->data['meta_key']  = $name;
+		$this->data['meta_args'] = array_values( $args );
 
 		$faker = $this->get_faker();
 
-		// Pass which object we are dealing with
+		// Pass which object we are dealing with.
 		$faker->set_meta_object( $this->object_name, $this->object_id );
 
+		return $this;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function generate( bool $force = false ): Interface_Module {
+		// Only regenerate if there is no data, or we are forcing it.
+		if ( isset( $this->data['meta_value'] ) && ! $force ) {
+			return $this;
+		}
+
+		// Failed generation because we have no type.
+		if ( ! isset( $this->data['meta_type'] ) ) {
+			return $this;
+		}
+
+		$type = $this->data['meta_type'];
+		$args = $this->data['meta_args'] ?? [];
+
+		$faker = $this->get_faker();
+
 		if ( is_callable( [ $faker, 'meta_type_' . $type ] ) ) {
-			$this->data['meta_value'] = call_user_func_array( [ $faker, 'meta_type_' . $type ], array_values( $args ) );
-		} else {
+			$this->data['meta_value'] = call_user_func_array( [ $faker, 'meta_type_' . $type ], $args );
+		} elseif ( count( $args ) === 1 ) {
 			$this->data['meta_value'] = reset( $args );
 		}
 
