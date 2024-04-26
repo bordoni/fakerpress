@@ -107,7 +107,7 @@ class Term extends Abstract_Module {
 
 		$name_size = get_request_var( [ Plugin::$slug, 'size' ] );
 
-		// Fetch taxomies
+		// Fetch taxonomies
 		$taxonomies = get( $request, 'taxonomies' );
 		$taxonomies = array_map( 'trim', explode( ',', $taxonomies ) );
 		$taxonomies = array_intersect( get_taxonomies( [ 'public' => true ] ), $taxonomies );
@@ -129,7 +129,11 @@ class Term extends Abstract_Module {
 
 			if ( $has_metas && $term_id && is_numeric( $term_id ) ){
 				foreach ( $metas as $meta_index => $meta ) {
-					make( Meta::class )->object( $term_id, 'term' )->generate( $meta['type'], $meta['name'], $meta )->save();
+					if ( ! isset( $meta['type'], $meta['name'] ) ) {
+						continue;
+					}
+
+					make( Meta::class )->object( $term_id, 'term' )->with( $meta['type'], $meta['name'], $meta )->generate()->save();
 				}
 			}
 

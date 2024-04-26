@@ -178,7 +178,11 @@ class User extends Abstract_Module {
 
 			if ( $user_id && is_numeric( $user_id ) ) {
 				foreach ( $metas as $meta_index => $meta ) {
-					make( Meta::class )->object( $user_id, 'user' )->generate( $meta['type'], $meta['name'], $meta )->save();
+					if ( ! isset( $meta['type'], $meta['name'] ) ) {
+						continue;
+					}
+
+					make( Meta::class )->object( $user_id, 'user' )->with( $meta['type'], $meta['name'], $meta )->generate()->save();
 				}
 			}
 			$results[] = $user_id;

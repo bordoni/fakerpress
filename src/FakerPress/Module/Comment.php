@@ -166,7 +166,7 @@ class Comment extends Abstract_Module {
 
 			if ( $comment_id && is_numeric( $comment_id ) ) {
 				foreach ( $metas as $meta_index => $meta ) {
-					make( Meta::class )->object( $comment_id, 'comment' )->generate( $meta['type'], $meta['name'], $meta )->save();
+					make( Meta::class )->object( $comment_id, 'comment' )->with( $meta['type'], $meta['name'], $meta )->generate()->save();
 				}
 			}
 			$results[] = $comment_id;

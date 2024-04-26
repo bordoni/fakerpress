@@ -1,8 +1,8 @@
 {
   "name": "fakerpress",
   "title": "FakerPress",
-  "version": "0.6.4",
-  "homepage": "http://fakerpress.com/",
+  "version": "0.6.5",
+  "homepage": "https://fakerpress.com/",
   "repository": {
     "type": "git",
     "url": "https://github.com/bordoni/fakerpress.git"
