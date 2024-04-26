@@ -1,0 +1,24 @@
+# Configuration files.
+.editorconfig export-ignore
+.babelrc export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+.nvmrc export-ignore
+.jshintignore export-ignore
+.jshintrc export-ignore
+gulpfile.js export-ignore
+
+# Dev files.
+bin/* export-ignore
+.github/* export-ignore
+dev/* export-ignore
+assets/* export-ignore
+svn-push export-ignore
+
+# Composer and Package files.
+composer.* export-ignore
+package.* export-ignore
+
+# Read me and markdown files.
+contributing.md export-ignore
+readme.md export-ignore
