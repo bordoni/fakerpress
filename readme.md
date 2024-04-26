@@ -8,7 +8,7 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy+content), [lorem ipsun](http://wordpress.org/plugins/tags/lorem+ipsun), [testing](http://wordpress.org/plugins/tags/testing), [developer](http://wordpress.org/plugins/tags/developer)  
 **Requires at least:** 5.5  
 **Tested up to:** 6.5.2  
-**Stable tag:** 0.6.4  
+**Stable tag:** 0.6.5  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 **Requires PHP:** 7.4  
 **Donate link:** https://fakerpress.com/r/sponsor  
@@ -96,6 +96,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 
 ## Changelog ##
+
+### 0.6.5 &mdash; 26 of April 2024 ###
+* Fix - Ensure meta generation for Users, Terms and Comments work since changes made on version `0.6.2`. props @helgatheviking
 
 ### 0.6.4 &mdash; 21 of April 2024 ###
 * Fix - Ensure that Faker is also included via Strauss, to prevent conflicts with other plugins.
