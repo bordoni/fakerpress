@@ -65,9 +65,11 @@ class WP_Meta extends Base {
 	 * @return string|int
 	 */
 	public function meta_type_numbers( $number = [ 0, 9 ], $weight = 50 ) {
+		$number = array_values( array_map( 'absint', (array) $number ) );
+
 		// If the number is an array, then we assume it's a range.
-		if ( is_array( $number ) && count( $number ) > 1 ) {
-			$this->generator->numberBetween( ...$number );
+		if ( count( $number ) > 1 ) {
+			$number = $this->generator->numberBetween( ...$number );
 		}
 
 		return $this->generator->optional( $weight / 100, null )->randomElement( (array) $number );

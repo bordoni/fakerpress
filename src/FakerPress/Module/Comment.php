@@ -166,7 +166,22 @@ class Comment extends Abstract_Module {
 
 			if ( $comment_id && is_numeric( $comment_id ) ) {
 				foreach ( $metas as $meta_index => $meta ) {
-					make( Meta::class )->object( $comment_id, 'comment' )->with( $meta['type'], $meta['name'], $meta )->generate()->save();
+					if ( ! isset( $meta['type'], $meta['name'] ) ) {
+						continue;
+					}
+
+					$type = get( $meta, 'type' );
+					$name = get( $meta, 'name' );
+					unset( $meta['type'], $meta['name'] );
+
+					if ( isset( $meta['weight'] ) ) {
+						$meta['weight'] = absint( $meta['weight'] );
+						$meta['weight'] = $meta['weight'] > 0 ? $meta['weight'] : 100;
+					} else {
+						$meta['weight'] = 100;
+					}
+
+					make( Meta::class )->object( $comment_id, 'comment' )->with( $type, $name, $meta )->generate()->save();
 				}
 			}
 			$results[] = $comment_id;

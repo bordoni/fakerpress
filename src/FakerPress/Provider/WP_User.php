@@ -34,7 +34,7 @@ class WP_User extends Base {
 	 * @return string|null
 	 */
 	public function last_name( ?string $last_name = null ): ?string {
-		return $last_name ?? $this->generator->lastName;
+		return $last_name ?? $this->generator->lastName();
 	}
 
 	/**
@@ -48,7 +48,7 @@ class WP_User extends Base {
 	 * @return string|null
 	 */
 	public function user_login( ?string $login = null ): ?string {
-		return $login ?? $this->generator->userName;
+		return $login ?? $this->generator->userName();
 	}
 
 	/**
@@ -62,7 +62,7 @@ class WP_User extends Base {
 	 * @return string|null
 	 */
 	public function user_nicename( ?string $nicename = null ): ?string {
-		return $nicename ?? $this->generator->userName;
+		return $nicename ?? $this->generator->userName();
 	}
 
 	/**
@@ -76,7 +76,7 @@ class WP_User extends Base {
 	 * @return string|null
 	 */
 	public function user_url( ?string $url = null ): ?string {
-		return $url ?? $this->generator->url;
+		return $url ?? $this->generator->url();
 	}
 
 	/**
@@ -90,7 +90,7 @@ class WP_User extends Base {
 	 * @return string|null
 	 */
 	public function user_email( ?string $email = null ): ?string {
-		return $email ?? $this->generator->safeEmail;
+		return $email ?? $this->generator->safeEmail();
 	}
 
 	/**
@@ -119,7 +119,7 @@ class WP_User extends Base {
 	 * @return string|null
 	 */
 	public function nickname( ?string $nickname = null ): ?string {
-		return $nickname ?? $this->generator->userName;
+		return $nickname ?? $this->generator->userName();
 	}
 
 	/**
@@ -180,7 +180,7 @@ class WP_User extends Base {
 	 *
 	 * @return string
 	 */
-	public function role( array $role = [] ): string {
+	public function role( ?array $role = [] ): ?string {
 		return $this->generator->randomElement( $role ?? array_keys( get_editable_roles() ) );
 	}
 

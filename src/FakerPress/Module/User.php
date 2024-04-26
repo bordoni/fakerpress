@@ -182,7 +182,18 @@ class User extends Abstract_Module {
 						continue;
 					}
 
-					make( Meta::class )->object( $user_id, 'user' )->with( $meta['type'], $meta['name'], $meta )->generate()->save();
+					$type = get( $meta, 'type' );
+					$name = get( $meta, 'name' );
+					unset( $meta['type'], $meta['name'] );
+
+					if ( isset( $meta['weight'] ) ) {
+						$meta['weight'] = absint( $meta['weight'] );
+						$meta['weight'] = $meta['weight'] > 0 ? $meta['weight'] : 100;
+					} else {
+						$meta['weight'] = 100;
+					}
+
+					make( Meta::class )->object( $user_id, 'user' )->with( $type, $name, $meta )->generate()->save();
 				}
 			}
 			$results[] = $user_id;

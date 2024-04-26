@@ -4,7 +4,7 @@ Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 5.5
 Tested up to:      6.5.2
 Requires PHP:      7.4
-Stable tag:        0.6.5
+Stable tag:        0.6.6
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -98,6 +98,11 @@ Great! There are several ways you can get involved to help make FakerPress bette
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
+
+= 0.6.6 &mdash; 26 of April 2024 =
+
+* Fix - Prevent notices related to deprecated usage of Faker methods that were being called as properties.
+* Fix - Prevent fatals related to bad typecasting of Faker methods used for meta generation. props @helgatheviking
 
 = 0.6.5 &mdash; 26 of April 2024 =
 
