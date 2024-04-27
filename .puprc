@@ -18,6 +18,8 @@
 		}
 	},
     "i18n": {
+        "path": "languages",
+        "formats": ["mo"],
         "slug": "fakerpress",
         "textdomain": "fakerpress",
         "url": "https://translate.wordpress.org/api/projects/wp-plugins/fakerpress/stable"
