@@ -1,0 +1,54 @@
+name: Generate Zip
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git Commit Ref (branch, tag, or hash)'
+        default: 'main'
+        required: true
+        type: string
+      production:
+        description: 'Is this a production build?'
+        default: false
+        type: boolean
+
+jobs:
+  generate-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: install pup
+        run: composer -- pup
+
+      - name: pup build
+        run: composer -- pup build
+
+      - name: pup check
+        run: composer -- pup check
+
+      - name: pup i18n
+        run: composer -- pup i18n
+
+      - name: get version
+        if: ${{ inputs.production }}
+        run: echo "VERSION=$(composer -- pup get-version)" >> $GITHUB_ENV
+
+      - name: get dev version
+        if: ${{ !inputs.production }}
+        run: echo "VERSION=$(composer -- pup get-version --dev)" >> $GITHUB_ENV
+
+      - name: get zip name
+        run: echo "ZIP_NAME=$(composer -- pup zip-name ${{ env.VERSION }})" >> $GITHUB_ENV
+
+      - name: pup package
+        run:  composer -- pup package ${{ env.VERSION }}
+
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ZIP_NAME }}
+          path: .pup-zip
