@@ -17,6 +17,11 @@
 			"fail_method_dev": "warn"
 		}
 	},
+    "i18n": {
+        "slug": "fakerpress",
+        "textdomain": "fakerpress",
+        "url": "https://translate.wordpress.org/api/projects/wp-plugins/fakerpress/stable"
+    },
 	"paths": {
 		"build_dir": ".pup-build",
 		"changelog": "readme.txt",
