@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "53e7a30a3c2507ac9d49bd8d7480f5e0",
+    "content-hash": "9eaec7b146cac6ef3c3512a278a92e15",
     "packages": [
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -140,16 +140,16 @@
         },
         {
             "name": "lucatume/di52",
-            "version": "3.3.6",
+            "version": "3.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/di52.git",
-                "reference": "9f714b3166c331a12278635277038ead7701a710"
+                "reference": "76c0c2ad0422ce595e2e38138456f3475888e32c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/di52/zipball/9f714b3166c331a12278635277038ead7701a710",
-                "reference": "9f714b3166c331a12278635277038ead7701a710",
+                "url": "https://api.github.com/repos/lucatume/di52/zipball/76c0c2ad0422ce595e2e38138456f3475888e32c",
+                "reference": "76c0c2ad0422ce595e2e38138456f3475888e32c",
                 "shasum": ""
             },
             "require": {
@@ -179,9 +179,9 @@
             "description": "A PHP 5.6 compatible dependency injection container.",
             "support": {
                 "issues": "https://github.com/lucatume/di52/issues",
-                "source": "https://github.com/lucatume/di52/tree/3.3.6"
+                "source": "https://github.com/lucatume/di52/tree/3.3.7"
             },
-            "time": "2024-04-02T08:40:29+00:00"
+            "time": "2024-04-26T14:46:26+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -800,5 +800,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

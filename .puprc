@@ -1,0 +1,44 @@
+{
+	"build": [
+		"@composer install --no-dev --no-scripts",
+		"@composer run strauss-release",
+		"npm install --legacy-peer-deps",
+		"npm run build"
+	],
+	"build_dev": [
+		"@composer install --no-scripts",
+		"@composer run strauss-release",
+		"npm install --legacy-peer-deps",
+		"npm run build"
+	],
+	"checks": {
+		"version-conflict": {
+			"fail_method": "error",
+			"fail_method_dev": "warn"
+		}
+	},
+	"paths": {
+		"build_dir": ".pup-build",
+		"changelog": "readme.txt",
+		"css": [],
+		"js": [],
+		"versions": [
+			{
+				"file": "src/FakerPress/Plugin.php",
+				"regex": "(const[ ]*VERSION[ ]*={1}[ ]*['\"]{1})([^'\"]+)['\"]{1}[ ]*;{1}"
+			},
+			{
+				"file": "fakerpress.php",
+				"regex": "(Version: +)(.+)"
+			},
+			{
+				"file": "readme.txt",
+				"regex": "(Stable tag: +)(.+)"
+			}
+		],
+		"zip_dir": ".pup-zip"
+	},
+	"repo": "bordoni/fakerpress",
+	"zip_use_default_ignore": false,
+	"zip_name": "fakerpress"
+}

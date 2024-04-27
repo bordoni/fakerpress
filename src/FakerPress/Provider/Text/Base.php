@@ -1,9 +1,9 @@
 <?php
-namespace FakerPress\Provider;
+namespace FakerPress\Provider\Text;
 
-use FakerPress\ThirdParty\Faker\Provider\Base;
+use FakerPress\ThirdParty\Faker\Provider\Base as Faker_Base;
 
-class TextBase extends Base {
+class Base extends Faker_Base {
 	public static $wordList = [
 		'alias', 'consequatur', 'aut', 'perferendis', 'sit', 'voluptatem',
 		'accusantium', 'doloremque', 'aperiam', 'eaque','ipsa', 'quae', 'ab',

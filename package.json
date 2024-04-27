@@ -8,7 +8,7 @@
 		"url": "https://github.com/bordoni/fakerpress.git"
 	},
 	"scripts": {
-		"build": "gulp build"
+		"build": "gulp"
 	},
 	"main": "Gruntfile.js",
 	"devDependencies": {
