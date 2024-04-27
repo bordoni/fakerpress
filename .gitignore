@@ -2,7 +2,12 @@
 ###########
 .ssh
 .svn
-bin/
+
+
+# Binaries #
+############
+bin/*
+!bin/.gitkeep
 
 # WordPress Project
 .org
