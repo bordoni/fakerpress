@@ -79,7 +79,7 @@
 			"@composer dump-autoload"
 		],
 		"pup": [
-			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.2.2/pup.phar",
+			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.3.0/pup.phar",
 			"@php bin/pup.phar"
 		],
 		"wp-cli": [
