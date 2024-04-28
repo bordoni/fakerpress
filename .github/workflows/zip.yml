@@ -30,8 +30,8 @@ jobs:
       - name: pup check
         run: composer -- pup check
 
-#      - name: pup i18n
-#        run: composer -- pup i18n
+      - name: pup i18n
+        run: composer -- pup i18n
 
       - name: get version
         if: ${{ inputs.production }}

@@ -20,9 +20,9 @@
     "i18n": {
         "path": "languages",
         "formats": ["mo"],
-        "slug": "fakerpress",
+        "slug": "wp-plugins/fakerpress/stable",
         "textdomain": "fakerpress",
-        "url": "https://translate.wordpress.org/api/projects/wp-plugins/fakerpress/stable"
+        "url": "https://translate.wordpress.org"
     },
 	"paths": {
 		"build_dir": ".pup-build",
