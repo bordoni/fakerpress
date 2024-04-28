@@ -32,7 +32,7 @@
 		"versions": [
 			{
 				"file": "src/FakerPress/Plugin.php",
-				"regex": "(const[ ]*VERSION[ ]*={1}[ ]*['\"]{1})([^'\"]+)(['\"]{1}[ ]*;{1})"
+				"regex": "(const[ ]*VERSION[ ]*={1}[ ]*['\"]{1})([^'\"]+)(?:['\"]{1}[ ]*;{1})"
 			},
 			{
 				"file": "fakerpress.php",
