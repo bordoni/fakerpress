@@ -133,12 +133,12 @@ class WP_User extends Base {
 	 *
 	 * @return string|null
 	 */
-	public function user_pass( ?string $pass = null, int $qty = 10 ): ?string {
+	public function user_pass( ?string $pass = null, int $qty = 16 ): ?string {
 		if ( is_null( $pass ) ) {
 			if ( function_exists( 'wp_generate_password' ) ) {
-				$pass = wp_generate_password( $qty );
+				$pass = wp_generate_password( $qty, true );
 			} else {
-				$pass = $this->generator->randomNumber( $qty - 1 ) . $this->generator->randomLetter();
+				$pass = $this->generator->password( $qty );
 			}
 		}
 		return $pass;
