@@ -28,7 +28,7 @@
 		}
 	},
 	"require": {
-		"lucatume/di52": "~3.3",
+		"lucatume/di52": "~4.0",
 		"fakerphp/faker": "^1.24",
 		"cakephp/chronos": "^2.4.5"
 	},

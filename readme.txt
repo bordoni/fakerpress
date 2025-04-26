@@ -99,6 +99,13 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
+= 0.7.0 &mdash; TBD =
+
+* Version - Update dependency `fakerphp/faker` to `1.24`
+* Version - Update dependency `lucatume/di52` to `0.4`
+* Tweak - Modified date handling from using `Carbon` to use `Chronos`.
+* Fix - Improved password for the randomized Users created, prevents weird scenarios with faked users allowing brute-force login. Props @rinatkhaziev
+
 = 0.6.6 &mdash; 26 of April 2024 =
 
 * Fix - Prevent notices related to deprecated usage of Faker methods that were being called as properties.
