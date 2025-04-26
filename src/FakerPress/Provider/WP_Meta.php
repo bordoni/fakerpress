@@ -395,22 +395,22 @@ class WP_Meta extends Base {
 
 		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 		try {
-			$min = new \FakerPress\ThirdParty\Carbon\Carbon( $interval['min'] );
+			$min = newChronos( $interval['min'] );
 		} catch ( \Exception $e ) {
-			$min = new \FakerPress\ThirdParty\Carbon\Carbon( 'today' );
+			$min = newChronos( 'today' );
 			$min = $min->startOfDay();
 		}
 
 		if ( ! empty( $interval ) ) {
 			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = new \FakerPress\ThirdParty\Carbon\Carbon( $interval['max'] );
+				$max = newChronos( $interval['max'] );
 			} catch ( \Exception $e ) {
 			}
 		}
 
 		if ( ! isset( $max ) ) {
-			$max = new \FakerPress\ThirdParty\Carbon\Carbon( 'now' );
+			$max = newChronos( 'now' );
 		}
 
 		// If max has no Time set it to the end of the day

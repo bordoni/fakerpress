@@ -2,7 +2,7 @@
 namespace FakerPress\Provider;
 
 use FakerPress\ThirdParty\Faker\Provider\Base;
-use FakerPress;
+use FakerPress\ThirdParty\Cake\Chronos\Chronos;
 use FakerPress\Utils;
 use function FakerPress\make;
 
@@ -186,7 +186,7 @@ class WP_User extends Base {
 
 	public function user_registered( $min = 'now', $max = null ) {
 		try {
-			$min = new \FakerPress\ThirdParty\Carbon\Carbon( $min );
+			$min = newChronos( $min );
 		} catch ( \Exception $e ) {
 			return null;
 		}
@@ -194,7 +194,7 @@ class WP_User extends Base {
 		if ( ! is_null( $max ) ) {
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = new \FakerPress\ThirdParty\Carbon\Carbon( $max );
+				$max = newChronos( $max );
 			} catch ( \Exception $e ) {
 				return null;
 			}

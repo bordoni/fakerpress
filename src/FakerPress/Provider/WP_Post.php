@@ -1,11 +1,25 @@
 <?php
+/**
+ * FakerPress Post Provider
+ *
+ * @package FakerPress
+ * 
+ * @since TBD
+ */
 namespace FakerPress\Provider;
 
 use FakerPress\ThirdParty\Faker\Provider\Base;
-use FakerPress;
+use FakerPress\ThirdParty\Cake\Chronos\Chronos;
 use FakerPress\Utils;
 use function FakerPress\make;
 
+/**
+ * FakerPress WP_Post Provider
+ *
+ * @package FakerPress
+ * 
+ * @since TBD
+ */
 class WP_Post extends Base {
 
 	protected static $default = [
@@ -43,23 +57,23 @@ class WP_Post extends Base {
 
 		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 		try {
-			$min = new \FakerPress\ThirdParty\Carbon\Carbon( array_shift( $interval ) );
+			$min = newChronos( array_shift( $interval ) );
 		} catch ( \Exception $e ) {
-			$min = new \FakerPress\ThirdParty\Carbon\Carbon( 'today' );
+			$min = newChronos( 'today' );
 			$min = $min->startOfDay();
 		}
 
 		if ( ! empty( $interval ) ) {
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = new \FakerPress\ThirdParty\Carbon\Carbon( array_shift( $interval ) );
+				$max = newChronos( array_shift( $interval ) );
 			} catch ( \Exception $e ) {
 
 			}
 		}
 
 		if ( ! isset( $max ) ) {
-			$max = new \FakerPress\ThirdParty\Carbon\Carbon( 'now' );
+			$max = newChronos( 'now' );
 		}
 
 		// If max has no Time set it to the end of the day

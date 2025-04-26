@@ -13,7 +13,7 @@
  * GitHub Plugin URI: https://github.com/bordoni/fakerpress
  */
 
-// Need to store this variable before leaving this file
+// Need to store this variable before leaving this file.
 define( '__FP_FILE__', __FILE__ );
 
 /**
@@ -22,7 +22,7 @@ define( '__FP_FILE__', __FILE__ );
  */
 if ( PHP_VERSION_ID < 70400 ) {
 	if ( ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) && is_admin() ) {
-		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 		if ( ! is_plugin_active( plugin_basename( __FP_FILE__ ) ) ) {
 			wp_print_styles( 'open-sans' );
