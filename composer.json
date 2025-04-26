@@ -29,8 +29,8 @@
 	},
 	"require": {
 		"lucatume/di52": "~3.3",
-		"fakerphp/faker": "^1.23",
-		"nesbot/carbon": "^2.66"
+		"fakerphp/faker": "^1.24",
+		"cakephp/chronos": "^2.4.5"
 	},
 	"authors": [
 		{
@@ -50,6 +50,7 @@
 		}
 	],
 	"config": {
+		"process-timeout": 900,
 		"preferred-install": "dist",
 		"sort-packages": true,
 		"optimize-autoloader": true,
@@ -62,7 +63,7 @@
 	},
 	"scripts": {
 		"strauss-install": [
-			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.19.1/strauss.phar"
+			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.22.2/strauss.phar"
 		],
 		"clean-faker-lang": [
 			"[ -d './vendor/fakerphp/faker/src/Faker/Provider' ] && echo 'Removing folders:' && find ./vendor/fakerphp/faker/src/Faker/Provider -mindepth 1 -maxdepth 1 -type d ! -path './en_US' -print -exec rm -r {} + || true"
@@ -79,7 +80,7 @@
 			"@composer dump-autoload"
 		],
 		"pup": [
-			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.3.1/pup.phar",
+			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.3.8/pup.phar",
 			"@php bin/pup.phar"
 		],
 		"wp-cli": [
