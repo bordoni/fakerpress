@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "088fdcb7be1c07005d779c495290a289",
+    "content-hash": "00ff3ad6aa458efbb11ddd65e622e447",
     "packages": [
         {
             "name": "cakephp/chronos",
@@ -129,21 +129,21 @@
         },
         {
             "name": "lucatume/di52",
-            "version": "3.3.7",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/di52.git",
-                "reference": "76c0c2ad0422ce595e2e38138456f3475888e32c"
+                "reference": "1552a86bf17db4cb098db368d2e4cbb508dcaec0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/di52/zipball/76c0c2ad0422ce595e2e38138456f3475888e32c",
-                "reference": "76c0c2ad0422ce595e2e38138456f3475888e32c",
+                "url": "https://api.github.com/repos/lucatume/di52/zipball/1552a86bf17db4cb098db368d2e4cbb508dcaec0",
+                "reference": "1552a86bf17db4cb098db368d2e4cbb508dcaec0",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": ">=5.6",
+                "php": ">=7.1",
                 "psr/container": "^1.0"
             },
             "require-dev": {
@@ -168,9 +168,9 @@
             "description": "A PHP 5.6 compatible dependency injection container.",
             "support": {
                 "issues": "https://github.com/lucatume/di52/issues",
-                "source": "https://github.com/lucatume/di52/tree/3.3.7"
+                "source": "https://github.com/lucatume/di52/tree/4.0.1"
             },
-            "time": "2024-04-26T14:46:26+00:00"
+            "time": "2025-04-01T17:10:31+00:00"
         },
         {
             "name": "psr/container",

@@ -146,9 +146,6 @@ class Plugin {
 	 */
 	protected function autoload(): void {
 		// Load Composer Vendor Modules
-		require_once $this->plugin_path . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-
-		// Load Composer Vendor Modules
 		require_once $this->plugin_path . 'vendor-prefixed' . DIRECTORY_SEPARATOR . 'autoload.php';
 	}
 
