@@ -20,8 +20,19 @@ class WP_Meta extends Base {
 		$this->meta_object->id   = $id;
 	}
 
+	/**
+	 * Given a number or an array of numbers, return a random number between them, and take into account the weight.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string[]|int[]|int|string $number Range of numbers or a single number.
+	 * @param string|int                $weight Weight of the number.
+	 *
+	 * @return int
+	 */
 	private function meta_parse_qty( $qty, $elements = null ) {
-		$_qty = array_filter( (array) $qty );
+		$qty = array_values( (array) $qty );
+		$_qty = array_filter( $qty );
 		$min  = reset( $_qty );
 
 		$qty = (int) ( is_array( $qty ) && count( $_qty ) > 1 ? call_user_func_array( [ $this->generator, 'numberBetween' ], $qty ) : reset( $_qty ) );
