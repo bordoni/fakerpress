@@ -3,3 +3,4 @@ gulpfile.babel.js
 .distignore
 .distfiles
 package-lock.json
+bun.lock

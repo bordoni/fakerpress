@@ -62,11 +62,11 @@ jobs:
         run: |
           echo "Current directory: $(pwd)"
           echo "ZIP output directory contents:"
-          ls -la .pup-zip
+          ls -la .pup-zip/
           echo "Full ZIP path: $(pwd)/.pup-zip/${{ env.ZIP_NAME }}"
 
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ZIP_NAME }}
-          path: .pup-zip
+          path: .pup-zip/${{ env.ZIP_NAME }}.zip
