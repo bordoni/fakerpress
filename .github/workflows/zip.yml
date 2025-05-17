@@ -3,11 +3,6 @@ name: Generate Zip
 on:
   workflow_dispatch:
     inputs:
-      ref:
-        description: 'Git Commit Ref (branch, tag, or hash)'
-        default: 'main'
-        required: true
-        type: string
       production:
         description: 'Is this a production build?'
         default: false
@@ -19,7 +14,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.ref }}
+          ref: ${{ github.ref }}
+
+      - name: install bun on the runner
+        run: curl -fsSL https://bun.sh/install | bash
 
       - name: install pup
         run: composer -- pup
