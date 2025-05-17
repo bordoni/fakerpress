@@ -37,15 +37,33 @@ jobs:
         if: ${{ inputs.production }}
         run: echo "VERSION=$(composer -- pup get-version)" >> $GITHUB_ENV
 
+      - name: debug version (production)
+        if: ${{ inputs.production }}
+        run: echo "Production VERSION=${{ env.VERSION }}"
+
       - name: get dev version
         if: ${{ !inputs.production }}
         run: echo "VERSION=$(composer -- pup get-version --dev)" >> $GITHUB_ENV
 
+      - name: debug version (dev)
+        if: ${{ !inputs.production }}
+        run: echo "Development VERSION=${{ env.VERSION }}"
+
       - name: get zip name
         run: echo "ZIP_NAME=$(composer -- pup zip-name ${{ env.VERSION }})" >> $GITHUB_ENV
 
+      - name: debug zip name
+        run: echo "ZIP_NAME=${{ env.ZIP_NAME }}"
+
       - name: pup package
         run:  composer -- pup package ${{ env.VERSION }}
+
+      - name: debug zip output
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "ZIP output directory contents:"
+          ls -la .pup-zip
+          echo "Full ZIP path: $(pwd)/.pup-zip/${{ env.ZIP_NAME }}"
 
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
