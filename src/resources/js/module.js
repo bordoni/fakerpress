@@ -91,7 +91,7 @@ window.fakerpress = window.fakerpress || {};
 	};
 
 	// Document Ready Actions
-	$( document ).ready( () => {
+	$( () => {
 		const $forms = $( fp.selectors.moduleGenerator ).each( function() {
 			const $form = $( this );
 

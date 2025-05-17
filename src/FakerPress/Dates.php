@@ -1,7 +1,7 @@
 <?php
 namespace FakerPress;
 
-use Cake\Chronos\Chronos;
+use FakerPress\ThirdParty\Cake\Chronos\Chronos;
 
 Class Dates {
 

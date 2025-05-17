@@ -18,7 +18,7 @@ class Assets extends Service_Provider {
 
 		$admin = make( Admin::class );
 
-		// Register a global CSS files
+		// Register a global CSS files.
 		register_asset(
 			'fakerpress-icon',
 			'font.css',
@@ -29,10 +29,10 @@ class Assets extends Service_Provider {
 			]
 		);
 
-		// Register QS.js
+		// Register QS.js.
 		register_asset(
 			'fakerpress-qs',
-			'vendor/qs.js',
+			'qs.js',
 			[],
 			'admin_enqueue_scripts',
 			[
@@ -40,10 +40,10 @@ class Assets extends Service_Provider {
 			]
 		);
 
-		// Register Vendor Select2
+		// Register Vendor Select2.
 		register_asset(
 			'fakerpress-select2-styles',
-			'vendor/select2/select2.css',
+			'select2.css',
 			[],
 			'admin_enqueue_scripts',
 			[
@@ -52,7 +52,7 @@ class Assets extends Service_Provider {
 		);
 		register_asset(
 			'fakerpress-select2-wordpress',
-			'vendor/select2/select2-wordpress.css',
+			'select2-wordpress.css',
 			[ 'fakerpress-select2-styles' ],
 			'admin_enqueue_scripts',
 			[
@@ -62,7 +62,7 @@ class Assets extends Service_Provider {
 
 		register_asset(
 			'fakerpress-select2',
-			'vendor/select2/select2.js',
+			'select2.js',
 			[ 'jquery' ],
 			'admin_enqueue_scripts',
 			[
@@ -70,7 +70,7 @@ class Assets extends Service_Provider {
 			]
 		);
 
-		// Register DatePicker Skins
+		// Register DatePicker Skins.
 		register_asset(
 			'fakerpress-jquery-ui',
 			'jquery-ui.css',
@@ -90,7 +90,7 @@ class Assets extends Service_Provider {
 			]
 		);
 
-		// Register the plugin CSS files
+		// Register the plugin CSS files.
 		register_asset(
 			'fakerpress-admin',
 			'admin.css',
@@ -110,7 +110,7 @@ class Assets extends Service_Provider {
 			]
 		);
 
-		// Register the plugin JS files
+		// Register the plugin JS files.
 		register_asset(
 			'fakerpress-fields',
 			'fields.js',

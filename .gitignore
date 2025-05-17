@@ -41,6 +41,7 @@ tmp
 
 # FakerPress #
 ###########
+build/*
 vendor/*
 vendor-prefixed/*
 src/resources/css/*
