@@ -17,7 +17,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: install bun on the runner
-        run: curl -fsSL https://bun.sh/install | bash
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> $GITHUB_PATH
 
       - name: install pup
         run: composer -- pup
