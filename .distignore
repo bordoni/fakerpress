@@ -4,3 +4,4 @@ gulpfile.babel.js
 .distfiles
 package-lock.json
 bun.lock
+.git

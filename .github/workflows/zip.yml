@@ -55,15 +55,50 @@ jobs:
       - name: debug zip name
         run: echo "ZIP_NAME=${{ env.ZIP_NAME }}"
 
-      - name: pup package
-        run:  composer -- pup package ${{ env.VERSION }}
+      - name: debug before packaging
+        run: |
+          echo "Environment before packaging:"
+          echo "Working directory: $(pwd)"
+          echo "VERSION: ${{ env.VERSION }}"
+          echo "ZIP_NAME: ${{ env.ZIP_NAME }}"
+          echo "Directory structure:"
+          find . -maxdepth 2 -type d | sort
+          echo "Composer command:"
+          echo "composer -- pup package ${{ env.VERSION }}"
 
-      - name: debug zip output
+      - name: pup package
+        run: |
+          set -x
+          composer -- pup package ${{ env.VERSION }}
+          echo "Exit code: $?"
+          set +x
+
+      - name: debug zip output detail
         run: |
           echo "Current directory: $(pwd)"
-          echo "ZIP output directory contents:"
-          ls -la .pup-zip/
-          echo "Full ZIP path: $(pwd)/.pup-zip/${{ env.ZIP_NAME }}"
+          echo "Looking for ZIP files in various locations:"
+          echo ".pup-zip directory contents (if exists):"
+          if [ -d ".pup-zip" ]; then
+            ls -la .pup-zip/
+            echo "Files in .pup-zip:"
+            find .pup-zip -type f | sort
+          else
+            echo ".pup-zip directory does not exist!"
+          fi
+          
+          echo "Looking for other possible ZIP locations:"
+          find . -name "*.zip" | sort
+          
+          echo "Checking pup output directory structure:"
+          find .pup* -type d 2>/dev/null || echo "No .pup* directories found"
+          
+          echo "Full ZIP expected path: $(pwd)/.pup-zip/${{ env.ZIP_NAME }}"
+          if [ -f ".pup-zip/${{ env.ZIP_NAME }}" ]; then
+            echo "ZIP file exists at expected location"
+            ls -la .pup-zip/${{ env.ZIP_NAME }}
+          else
+            echo "ZIP file DOES NOT exist at expected location!"
+          fi
 
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
