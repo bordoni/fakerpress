@@ -69,4 +69,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ZIP_NAME }}
-          path: .pup-zip/${{ env.ZIP_NAME }}.zip
+          path: .pup-zip/${{ env.ZIP_NAME }}
