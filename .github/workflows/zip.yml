@@ -58,6 +58,31 @@ jobs:
       - name: pup package
         run: composer -- pup package ${{ env.VERSION }}
 
+      - name: Debug directory structure after packaging
+        run: |
+          echo "===== DEBUGGING OUTPUT PATH ISSUE ====="
+          echo "Working directory: $(pwd)"
+          echo "Listing all directories:"
+          find . -type d -name "*pup*" -o -name "*zip*" | grep -v "node_modules"
+          
+          echo "Searching for any ZIP files:"
+          find . -name "*.zip" | sort
+          
+          echo "Directory structure from root:"
+          ls -la
+          
+          echo "All directories created in the last 5 minutes:"
+          find . -type d -mmin -5 | grep -v "node_modules"
+          
+          echo "All files created in the last 5 minutes:"
+          find . -type f -mmin -5 | grep -v "node_modules" | grep -v ".git"
+          
+          echo "Checking for pup config files that might specify output path:"
+          find . -name "*pup*json" -o -name "*config*json" | xargs cat 2>/dev/null || echo "No config files found"
+          
+          echo "Checking composer.json for pup configuration:"
+          cat composer.json || echo "No composer.json found"
+
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
         with:
