@@ -7,10 +7,22 @@ on:
         description: 'Is this a production build?'
         default: false
         type: boolean
+  workflow_call:
+    inputs:
+      production:
+        description: 'Is this a production build?'
+        default: false
+        type: boolean
+    outputs:
+      zip_name:
+        description: "The name of the generated ZIP file"
+        value: ${{ jobs.generate-zip.outputs.zip_name }}
 
 jobs:
   generate-zip:
     runs-on: ubuntu-latest
+    outputs:
+      zip_name: ${{ env.ZIP_NAME }}
     steps:
       - uses: actions/checkout@v4
         with:

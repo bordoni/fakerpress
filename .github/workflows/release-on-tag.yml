@@ -1,0 +1,85 @@
+name: Release to WordPress.org on Tag
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+    inputs:
+      destination_tag:
+        description: 'The tag version to create (e.g., 1.0.1)'
+        required: true
+        type: string
+
+jobs:
+  # Job to determine the previous tag
+  find-previous-tag:
+    name: Find Previous Tag
+    runs-on: ubuntu-latest
+    outputs:
+      previous_tag: ${{ steps.get_previous_tag.outputs.previous_tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Need full history for tags
+      
+      - name: Get previous tag
+        id: get_previous_tag
+        run: |
+          # Get current tag (either from actual tag or from input)
+          CURRENT_TAG="${{ github.event.inputs.destination_tag || github.ref_name }}"
+          echo "Current tag: $CURRENT_TAG"
+          
+          # Get all tags sorted by version
+          ALL_TAGS=$(git tag -l --sort=-v:refname)
+          echo "All tags: $ALL_TAGS"
+          
+          # Find the tag that comes before the current one
+          PREVIOUS_TAG=""
+          FOUND_CURRENT=false
+          
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            # For manual dispatch, use the latest existing tag
+            PREVIOUS_TAG=$(echo "$ALL_TAGS" | head -n 1)
+          else
+            # For tag push, find the tag before the current one
+            for tag in $ALL_TAGS; do
+              if [ "$tag" == "$CURRENT_TAG" ]; then
+                FOUND_CURRENT=true
+              elif [ "$FOUND_CURRENT" == "true" ]; then
+                PREVIOUS_TAG="$tag"
+                break
+              fi
+            done
+          fi
+          
+          # If no previous tag found, fall back to trunk
+          if [ -z "$PREVIOUS_TAG" ]; then
+            PREVIOUS_TAG="trunk"
+            echo "No previous tag found, using trunk"
+          else
+            echo "Previous tag: $PREVIOUS_TAG"
+          fi
+          
+          # Set output
+          echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+
+  # First job - build the ZIP file using the existing zip.yml workflow
+  build:
+    name: Build Plugin Package
+    uses: ./.github/workflows/zip.yml
+    with:
+      production: true
+
+  # Second job - release to WordPress.org SVN using the existing release-svn.yml workflow
+  release:
+    name: Release to WordPress.org SVN
+    needs: [build, find-previous-tag]
+    uses: ./.github/workflows/release-svn.yml
+    with:
+      source_tag: ${{ needs.find-previous-tag.outputs.previous_tag }}
+      destination_tag: ${{ github.event.inputs.destination_tag || github.ref_name }}
+      use_artifact: true
+      artifact_name: ${{ needs.build.outputs.zip_name }}
+    secrets: inherit 

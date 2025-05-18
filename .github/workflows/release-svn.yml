@@ -1,0 +1,450 @@
+name: Release to WordPress.org SVN
+
+# This workflow handles releasing a WordPress plugin to the WordPress.org SVN repository.
+# It takes an existing tag in the WordPress.org SVN repository, creates a new tag,
+# and applies changes from a provided ZIP file to that new tag.
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_tag:
+        description: 'The existing SVN tag to copy from (e.g., 1.0.0)'
+        required: true
+      destination_tag:
+        description: 'The new SVN tag to create (e.g., 1.0.1)'
+        required: true
+      use_artifact:
+        description: 'Use an artifact from a previous workflow run instead of URL'
+        type: boolean
+        default: false
+      zip_url:
+        description: 'Public URL to download the ZIP file with changes (ignored if use_artifact is true)'
+        required: false
+      artifact_name:
+        description: 'Name of the artifact containing the ZIP file (required if use_artifact is true)'
+        required: false
+  workflow_call:
+    inputs:
+      source_tag:
+        description: 'The existing SVN tag to copy from (e.g., 1.0.0)'
+        required: true
+        type: string
+      destination_tag:
+        description: 'The new SVN tag to create (e.g., 1.0.1)'
+        required: true
+        type: string
+      use_artifact:
+        description: 'Use an artifact from a previous workflow run instead of URL'
+        type: boolean
+        default: false
+      zip_url:
+        description: 'Public URL to download the ZIP file with changes (ignored if use_artifact is true)'
+        required: false
+        type: string
+      artifact_name:
+        description: 'Name of the artifact containing the ZIP file (required if use_artifact is true)'
+        required: false
+        type: string
+    secrets:
+      SVN_USERNAME:
+        required: true
+      SVN_PASSWORD:
+        required: true
+        
+jobs:
+  tag-and-release:
+    name: Tag and Release
+    runs-on: ubuntu-latest
+    env:
+      PLUGIN_SLUG: fakerpress
+    
+    steps:
+      - name: Validate Inputs
+        run: |
+          if [[ "${{ github.event.inputs.use_artifact || inputs.use_artifact }}" == "true" && -z "${{ github.event.inputs.artifact_name || inputs.artifact_name }}" ]]; then
+            echo "Error: artifact_name is required when use_artifact is true"
+            exit 1
+          fi
+          
+          if [[ "${{ github.event.inputs.use_artifact || inputs.use_artifact }}" != "true" && -z "${{ github.event.inputs.zip_url || inputs.zip_url }}" ]]; then
+            echo "Error: zip_url is required when use_artifact is false"
+            exit 1
+          fi
+          
+          # Write to GitHub step summary
+          echo "## Input Validation Completed :white_check_mark:" >> $GITHUB_STEP_SUMMARY
+          echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Plugin** | ${{ env.PLUGIN_SLUG }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Source Tag** | ${{ github.event.inputs.source_tag || inputs.source_tag }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Destination Tag** | ${{ github.event.inputs.destination_tag || inputs.destination_tag }} |" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ github.event.inputs.use_artifact || inputs.use_artifact }}" == "true" ]]; then
+            echo "| **Source** | Artifact: ${{ github.event.inputs.artifact_name || inputs.artifact_name }} |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| **Source** | URL: ${{ github.event.inputs.zip_url || inputs.zip_url }} |" >> $GITHUB_STEP_SUMMARY
+          fi
+      
+      - name: Setup SVN
+        run: |
+          sudo apt-get update && sudo apt-get install -y subversion rsync
+          
+          # Create SVN auth function for non-interactive usage
+          svn_auth() {
+            command svn "$@" --non-interactive --username "$SVN_USERNAME" --password "$SVN_PASSWORD"
+          }
+          
+          # Export credentials as environment variables
+          export SVN_USERNAME="${{ secrets.SVN_USERNAME }}"
+          export SVN_PASSWORD="${{ secrets.SVN_PASSWORD }}"
+          
+          # Make the function available to other steps
+          echo "svn_auth() { command svn \"\$@\" --non-interactive --username \"\$SVN_USERNAME\" --password \"\$SVN_PASSWORD\"; }" >> $GITHUB_ENV
+          echo "SVN_USERNAME=$SVN_USERNAME" >> $GITHUB_ENV
+          echo "SVN_PASSWORD=$SVN_PASSWORD" >> $GITHUB_ENV
+          
+          # Write to GitHub step summary
+          echo "## SVN Setup Completed :white_check_mark:" >> $GITHUB_STEP_SUMMARY
+          echo "- SVN and required dependencies installed" >> $GITHUB_STEP_SUMMARY
+          echo "- Non-interactive authentication configured" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Create Working Directories
+        id: create_dirs
+        run: |
+          # Create a unique identifier
+          ID=$(date +%Y-%m-%d-%H-%M-%S)-$(echo $RANDOM | md5sum | head -c 12)
+          TEMP_DIR="/tmp/svn-tag-$ID"
+          echo "temp_dir=$TEMP_DIR" >> $GITHUB_OUTPUT
+          
+          # Create all required directories
+          mkdir -p "$TEMP_DIR/svn-repo" "$TEMP_DIR/plugin-zip" "$TEMP_DIR/plugin-extract"
+          
+          # Write to GitHub step summary
+          echo "## Working Directories Created :file_folder:" >> $GITHUB_STEP_SUMMARY
+          echo "- Temporary directory: \`$TEMP_DIR\`" >> $GITHUB_STEP_SUMMARY
+          echo "- SVN repo directory: \`$TEMP_DIR/svn-repo\`" >> $GITHUB_STEP_SUMMARY
+          echo "- ZIP extraction directory: \`$TEMP_DIR/plugin-extract\`" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Download Artifact (if using artifact)
+        if: ${{ (github.event.inputs.use_artifact || inputs.use_artifact) == 'true' }}
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.event.inputs.artifact_name || inputs.artifact_name }}
+          path: ${{ steps.create_dirs.outputs.temp_dir }}/artifact
+      
+      - name: Process Artifact ZIP (if using artifact)
+        if: ${{ (github.event.inputs.use_artifact || inputs.use_artifact) == 'true' }}
+        id: process_artifact
+        run: |
+          TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
+          ZIP_FILE=$(find "$TEMP_DIR/artifact" -name "*.zip" | head -n 1)
+          
+          if [ -z "$ZIP_FILE" ]; then
+            echo "Error: No ZIP file found in artifact"
+            exit 1
+          fi
+          
+          echo "Found ZIP file: $ZIP_FILE"
+          cp "$ZIP_FILE" "$TEMP_DIR/plugin.zip"
+          echo "zip_file=$TEMP_DIR/plugin.zip" >> $GITHUB_OUTPUT
+          
+          # Write to GitHub step summary
+          echo "## Artifact Downloaded :package:" >> $GITHUB_STEP_SUMMARY
+          echo "- Artifact: \`${{ github.event.inputs.artifact_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- ZIP file: \`$(basename $ZIP_FILE)\`" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Download ZIP (if using URL)
+        if: ${{ (github.event.inputs.use_artifact || inputs.use_artifact) != 'true' }}
+        id: download_zip
+        run: |
+          TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
+          ZIP_URL="${{ github.event.inputs.zip_url || inputs.zip_url }}"
+          ZIP_FILE="$TEMP_DIR/plugin.zip"
+          
+          echo "Downloading ZIP file from $ZIP_URL"
+          curl -L -o "$ZIP_FILE" "$ZIP_URL"
+          
+          if [ ! -f "$ZIP_FILE" ]; then
+            echo "Error: Failed to download ZIP file"
+            exit 1
+          fi
+          
+          echo "zip_file=$ZIP_FILE" >> $GITHUB_OUTPUT
+          
+          # Write to GitHub step summary
+          echo "## ZIP File Downloaded :arrow_down:" >> $GITHUB_STEP_SUMMARY
+          echo "- Source URL: \`$ZIP_URL\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Downloaded to: \`$ZIP_FILE\`" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Extract ZIP File
+        run: |
+          TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
+          ZIP_FILE="${{ (github.event.inputs.use_artifact || inputs.use_artifact) == 'true' && steps.process_artifact.outputs.zip_file || steps.download_zip.outputs.zip_file }}"
+          PLUGIN_SLUG="${{ env.PLUGIN_SLUG }}"
+          
+          echo "Extracting ZIP file to $TEMP_DIR/plugin-zip"
+          unzip -q "$ZIP_FILE" -d "$TEMP_DIR/plugin-zip"
+          
+          # Find the plugin directory in the extracted content
+          if [ -d "$TEMP_DIR/plugin-zip/$PLUGIN_SLUG" ]; then
+            # Plugin content is in a subdirectory matching the slug
+            mv "$TEMP_DIR/plugin-zip/$PLUGIN_SLUG" "$TEMP_DIR/plugin-extract"
+          elif [ -f "$TEMP_DIR/plugin-zip/$PLUGIN_SLUG.php" ] || [ -d "$TEMP_DIR/plugin-zip/includes" ] || [ -d "$TEMP_DIR/plugin-zip/src" ]; then
+            # Plugin content is at the root of the ZIP
+            mv "$TEMP_DIR/plugin-zip/"* "$TEMP_DIR/plugin-extract/"
+          else
+            # Look for a single directory at the root that might contain the plugin
+            ROOT_DIRS=$(find "$TEMP_DIR/plugin-zip" -maxdepth 1 -type d | wc -l)
+            if [ "$ROOT_DIRS" -eq 2 ]; then # Including the plugin-zip dir itself
+              SUB_DIR=$(find "$TEMP_DIR/plugin-zip" -maxdepth 1 -type d | grep -v "^$TEMP_DIR/plugin-zip$" | head -n 1)
+              mv "$SUB_DIR/"* "$TEMP_DIR/plugin-extract/"
+            else
+              echo "Error: Unable to determine plugin directory structure in ZIP"
+              ls -la "$TEMP_DIR/plugin-zip"
+              exit 1
+            fi
+          fi
+          
+          # Count files for summary
+          FILE_COUNT=$(find "$TEMP_DIR/plugin-extract" -type f | wc -l)
+          
+          echo "Extracted plugin content to $TEMP_DIR/plugin-extract"
+          ls -la "$TEMP_DIR/plugin-extract"
+          
+          # Write to GitHub step summary
+          echo "## ZIP File Extracted :open_file_folder:" >> $GITHUB_STEP_SUMMARY
+          echo "- Files extracted: $FILE_COUNT" >> $GITHUB_STEP_SUMMARY
+          echo "- Extraction path: \`$TEMP_DIR/plugin-extract\`" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Checkout SVN Repository
+        id: svn_checkout
+        run: |
+          TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
+          PLUGIN_SLUG="${{ env.PLUGIN_SLUG }}"
+          SOURCE_TAG="${{ github.event.inputs.source_tag || inputs.source_tag }}"
+          DESTINATION_TAG="${{ github.event.inputs.destination_tag || inputs.destination_tag }}"
+          SVN_URL="https://plugins.svn.wordpress.org/$PLUGIN_SLUG"
+          SVN_REPO="$TEMP_DIR/svn-repo"
+          
+          echo "Checking out SVN repository for $PLUGIN_SLUG (minimal checkout)"
+          svn_auth co --depth=immediates "$SVN_URL" "$SVN_REPO"
+          
+          # Update only what we need - readme.txt from trunk and source tag
+          cd "$SVN_REPO"
+          svn_auth update --set-depth=infinity "trunk/readme.txt"
+          svn_auth update --set-depth=infinity "tags/$SOURCE_TAG"
+          
+          # Check if source tag exists
+          if [ ! -d "$SVN_REPO/tags/$SOURCE_TAG" ]; then
+            echo "Error: Source tag '$SOURCE_TAG' does not exist in the SVN repository"
+            exit 1
+          fi
+          
+          # Check if destination tag already exists
+          svn_auth ls "$SVN_URL/tags/$DESTINATION_TAG" 2>/dev/null
+          if [ $? -eq 0 ]; then
+            echo "Warning: Destination tag '$DESTINATION_TAG' already exists in the SVN repository"
+            echo "existing_tag=true" >> $GITHUB_OUTPUT
+            TAG_STATUS="exists (will be replaced)"
+          else
+            echo "existing_tag=false" >> $GITHUB_OUTPUT
+            TAG_STATUS="does not exist (will be created)"
+          fi
+          
+          echo "SVN repository checkout completed"
+          echo "svn_repo=$SVN_REPO" >> $GITHUB_OUTPUT
+          
+          # Write to GitHub step summary
+          echo "## SVN Repository Checkout Completed :white_check_mark:" >> $GITHUB_STEP_SUMMARY
+          echo "| Detail | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| **SVN URL** | \`$SVN_URL\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Source Tag** | \`$SOURCE_TAG\` (exists) |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Destination Tag** | \`$DESTINATION_TAG\` ($TAG_STATUS) |" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Create New SVN Tag
+        run: |
+          TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
+          PLUGIN_SLUG="${{ env.PLUGIN_SLUG }}"
+          SOURCE_TAG="${{ github.event.inputs.source_tag || inputs.source_tag }}"
+          DESTINATION_TAG="${{ github.event.inputs.destination_tag || inputs.destination_tag }}"
+          SVN_URL="https://plugins.svn.wordpress.org/$PLUGIN_SLUG"
+          SVN_REPO="${{ steps.svn_checkout.outputs.svn_repo }}"
+          EXISTING_TAG="${{ steps.svn_checkout.outputs.existing_tag }}"
+          
+          if [ "$EXISTING_TAG" == "true" ]; then
+            echo "Destination tag already exists, removing it first"
+            svn_auth rm "$SVN_URL/tags/$DESTINATION_TAG" -m "Removing existing tag $DESTINATION_TAG to recreate it"
+            TAG_ACTION="replaced"
+          else
+            TAG_ACTION="created"
+          fi
+          
+          echo "Creating new SVN tag '$DESTINATION_TAG' from source tag '$SOURCE_TAG'"
+          svn_auth cp "$SVN_URL/tags/$SOURCE_TAG" "$SVN_URL/tags/$DESTINATION_TAG" -m "Copying $SOURCE_TAG to $DESTINATION_TAG"
+          
+          echo "Updating working copy with the new tag"
+          cd "$SVN_REPO"
+          svn_auth update --set-depth=infinity "tags/$DESTINATION_TAG"
+          
+          # Write to GitHub step summary
+          echo "## SVN Tag Creation Completed :label:" >> $GITHUB_STEP_SUMMARY
+          echo "| Detail | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Action** | Tag \`$DESTINATION_TAG\` $TAG_ACTION |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Source** | Tag \`$SOURCE_TAG\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Path** | \`$SVN_URL/tags/$DESTINATION_TAG\` |" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Apply Changes from ZIP to SVN
+        run: |
+          TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
+          PLUGIN_SLUG="${{ env.PLUGIN_SLUG }}"
+          SOURCE_TAG="${{ github.event.inputs.source_tag || inputs.source_tag }}"
+          DESTINATION_TAG="${{ github.event.inputs.destination_tag || inputs.destination_tag }}"
+          SVN_REPO="${{ steps.svn_checkout.outputs.svn_repo }}"
+          
+          SOURCE_PATH="$SVN_REPO/tags/$SOURCE_TAG"
+          DESTINATION_PATH="$SVN_REPO/tags/$DESTINATION_TAG"
+          EXTRACTED_PLUGIN="$TEMP_DIR/plugin-extract"
+          
+          echo "Replacing destination tag content with the ZIP file content"
+          # First remove the destination directory content
+          rm -rf "$DESTINATION_PATH"/*
+          
+          # Then copy the extracted plugin content
+          cp -R "$EXTRACTED_PLUGIN/"* "$DESTINATION_PATH/"
+          
+          # Now we need to determine what files were added or removed
+          cd "$SVN_REPO"
+          
+          # Find added files (in destination but not in source)
+          echo "Identifying new files to add to SVN..."
+          ADDED_FILES=$(find "tags/$DESTINATION_TAG" -type f -not -path "*/\.*" | while read file; do
+            REL_PATH=${file#tags/$DESTINATION_TAG/}
+            SOURCE_FILE="tags/$SOURCE_TAG/$REL_PATH"
+            if [ ! -f "$SOURCE_FILE" ]; then
+              echo "$file"
+            fi
+          done)
+          
+          # Find deleted files (in source but not in destination)
+          echo "Identifying files to remove from SVN..."
+          DELETED_FILES=$(find "tags/$SOURCE_TAG" -type f -not -path "*/\.*" | while read file; do
+            REL_PATH=${file#tags/$SOURCE_TAG/}
+            DEST_FILE="tags/$DESTINATION_TAG/$REL_PATH"
+            if [ ! -f "$DEST_FILE" ]; then
+              echo "tags/$DESTINATION_TAG/$REL_PATH"
+            fi
+          done)
+          
+          # Count added and deleted files
+          ADDED_COUNT=0
+          if [ ! -z "$ADDED_FILES" ]; then
+            ADDED_COUNT=$(echo "$ADDED_FILES" | wc -l)
+          fi
+          
+          DELETED_COUNT=0
+          if [ ! -z "$DELETED_FILES" ]; then
+            DELETED_COUNT=$(echo "$DELETED_FILES" | wc -l)
+          fi
+          
+          # Add new files to SVN
+          if [ ! -z "$ADDED_FILES" ]; then
+            echo "Adding new files to SVN:"
+            echo "$ADDED_FILES" | while read file; do
+              echo "  Adding: $file"
+              svn_auth add --parents "$file"
+            done
+          else
+            echo "No new files to add to SVN"
+          fi
+          
+          # Delete removed files from SVN
+          if [ ! -z "$DELETED_FILES" ]; then
+            echo "Removing deleted files from SVN:"
+            echo "$DELETED_FILES" | while read file; do
+              if svn_auth ls "$file" &>/dev/null; then
+                echo "  Removing: $file"
+                svn_auth rm "$file"
+              fi
+            done
+          else
+            echo "No files to remove from SVN"
+          fi
+          
+          # Write to GitHub step summary
+          echo "## Changes Applied to SVN :arrows_clockwise:" >> $GITHUB_STEP_SUMMARY
+          echo "| Change Type | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Files Added** | $ADDED_COUNT |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Files Deleted** | $DELETED_COUNT |" >> $GITHUB_STEP_SUMMARY
+          
+          # Save for later steps
+          echo "added_count=$ADDED_COUNT" >> $GITHUB_ENV
+          echo "deleted_count=$DELETED_COUNT" >> $GITHUB_ENV
+      
+      - name: Commit Changes to SVN
+        run: |
+          PLUGIN_SLUG="${{ env.PLUGIN_SLUG }}"
+          SOURCE_TAG="${{ github.event.inputs.source_tag || inputs.source_tag }}"
+          DESTINATION_TAG="${{ github.event.inputs.destination_tag || inputs.destination_tag }}"
+          SVN_REPO="${{ steps.svn_checkout.outputs.svn_repo }}"
+          
+          cd "$SVN_REPO"
+          
+          # Get current SVN status
+          SVN_STATUS=$(svn_auth status | grep -E '^[ADM]')
+          
+          # Check if there are changes to commit
+          if [ ! -z "$SVN_STATUS" ]; then
+            echo "Committing changes to SVN"
+            svn_auth commit "tags/$DESTINATION_TAG" -m "Applying modifications to $DESTINATION_TAG (copied from $SOURCE_TAG)"
+            COMMIT_STATUS="Changes committed successfully"
+            echo "SVN commit completed"
+          else
+            COMMIT_STATUS="No changes to commit"
+            echo "No changes to commit to SVN"
+          fi
+          
+          # Write to GitHub step summary
+          echo "## SVN Commit Completed :floppy_disk:" >> $GITHUB_STEP_SUMMARY
+          echo "| Detail | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Status** | $COMMIT_STATUS |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Files Added** | ${{ env.added_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Files Deleted** | ${{ env.deleted_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit Message** | Applying modifications to $DESTINATION_TAG (copied from $SOURCE_TAG) |" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Cleanup
+        if: always()
+        run: |
+          TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
+          
+          if [ -d "$TEMP_DIR" ]; then
+            echo "Cleaning up temporary directory"
+            rm -rf "$TEMP_DIR"
+          fi
+          
+          # Write to GitHub step summary
+          echo "## Cleanup Completed :broom:" >> $GITHUB_STEP_SUMMARY
+          echo "- Temporary directories and files removed" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Verify Release
+        run: |
+          PLUGIN_SLUG="${{ env.PLUGIN_SLUG }}"
+          DESTINATION_TAG="${{ github.event.inputs.destination_tag || inputs.destination_tag }}"
+          
+          # Output to console
+          echo "Plugin release to WordPress.org completed successfully!"
+          echo "Plugin: $PLUGIN_SLUG"
+          echo "New tag: $DESTINATION_TAG"
+          echo "SVN URL: https://plugins.svn.wordpress.org/$PLUGIN_SLUG/tags/$DESTINATION_TAG/"
+          echo "WordPress.org URL: https://wordpress.org/plugins/$PLUGIN_SLUG/"
+          
+          # Write to GitHub step summary
+          echo "## Plugin Release to WordPress.org Completed Successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "| Detail | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Plugin** | $PLUGIN_SLUG |" >> $GITHUB_STEP_SUMMARY
+          echo "| **New Tag** | $DESTINATION_TAG |" >> $GITHUB_STEP_SUMMARY
+          echo "| **SVN URL** | [View in SVN](https://plugins.svn.wordpress.org/$PLUGIN_SLUG/tags/$DESTINATION_TAG/) |" >> $GITHUB_STEP_SUMMARY
+          echo "| **WordPress.org** | [View Plugin](https://wordpress.org/plugins/$PLUGIN_SLUG/) |" >> $GITHUB_STEP_SUMMARY 
