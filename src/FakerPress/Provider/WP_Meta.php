@@ -406,22 +406,22 @@ class WP_Meta extends Base {
 
 		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 		try {
-			$min = newChronos( $interval['min'] );
+			$min = new Chronos( $interval['min'] );
 		} catch ( \Exception $e ) {
-			$min = newChronos( 'today' );
+			$min = new Chronos( 'today' );
 			$min = $min->startOfDay();
 		}
 
 		if ( ! empty( $interval ) ) {
 			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = newChronos( $interval['max'] );
+				$max = new Chronos( $interval['max'] );
 			} catch ( \Exception $e ) {
 			}
 		}
 
 		if ( ! isset( $max ) ) {
-			$max = newChronos( 'now' );
+			$max = new Chronos( 'now' );
 		}
 
 		// If max has no Time set it to the end of the day

@@ -186,7 +186,7 @@ class WP_User extends Base {
 
 	public function user_registered( $min = 'now', $max = null ) {
 		try {
-			$min = newChronos( $min );
+			$min = new Chronos( $min );
 		} catch ( \Exception $e ) {
 			return null;
 		}
@@ -194,7 +194,7 @@ class WP_User extends Base {
 		if ( ! is_null( $max ) ) {
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = newChronos( $max );
+				$max = new Chronos( $max );
 			} catch ( \Exception $e ) {
 				return null;
 			}

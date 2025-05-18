@@ -57,23 +57,23 @@ class WP_Post extends Base {
 
 		// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 		try {
-			$min = newChronos( array_shift( $interval ) );
+			$min = new Chronos( array_shift( $interval ) );
 		} catch ( \Exception $e ) {
-			$min = newChronos( 'today' );
+			$min = new Chronos( 'today' );
 			$min = $min->startOfDay();
 		}
 
 		if ( ! empty( $interval ) ) {
 			// Unfortunatelly there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = newChronos( array_shift( $interval ) );
+				$max = new Chronos( array_shift( $interval ) );
 			} catch ( \Exception $e ) {
 
 			}
 		}
 
 		if ( ! isset( $max ) ) {
-			$max = newChronos( 'now' );
+			$max = new Chronos( 'now' );
 		}
 
 		// If max has no Time set it to the end of the day
