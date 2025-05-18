@@ -8,7 +8,7 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy+content), [lorem ipsun](http://wordpress.org/plugins/tags/lorem+ipsun), [testing](http://wordpress.org/plugins/tags/testing), [developer](http://wordpress.org/plugins/tags/developer)  
 **Requires at least:** 5.5  
 **Tested up to:** 6.8.1  
-**Stable tag:** 0.7.1  
+**Stable tag:** 0.7.2  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 **Requires PHP:** 7.4  
 **Donate link:** https://fakerpress.com/r/sponsor  
@@ -96,6 +96,10 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 
 ## Changelog ##
+
+### 0.7.2 &mdash; 18 of May 2025 ###
+* Fix - Resolve all fatals related to compatibility with version of Faker `1.24+`.
+* Fix - Resolve some incompatibilities with WP Script build tools.
 
 ### 0.7.1 &mdash; 18 of May 2025 ###
 * Fix - Move the registration of the menus to avoid problems with `_load_textdomain_just_in_time()` notices
