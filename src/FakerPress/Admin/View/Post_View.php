@@ -67,7 +67,7 @@ class Post_View extends Abstract_View {
 		}
 
 		// After this point we are safe to say that we have a good POST request
-		$results = make( Post::class )->parse_request( null, get_request_var( Plugin::$slug, [] ) );
+		$results = (array) make( Post::class )->parse_request( null, get_request_var( Plugin::$slug, [] ) );
 
 		if ( ! empty( $results ) ) {
 			return Admin::add_message(
