@@ -10,7 +10,7 @@ class Plugin {
 	 *
 	 * @var string
 	 */
-	public const VERSION = '0.7.1';
+	public const VERSION = '0.7.2';
 
 	/**
 	 * @since 0.6.0

@@ -4,7 +4,7 @@ Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 5.5
 Tested up to:      6.8.1
 Requires PHP:      7.4
-Stable tag:        0.7.1
+Stable tag:        0.7.2
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -98,6 +98,11 @@ Great! There are several ways you can get involved to help make FakerPress bette
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
+
+= 0.7.2 &mdash; 18 of May 2025 =
+
+* Fix - Resolve all fatals related to compatibility with version of Faker `1.24+`.
+* Fix - Resolve some incompatibilities with WP Script build tools.
 
 = 0.7.1 &mdash; 18 of May 2025 =
 

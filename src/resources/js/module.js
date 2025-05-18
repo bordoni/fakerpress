@@ -1,7 +1,7 @@
-window.fakerpress = window.fakerpress || {};
-
-( function( $, _, fp ){
+( function( $, _ ){
 	'use strict';
+
+	const fp = {};
 
 	fp.selectors = {
 		moduleGenerator:  '.fp-module-generator',
@@ -36,7 +36,7 @@ window.fakerpress = window.fakerpress || {};
 
 	fp.moduleGenerate = ( $form, _POST ) => {
 		if ( 'undefined' === typeof _POST ){
-			_POST = Qs.parse( $form.serialize() );
+			_POST = window.fakerpress.qs.parse( $form.serialize() );
 		}
 
 		// Always Hard set the Action
@@ -98,9 +98,10 @@ window.fakerpress = window.fakerpress || {};
 			$form.on( 'submit', function ( event ) {
 				fp.moduleGenerate( $form );
 
+				console.log( 'Form', $form );
 				event.preventDefault();
 				return;
 			} );
 		} );
 	} );
-}( jQuery, _, window.fakerpress ) );
+}( jQuery, _ ) );

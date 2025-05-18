@@ -177,7 +177,7 @@ class HTML extends Base {
 		}
 
 		if ( ! isset( $element->attr['alt'] ) ) {
-			$element->attr['alt'] = rtrim( $this->generator->optional( 0.7, null )->sentence( Base::randomDigitNotNull() ), '.' );
+			$element->attr['alt'] = rtrim( $this->generator->optional( 0.7, '' )->sentence( Base::randomDigitNotNull() ), '.' );
 		}
 
 		if ( ! isset( $element->attr['src'] ) ) {
