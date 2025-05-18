@@ -4,7 +4,7 @@ Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 5.5
 Tested up to:      6.8.1
 Requires PHP:      7.4
-Stable tag:        0.7.0
+Stable tag:        0.7.1
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -99,9 +99,11 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
-= 0.7.1 &mdash; TBD =
+= 0.7.1 &mdash; 18 of May 2025 =
 
 * Fix - Move the registration of the menus to avoid problems with `_load_textdomain_just_in_time()` notices
+* Fix - Resolve problems with `count()` applying to a String instead of an Array for PHP 8.1+
+* Fix - Resolve fatals for newChronos being a bad string replacement.
 
 = 0.7.0 &mdash; 16 of May 2025 =
 
