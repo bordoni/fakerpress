@@ -6,7 +6,6 @@
 .nvmrc export-ignore
 .jshintignore export-ignore
 .jshintrc export-ignore
-gulpfile.js export-ignore
 
 # Dev files.
 bin/* export-ignore
