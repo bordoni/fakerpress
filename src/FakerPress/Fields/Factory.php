@@ -9,7 +9,7 @@ use function FakerPress\make;
 /**
  * Class Factory
  *
- * @since   TBD
+ * @since   0.6.4
  *
  * @package FakerPress\Fields
  */

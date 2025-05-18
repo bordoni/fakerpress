@@ -2,8 +2,8 @@
 
 namespace FakerPress\Module;
 
-use Faker\Generator;
-use Faker\Provider\Base;
+use FakerPress\ThirdParty\Faker\Generator;
+use FakerPress\ThirdParty\Faker\Provider\Base;
 
 interface Interface_Module {
 
@@ -83,7 +83,7 @@ interface Interface_Module {
 	/**
 	 * Method that sets the data for an individual generator method.
 	 *
-	 * @since TBD
+	 * @since 0.6.4
 	 *
 	 * @param array|string $key Name of a particular method or a set of methods.
 	 * @param ...mixed $data Any number of arguments.

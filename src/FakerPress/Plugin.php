@@ -2,8 +2,6 @@
 
 namespace FakerPress;
 
-use FakerPress\Contracts\Service_Provider;
-
 class Plugin {
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.
@@ -12,7 +10,7 @@ class Plugin {
 	 *
 	 * @var string
 	 */
-	public const VERSION = '0.6.3';
+	public const VERSION = '0.7.0';
 
 	/**
 	 * @since 0.6.0
@@ -147,9 +145,6 @@ class Plugin {
 	 * @return void
 	 */
 	protected function autoload(): void {
-		// Load Composer Vendor Modules
-		require_once $this->plugin_path . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-
 		// Load Composer Vendor Modules
 		require_once $this->plugin_path . 'vendor-prefixed' . DIRECTORY_SEPARATOR . 'autoload.php';
 	}

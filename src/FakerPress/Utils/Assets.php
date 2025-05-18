@@ -359,7 +359,7 @@ class Assets {
 	public function get_resource_url( $asset = null ) {
 		$extension = pathinfo( $asset->file, PATHINFO_EXTENSION );
 		$is_vendor = strpos( $asset->file, 'vendor/' ) !== false ? true : false;
-		$resource_path = 'src/resources/';
+		$resource_path = 'build/';
 
 		if ( ! $is_vendor ) {
 			switch ( $extension ) {

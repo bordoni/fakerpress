@@ -135,7 +135,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Sets the current screen on the administration properly for subviews.
 	 *
-	 * @since TBD
+	 * @since 0.6.4
 	 *
 	 * @param \WP_Screen $screen
 	 *

@@ -6,16 +6,16 @@ use FakerPress\Module\Attachment;
 use FakerPress\Provider\Image\LoremPicsum;
 use FakerPress\Provider\Image\Placeholder;
 use FakerPress\Utils;
-use Faker\Provider\Base;
-use Faker\Provider\Lorem;
-use Faker\Provider\Internet;
+use FakerPress\ThirdParty\Faker\Provider\Base;
+use FakerPress\ThirdParty\Faker\Provider\Lorem;
+use FakerPress\ThirdParty\Faker\Provider\Internet;
 use function FakerPress\make;
 
 class HTML extends Base {
 	/**
-	 * @param \Faker\Generator $generator
+	 * @param \FakerPress\ThirdParty\Faker\Generator $generator
 	 */
-	public function __construct( \Faker\Generator $generator ) {
+	public function __construct( \FakerPress\ThirdParty\Faker\Generator $generator ) {
 		parent::__construct( $generator );
 
 		$provider = new Internet( $this->generator );
@@ -171,13 +171,13 @@ class HTML extends Base {
 		}
 
 		if ( ! isset( $element->attr['class'] ) ) {
-			$element->attr['class'][] = $this->generator->optional( 40, null )->randomElement( [ 'aligncenter', 'alignleft', 'alignright' ] );
+			$element->attr['class'][] = $this->generator->optional( 0.4, null )->randomElement( [ 'aligncenter', 'alignleft', 'alignright' ] );
 			$element->attr['class']   = array_filter( $element->attr['class'] );
 			$element->attr['class']   = implode( ' ', $element->attr['class'] );
 		}
 
 		if ( ! isset( $element->attr['alt'] ) ) {
-			$element->attr['alt'] = rtrim( $this->generator->optional( 70, null )->sentence( Base::randomDigitNotNull() ), '.' );
+			$element->attr['alt'] = rtrim( $this->generator->optional( 0.7, null )->sentence( Base::randomDigitNotNull() ), '.' );
 		}
 
 		if ( ! isset( $element->attr['src'] ) ) {
@@ -210,7 +210,7 @@ class HTML extends Base {
 		$count_images = count( $images );
 
 		if ( $count_images > 0 ) {
-			$image = $this->generator->optional( 20, $image )->randomElement( $images );
+			$image = $this->generator->optional( 0.2, $image )->randomElement( $images );
 		}
 
 		if ( false === $image ) {

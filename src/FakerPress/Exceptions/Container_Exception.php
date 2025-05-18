@@ -7,7 +7,7 @@ use RuntimeException;
 /**
  * Class Container_Exception.
  *
- * @since   TBD
+ * @since   0.6.4
  *
  * @package FakerPress\Exceptions
  */

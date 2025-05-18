@@ -1,7 +1,7 @@
 <?php
 namespace FakerPress\Provider;
 
-use Faker\Provider\Base;
+use FakerPress\ThirdParty\Faker\Provider\Base;
 use FakerPress;
 use FakerPress\Utils;
 use function FakerPress\make;

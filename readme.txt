@@ -2,9 +2,9 @@
 Contributors:      bordoni
 Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 5.5
-Tested up to:      6.5.2
+Tested up to:      6.8.1
 Requires PHP:      7.4
-Stable tag:        0.6.3
+Stable tag:        0.7.0
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -98,6 +98,32 @@ Great! There are several ways you can get involved to help make FakerPress bette
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
+
+= 0.7.1 &mdash; TBD =
+
+* Fix - Move the registration of the menus to avoid problems with `_load_textdomain_just_in_time()` notices
+
+= 0.7.0 &mdash; 16 of May 2025 =
+
+* Version - Update dependency `fakerphp/faker` to `1.24`
+* Version - Update dependency `lucatume/di52` to `0.4`
+* Tweak - Modified date handling from using `Carbon` to use `Chronos`.
+* Fix - Improved password for the randomized Users created, prevents weird scenarios with faked users allowing brute-force login. Props @rinatkhaziev
+* Fix - Prevent fatals related to `$min` param on Meta Value generation for PHP 8.1+. Props @kubiq
+
+= 0.6.6 &mdash; 26 of April 2024 =
+
+* Fix - Prevent notices related to deprecated usage of Faker methods that were being called as properties.
+* Fix - Prevent fatals related to bad typecasting of Faker methods used for meta generation. props @helgatheviking
+
+= 0.6.5 &mdash; 26 of April 2024 =
+
+* Fix - Ensure meta generation for Users, Terms and Comments work since changes made on version `0.6.2`. props @helgatheviking
+
+= 0.6.4 &mdash; 21 of April 2024 =
+
+* Fix - Ensure that Faker is also included via Strauss, to prevent conflicts with other plugins.
+* Fix - Resolve Fatal where trying to create posts, comments or terms would fail because of missing classes.
 
 = 0.6.3 &mdash; 21 of April 2024 =
 

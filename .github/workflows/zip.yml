@@ -1,0 +1,79 @@
+name: Generate Zip
+
+on:
+  workflow_dispatch:
+    inputs:
+      production:
+        description: 'Is this a production build?'
+        default: false
+        type: boolean
+
+jobs:
+  generate-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: install bun on the runner
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> $GITHUB_PATH
+
+      - name: install pup
+        run: composer -- pup
+
+      - name: pup build
+        run: composer -- pup build
+
+      - name: pup check
+        run: composer -- pup check
+
+      - name: pup i18n
+        run: composer -- pup i18n
+
+      - name: get version
+        if: ${{ inputs.production }}
+        run: echo "VERSION=$(composer -- pup get-version)" >> $GITHUB_ENV
+
+      - name: debug version (production)
+        if: ${{ inputs.production }}
+        run: echo "Production VERSION=${{ env.VERSION }}"
+
+      - name: get dev version
+        if: ${{ !inputs.production }}
+        run: echo "VERSION=$(composer -- pup get-version --dev)" >> $GITHUB_ENV
+
+      - name: debug version (dev)
+        if: ${{ !inputs.production }}
+        run: echo "Development VERSION=${{ env.VERSION }}"
+
+      - name: get zip name
+        run: echo "ZIP_NAME=$(composer -- pup zip-name ${{ env.VERSION }})" >> $GITHUB_ENV
+
+      - name: debug zip name
+        run: echo "ZIP_NAME=${{ env.ZIP_NAME }}"
+
+      - name: pup package
+        run: composer -- pup package ${{ env.VERSION }}
+
+      - name: Debug directory structure after packaging
+        run: |
+          echo "===== DEBUGGING OUTPUT PATH ISSUE ====="
+          echo "Working directory: $(pwd)"
+          echo "Listing all directories:"
+          find . -type d -name "*pup*" -o -name "*zip*" | grep -v "node_modules"
+          
+          echo "Searching for any ZIP files:"
+          find . -name "*.zip" | sort
+
+          echo "Directory structure from root:"
+          ls -la
+      
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          include-hidden-files: true
+          name: ${{ env.ZIP_NAME }}
+          path: .pup-zip/

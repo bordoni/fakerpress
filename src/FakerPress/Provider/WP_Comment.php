@@ -1,7 +1,8 @@
 <?php
 namespace FakerPress\Provider;
 
-use Faker\Provider\Base;
+use FakerPress\ThirdParty\Faker\Provider\Base;
+use FakerPress\ThirdParty\Cake\Chronos\Chronos;
 use FakerPress\Utils;
 use function FakerPress\make;
 
@@ -153,7 +154,7 @@ class WP_Comment extends Base {
 	public function comment_date( $min = 'now', $max = null ) {
 		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 		try {
-			$min = new \FakerPress\ThirdParty\Carbon\Carbon( $min );
+			$min = newChronos( $min );
 		} catch ( \Exception $e ) {
 			return null;
 		}
@@ -161,7 +162,7 @@ class WP_Comment extends Base {
 		if ( ! is_null( $max ) ) {
 			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = new \FakerPress\ThirdParty\Carbon\Carbon( $max );
+				$max = newChronos( $max );
 			} catch ( \Exception $e ) {
 				return null;
 			}

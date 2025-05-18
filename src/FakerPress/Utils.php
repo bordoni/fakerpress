@@ -2,7 +2,7 @@
 
 namespace FakerPress;
 
-use Faker;
+use FakerPress\ThirdParty\Faker;
 
 class Utils {
 	/**
@@ -129,7 +129,7 @@ class Utils {
 
 		// Now we treat the Range and select a random number
 		if ( ! isset( $qty ) ) {
-			$qty = Faker\Provider\Base::numberBetween( $min, $max );
+			$qty = FakerPress\ThirdParty\Faker\Provider\Base::numberBetween( $min, $max );
 		}
 
 		// If an array for the total was provided, turn it to a integer

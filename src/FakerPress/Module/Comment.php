@@ -4,7 +4,7 @@ namespace FakerPress\Module;
 
 use FakerPress\Plugin;
 use FakerPress\Utils;
-use Faker;
+use FakerPress\ThirdParty\Faker;
 use FakerPress;
 use function FakerPress\make;
 use function FakerPress\get;
@@ -16,8 +16,8 @@ class Comment extends Abstract_Module {
 	 * @inheritDoc
 	 */
 	protected $dependencies = [
-		Faker\Provider\Lorem::class,
-		Faker\Provider\DateTime::class,
+		FakerPress\ThirdParty\Faker\Provider\Lorem::class,
+		FakerPress\ThirdParty\Faker\Provider\DateTime::class,
 		FakerPress\Provider\HTML::class,
 	];
 
@@ -166,7 +166,22 @@ class Comment extends Abstract_Module {
 
 			if ( $comment_id && is_numeric( $comment_id ) ) {
 				foreach ( $metas as $meta_index => $meta ) {
-					make( Meta::class )->object( $comment_id, 'comment' )->generate( $meta['type'], $meta['name'], $meta )->save();
+					if ( ! isset( $meta['type'], $meta['name'] ) ) {
+						continue;
+					}
+
+					$type = get( $meta, 'type' );
+					$name = get( $meta, 'name' );
+					unset( $meta['type'], $meta['name'] );
+
+					if ( isset( $meta['weight'] ) ) {
+						$meta['weight'] = absint( $meta['weight'] );
+						$meta['weight'] = $meta['weight'] > 0 ? $meta['weight'] : 100;
+					} else {
+						$meta['weight'] = 100;
+					}
+
+					make( Meta::class )->object( $comment_id, 'comment' )->with( $type, $name, $meta )->generate()->save();
 				}
 			}
 			$results[] = $comment_id;

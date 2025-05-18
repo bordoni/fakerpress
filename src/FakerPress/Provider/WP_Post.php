@@ -1,11 +1,25 @@
 <?php
+/**
+ * FakerPress Post Provider
+ *
+ * @package FakerPress
+ * 
+ * @since TBD
+ */
 namespace FakerPress\Provider;
 
-use Faker\Provider\Base;
-use FakerPress;
+use FakerPress\ThirdParty\Faker\Provider\Base;
+use FakerPress\ThirdParty\Cake\Chronos\Chronos;
 use FakerPress\Utils;
 use function FakerPress\make;
 
+/**
+ * FakerPress WP_Post Provider
+ *
+ * @package FakerPress
+ * 
+ * @since TBD
+ */
 class WP_Post extends Base {
 
 	protected static $default = [
@@ -43,23 +57,23 @@ class WP_Post extends Base {
 
 		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 		try {
-			$min = new \FakerPress\ThirdParty\Carbon\Carbon( array_shift( $interval ) );
+			$min = newChronos( array_shift( $interval ) );
 		} catch ( \Exception $e ) {
-			$min = new \FakerPress\ThirdParty\Carbon\Carbon( 'today' );
+			$min = newChronos( 'today' );
 			$min = $min->startOfDay();
 		}
 
 		if ( ! empty( $interval ) ) {
 			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = new \FakerPress\ThirdParty\Carbon\Carbon( array_shift( $interval ) );
+				$max = newChronos( array_shift( $interval ) );
 			} catch ( \Exception $e ) {
 
 			}
 		}
 
 		if ( ! isset( $max ) ) {
-			$max = new \FakerPress\ThirdParty\Carbon\Carbon( 'now' );
+			$max = newChronos( 'now' );
 		}
 
 		// If max has no Time set it to the end of the day
@@ -110,7 +124,7 @@ class WP_Post extends Base {
 
 		$excerpt = implode( "\n\n", $excerpt );
 
-		return $this->generator->optional( $weight, '' )->randomElement( (array) $excerpt );
+		return $this->generator->optional( $weight / 100, '' )->randomElement( (array) $excerpt );
 	}
 
 	public function post_author( $haystack = [] ) {
@@ -128,7 +142,7 @@ class WP_Post extends Base {
 	}
 
 	public function post_parent( $haystack = [], $weight = 70 ) {
-		return $this->generator->optional( $weight, 0 )->randomElement( (array) $haystack );
+		return $this->generator->optional( $weight / 100, 0 )->randomElement( (array) $haystack );
 	}
 
 	public function ping_status( $haystack = [] ) {
@@ -219,7 +233,7 @@ class WP_Post extends Base {
 				}
 
 				// Select the elements based on qty
-				$output[ $taxonomy ] = $this->generator->optional( (int) $rate, null )->randomElements( $terms, (int) $qty );
+				$output[ $taxonomy ] = $this->generator->optional( ( (int) $rate ) / 100, null )->randomElements( $terms, (int) $qty );
 			}
 		}
 

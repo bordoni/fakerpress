@@ -1,8 +1,8 @@
 <?php
 namespace FakerPress\Provider;
 
-use Faker\Provider\Base;
-use FakerPress;
+use FakerPress\ThirdParty\Faker\Provider\Base;
+use FakerPress\ThirdParty\Cake\Chronos\Chronos;
 use FakerPress\Utils;
 use function FakerPress\make;
 
@@ -34,7 +34,7 @@ class WP_User extends Base {
 	 * @return string|null
 	 */
 	public function last_name( ?string $last_name = null ): ?string {
-		return $last_name ?? $this->generator->lastName;
+		return $last_name ?? $this->generator->lastName();
 	}
 
 	/**
@@ -48,7 +48,7 @@ class WP_User extends Base {
 	 * @return string|null
 	 */
 	public function user_login( ?string $login = null ): ?string {
-		return $login ?? $this->generator->userName;
+		return $login ?? $this->generator->userName();
 	}
 
 	/**
@@ -62,7 +62,7 @@ class WP_User extends Base {
 	 * @return string|null
 	 */
 	public function user_nicename( ?string $nicename = null ): ?string {
-		return $nicename ?? $this->generator->userName;
+		return $nicename ?? $this->generator->userName();
 	}
 
 	/**
@@ -76,7 +76,7 @@ class WP_User extends Base {
 	 * @return string|null
 	 */
 	public function user_url( ?string $url = null ): ?string {
-		return $url ?? $this->generator->url;
+		return $url ?? $this->generator->url();
 	}
 
 	/**
@@ -90,7 +90,7 @@ class WP_User extends Base {
 	 * @return string|null
 	 */
 	public function user_email( ?string $email = null ): ?string {
-		return $email ?? $this->generator->safeEmail;
+		return $email ?? $this->generator->safeEmail();
 	}
 
 	/**
@@ -119,7 +119,7 @@ class WP_User extends Base {
 	 * @return string|null
 	 */
 	public function nickname( ?string $nickname = null ): ?string {
-		return $nickname ?? $this->generator->userName;
+		return $nickname ?? $this->generator->userName();
 	}
 
 	/**
@@ -133,12 +133,12 @@ class WP_User extends Base {
 	 *
 	 * @return string|null
 	 */
-	public function user_pass( ?string $pass = null, int $qty = 10 ): ?string {
+	public function user_pass( ?string $pass = null, int $qty = 16 ): ?string {
 		if ( is_null( $pass ) ) {
 			if ( function_exists( 'wp_generate_password' ) ) {
-				$pass = wp_generate_password( $qty );
+				$pass = wp_generate_password( $qty, true );
 			} else {
-				$pass = $this->generator->randomNumber( $qty - 1 ) . $this->generator->randomLetter();
+				$pass = $this->generator->password( $qty );
 			}
 		}
 		return $pass;
@@ -180,13 +180,13 @@ class WP_User extends Base {
 	 *
 	 * @return string
 	 */
-	public function role( array $role = [] ): string {
+	public function role( ?array $role = [] ): ?string {
 		return $this->generator->randomElement( $role ?? array_keys( get_editable_roles() ) );
 	}
 
 	public function user_registered( $min = 'now', $max = null ) {
 		try {
-			$min = new \FakerPress\ThirdParty\Carbon\Carbon( $min );
+			$min = newChronos( $min );
 		} catch ( \Exception $e ) {
 			return null;
 		}
@@ -194,7 +194,7 @@ class WP_User extends Base {
 		if ( ! is_null( $max ) ) {
 			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
 			try {
-				$max = new \FakerPress\ThirdParty\Carbon\Carbon( $max );
+				$max = newChronos( $max );
 			} catch ( \Exception $e ) {
 				return null;
 			}

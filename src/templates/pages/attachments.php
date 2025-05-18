@@ -1,6 +1,6 @@
 <?php
 namespace FakerPress;
-use Carbon\Carbon;
+use FakerPress\ThirdParty\Cake\Chronos\Chronos;
 use FakerPress\Provider\HTML;
 
 /**

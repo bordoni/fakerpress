@@ -5,7 +5,7 @@ use function FakerPress\get;
 use function FakerPress\get_request_var;
 use FakerPress\Plugin;
 use FakerPress\Utils;
-use Faker;
+use FakerPress\ThirdParty\Faker;
 use FakerPress;
 
 class Term extends Abstract_Module {
@@ -13,7 +13,7 @@ class Term extends Abstract_Module {
 	 * @inheritDoc
 	 */
 	protected $dependencies = [
-		Faker\Provider\Lorem::class,
+		FakerPress\ThirdParty\Faker\Provider\Lorem::class,
 	];
 
 	public $meta = false;
@@ -107,7 +107,7 @@ class Term extends Abstract_Module {
 
 		$name_size = get_request_var( [ Plugin::$slug, 'size' ] );
 
-		// Fetch taxomies
+		// Fetch taxonomies
 		$taxonomies = get( $request, 'taxonomies' );
 		$taxonomies = array_map( 'trim', explode( ',', $taxonomies ) );
 		$taxonomies = array_intersect( get_taxonomies( [ 'public' => true ] ), $taxonomies );
@@ -129,7 +129,22 @@ class Term extends Abstract_Module {
 
 			if ( $has_metas && $term_id && is_numeric( $term_id ) ){
 				foreach ( $metas as $meta_index => $meta ) {
-					make( Meta::class )->object( $term_id, 'term' )->generate( $meta['type'], $meta['name'], $meta )->save();
+					if ( ! isset( $meta['type'], $meta['name'] ) ) {
+						continue;
+					}
+
+					$type = get( $meta, 'type' );
+					$name = get( $meta, 'name' );
+					unset( $meta['type'], $meta['name'] );
+
+					if ( isset( $meta['weight'] ) ) {
+						$meta['weight'] = absint( $meta['weight'] );
+						$meta['weight'] = $meta['weight'] > 0 ? $meta['weight'] : 100;
+					} else {
+						$meta['weight'] = 100;
+					}
+
+					make( Meta::class )->object( $term_id, 'term' )->with( $type, $name, $meta )->generate()->save();
 				}
 			}
 

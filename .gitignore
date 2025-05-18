@@ -2,7 +2,12 @@
 ###########
 .ssh
 .svn
-bin/
+
+
+# Binaries #
+############
+bin/*
+!bin/.gitkeep
 
 # WordPress Project
 .org
@@ -36,6 +41,7 @@ tmp
 
 # FakerPress #
 ###########
+build/*
 vendor/*
 vendor-prefixed/*
 src/resources/css/*

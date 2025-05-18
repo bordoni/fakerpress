@@ -181,7 +181,7 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * Generates a random ID for when an ID was not supplied.
 	 *
-	 * @since TBD
+	 * @since 0.6.4
 	 *
 	 * @return string
 	 */

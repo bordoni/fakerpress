@@ -1,24 +1,34 @@
 <?php
+/**
+ * Date Functions
+ *
+ * @package FakerPress
+ * 
+ * @since TBD
+ */
+
 namespace FakerPress;
 
+use FakerPress\ThirdParty\Cake\Chronos\Chronos;
+use WP_Error;
+
 /**
- * Creates a carbon date without throwing an error.
+ * Creates a chronos date without throwing an error.
  *
- * @since 0.6.0
+ * @since TBD
  *
- * @param $raw_date
- * @param $tz
+ * @param string $raw_date The date to create.
+ * @param string $tz The timezone to create the date in.
  *
- * @return \FakerPress\ThirdParty\Carbon\Carbon|\WP_Error
+ * @return Chronos|WP_Error
  */
-function carbon( $raw_date, $tz = null ) {
-	// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
+function chronos( $raw_date, $tz = null ) {
+	// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime.
 	try {
-		$date = new \FakerPress\ThirdParty\Carbon\Carbon( $raw_date, $tz );
+		$date = new Chronos( $raw_date, $tz );
 	} catch ( \Exception $e ) {
-		$date = new \WP_Error( 'fakerpress-date-error', null, [ 'error' => $e ] );
+		$date = new WP_Error( 'fakerpress-date-error', null, [ 'error' => $e ] );
 	}
 
 	return $date;
 }
-

@@ -74,7 +74,7 @@ class Factory extends Service_Provider {
 	/**
 	 * Fetches the current FakerPress view.
 	 *
-	 * @since TBD
+	 * @since 0.6.4
 	 *
 	 * @return Abstract_View|null
 	 */
@@ -99,7 +99,7 @@ class Factory extends Service_Provider {
 	/**
 	 * Gets a specific view based on its slug.
 	 *
-	 * @since TBD
+	 * @since 0.6.4
 	 *
 	 * @param string $slug Which view we are looking for.
 	 *
@@ -120,7 +120,7 @@ class Factory extends Service_Provider {
 	/**
 	 * If we are in a particular view of FakerPress we trigger the parse of that request.
 	 *
-	 * @since TBD
+	 * @since 0.6.4
 	 */
 	public function parse_current_view_request(): void {
 		$view = $this->get_current_view();

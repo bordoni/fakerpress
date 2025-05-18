@@ -1,7 +1,7 @@
 <?php
 namespace FakerPress\Provider\Image;
 
-use Faker\Provider\Base;
+use FakerPress\ThirdParty\Faker\Provider\Base;
 
 /**
  * @since  0.4.2

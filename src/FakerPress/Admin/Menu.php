@@ -12,7 +12,7 @@ use FakerPress\Admin;
 /**
  * Class Menu
  *
- * @since TBD
+ * @since 0.6.4
  *
  */
 class Menu {
@@ -207,7 +207,7 @@ class Menu {
 	 * Properly sets the current screen, this is a hacky solution because of how poorly WordPress handles Admin menus not
 	 * using the page param.
 	 *
-	 * @since TBD
+	 * @since 0.6.4
 	 *
 	 * @param \WP_Screen $screen Which screen are we in?
 	 *

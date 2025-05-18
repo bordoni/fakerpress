@@ -1,9 +1,11 @@
-( function( $, _, fp ){
+( function( $, _ ){
 	'use strict';
 
 	const isNumeric = ( n ) => {
 		return ! isNaN( parseFloat( n ) ) && isFinite( n );
 	};
+
+	const fp = {};
 
 	fp.fields = {};
 	fp.ready_class = 'fp-js-ready';
@@ -722,7 +724,7 @@
 		}
 	};
 
-	$( document ).ready( function() {
+	$( () => {
 		$.each( fp.fieldset.items, function( index, fieldset ) {
 			fp.fieldset.setup( fieldset );
 			fieldset.$.container.each( function( _index, container ) {
@@ -736,4 +738,4 @@
 		} );
 	} );
 
-}( window.jQuery, window._, window.fakerpress ) );
+}( window.jQuery, window._ ) );

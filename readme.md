@@ -5,10 +5,10 @@
 FakerPress is a clean way to generate fake and dummy content to your WordPress, great for developers who need testing
 
 **Contributors:** [bordoni](http://profiles.wordpress.org/bordoni)  
-**Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy+content), [dummy data](http://wordpress.org/plugins/tags/dummy+data), [lorem ipsun](http://wordpress.org/plugins/tags/lorem+ipsun), [admin](http://wordpress.org/plugins/tags/admin), [examples](http://wordpress.org/plugins/tags/exemples), [testing](http://wordpress.org/plugins/tags/testing), [images](http://wordpress.org/plugins/tags/images), [attachments](http://wordpress.org/plugins/tags/attachments), [featured image](http://wordpress.org/plugins/tags/featured+image), [taxonomies](http://wordpress.org/plugins/tags/taxonomies), [users](http://wordpress.org/plugins/tags/users), [post type](http://wordpress.org/plugins/tags/post+type), [faker](http://wordpress.org/plugins/tags/faker), [fake data](http://wordpress.org/plugins/tags/fake+data), [random](http://wordpress.org/plugins/tags/random), [developer](http://wordpress.org/plugins/tags/developer), [dev](http://wordpress.org/plugins/tags/dev), [development](http://wordpress.org/plugins/tags/development), [test](http://wordpress.org/plugins/tags/test), [tests](http://wordpress.org/plugins/tags/tests)  
+**Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy+content), [lorem ipsun](http://wordpress.org/plugins/tags/lorem+ipsun), [testing](http://wordpress.org/plugins/tags/testing), [developer](http://wordpress.org/plugins/tags/developer)  
 **Requires at least:** 5.5  
-**Tested up to:** 6.5.2
-**Stable tag:** 0.6.2
+**Tested up to:** 6.8.1  
+**Stable tag:** 0.7.0  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 **Requires PHP:** 7.4  
 **Donate link:** https://fakerpress.com/r/sponsor  
@@ -97,6 +97,27 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
+### 0.7.1 &mdash; TBD ###
+* Fix - Move the registration of the menus to avoid problems with `_load_textdomain_just_in_time()` notices
+
+### 0.7.0 &mdash; 16 of May 2025 ###
+* Version - Update dependency `fakerphp/faker` to `1.24`
+* Version - Update dependency `lucatume/di52` to `0.4`
+* Tweak - Modified date handling from using `Carbon` to use `Chronos`.
+* Fix - Improved password for the randomized Users created, prevents weird scenarios with faked users allowing brute-force login. Props @rinatkhaziev
+* Fix - Prevent fatals related to `$min` param on Meta Value generation for PHP 8.1+. Props @kubiq
+
+### 0.6.6 &mdash; 26 of April 2024 ###
+* Fix - Prevent notices related to deprecated usage of Faker methods that were being called as properties.
+* Fix - Prevent fatals related to bad typecasting of Faker methods used for meta generation. props @helgatheviking
+
+### 0.6.5 &mdash; 26 of April 2024 ###
+* Fix - Ensure meta generation for Users, Terms and Comments work since changes made on version `0.6.2`. props @helgatheviking
+
+### 0.6.4 &mdash; 21 of April 2024 ###
+* Fix - Ensure that Faker is also included via Strauss, to prevent conflicts with other plugins.
+* Fix - Resolve Fatal where trying to create posts, comments or terms would fail because of missing classes.
+
 ### 0.6.3 &mdash; 21 of April 2024 ###
 * Fix - Prevent fatal errors because of malformed composer autoload files.
 
@@ -115,7 +136,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Requirement - PHP Version 7.4 required for usage of FakerPress, important step to allow further improvements and tests.
 * Version - Updated composer dependency `lucatume/di52` to version `3.3.1`.
 * Version - Updated composer dependency `fakerphp/faker` to version `1.21`.
-* Version - Updated composer dependency `nesbot/carbon to version `2.66`.
+* Version - Updated composer dependency `nesbot/carbon` to version `2.66`.
 * Fix - Resolve some errors happening with Carbon and version 8.2 of PHP.
 
 ### 0.6.0 &mdash; 30 of March 2022 ###
