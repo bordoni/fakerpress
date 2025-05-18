@@ -62,7 +62,7 @@ abstract class Abstract_View extends Template implements Interface_View {
 	 * Register this particular view on the Admin menu.
 	 *
 	 * @since 0.6.0
-	 * @since 0.7.1 - Moved to a public method register with a hook.
+	 * @since 0.7.1 - Moved to a public method register_menu with a hook.
 	 */
 	public function register_menu(): void {
 		if ( ! $this->has_menu() ) {
