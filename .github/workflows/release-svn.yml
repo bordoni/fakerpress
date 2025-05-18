@@ -126,7 +126,7 @@ jobs:
       
       - name: Download Artifact (if using artifact)
         if: ${{ (github.event.inputs.use_artifact || inputs.use_artifact) == 'true' }}
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ github.event.inputs.artifact_name || inputs.artifact_name }}
           path: ${{ steps.create_dirs.outputs.temp_dir }}/artifact
