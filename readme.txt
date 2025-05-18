@@ -99,6 +99,10 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
+= 0.7.1 &mdash; TBD =
+
+* Fix - Move the registration of the menus to avoid problems with `_load_textdomain_just_in_time()` notices
+
 = 0.7.0 &mdash; 16 of May 2025 =
 
 * Version - Update dependency `fakerphp/faker` to `1.24`
