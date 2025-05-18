@@ -66,7 +66,7 @@
 			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.22.2/strauss.phar"
 		],
 		"clean-faker-lang": [
-			"[ -d './vendor/fakerphp/faker/src/Faker/Provider' ] && echo 'Removing folders:' && find ./vendor/fakerphp/faker/src/Faker/Provider -mindepth 1 -maxdepth 1 -type d ! -path './en_US' -print -exec rm -r {} + || true"
+			"[ -d './vendor/fakerphp/faker/src/Faker/Provider' ] && echo 'Removing folders:' && find ./vendor/fakerphp/faker/src/Faker/Provider -mindepth 1 -maxdepth 1 -type d ! -name 'en_US' -print -exec rm -r {} + || true"
 		],
 		"strauss": [
 			"@strauss-install",
