@@ -88,19 +88,8 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y subversion rsync
           
-          # Create SVN auth function for non-interactive usage
-          svn_auth() {
-            command svn "$@" --non-interactive --username "$SVN_USERNAME" --password "$SVN_PASSWORD"
-          }
-          
-          # Export credentials as environment variables
-          export SVN_USERNAME="${{ secrets.SVN_USERNAME }}"
-          export SVN_PASSWORD="${{ secrets.SVN_PASSWORD }}"
-          
           # Make the function available to other steps
-          echo "svn_auth() { command svn \"\$@\" --non-interactive --username \"\$SVN_USERNAME\" --password \"\$SVN_PASSWORD\"; }" >> $GITHUB_ENV
-          echo "SVN_USERNAME=$SVN_USERNAME" >> $GITHUB_ENV
-          echo "SVN_PASSWORD=$SVN_PASSWORD" >> $GITHUB_ENV
+          echo "svn_auth() { command svn \"\$@\" --non-interactive --username \"\${{ secrets.SVN_USERNAME }}\" --password \"\${{ secrets.SVN_PASSWORD }}\"; }" >> $GITHUB_ENV
           
           # Write to GitHub step summary
           echo "## SVN Setup Completed :white_check_mark:" >> $GITHUB_STEP_SUMMARY
