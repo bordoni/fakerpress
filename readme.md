@@ -10,7 +10,7 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Tested up to:** 6.8.1  
 **Stable tag:** 0.7.3  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
-**Requires PHP:** 8.0  
+**Requires PHP:** 8.1  
 **Donate link:** https://fakerpress.com/r/sponsor  
 
 ## Description ##
