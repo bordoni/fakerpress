@@ -36,7 +36,7 @@ if ( PHP_VERSION_ID < 80100 ) {
 					if ( function_exists( 'wp_get_current_user' ) && get_current_user_id() ) {
 						// Get the plugin data to access version.
 						$plugin_data = get_plugin_data( __FP_FILE__ );
-						$version = ! empty( $plugin_data['Version'] ) ? $plugin_data['Version'] : 'generic';
+						$version     = ! empty( $plugin_data['Version'] ) ? $plugin_data['Version'] : 'generic';
 						
 						// Set a version-specific option with the error type.
 						update_user_option( get_current_user_id(), "_fp_activation_error_{$version}", 'php_invalid', false );
@@ -65,11 +65,11 @@ add_action(
 		
 		// Get the plugin data to access version.
 		$plugin_data = get_plugin_data( __FP_FILE__ );
-		$version = ! empty( $plugin_data['Version'] ) ? $plugin_data['Version'] : 'generic';
+		$version     = ! empty( $plugin_data['Version'] ) ? $plugin_data['Version'] : 'generic';
 		
 		// Check for any version-specific error.
 		$option_name = "_fp_activation_error_{$version}";
-		$error_type = get_user_option( $option_name, $user_id );
+		$error_type  = get_user_option( $option_name, $user_id );
 		
 		if ( $error_type ) {
 			// Clear the flag after displaying the notice.
