@@ -118,6 +118,9 @@ jobs:
         run: |
           TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
           ZIP_FILE=$(find "$TEMP_DIR/artifact" -name "*.zip" | head -n 1)
+
+          ls -la "$TEMP_DIR"
+          ls -la "$TEMP_DIR/artifact"
           
           if [ -z "$ZIP_FILE" ]; then
             echo "Error: No ZIP file found in artifact"
