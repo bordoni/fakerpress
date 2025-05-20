@@ -50,18 +50,13 @@ add_action( 'admin_notices', '_fp_display_activation_notice' );
 function _fp_handle_activation() {
 	// Deactivate the plugin immediately upon activation.
 	deactivate_plugins( plugin_basename( __FP_FILE__ ) );
-	
-	// Use a user option to mark this for the current user.
-	if ( ! function_exists( 'wp_get_current_user' ) || ! get_current_user_id() ) {
-		return;
-	}
 
 	// Get the plugin data to access version.
-	$plugin_data = get_plugin_data( __FP_FILE__ );
+	$plugin_data = get_plugin_data( __FP_FILE__, false, false );
 	$version     = ! empty( $plugin_data['Version'] ) ? $plugin_data['Version'] : 'generic';
 	
 	// Set a version-specific option with the error type.
-	update_user_option( get_current_user_id(), "_fp_activation_error_{$version}", 'php_invalid', false );
+	update_option( "_fp_activation_error_{$version}", 'php_invalid' );
 }
 
 /**
@@ -72,25 +67,25 @@ function _fp_handle_activation() {
  * @return void
  */
 function _fp_display_activation_notice() {
-	$user_id = get_current_user_id();
-	if ( ! $user_id ) {
+	if ( ! is_admin() ) {
+		return;
+	}
+	
+	if ( ! current_user_can( 'activate_plugins' ) ) {
 		return;
 	}
 	
 	// Get the plugin data to access version.
-	$plugin_data = get_plugin_data( __FP_FILE__ );
+	$plugin_data = get_plugin_data( __FP_FILE__, false, false );
 	$version     = ! empty( $plugin_data['Version'] ) ? $plugin_data['Version'] : 'generic';
 	
 	// Check for any version-specific error.
 	$option_name = "_fp_activation_error_{$version}";
-	$error_type  = get_user_option( $option_name, $user_id );
+	$error_type  = get_option( $option_name );
 	
 	if ( ! $error_type ) {
 		return;
 	}
-
-	// Clear the flag after displaying the notice.
-	delete_user_option( $user_id, $option_name, false );
 
 	if ( 'php_invalid' !== $error_type ) {
 		return;
@@ -106,4 +101,7 @@ function _fp_display_activation_notice() {
 		</p>
 	</div>
 	<?php
+
+	// Clear the flag after displaying the notice, only delete the flag if the notice was displayed.
+	delete_option( $option_name );
 }
