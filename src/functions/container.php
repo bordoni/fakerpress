@@ -61,7 +61,7 @@ use FakerPress\Contracts\Container;
  *                                                    will be called only once after the singleton instance
  *                                                    construction.
  */
-function singleton( $slug, $class, array $after_build_methods = null ) {
+function singleton( $slug, $class, ?array $after_build_methods = null ) {
 	Container::init()->singleton( $slug, $class, $after_build_methods );
 }
 
@@ -125,7 +125,7 @@ function singleton( $slug, $class, array $after_build_methods = null ) {
  *                                                    the built object after the `__construct` method; the methods
  *                                                    will be called each time after the instance construction.
  */
-function bind( $slug, $class, array $after_build_methods = null ) {
+function bind( $slug, $class, ?array $after_build_methods = null ) {
 	Container::init()->bind( $slug, $class, $after_build_methods );
 }
 
