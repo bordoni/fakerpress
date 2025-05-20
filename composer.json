@@ -1,110 +1,110 @@
 {
-	"description": "FakerPress",
-	"name": "bordoni/fakerpress",
-	"type": "wordpress-plugin",
-	"keywords": [
-		"wordpress",
-		"dummy data",
-		"faker",
-		"fake data",
-		"generator"
-	],
-	"homepage": "https://fakerpress.com/",
-	"license": "GPL-2.0",
-	"minimum-stability": "stable",
-	"prefer-stable": true,
-	"autoload": {
-		"files": [
-			"src/functions/container.php",
-			"src/functions/date.php",
-			"src/functions/variables.php",
-			"src/functions/conditionals.php",
-			"src/functions/sorting.php",
-			"src/functions/assets.php"
-		],
-		"psr-4": {
-			"FakerPress\\": "src/FakerPress/",
-			"FakerPress\\Dev\\": "dev/src/"
-		}
-	},
-	"require": {
-		"lucatume/di52": "~4.0", 
-		"fakerphp/faker": "^1.24",
-		"cakephp/chronos": "^2.4.5"
-	},
-	"authors": [
-		{
-			"name": "Gustavo Bordoni",
-			"homepage": "https://bordoni.me/"
-		}
-	],
-	"support": {
-		"issues": "https://fakerpress.com/r/github/issues",
-		"forum": "https://wordpress.org/support/plugin/fakerpress",
-		"source": "https://fakerpress.com/r/github"
-	},
-	"funding": [
-		{
-			"type": "github",
-			"url": "https://fakerpress.com/r/sponsor"
-		}
-	],
-	"config": {
-		"process-timeout": 900,
-		"preferred-install": "dist",
-		"sort-packages": true,
-		"optimize-autoloader": true,
-		"platform": {
-			"php": "7.4"
-		},
-		"allow-plugins": {
-			"composer/installers": true
-		}
-	},
-	"scripts": {
-		"strauss-install": [
-			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.22.2/strauss.phar"
-		],
-		"clean-faker-lang": [
-			"[ -d './vendor/fakerphp/faker/src/Faker/Provider' ] && echo 'Removing folders:' && find ./vendor/fakerphp/faker/src/Faker/Provider -mindepth 1 -maxdepth 1 -type d ! -name 'en_US' -print -exec rm -r {} + || true"
-		],
-		"strauss": [
-			"@strauss-install",
-			"@clean-faker-lang",
-			"@php bin/strauss.phar",
-			"@composer dump-autoload"
-		],
-		"strauss-release": [
-			"@strauss-install",
-			"@php -d display_errors=on bin/strauss.phar --deleteVendorPackages=true",
-			"@composer dump-autoload"
-		],
-		"pup": [
-			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.3.8/pup.phar",
-			"@php bin/pup.phar"
-		],
-		"wp-cli": [
-			"test -f ./bin/wp-cli.phar || curl -o bin/wp-cli.phar -L -C - https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
-			"@php -d memory_limit=4G bin/wp-cli.phar"
-		],
-		"post-install-cmd": [
-			"@strauss"
-		],
-		"post-update-cmd": [
-			"@strauss"
-		]
-	},
-	"extra": {
-		"strauss": {
-			"target_directory": "vendor-prefixed",
-			"namespace_prefix": "FakerPress\\ThirdParty\\",
-			"classmap_prefix": "FakerPress_ThirdParty_",
-			"constant_prefix": "FAKERPRESS__",
-			"exclude_from_prefix": {
-				"file_patterns": []
-			},
-			"delete_vendor_packages": true,
-			"delete_vendor_files": true
-		}
-	}
+  "description": "FakerPress",
+  "name": "bordoni/fakerpress",
+  "type": "wordpress-plugin",
+  "keywords": [
+    "wordpress",
+    "dummy data",
+    "faker",
+    "fake data",
+    "generator"
+  ],
+  "homepage": "https://fakerpress.com/",
+  "license": "GPL-2.0",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "autoload": {
+    "files": [
+      "src/functions/container.php",
+      "src/functions/date.php",
+      "src/functions/variables.php",
+      "src/functions/conditionals.php",
+      "src/functions/sorting.php",
+      "src/functions/assets.php"
+    ],
+    "psr-4": {
+      "FakerPress\\": "src/FakerPress/",
+      "FakerPress\\Dev\\": "dev/src/"
+    }
+  },
+  "require": {
+    "lucatume/di52": "~4.0",
+    "fakerphp/faker": "^1.24",
+    "cakephp/chronos": "^3.1.0"
+  },
+  "authors": [
+    {
+      "name": "Gustavo Bordoni",
+      "homepage": "https://bordoni.me/"
+    }
+  ],
+  "support": {
+    "issues": "https://fakerpress.com/r/github/issues",
+    "forum": "https://wordpress.org/support/plugin/fakerpress",
+    "source": "https://fakerpress.com/r/github"
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://fakerpress.com/r/sponsor"
+    }
+  ],
+  "config": {
+    "process-timeout": 900,
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "platform": {
+      "php": "8.1"
+    },
+    "allow-plugins": {
+      "composer/installers": true
+    }
+  },
+  "scripts": {
+    "strauss-install": [
+      "test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.22.2/strauss.phar"
+    ],
+    "clean-faker-lang": [
+      "[ -d './vendor/fakerphp/faker/src/Faker/Provider' ] && echo 'Removing folders:' && find ./vendor/fakerphp/faker/src/Faker/Provider -mindepth 1 -maxdepth 1 -type d ! -name 'en_US' -print -exec rm -r {} + || true"
+    ],
+    "strauss": [
+      "@strauss-install",
+      "@clean-faker-lang",
+      "@php bin/strauss.phar",
+      "@composer dump-autoload"
+    ],
+    "strauss-release": [
+      "@strauss-install",
+      "@php -d display_errors=on bin/strauss.phar --deleteVendorPackages=true",
+      "@composer dump-autoload"
+    ],
+    "pup": [
+      "test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.3.8/pup.phar",
+      "@php bin/pup.phar"
+    ],
+    "wp-cli": [
+      "test -f ./bin/wp-cli.phar || curl -o bin/wp-cli.phar -L -C - https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
+      "@php -d memory_limit=4G bin/wp-cli.phar"
+    ],
+    "post-install-cmd": [
+      "@strauss"
+    ],
+    "post-update-cmd": [
+      "@strauss"
+    ]
+  },
+  "extra": {
+    "strauss": {
+      "target_directory": "vendor-prefixed",
+      "namespace_prefix": "FakerPress\\ThirdParty\\",
+      "classmap_prefix": "FakerPress_ThirdParty_",
+      "constant_prefix": "FAKERPRESS__",
+      "exclude_from_prefix": {
+        "file_patterns": []
+      },
+      "delete_vendor_packages": true,
+      "delete_vendor_files": true
+    }
+  }
 }
