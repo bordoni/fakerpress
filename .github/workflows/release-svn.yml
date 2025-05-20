@@ -88,8 +88,12 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y subversion rsync
           
-          # Make the function available to other steps
-          echo "svn_auth() { command svn \"\$@\" --non-interactive --username \"\${{ secrets.SVN_USERNAME }}\" --password \"\${{ secrets.SVN_PASSWORD }}\"; }" >> $GITHUB_ENV
+          # Create a script file for SVN authentication instead of using a function
+          echo '#!/bin/bash
+          svn "$@" --non-interactive --username "${{ secrets.SVN_USERNAME }}" --password "${{ secrets.SVN_PASSWORD }}"
+          ' > /tmp/svn-auth.sh
+          chmod +x /tmp/svn-auth.sh
+          echo "SVN_AUTH=/tmp/svn-auth.sh" >> $GITHUB_ENV
           
           # Write to GitHub step summary
           echo "## SVN Setup Completed :white_check_mark:" >> $GITHUB_STEP_SUMMARY
@@ -215,12 +219,12 @@ jobs:
           SVN_REPO="$TEMP_DIR/svn-repo"
           
           echo "Checking out SVN repository for $PLUGIN_SLUG (minimal checkout)"
-          svn_auth co --depth=immediates "$SVN_URL" "$SVN_REPO"
+          "$SVN_AUTH" co --depth=immediates "$SVN_URL" "$SVN_REPO"
           
           # Update only what we need - readme.txt from trunk and source tag
           cd "$SVN_REPO"
-          svn_auth update --set-depth=infinity "trunk/readme.txt"
-          svn_auth update --set-depth=infinity "tags/$SOURCE_TAG"
+          "$SVN_AUTH" update --set-depth=infinity "trunk/readme.txt"
+          "$SVN_AUTH" update --set-depth=infinity "tags/$SOURCE_TAG"
           
           # Check if source tag exists
           if [ ! -d "$SVN_REPO/tags/$SOURCE_TAG" ]; then
@@ -229,7 +233,7 @@ jobs:
           fi
           
           # Check if destination tag already exists
-          svn_auth ls "$SVN_URL/tags/$DESTINATION_TAG" 2>/dev/null
+          "$SVN_AUTH" ls "$SVN_URL/tags/$DESTINATION_TAG" 2>/dev/null
           if [ $? -eq 0 ]; then
             echo "Warning: Destination tag '$DESTINATION_TAG' already exists in the SVN repository"
             echo "existing_tag=true" >> $GITHUB_OUTPUT
@@ -262,18 +266,18 @@ jobs:
           
           if [ "$EXISTING_TAG" == "true" ]; then
             echo "Destination tag already exists, removing it first"
-            svn_auth rm "$SVN_URL/tags/$DESTINATION_TAG" -m "Removing existing tag $DESTINATION_TAG to recreate it"
+            "$SVN_AUTH" rm "$SVN_URL/tags/$DESTINATION_TAG" -m "Removing existing tag $DESTINATION_TAG to recreate it"
             TAG_ACTION="replaced"
           else
             TAG_ACTION="created"
           fi
           
           echo "Creating new SVN tag '$DESTINATION_TAG' from source tag '$SOURCE_TAG'"
-          svn_auth cp "$SVN_URL/tags/$SOURCE_TAG" "$SVN_URL/tags/$DESTINATION_TAG" -m "Copying $SOURCE_TAG to $DESTINATION_TAG"
+          "$SVN_AUTH" cp "$SVN_URL/tags/$SOURCE_TAG" "$SVN_URL/tags/$DESTINATION_TAG" -m "Copying $SOURCE_TAG to $DESTINATION_TAG"
           
           echo "Updating working copy with the new tag"
           cd "$SVN_REPO"
-          svn_auth update --set-depth=infinity "tags/$DESTINATION_TAG"
+          "$SVN_AUTH" update --set-depth=infinity "tags/$DESTINATION_TAG"
           
           # Write to GitHub step summary
           echo "## SVN Tag Creation Completed :label:" >> $GITHUB_STEP_SUMMARY
@@ -341,7 +345,7 @@ jobs:
             echo "Adding new files to SVN:"
             echo "$ADDED_FILES" | while read file; do
               echo "  Adding: $file"
-              svn_auth add --parents "$file"
+              "$SVN_AUTH" add --parents "$file"
             done
           else
             echo "No new files to add to SVN"
@@ -351,9 +355,9 @@ jobs:
           if [ ! -z "$DELETED_FILES" ]; then
             echo "Removing deleted files from SVN:"
             echo "$DELETED_FILES" | while read file; do
-              if svn_auth ls "$file" &>/dev/null; then
+              if "$SVN_AUTH" ls "$file" &>/dev/null; then
                 echo "  Removing: $file"
-                svn_auth rm "$file"
+                "$SVN_AUTH" rm "$file"
               fi
             done
           else
@@ -381,12 +385,12 @@ jobs:
           cd "$SVN_REPO"
           
           # Get current SVN status
-          SVN_STATUS=$(svn_auth status | grep -E '^[ADM]')
+          SVN_STATUS=$("$SVN_AUTH" status | grep -E '^[ADM]')
           
           # Check if there are changes to commit
           if [ ! -z "$SVN_STATUS" ]; then
             echo "Committing changes to SVN"
-            svn_auth commit "tags/$DESTINATION_TAG" -m "Applying modifications to $DESTINATION_TAG (copied from $SOURCE_TAG)"
+            "$SVN_AUTH" commit "tags/$DESTINATION_TAG" -m "Applying modifications to $DESTINATION_TAG (copied from $SOURCE_TAG)"
             COMMIT_STATUS="Changes committed successfully"
             echo "SVN commit completed"
           else
