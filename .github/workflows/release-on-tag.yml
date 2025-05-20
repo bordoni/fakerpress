@@ -80,6 +80,5 @@ jobs:
     with:
       source_tag: ${{ needs.find-previous-tag.outputs.previous_tag }}
       destination_tag: ${{ github.event.inputs.destination_tag || github.ref_name }}
-      use_artifact: true
       artifact_name: ${{ needs.build.outputs.zip_name }}
     secrets: inherit 

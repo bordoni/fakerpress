@@ -13,15 +13,11 @@ on:
       destination_tag:
         description: 'The new SVN tag to create (e.g., 1.0.1)'
         required: true
-      use_artifact:
-        description: 'Use an artifact from a previous workflow run instead of URL'
-        type: boolean
-        default: false
       zip_url:
-        description: 'Public URL to download the ZIP file with changes (ignored if use_artifact is true)'
+        description: 'Public URL to download the ZIP file with changes'
         required: false
       artifact_name:
-        description: 'Name of the artifact containing the ZIP file (required if use_artifact is true)'
+        description: 'Name of the artifact containing the ZIP file'
         required: false
   workflow_call:
     inputs:
@@ -33,16 +29,12 @@ on:
         description: 'The new SVN tag to create (e.g., 1.0.1)'
         required: true
         type: string
-      use_artifact:
-        description: 'Use an artifact from a previous workflow run instead of URL'
-        type: boolean
-        default: false
       zip_url:
-        description: 'Public URL to download the ZIP file with changes (ignored if use_artifact is true)'
+        description: 'Public URL to download the ZIP file with changes'
         required: false
         type: string
       artifact_name:
-        description: 'Name of the artifact containing the ZIP file (required if use_artifact is true)'
+        description: 'Name of the artifact containing the ZIP file'
         required: false
         type: string
     secrets:
@@ -61,13 +53,9 @@ jobs:
     steps:
       - name: Validate Inputs
         run: |
-          if [[ "${{ github.event.inputs.use_artifact == 'true' || inputs.use_artifact == 'true' }}" == "true" && -z "${{ github.event.inputs.artifact_name || inputs.artifact_name }}" ]]; then
-            echo "Error: artifact_name is required when use_artifact is true"
-            exit 1
-          fi
-          
-          if [[ "${{ github.event.inputs.use_artifact }}" != "true" && "${{ inputs.use_artifact }}" != "true" && -z "${{ github.event.inputs.zip_url || inputs.zip_url }}" ]]; then
-            echo "Error: zip_url is required when use_artifact is false"
+          # First check if both artifact_name and zip_url are empty
+          if [[ -z "${{ github.event.inputs.artifact_name || inputs.artifact_name }}" && -z "${{ github.event.inputs.zip_url || inputs.zip_url }}" ]]; then
+            echo "Error: Either artifact_name or zip_url must be provided"
             exit 1
           fi
           
@@ -78,7 +66,7 @@ jobs:
           echo "| **Plugin** | ${{ env.PLUGIN_SLUG }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Source Tag** | ${{ github.event.inputs.source_tag || inputs.source_tag }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Destination Tag** | ${{ github.event.inputs.destination_tag || inputs.destination_tag }} |" >> $GITHUB_STEP_SUMMARY
-          if [[ "${{ github.event.inputs.use_artifact == 'true' || inputs.use_artifact == 'true' }}" == "true" ]]; then
+          if [[ -n "${{ github.event.inputs.artifact_name || inputs.artifact_name }}" ]]; then
             echo "| **Source** | Artifact: ${{ github.event.inputs.artifact_name || inputs.artifact_name }} |" >> $GITHUB_STEP_SUMMARY
           else
             echo "| **Source** | URL: ${{ github.event.inputs.zip_url || inputs.zip_url }} |" >> $GITHUB_STEP_SUMMARY
@@ -117,15 +105,15 @@ jobs:
           echo "- SVN repo directory: \`$TEMP_DIR/svn-repo\`" >> $GITHUB_STEP_SUMMARY
           echo "- ZIP extraction directory: \`$TEMP_DIR/plugin-extract\`" >> $GITHUB_STEP_SUMMARY
       
-      - name: Download Artifact (if using artifact)
-        if: ${{ github.event.inputs.use_artifact == 'true' || inputs.use_artifact == 'true' }}
+      - name: Download Artifact
+        if: ${{ github.event.inputs.artifact_name != '' || inputs.artifact_name != '' }}
         uses: actions/download-artifact@v4
         with:
           name: ${{ github.event.inputs.artifact_name || inputs.artifact_name }}
           path: ${{ steps.create_dirs.outputs.temp_dir }}/artifact
       
-      - name: Process Artifact ZIP (if using artifact)
-        if: ${{ github.event.inputs.use_artifact == 'true' || inputs.use_artifact == 'true' }}
+      - name: Process Artifact ZIP
+        if: ${{ github.event.inputs.artifact_name != '' || inputs.artifact_name != '' }}
         id: process_artifact
         run: |
           TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
@@ -142,11 +130,11 @@ jobs:
           
           # Write to GitHub step summary
           echo "## Artifact Downloaded :package:" >> $GITHUB_STEP_SUMMARY
-          echo "- Artifact: \`${{ github.event.inputs.artifact_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Artifact: \`${{ github.event.inputs.artifact_name || inputs.artifact_name }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- ZIP file: \`$(basename $ZIP_FILE)\`" >> $GITHUB_STEP_SUMMARY
       
-      - name: Download ZIP (if using URL)
-        if: ${{ github.event.inputs.use_artifact != 'true' && inputs.use_artifact != 'true' }}
+      - name: Download ZIP
+        if: ${{ github.event.inputs.artifact_name == '' && inputs.artifact_name == '' }}
         id: download_zip
         run: |
           TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
@@ -173,7 +161,7 @@ jobs:
           TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
           
           # Select the correct ZIP file based on the source
-          if [[ "${{ github.event.inputs.use_artifact == 'true' || inputs.use_artifact == 'true' }}" == "true" ]]; then
+          if [[ -n "${{ github.event.inputs.artifact_name || inputs.artifact_name }}" ]]; then
             ZIP_FILE="${{ steps.process_artifact.outputs.zip_file }}"
           else
             ZIP_FILE="${{ steps.download_zip.outputs.zip_file }}"
