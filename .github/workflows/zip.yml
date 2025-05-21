@@ -16,7 +16,7 @@ on:
       ref:
         description: 'The ref to build from'
         default: ${{ github.ref }}
-        type: boolean
+        type: string
     outputs:
       zip_name:
         description: "The name of the generated ZIP file"
