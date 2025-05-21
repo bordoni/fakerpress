@@ -180,11 +180,24 @@ jobs:
           # Update only what we need - readme.txt from trunk and source tag
           cd "$SVN_REPO"
           "$SVN_AUTH" update --set-depth=infinity "trunk/readme.txt"
-          "$SVN_AUTH" update --set-depth=infinity "tags/$SOURCE_TAG"
           
-          # Check if source tag exists
-          if [ ! -d "$SVN_REPO/tags/$SOURCE_TAG" ]; then
+          # Check if the source tag exists before updating
+          if "$SVN_AUTH" ls "$SVN_URL/tags/$SOURCE_TAG" &>/dev/null; then
+            echo "Source tag '$SOURCE_TAG' found, updating..."
+            "$SVN_AUTH" update --set-depth=infinity "tags/$SOURCE_TAG" || {
+              echo "Warning: Failed to update source tag. Trying to recover..."
+              mkdir -p "tags/$SOURCE_TAG"
+              # Try to get the tag from another method - direct checkout
+              "$SVN_AUTH" co "$SVN_URL/tags/$SOURCE_TAG" "tags/$SOURCE_TAG" --depth=infinity || {
+                echo "Error: Failed to checkout source tag '$SOURCE_TAG' from the SVN repository"
+                exit 1
+              }
+            }
+          else
             echo "Error: Source tag '$SOURCE_TAG' does not exist in the SVN repository"
+            # List available tags to help debugging
+            echo "Available tags in the repository:"
+            "$SVN_AUTH" ls "$SVN_URL/tags/" 
             exit 1
           fi
           
