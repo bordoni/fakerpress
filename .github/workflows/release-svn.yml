@@ -182,11 +182,7 @@ jobs:
           fi
           
           # Check if destination tag already exists
-          "$SVN_AUTH" info "$SVN_URL/tags/$DESTINATION_TAG"
-
-          echo "Checking if destination tag exists"
-          exit 1;
-          if [ $? -eq 0 ]; then
+          if "$SVN_AUTH" info "$SVN_URL/tags/$DESTINATION_TAG" > /dev/null 2>&1; then
             echo "Warning: Destination tag '$DESTINATION_TAG' already exists in the SVN repository"
             echo "existing_tag=true" >> $GITHUB_OUTPUT
             TAG_STATUS="exists (will be replaced)"
