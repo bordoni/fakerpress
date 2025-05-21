@@ -1,0 +1,88 @@
+name: Attach ZIP to Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag of the release to attach the ZIP to (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  # Build the ZIP file
+  build-zip:
+    name: Build Plugin Package
+    runs-on: ubuntu-latest
+    outputs:
+      zip_name: ${{ steps.build_zip.outputs.zip_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag_name || github.ref }}
+
+      - name: Install bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> $GITHUB_PATH
+
+      - name: Install pup
+        run: composer -- pup
+
+      - name: Build plugin
+        run: composer -- pup build
+
+      - name: Run checks
+        run: composer -- pup check
+
+      - name: Generate i18n
+        run: composer -- pup i18n
+
+      - name: Get version
+        run: echo "VERSION=$(composer -- pup get-version)" >> $GITHUB_ENV
+
+      - name: Get ZIP name
+        run: echo "ZIP_NAME=$(composer -- pup zip-name ${{ env.VERSION }})" >> $GITHUB_ENV
+
+      - name: Package plugin
+        run: composer -- pup package ${{ env.VERSION }}
+
+      - name: Set output
+        id: build_zip
+        run: echo "zip_name=${{ env.ZIP_NAME }}" >> $GITHUB_OUTPUT
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          include-hidden-files: true
+          name: ${{ env.ZIP_NAME }}
+          path: .pup-zip/
+
+  # Attach ZIP to the release
+  attach-to-release:
+    name: Attach ZIP to GitHub Release
+    needs: build-zip
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download ZIP artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-zip.outputs.zip_name }}
+          path: ./plugin-zip
+
+      - name: Display downloaded files
+        run: |
+          echo "Downloaded artifact: ${{ needs.build-zip.outputs.zip_name }}"
+          find ./plugin-zip -type f | sort
+
+      - name: Attach ZIP to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./plugin-zip/*
+          tag_name: ${{ github.event.inputs.tag_name || github.event.release.tag_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_unmatched_files: false
+          draft: false
+          prerelease: ${{ github.event.release.prerelease }} 
