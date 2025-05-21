@@ -74,7 +74,7 @@ jobs:
       
       - name: Setup SVN
         run: |
-          sudo apt-get update && sudo apt-get install -y subversion rsync
+          sudo apt-get update && sudo apt-get install -y subversion rsync tree
           
           # Create a script file for SVN authentication instead of using a function
           echo '#!/bin/bash
@@ -112,30 +112,6 @@ jobs:
           name: ${{ github.event.inputs.artifact_name || inputs.artifact_name }}
           path: ${{ steps.create_dirs.outputs.temp_dir }}/artifact
       
-      - name: Process Artifact ZIP
-        if: ${{ github.event.inputs.artifact_name != '' || inputs.artifact_name != '' }}
-        id: process_artifact
-        run: |
-          TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
-          ZIP_FILE=$(find "$TEMP_DIR/artifact" -name "*.zip" | head -n 1)
-
-          ls -la "$TEMP_DIR"
-          ls -la "$TEMP_DIR/artifact"
-          
-          if [ -z "$ZIP_FILE" ]; then
-            echo "Error: No ZIP file found in artifact"
-            exit 1
-          fi
-          
-          echo "Found ZIP file: $ZIP_FILE"
-          cp "$ZIP_FILE" "$TEMP_DIR/plugin.zip"
-          echo "zip_file=$TEMP_DIR/plugin.zip" >> $GITHUB_OUTPUT
-          
-          # Write to GitHub step summary
-          echo "## Artifact Downloaded :package:" >> $GITHUB_STEP_SUMMARY
-          echo "- Artifact: \`${{ github.event.inputs.artifact_name || inputs.artifact_name }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- ZIP file: \`$(basename $ZIP_FILE)\`" >> $GITHUB_STEP_SUMMARY
-      
       - name: Download ZIP
         if: ${{ github.event.inputs.artifact_name == '' && inputs.artifact_name == '' }}
         id: download_zip
@@ -153,59 +129,34 @@ jobs:
           fi
           
           echo "zip_file=$ZIP_FILE" >> $GITHUB_OUTPUT
+
+
           
           # Write to GitHub step summary
           echo "## ZIP File Downloaded :arrow_down:" >> $GITHUB_STEP_SUMMARY
           echo "- Source URL: \`$ZIP_URL\`" >> $GITHUB_STEP_SUMMARY
           echo "- Downloaded to: \`$ZIP_FILE\`" >> $GITHUB_STEP_SUMMARY
-      
-      - name: Extract ZIP File
+           
+      - name: Print the contents of the artifact folder
+        id: process_artifact
         run: |
           TEMP_DIR="${{ steps.create_dirs.outputs.temp_dir }}"
           
-          # Select the correct ZIP file based on the source
-          if [[ -n "${{ github.event.inputs.artifact_name || inputs.artifact_name }}" ]]; then
-            ZIP_FILE="${{ steps.process_artifact.outputs.zip_file }}"
-          else
-            ZIP_FILE="${{ steps.download_zip.outputs.zip_file }}"
-          fi
-          
-          PLUGIN_SLUG="${{ env.PLUGIN_SLUG }}"
-          
-          echo "Extracting ZIP file to $TEMP_DIR/plugin-zip"
-          unzip -q "$ZIP_FILE" -d "$TEMP_DIR/plugin-zip"
-          
-          # Find the plugin directory in the extracted content
-          if [ -d "$TEMP_DIR/plugin-zip/$PLUGIN_SLUG" ]; then
-            # Plugin content is in a subdirectory matching the slug
-            mv "$TEMP_DIR/plugin-zip/$PLUGIN_SLUG" "$TEMP_DIR/plugin-extract"
-          elif [ -f "$TEMP_DIR/plugin-zip/$PLUGIN_SLUG.php" ] || [ -d "$TEMP_DIR/plugin-zip/includes" ] || [ -d "$TEMP_DIR/plugin-zip/src" ]; then
-            # Plugin content is at the root of the ZIP
-            mv "$TEMP_DIR/plugin-zip/"* "$TEMP_DIR/plugin-extract/"
-          else
-            # Look for a single directory at the root that might contain the plugin
-            ROOT_DIRS=$(find "$TEMP_DIR/plugin-zip" -maxdepth 1 -type d | wc -l)
-            if [ "$ROOT_DIRS" -eq 2 ]; then # Including the plugin-zip dir itself
-              SUB_DIR=$(find "$TEMP_DIR/plugin-zip" -maxdepth 1 -type d | grep -v "^$TEMP_DIR/plugin-zip$" | head -n 1)
-              mv "$SUB_DIR/"* "$TEMP_DIR/plugin-extract/"
-            else
-              echo "Error: Unable to determine plugin directory structure in ZIP"
-              ls -la "$TEMP_DIR/plugin-zip"
-              exit 1
-            fi
-          fi
-          
-          # Count files for summary
-          FILE_COUNT=$(find "$TEMP_DIR/plugin-extract" -type f | wc -l)
-          
-          echo "Extracted plugin content to $TEMP_DIR/plugin-extract"
-          ls -la "$TEMP_DIR/plugin-extract"
-          
           # Write to GitHub step summary
-          echo "## ZIP File Extracted :open_file_folder:" >> $GITHUB_STEP_SUMMARY
-          echo "- Files extracted: $FILE_COUNT" >> $GITHUB_STEP_SUMMARY
-          echo "- Extraction path: \`$TEMP_DIR/plugin-extract\`" >> $GITHUB_STEP_SUMMARY
-      
+          echo "## Plugin Downloaded :package:" >> $GITHUB_STEP_SUMMARY
+          if [ ! -z "${{ github.event.inputs.zip_url || inputs.zip_url }}" ]; then
+            echo "- URL: \`${{ github.event.inputs.zip_url || inputs.zip_url }}\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- Artifact: \`${{ github.event.inputs.artifact_name || inputs.artifact_name }}\`" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "<details>" >> $GITHUB_STEP_SUMMARY
+          echo "<summary>Files in artifact folder</summary>" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          tree -a "$TEMP_DIR/artifact" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "</details>" >> $GITHUB_STEP_SUMMARY
+
       - name: Checkout SVN Repository
         id: svn_checkout
         run: |
