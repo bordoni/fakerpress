@@ -14,51 +14,10 @@ jobs:
   # Build the ZIP file
   build-zip:
     name: Build Plugin Package
-    runs-on: ubuntu-latest
-    outputs:
-      zip_name: ${{ steps.build_zip.outputs.zip_name }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.tag_name || github.ref }}
-
-      - name: Install bun
-        run: |
-          curl -fsSL https://bun.sh/install | bash
-          echo "$HOME/.bun/bin" >> $GITHUB_PATH
-
-      - name: Install pup
-        run: composer -- pup
-
-      - name: Build plugin
-        run: composer -- pup build
-
-      - name: Run checks
-        run: composer -- pup check
-
-      - name: Generate i18n
-        run: composer -- pup i18n
-
-      - name: Get version
-        run: echo "VERSION=$(composer -- pup get-version)" >> $GITHUB_ENV
-
-      - name: Get ZIP name
-        run: echo "ZIP_NAME=$(composer -- pup zip-name ${{ env.VERSION }})" >> $GITHUB_ENV
-
-      - name: Package plugin
-        run: composer -- pup package ${{ env.VERSION }}
-
-      - name: Set output
-        id: build_zip
-        run: echo "zip_name=${{ env.ZIP_NAME }}" >> $GITHUB_OUTPUT
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          include-hidden-files: true
-          name: ${{ env.ZIP_NAME }}
-          path: .pup-zip/
+    uses: ./.github/workflows/zip.yml
+    with:
+      production: true
+      ref: ${{ inputs.tag_name }}
 
   # Attach ZIP to the release
   attach-to-release:

@@ -13,6 +13,10 @@ on:
         description: 'Is this a production build?'
         default: false
         type: boolean
+      ref:
+        description: 'The ref to build from'
+        default: ${{ github.ref }}
+        type: boolean
     outputs:
       zip_name:
         description: "The name of the generated ZIP file"
@@ -26,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.ref }}
 
       - name: install bun on the runner
         run: |
