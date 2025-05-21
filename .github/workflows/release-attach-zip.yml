@@ -17,7 +17,7 @@ jobs:
     uses: ./.github/workflows/zip.yml
     with:
       production: true
-      ref: ${{ inputs.tag_name }}
+      ref: "${{ inputs.tag_name }}"
 
   # Attach ZIP to the release
   attach-to-release:
@@ -53,5 +53,5 @@ jobs:
           tag_name: ${{ github.event.inputs.tag_name || github.event.release.tag_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_unmatched_files: false
-          draft: false
+          draft: false 
           prerelease: ${{ github.event.release.prerelease }} 
