@@ -177,18 +177,25 @@ jobs:
           echo "Checking out SVN repository for $PLUGIN_SLUG (minimal checkout)"
           "$SVN_AUTH" co --depth=immediates "$SVN_URL" "$SVN_REPO"
           
+          # Add a delay after checkout to ensure SVN server has completed operation
+          sleep 5
+          
           # Update only what we need - readme.txt from trunk and source tag
           cd "$SVN_REPO"
           "$SVN_AUTH" update --set-depth=infinity "trunk/readme.txt"
+          sleep 3
           
           # Check if the source tag exists before updating
-          if "$SVN_AUTH" ls "$SVN_URL/tags/$SOURCE_TAG" &>/dev/null; then
+          if "$SVN_AUTH" ls "$SVN_URL/tags/" | grep -q "$SOURCE_TAG"; then
             echo "Source tag '$SOURCE_TAG' found, updating..."
-            "$SVN_AUTH" update --set-depth=infinity "tags/$SOURCE_TAG" || {
+            sleep 2
+            # Use a more reliable approach with longer timeout
+            "$SVN_AUTH" update --set-depth=infinity "tags/$SOURCE_TAG" --timeout=60 || {
               echo "Warning: Failed to update source tag. Trying to recover..."
+              sleep 5
               mkdir -p "tags/$SOURCE_TAG"
               # Try to get the tag from another method - direct checkout
-              "$SVN_AUTH" co "$SVN_URL/tags/$SOURCE_TAG" "tags/$SOURCE_TAG" --depth=infinity || {
+              "$SVN_AUTH" co "$SVN_URL/tags/$SOURCE_TAG" "tags/$SOURCE_TAG" --depth=infinity --timeout=120 || {
                 echo "Error: Failed to checkout source tag '$SOURCE_TAG' from the SVN repository"
                 exit 1
               }
@@ -198,6 +205,12 @@ jobs:
             # List available tags to help debugging
             echo "Available tags in the repository:"
             "$SVN_AUTH" ls "$SVN_URL/tags/" 
+            exit 1
+          fi
+          
+          # Ensure we have the tag directory
+          if [ ! -d "$SVN_REPO/tags/$SOURCE_TAG" ]; then
+            echo "Error: Source tag '$SOURCE_TAG' does not exist in the SVN repository"
             exit 1
           fi
           
