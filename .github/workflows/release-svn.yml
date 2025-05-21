@@ -173,8 +173,6 @@ jobs:
           "$SVN_AUTH" update --set-depth=infinity "trunk/readme.txt"
           "$SVN_AUTH" update --set-depth=infinity "tags/$SOURCE_TAG"
           
-          ls -la tags/
-          
           # Check if source tag exists
           if [ ! -d "tags/$SOURCE_TAG" ]; then
             echo "Error: Source tag '$SOURCE_TAG' does not exist in the SVN repository"
@@ -245,7 +243,7 @@ jobs:
           
           SOURCE_PATH="$SVN_REPO/tags/$SOURCE_TAG"
           DESTINATION_PATH="$SVN_REPO/tags/$DESTINATION_TAG"
-          EXTRACTED_PLUGIN="$TEMP_DIR/plugin-extract"
+          EXTRACTED_PLUGIN="$TEMP_DIR/artifact"
           
           echo "Replacing destination tag content with the ZIP file content"
           # First remove the destination directory content
