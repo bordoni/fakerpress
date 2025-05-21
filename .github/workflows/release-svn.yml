@@ -130,15 +130,6 @@ jobs:
           
           echo "zip_file=$ZIP_FILE" >> $GITHUB_OUTPUT
 
-          # Extract the ZIP file
-          echo "Extracting ZIP file to artifact directory"
-          unzip -q "$ZIP_FILE" -d "$TEMP_DIR/artifact"
-          
-          if [ ! -d "$TEMP_DIR/artifact" ]; then
-            echo "Error: Failed to extract ZIP file"
-            exit 1
-          fi
-          
           # Write to GitHub step summary
           echo "## ZIP File Downloaded :arrow_down:" >> $GITHUB_STEP_SUMMARY
           echo "- Source URL: \`$ZIP_URL\`" >> $GITHUB_STEP_SUMMARY
@@ -182,17 +173,16 @@ jobs:
           "$SVN_AUTH" update --set-depth=infinity "trunk/readme.txt"
           "$SVN_AUTH" update --set-depth=infinity "tags/$SOURCE_TAG"
           
-          sleep 3
-          ls -la
+          ls -la tags/
           
           # Check if source tag exists
-          if [ ! -d "$SVN_REPO/tags/$SOURCE_TAG" ]; then
+          if [ ! -d "tags/$SOURCE_TAG" ]; then
             echo "Error: Source tag '$SOURCE_TAG' does not exist in the SVN repository"
             exit 1
           fi
           
           # Check if destination tag already exists
-          "$SVN_AUTH" ls "$SVN_URL/tags/$DESTINATION_TAG" 2>/dev/null
+          "$SVN_AUTH" info "$SVN_URL/tags/$DESTINATION_TAG" > /dev/null 2>&1
           if [ $? -eq 0 ]; then
             echo "Warning: Destination tag '$DESTINATION_TAG' already exists in the SVN repository"
             echo "existing_tag=true" >> $GITHUB_OUTPUT
