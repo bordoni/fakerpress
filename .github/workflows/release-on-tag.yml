@@ -39,20 +39,15 @@ jobs:
           PREVIOUS_TAG=""
           FOUND_CURRENT=false
           
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            # For manual dispatch, use the latest existing tag
-            PREVIOUS_TAG=$(echo "$ALL_TAGS" | head -n 1)
-          else
-            # For tag push, find the tag before the current one
-            for tag in $ALL_TAGS; do
-              if [ "$tag" == "$CURRENT_TAG" ]; then
-                FOUND_CURRENT=true
-              elif [ "$FOUND_CURRENT" == "true" ]; then
-                PREVIOUS_TAG="$tag"
-                break
-              fi
-            done
-          fi
+          # Find the tag that comes before the current one (for both manual dispatch and tag push)
+          for tag in $ALL_TAGS; do
+            if [ "$tag" == "$CURRENT_TAG" ]; then
+              FOUND_CURRENT=true
+            elif [ "$FOUND_CURRENT" == "true" ]; then
+              PREVIOUS_TAG="$tag"
+              break
+            fi
+          done
           
           # If no previous tag found, fall back to trunk
           if [ -z "$PREVIOUS_TAG" ]; then

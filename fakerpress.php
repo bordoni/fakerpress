@@ -93,11 +93,17 @@ function _fp_display_activation_notice() {
 	?>
 	<div class="error">
 		<p>
-			<b>FakerPress</b> requires PHP 8.1 or higher, and the plugin has now disabled itself.
+			<?php
+			printf(
+				/* translators: %s: Plugin name */
+				esc_html__( '%s requires PHP 8.1 or higher, and the plugin has now disabled itself.', 'fakerpress' ),
+				'<b>FakerPress</b>'
+			);
+			?>
 			<br />
-			To allow better control over dates, advanced security improvements and performance gain.
+			<?php esc_html_e( 'To allow better control over dates, advanced security improvements and performance gain.', 'fakerpress' ); ?>
 			<br />
-			Contact your Hosting or your system administrator and ask for this Upgrade to version 8.1 of PHP.
+			<?php esc_html_e( 'Contact your Hosting or your system administrator and ask for this Upgrade to version 8.1 of PHP.', 'fakerpress' ); ?>
 		</p>
 	</div>
 	<?php

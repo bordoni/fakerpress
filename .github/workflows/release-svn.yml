@@ -130,7 +130,14 @@ jobs:
           
           echo "zip_file=$ZIP_FILE" >> $GITHUB_OUTPUT
 
-
+          # Extract the ZIP file
+          echo "Extracting ZIP file to artifact directory"
+          unzip -q "$ZIP_FILE" -d "$TEMP_DIR/artifact"
+          
+          if [ ! -d "$TEMP_DIR/artifact" ]; then
+            echo "Error: Failed to extract ZIP file"
+            exit 1
+          fi
           
           # Write to GitHub step summary
           echo "## ZIP File Downloaded :arrow_down:" >> $GITHUB_STEP_SUMMARY
@@ -144,10 +151,10 @@ jobs:
           
           # Write to GitHub step summary
           echo "## Plugin Downloaded :package:" >> $GITHUB_STEP_SUMMARY
-          if [ ! -z "${{ github.event.inputs.zip_url || inputs.zip_url }}" ]; then
-            echo "- URL: \`${{ github.event.inputs.zip_url || inputs.zip_url }}\`" >> $GITHUB_STEP_SUMMARY
-          else
+          if [ -n "${{ github.event.inputs.artifact_name || inputs.artifact_name }}" ]; then
             echo "- Artifact: \`${{ github.event.inputs.artifact_name || inputs.artifact_name }}\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ZIP URL: \`${{ github.event.inputs.zip_url || inputs.zip_url }}\`" >> $GITHUB_STEP_SUMMARY
           fi
           echo "<details>" >> $GITHUB_STEP_SUMMARY
           echo "<summary>Files in artifact folder</summary>" >> $GITHUB_STEP_SUMMARY
