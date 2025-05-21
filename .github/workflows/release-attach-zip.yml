@@ -77,10 +77,20 @@ jobs:
           echo "Downloaded artifact: ${{ needs.build-zip.outputs.zip_name }}"
           find ./plugin-zip -type f | sort
 
+      - name: Rezip files for release
+        run: |
+          cd ./plugin-zip
+          ZIP_NAME="${{ needs.build-zip.outputs.zip_name }}.zip"
+          zip -r "../$ZIP_NAME" .
+          cd ..
+          echo "Created release ZIP: $ZIP_NAME"
+          ls -la "$ZIP_NAME"
+          echo "ZIP_FILE=$ZIP_NAME" >> $GITHUB_ENV
+
       - name: Attach ZIP to release
         uses: softprops/action-gh-release@v2
         with:
-          files: ./plugin-zip/*
+          files: ${{ env.ZIP_FILE }}
           tag_name: ${{ github.event.inputs.tag_name || github.event.release.tag_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_unmatched_files: false
