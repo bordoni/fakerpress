@@ -1,0 +1,57 @@
+name: Attach ZIP to Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag of the release to attach the ZIP to (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  # Build the ZIP file
+  build-zip:
+    name: Build Plugin Package
+    uses: ./.github/workflows/zip.yml
+    with:
+      production: true
+      ref: "${{ inputs.tag_name }}"
+
+  # Attach ZIP to the release
+  attach-to-release:
+    name: Attach ZIP to GitHub Release
+    needs: build-zip
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download ZIP artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-zip.outputs.zip_name }}
+          path: ./plugin-zip
+
+      - name: Display downloaded files
+        run: |
+          echo "Downloaded artifact: ${{ needs.build-zip.outputs.zip_name }}"
+          find ./plugin-zip -type f | sort
+
+      - name: Rezip files for release
+        run: |
+          cd ./plugin-zip
+          ZIP_NAME="${{ needs.build-zip.outputs.zip_name }}.zip"
+          zip -r "../$ZIP_NAME" .
+          cd ..
+          echo "Created release ZIP: $ZIP_NAME"
+          ls -la "$ZIP_NAME"
+          echo "ZIP_FILE=$ZIP_NAME" >> $GITHUB_ENV
+
+      - name: Attach ZIP to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ZIP_FILE }}
+          tag_name: ${{ github.event.inputs.tag_name || github.event.release.tag_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_unmatched_files: false
+          draft: false 
+          prerelease: ${{ github.event.release.prerelease }} 

@@ -3,8 +3,8 @@ Contributors:      bordoni
 Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 5.5
 Tested up to:      6.8.1
-Requires PHP:      7.4
-Stable tag:        0.7.0
+Requires PHP:      8.1
+Stable tag:        0.8.0
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -17,7 +17,7 @@ Whenever you create a new Theme or Plugin you will always need to create custom 
 
 Our goal with this plugin is to fill this gap where you have problem with a good solution both for Developers and for Users of WordPress.
 
-> **Note: This plugin requires PHP 7.4 or higher to be activated.**
+> **Note: This plugin requires PHP 8.1 or higher to be activated.**
 
 [**Checkout our GitHub Repository**](http://fakerpress.com/r/github)
 
@@ -99,9 +99,22 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
-= 0.7.1 &mdash; TBD =
+= 0.8.0 &mdash; 20 of May 2025 =
+
+* Version - Update dependency `cakephp/chronos` to `3.1.0`
+* Version - Update PHP min version to `8.1+`
+* Fix - Resolve PHP `8.4+` problems specially arounnd incompatibility with Chronos and notices.
+
+= 0.7.2 &mdash; 18 of May 2025 =
+
+* Fix - Resolve all fatals related to compatibility with version of Faker `1.24+`.
+* Fix - Resolve some incompatibilities with WP Script build tools.
+
+= 0.7.1 &mdash; 18 of May 2025 =
 
 * Fix - Move the registration of the menus to avoid problems with `_load_textdomain_just_in_time()` notices
+* Fix - Resolve problems with `count()` applying to a String instead of an Array for PHP 8.1+
+* Fix - Resolve fatals for newChronos being a bad string replacement.
 
 = 0.7.0 &mdash; 16 of May 2025 =
 
