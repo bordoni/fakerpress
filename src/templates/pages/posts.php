@@ -72,7 +72,7 @@ $fields[] = new Field(
 	],
 	[
 		'label' => __( 'Parents', 'fakerpress' ),
-		'description' => __( 'What posts can be choosen as Parent to the ones created', 'fakerpress' ),
+		'description' => __( 'What posts can be chosen as Parent to the ones created', 'fakerpress' ),
 	]
 );
 

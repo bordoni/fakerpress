@@ -132,7 +132,7 @@ class Factory extends Service_Provider {
 		$slug = $view::get_slug();
 
 		/**
-		 * Allow third-party hooking ot the admin view request level.
+		 * Allow third-party hooking of the admin view request level.
 		 *
 		 * @since 0.6.0
 		 *
@@ -141,7 +141,7 @@ class Factory extends Service_Provider {
 		do_action( 'fakerpress.admin.view.request', $view );
 
 		/**
-		 * Allow third-party hooking ot the admin view request level.
+		 * Allow third-party hooking of the admin view request level.
 		 *
 		 * @since 0.6.0
 		 *

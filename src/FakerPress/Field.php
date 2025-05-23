@@ -926,7 +926,7 @@ class Field {
 		$duplicate->_id[] = 'duplicate';
 		$duplicate->_name[] = 'duplicate';
 		$duplicate->type = 'button';
-		$duplicate->deactive = true;
+		$duplicate->deactivate = true;
 		$duplicate->value = '&plus;';
 		$duplicate->class = [ 'action-duplicate' ];
 
@@ -1088,7 +1088,7 @@ class Field {
 		$duplicate->_id[] = 'duplicate';
 		$duplicate->_name[] = 'duplicate';
 		$duplicate->type = 'button';
-		$duplicate->deactive = true;
+		$duplicate->deactivate = true;
 		$duplicate->value = '&plus;';
 		$duplicate->class = [ 'action-duplicate' ];
 
