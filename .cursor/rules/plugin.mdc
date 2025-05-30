@@ -1,0 +1,289 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# FakerPress Plugin Documentation
+
+## Overview
+FakerPress is a WordPress plugin designed to generate fake and dummy content for testing and development purposes. It provides a clean, efficient way to populate WordPress installations with realistic test data, making it invaluable for developers who need to test themes, plugins, and functionality with substantial content.
+
+## Plugin Information
+- **Name**: FakerPress
+- **Author**: Gustavo Bordoni
+- **License**: GPL-2.0+
+- **Requires PHP**: 8.1+
+- **Requires WordPress**: 5.5+
+- **Text Domain**: fakerpress
+- **Plugin URI**: https://fakerpress.com
+- **GitHub**: https://github.com/bordoni/fakerpress
+
+## Architecture & Structure
+
+### Core Components
+
+#### 1. Main Plugin File
+- **File**: `fakerpress.php`
+- **Purpose**: Plugin bootstrap, handles PHP version compatibility, activation/deactivation
+- **Key Features**:
+  - PHP 8.1+ requirement enforcement
+  - Graceful degradation for unsupported PHP versions
+  - Plugin activation/deactivation hooks
+  - Error handling and user notifications
+
+#### 2. Namespace Structure
+- **Primary Namespace**: `FakerPress\`
+- **Development Namespace**: `FakerPress\Dev\`
+- **Third-party Namespace**: `FakerPress\ThirdParty\` (for prefixed dependencies)
+
+#### 3. Core Classes
+
+##### Plugin Class (`src/FakerPress/Plugin.php`)
+- Main plugin orchestrator
+- Handles plugin initialization and bootstrapping
+- Manages plugin constants and configuration
+- Version: 0.8.0
+
+##### Utils Class (`src/FakerPress/Utils.php`)
+- Utility functions and helper methods
+- Large utility class (1400+ lines) with various helper functions
+- Core functionality support
+
+##### Admin Class (`src/FakerPress/Admin.php`)
+- Admin interface management
+- Menu registration and page handling
+- Admin-specific functionality
+
+##### Assets Class (`src/FakerPress/Assets.php`)
+- Asset management (CSS/JS)
+- Enqueuing and dependency management
+- Build process integration
+
+##### Template Class (`src/FakerPress/Template.php`)
+- Template rendering system
+- View management
+- Output generation
+
+##### Field Class (`src/FakerPress/Field.php`)
+- Form field generation and management
+- Large class (1800+ lines) handling various field types
+- Input validation and sanitization
+
+##### Ajax Class (`src/FakerPress/Ajax.php`)
+- AJAX request handling
+- Asynchronous operations
+- Real-time data generation
+
+### Module System
+
+The plugin uses a modular architecture for different content types:
+
+#### Available Modules (`src/FakerPress/Module/`)
+1. **Post** (`Post.php`) - WordPress posts and custom post types
+2. **User** (`User.php`) - User accounts and profiles
+3. **Term** (`Term.php`) - Categories, tags, and custom taxonomies
+4. **Comment** (`Comment.php`) - Comments and custom comment types
+5. **Attachment** (`Attachment.php`) - Media files and attachments
+6. **Meta** (`Meta.php`) - Custom meta fields for all content types
+
+#### Module Architecture
+- **Interface**: `Interface_Module.php` - Defines module contracts
+- **Abstract Base**: `Abstract_Module.php` - Common module functionality
+- **Factory**: `Factory.php` - Module instantiation and management
+
+### Admin Interface
+
+#### View System (`src/FakerPress/Admin/View/`)
+- **Abstract_View.php** - Base view class
+- **Interface_View.php** - View interface definition
+- **Factory.php** - View factory for instantiation
+- **Specific Views**:
+  - `Post_View.php` - Post generation interface
+  - `User_View.php` - User generation interface
+  - `Term_View.php` - Term generation interface
+  - `Comment_View.php` - Comment generation interface
+  - `Attachment_View.php` - Attachment generation interface
+  - `Settings_View.php` - Plugin settings
+  - `Changelog_View.php` - Version changelog
+  - `Error_View.php` - Error handling
+
+#### Menu System (`src/FakerPress/Admin/Menu.php`)
+- WordPress admin menu integration
+- Page registration and routing
+- Permission handling
+
+### Field System
+
+#### Field Types (`src/FakerPress/Fields/`)
+The plugin includes 20+ field types for generating various data:
+- Attachment
+- WP_Query
+- Number
+- Elements
+- Letter
+- Words
+- Text
+- HTML
+- Lexify
+- Asciify
+- Regexify
+- Person
+- Geo Information
+- Company
+- Date
+- TimeZone
+- Email
+- Domain
+- IP
+- Browser User Agent
+
+### Dependencies & Build System
+
+#### Composer Dependencies
+- **lucatume/di52**: Dependency injection container (~4.0)
+- **fakerphp/faker**: Fake data generation library (^1.24)
+- **cakephp/chronos**: Date/time manipulation (^3.1.0)
+
+#### Build Tools
+- **Strauss**: Dependency prefixing to avoid conflicts
+- **WordPress Scripts**: Frontend build process
+- **PostCSS**: CSS processing with plugins:
+  - postcss-import
+  - postcss-mixins
+  - postcss-nested
+  - postcss-preset-env
+
+#### Development Tools
+- **Node.js**: 18.17.0
+- **npm**: 9.6.7
+- **PHP**: 8.1+ requirement
+- **Webpack**: Asset bundling
+- **ESLint/Stylelint**: Code quality
+
+### Key Features
+
+#### Content Generation Capabilities
+1. **Posts & Custom Post Types**
+   - Random content generation
+   - Featured image assignment
+   - Meta field population
+   - Category/tag assignment
+
+2. **Users**
+   - Realistic user profiles
+   - Random user data
+   - Role assignment
+   - Meta information
+
+3. **Comments**
+   - Realistic comment threads
+   - Browser data simulation
+   - Comment meta
+   - Custom comment types
+
+4. **Terms (Categories/Tags)**
+   - Hierarchical term creation
+   - Custom taxonomy support
+   - Term meta generation
+
+5. **Attachments**
+   - Random image generation
+   - File metadata
+   - Featured image assignment
+
+6. **Meta Data**
+   - Custom fields for all content types
+   - 20+ data types
+   - Realistic data patterns
+
+#### Advanced Features
+- **HTML Generation**: Random, realistic HTML content
+- **Image Integration**: Placeholder and random images in content
+- **Browser Data**: Realistic user agent strings for comments
+- **Cleanup System**: Easy removal of generated content
+- **Batch Processing**: Efficient bulk content generation
+
+### Development Patterns
+
+#### Code Standards
+- **WordPress Coding Standards**: PHP formatting
+- **Short Array Syntax**: Modern PHP array notation
+- **Early Returns**: Reduced cognitive load in conditionals
+- **ES6 JavaScript**: Modern JavaScript patterns
+- **Docblock Standards**: 
+  - `@since TBD` for new functions
+  - Aligned parameter documentation
+  - Period-terminated descriptions
+
+#### File Organization
+- **Namespaced Architecture**: PSR-4 autoloading
+- **Modular Design**: Separate concerns into focused classes
+- **Template System**: Organized view rendering
+- **Asset Management**: Proper enqueuing and dependencies
+
+#### Security & Performance
+- **Nonce Verification**: CSRF protection
+- **Capability Checks**: Proper permission handling
+- **Sanitization**: Input cleaning and validation
+- **Prefixed Dependencies**: Conflict prevention
+- **Optimized Autoloader**: Performance optimization
+
+### Configuration Files
+
+#### Important Config Files
+- **composer.json**: PHP dependencies and autoloading
+- **package.json**: Node.js dependencies and scripts
+- **webpack.config.js**: Asset build configuration
+- **phpcs.xml**: PHP code standards
+- **.editorconfig**: Editor configuration
+- **.puprc**: Release configuration
+
+### Development Workflow
+
+#### Build Commands
+```bash
+npm run build          # Production build
+npm run start          # Development build with watch (avoid using)
+npm run lint           # Code linting
+npm run format         # Code formatting
+composer strauss       # Dependency prefixing
+composer pup           # Release management
+```
+
+#### File Structure Best Practices
+- **src/**: Source code
+- **build/**: Compiled assets
+- **vendor-prefixed/**: Prefixed dependencies
+- **templates/**: View templates
+- **assets/**: Static assets
+- **languages/**: Translation files
+
+### Integration Points
+
+#### WordPress Hooks
+- **Admin Interface**: WordPress admin integration
+- **AJAX Endpoints**: Asynchronous operations
+- **Capabilities**: Permission system integration
+- **Multisite Support**: Network-wide functionality
+
+#### Third-party Compatibility
+- **Theme Integration**: Works with any WordPress theme
+- **Plugin Compatibility**: Designed to avoid conflicts
+- **Custom Post Types**: Supports any registered post type
+- **Custom Taxonomies**: Works with custom taxonomy systems
+
+### Testing & Quality Assurance
+
+#### Code Quality Tools
+- **PHP_CodeSniffer**: WordPress coding standards
+- **ESLint**: JavaScript linting
+- **Stylelint**: CSS linting
+- **Composer Scripts**: Automated quality checks
+
+#### Development Environment
+- **Local Development**: WordPress local setup
+- **Version Control**: Git with GitHub integration
+- **Continuous Integration**: Automated testing
+- **Release Management**: Automated deployment
+
+This documentation provides a comprehensive overview of the FakerPress plugin architecture, making it easier for developers to understand, maintain, and extend the codebase while following established patterns and conventions. 

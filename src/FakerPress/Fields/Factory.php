@@ -1,4 +1,9 @@
 <?php
+/**
+ * Factory class for creating field instances.
+ *
+ * @since TBD
+ */
 
 namespace FakerPress\Fields;
 
@@ -9,17 +14,28 @@ use function FakerPress\make;
 /**
  * Class Factory
  *
+ * Factory class responsible for creating and managing field instances.
+ *
  * @since   0.6.4
  *
  * @package FakerPress\Fields
  */
 class Factory extends Service_Provider {
+	/**
+	 * Array of registered field types.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string,string>
+	 */
 	protected $types = [];
 
 	/**
 	 * Register all the Admin Views as Singletons and initializes them.
 	 *
 	 * @since 0.6.0
+	 *
+	 * @return void
 	 */
 	public function register() {
 		// Register the provider as a singleton.
@@ -29,6 +45,15 @@ class Factory extends Service_Provider {
 		$this->get_all_types();
 	}
 
+	/**
+	 * Creates field instances from configuration.
+	 *
+	 * @since TBD
+	 *
+	 * @param array|Field_Abstract $fields Configuration array or Field instance.
+	 *
+	 * @return Field_Abstract|\WP_Error|array Array of fields, single field, or WP_Error on invalid config.
+	 */
 	public function make( $fields ) {
 		if ( $fields instanceof Field_Abstract ) {
 			return ! $fields->is_init() ? $fields->init() : $fields;
@@ -50,6 +75,13 @@ class Factory extends Service_Provider {
 		return array_map( [ $this, 'make' ], $fields );
 	}
 
+	/**
+	 * Gets all registered field types.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> Array of field types with slug => class mapping.
+	 */
 	public function get_all_types(): array {
 		$default_types = [
 			Raw_Field::class,
@@ -79,10 +111,28 @@ class Factory extends Service_Provider {
 		return $this->types;
 	}
 
+	/**
+	 * Gets the field class name for a given field type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The field type slug.
+	 *
+	 * @return string The field class name.
+	 */
 	public function get_field_class_for_type( string $type ): string {
 		return get( $this->get_all_types(), $type );
 	}
 
+	/**
+	 * Validates if a field configuration array is valid.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $field The field configuration array.
+	 *
+	 * @return bool Whether the field configuration is valid.
+	 */
 	public function is_valid_field_config( array $field ): bool {
 		return (bool) $this->get_field_class_for_type( (string) get( $field, 'type' ) );
 	}
