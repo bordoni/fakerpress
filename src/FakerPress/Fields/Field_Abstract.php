@@ -202,7 +202,7 @@ abstract class Field_Abstract implements Field_Interface {
 			$this->set_parent( $parent );
 		}
 
-		// Mark that this field was initialied.
+		// Mark that this field was initialized.
 		$this->set_init_flag( true );
 
 		return $this;
