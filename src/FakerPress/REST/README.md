@@ -19,11 +19,19 @@ REST/
 ## Architecture
 
 ### Controller
-The `Controller` class is the main entry point for the REST API. It:
-- Registers all endpoint routes
+The `Controller` class is a service provider that serves as the main entry point for the REST API. It:
+- Extends `Service_Provider` following FakerPress patterns
+- Is registered in `Plugin::bind_implementations()`
+- Registers all endpoint routes via `rest_api_init` action
 - Manages endpoint loading
 - Provides OpenAPI documentation generation
 - Handles common functionality like permissions
+
+The Controller follows the service provider pattern used throughout FakerPress:
+- No hooks are bound in the constructor
+- All hook registration happens in the `register()` method
+- Uses the container singleton pattern
+- Follows the same structure as other service providers like `Assets` and `Hooks`
 
 ### Interface_Endpoint
 Defines the contract that all endpoint classes must implement:
@@ -53,6 +61,18 @@ Utility class for generating OpenAPI 3.0 documentation:
 - Example data generation
 
 ## Usage
+
+### Automatic Loading
+
+The REST API is automatically loaded when FakerPress boots:
+
+1. `Plugin::boot()` is called during plugin initialization
+2. `Plugin::bind_implementations()` registers the `REST\Controller` service provider
+3. The Controller's `register()` method is called automatically
+4. REST routes are registered on the `rest_api_init` action
+5. All endpoints become available at `/wp-json/fakerpress/v1/`
+
+No manual instantiation or initialization is required.
 
 ### Creating a New Endpoint
 

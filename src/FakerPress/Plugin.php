@@ -179,6 +179,7 @@ class Plugin {
 		// Register all the Service Providers.
 		register( Assets::class );
 		register( Hooks::class );
+		register( REST\Controller::class );
 
 		register( Module\Factory::class );
 		register( Admin\View\Factory::class );

@@ -11,7 +11,10 @@
 namespace FakerPress\REST;
 
 use FakerPress\Plugin;
+use FakerPress\Contracts\Service_Provider;
 use WP_REST_Server;
+
+use function FakerPress\singleton;
 
 /**
  * Class Controller
@@ -20,7 +23,7 @@ use WP_REST_Server;
  *
  * @since TBD
  */
-class Controller {
+class Controller extends Service_Provider {
 
 	/**
 	 * The namespace for all FakerPress REST endpoints.
@@ -41,11 +44,22 @@ class Controller {
 	protected $endpoints = [];
 
 	/**
-	 * Constructor.
+	 * Binds and sets up implementations.
 	 *
 	 * @since TBD
 	 */
-	public function __construct() {
+	public function register() {
+		singleton( static::class, $this );
+
+		$this->add_actions();
+	}
+
+	/**
+	 * Adds the actions required by the REST API.
+	 *
+	 * @since TBD
+	 */
+	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_routes' ] );
 	}
 
