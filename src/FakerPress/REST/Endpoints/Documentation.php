@@ -17,6 +17,8 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 
+use function FakerPress\make;
+
 /**
  * Class Documentation
  *
@@ -80,7 +82,7 @@ class Documentation extends Abstract_Endpoint {
 	 * @return WP_REST_Response
 	 */
 	public function get_documentation( $request ) {
-		$controller = new Controller();
+		$controller = make( Controller::class );
 		$spec       = $controller->get_openapi_documentation();
 
 		// Add tags to the specification.
@@ -102,7 +104,7 @@ class Documentation extends Abstract_Endpoint {
 	 * @return WP_REST_Response
 	 */
 	public function get_openapi_spec( $request ) {
-		$controller = new Controller();
+		$controller = make( Controller::class );
 		$spec       = $controller->get_openapi_documentation();
 
 		// Add tags to the specification.
