@@ -36,8 +36,8 @@ class OpenAPI {
 				'description' => 'REST API endpoints for FakerPress fake data generation plugin.',
 				'version'     => Plugin::VERSION,
 				'contact'     => [
-					'name' => 'StellarWP',
-					'url'  => 'https://stellarwp.com',
+					'name' => 'Gustavo Bordoni',
+					'url'  => 'https://bordoni.me',
 				],
 				'license' => [
 					'name' => 'GPL v2 or later',
