@@ -63,7 +63,7 @@ if ( version_compare( $GLOBALS['wp_version'], '4.4-beta', '>=' ) ) {
 ?>
 <div class='wrap'>
 	<h2><?php echo esc_attr( $this->get_title() ); ?></h2>
-	<form method='post' class='fp-module-generator'>
+	<form method='post' class='fp-module-generator' data-endpoint="terms">
 		<?php wp_nonce_field( Plugin::$slug . '.request.' . $this::get_slug() ); ?>
 		<input type="hidden" name="fakerpress[view]" value="<?php echo esc_attr( $this::get_slug() ); ?>">
 

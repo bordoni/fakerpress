@@ -119,12 +119,15 @@ class Controller extends Service_Provider {
 			// 'FakerPress\REST\Endpoints\Meta',
 		] );
 
-		return array_map(
+		$endpoints = array_map(
 			static function( $class ) {
 				return class_exists( $class ) ? make( $class ) : null;
 			},
 			$endpoint_classes
 		);
+
+		// Filter out null values (classes that don't exist)
+		return array_filter( $endpoints );
 	}
 
 	/**

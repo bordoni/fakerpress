@@ -114,42 +114,36 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 */
 	public function validate_request( $request ) {
 		$schema = $this->get_request_schema();
+		$errors = [];
 
-		if ( empty( $schema ) ) {
+		if ( empty( $schema['properties'] ) ) {
 			return true;
 		}
 
-		$errors = [];
-
-		// Validate required parameters.
-		if ( isset( $schema['required'] ) && is_array( $schema['required'] ) ) {
-			foreach ( $schema['required'] as $required_param ) {
-				if ( ! $request->has_param( $required_param ) ) {
+		foreach ( $schema['properties'] as $param => $config ) {
+			if ( ! $request->has_param( $param ) ) {
+				// Check if parameter is required.
+				if ( isset( $config['required'] ) && $config['required'] ) {
 					$errors[] = sprintf(
+						/* translators: %s: parameter name */
 						__( 'Missing required parameter: %s', 'fakerpress' ),
-						$required_param
+						$param
 					);
 				}
+				continue;
 			}
-		}
 
-		// Validate parameter types and formats.
-		if ( isset( $schema['properties'] ) && is_array( $schema['properties'] ) ) {
-			foreach ( $schema['properties'] as $param => $config ) {
-				if ( ! $request->has_param( $param ) ) {
-					continue;
-				}
+			$value = $request->get_param( $param );
+			$type  = $config['type'] ?? 'string';
 
-				$value = $request->get_param( $param );
-				$type  = $config['type'] ?? 'string';
-
-				if ( ! $this->validate_parameter_type( $value, $type ) ) {
-					$errors[] = sprintf(
-						__( 'Parameter %s must be of type %s', 'fakerpress' ),
-						$param,
-						$type
-					);
-				}
+			// Validate parameter type.
+			if ( ! $this->validate_parameter_type( $value, $type ) ) {
+				$errors[] = sprintf(
+					/* translators: 1: parameter name, 2: expected type */
+					__( 'Parameter %1$s must be of type %2$s.', 'fakerpress' ),
+					$param,
+					$type
+				);
 			}
 		}
 

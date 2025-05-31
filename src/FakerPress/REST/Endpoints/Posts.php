@@ -120,7 +120,7 @@ class Posts extends Abstract_Endpoint {
 		$quantity = $this->calculate_quantity( $params, $module );
 
 		// Generate the posts.
-		$results = $module->parse_request( $quantity, $params );
+		$results = $module->parse_request( $quantity, $params['fakerpress'] );
 
 		$end_time = microtime( true );
 

@@ -123,12 +123,47 @@ class Assets extends Service_Provider {
 		register_asset(
 			'fakerpress-module',
 			'module.js',
-			[ 'jquery', 'underscore', 'fakerpress-qs' ],
+			[ 'jquery', 'underscore', 'fakerpress-qs', 'wp-api-request', 'wp-i18n' ],
 			'admin_enqueue_scripts',
 			[
 				'conditionals' => [ $admin, 'is_active' ],
+				'localize' => [
+					'name' => 'fakerpressRestApi',
+					'data' => [ $this, 'get_rest_localization_data' ],
+				],
 			]
 		);
+
+		// Set up script translations.
+		add_action( 'admin_enqueue_scripts', [ $this, 'setup_script_translations' ], 20 );
+	}
+
+	/**
+	 * Get REST API localization data for the module script.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_rest_localization_data() {
+		return [
+			'root'  => esc_url_raw( rest_url() ),
+			'nonce' => wp_create_nonce( 'wp_rest' ),
+		];
+	}
+
+	/**
+	 * Set up script translations for FakerPress scripts.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function setup_script_translations() {
+		// Only set up translations if the script is enqueued.
+		if ( wp_script_is( 'fakerpress-module', 'enqueued' ) ) {
+			wp_set_script_translations( 'fakerpress-module', 'fakerpress' );
+		}
 	}
 
 }

@@ -176,6 +176,11 @@ class Plugin {
 		singleton( Utils\Assets::class, Utils\Assets::class );
 		singleton( Utils::class, Utils::class );
 
+		bind( REST\Endpoints\Comments::class, REST\Endpoints\Comments::class );
+		bind( REST\Endpoints\Posts::class, REST\Endpoints\Posts::class );
+		bind( REST\Endpoints\Users::class, REST\Endpoints\Users::class );
+		bind( REST\Endpoints\Terms::class, REST\Endpoints\Terms::class );
+
 		// Register all the Service Providers.
 		register( Assets::class );
 		register( Hooks::class );
