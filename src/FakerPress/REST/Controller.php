@@ -15,6 +15,7 @@ use FakerPress\Contracts\Service_Provider;
 use WP_REST_Server;
 
 use function FakerPress\singleton;
+use function FakerPress\make;
 
 /**
  * Class Controller
@@ -99,7 +100,6 @@ class Controller extends Service_Provider {
 	 * @return Abstract_Endpoint[]
 	 */
 	protected function load_endpoints() {
-		$endpoints = [];
 
 		/**
 		 * Filter the list of REST endpoint classes to load.
@@ -109,23 +109,22 @@ class Controller extends Service_Provider {
 		 * @param array $endpoint_classes Array of endpoint class names.
 		 */
 		$endpoint_classes = apply_filters( 'fakerpress_rest_endpoint_classes', [
-			'FakerPress\REST\Endpoints\Documentation',
-			// Module endpoints will be added here as they are created
-			// 'FakerPress\REST\Endpoints\Posts',
-			// 'FakerPress\REST\Endpoints\Users',
-			// 'FakerPress\REST\Endpoints\Terms',
-			// 'FakerPress\REST\Endpoints\Comments',
+			Endpoints\Documentation::class,
+			Endpoints\Posts::class,
+			Endpoints\Users::class,
+			Endpoints\Terms::class,
+			Endpoints\Comments::class,
+			// Additional endpoints can be added here
 			// 'FakerPress\REST\Endpoints\Attachments',
 			// 'FakerPress\REST\Endpoints\Meta',
 		] );
 
-		foreach ( $endpoint_classes as $class ) {
-			if ( class_exists( $class ) ) {
-				$endpoints[] = new $class();
-			}
-		}
-
-		return $endpoints;
+		return array_map(
+			static function( $class ) {
+				return class_exists( $class ) ? make( $class ) : null;
+			},
+			$endpoint_classes
+		);
 	}
 
 	/**
