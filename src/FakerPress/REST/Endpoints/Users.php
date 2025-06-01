@@ -12,6 +12,7 @@ namespace FakerPress\REST\Endpoints;
 
 use FakerPress\REST\Abstract_Endpoint;
 use FakerPress\REST\OpenAPI;
+use FakerPress\REST\Traits\Handles_Batching;
 use FakerPress\Module\Factory;
 use FakerPress\Admin\View\Factory as View_Factory;
 use WP_REST_Request;
@@ -29,6 +30,7 @@ use function FakerPress\make;
  * @since TBD
  */
 class Users extends Abstract_Endpoint {
+	use Handles_Batching;
 
 	/**
 	 * The base route for this endpoint.
@@ -37,16 +39,16 @@ class Users extends Abstract_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $base_route = '/users';
+	protected string $base_route = '/users';
 
 	/**
 	 * The permission required to access this endpoint.
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	protected $permission_required = 'create_users';
+	protected ?string $permission_required = 'create_users';
 
 	/**
 	 * Get the routes configuration for this endpoint.
@@ -116,11 +118,11 @@ class Users extends Abstract_Endpoint {
 			);
 		}
 
-		// Calculate quantity.
-		$quantity = $this->calculate_quantity( $params, $module );
+		// Calculate quantity with batching support.
+		$batch_info = $this->calculate_batched_quantity( $params, $module );
 
 		// Generate the users.
-		$results = $module->parse_request( $quantity, $params );
+		$results = $module->parse_request( $batch_info['quantity'], $params );
 
 		$end_time = microtime( true );
 
@@ -137,51 +139,23 @@ class Users extends Abstract_Endpoint {
 		$view = make( View_Factory::class )->get( 'users' );
 		$formatted_links = array_map( [ $view, 'format_link' ], $results );
 
-		$response_data = [
-			'generated' => count( $results ),
-			'ids'       => $results,
-			'links'     => $formatted_links,
-			'time'      => round( $end_time - $start_time, 3 ),
-		];
-
-		return $this->success_response(
-			$response_data,
-			sprintf(
-				__( 'Successfully generated %d %s.', 'fakerpress' ),
-				count( $results ),
-				_n( 'user', 'users', count( $results ), 'fakerpress' )
-			)
+		$response_data = $this->build_batched_response_data(
+			$results,
+			$batch_info,
+			$formatted_links,
+			$end_time - $start_time
 		);
+
+		$message = $this->format_batched_success_message(
+			count( $results ),
+			'user',
+			$batch_info
+		);
+
+		return $this->success_response( $response_data, $message );
 	}
 
-	/**
-	 * Calculate the quantity to generate based on request parameters.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $params Request parameters.
-	 * @param mixed $module The module instance.
-	 *
-	 * @return int
-	 */
-	protected function calculate_quantity( $params, $module ) {
-		$quantity = $params['quantity'] ?? 10;
 
-		// Handle quantity range.
-		if ( isset( $params['qty'] ) && is_array( $params['qty'] ) ) {
-			$min = absint( $params['qty']['min'] ?? 1 );
-			$max = max( absint( $params['qty']['max'] ?? $min ), $min );
-			$quantity = $module->get_faker()->numberBetween( $min, $max );
-		}
-
-		// Respect module limits.
-		$allowed = $module->get_amount_allowed();
-		if ( $quantity > $allowed ) {
-			$quantity = $allowed;
-		}
-
-		return max( 1, $quantity );
-	}
 
 	/**
 	 * Get endpoint arguments for validation.
@@ -190,58 +164,21 @@ class Users extends Abstract_Endpoint {
 	 *
 	 * @return array
 	 */
-	protected function get_endpoint_args() {
-		return [
-			'quantity' => [
-				'description'       => __( 'Number of users to generate.', 'fakerpress' ),
-				'type'              => 'integer',
-				'minimum'           => 1,
-				'maximum'           => 1000,
-				'default'           => 10,
-				'sanitize_callback' => 'absint',
-			],
-			'qty' => [
-				'description' => __( 'Quantity range with min/max values.', 'fakerpress' ),
-				'type'        => 'object',
-				'properties'  => [
-					'min' => [
-						'type'    => 'integer',
-						'minimum' => 1,
-					],
-					'max' => [
-						'type'    => 'integer',
-						'minimum' => 1,
-					],
+	protected function get_endpoint_args(): array {
+		return array_merge(
+			[
+				'quantity' => [
+					'description'       => __( 'Number of users to generate.', 'fakerpress' ),
+					'type'              => 'integer',
+					'minimum'           => 1,
+					'maximum'           => 1000,
+					'default'           => 10,
+					'sanitize_callback' => 'absint',
 				],
-			],
-			'role' => [
-				'description' => __( 'User role for generated users.', 'fakerpress' ),
-				'type'        => 'string',
-				'default'     => 'subscriber',
-			],
-			'meta' => [
-				'description' => __( 'Meta data to assign to generated users.', 'fakerpress' ),
-				'type'        => 'object',
-			],
-		];
-	}
-
-	/**
-	 * Get the schema for request parameters.
-	 *
-	 * @since TBD
-	 *
-	 * @return array
-	 */
-	public function get_request_schema() {
-		return [
-			'type'       => 'object',
-			'properties' => [
-				'quantity' => OpenAPI::get_parameter_schema( 'quantity' ),
-				'qty'      => [
-					'type'       => 'object',
-					'description' => 'Quantity range with min/max values.',
-					'properties' => [
+				'qty' => [
+					'description' => __( 'Quantity range with min/max values.', 'fakerpress' ),
+					'type'        => 'object',
+					'properties'  => [
 						'min' => [
 							'type'    => 'integer',
 							'minimum' => 1,
@@ -252,15 +189,29 @@ class Users extends Abstract_Endpoint {
 						],
 					],
 				],
-				'role'     => [
+				'role' => [
+					'description' => __( 'User role for generated users.', 'fakerpress' ),
 					'type'        => 'string',
-					'description' => 'User role for generated users.',
 					'default'     => 'subscriber',
-					'example'     => 'subscriber',
 				],
-				'meta'     => OpenAPI::get_parameter_schema( 'meta' ),
+				'meta' => [
+					'description' => __( 'Meta data to assign to generated users.', 'fakerpress' ),
+					'type'        => 'object',
+				],
 			],
-		];
+			$this->get_batching_args()
+		);
+	}
+
+	/**
+	 * Get the schema for request parameters.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_request_schema() {
+		return [];
 	}
 
 	/**
@@ -271,6 +222,35 @@ class Users extends Abstract_Endpoint {
 	 * @return array
 	 */
 	public function get_response_schema() {
-		return OpenAPI::get_generation_response_schema( 'users' );
+		return [
+			'type'       => 'object',
+			'properties' => [
+				'success' => [
+					'type'        => 'boolean',
+					'description' => __( 'Indicates if the generation was successful.', 'fakerpress' ),
+					'example'     => true,
+				],
+				'data'    => [
+					'$ref' => '#/components/schemas/GenerationResult',
+				],
+				'message' => [
+					'type'        => 'string',
+					'description' => __( 'Success message.', 'fakerpress' ),
+					'example'     => __( 'Successfully generated 10 users.', 'fakerpress' ),
+				],
+			],
+			'required'   => [ 'success', 'data' ],
+		];
+	}
+
+	/**
+	 * Get the meta type for this endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function get_meta_type() {
+		return 'user';
 	}
 } 

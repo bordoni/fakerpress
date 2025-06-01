@@ -35,16 +35,16 @@ class Documentation extends Abstract_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $base_route = '/docs';
+	protected string $base_route = '/docs';
 
 	/**
 	 * The permission required to access this endpoint.
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	protected $permission_required = 'read';
+	protected ?string $permission_required = null;
 
 	/**
 	 * Get the routes configuration for this endpoint.
@@ -55,43 +55,14 @@ class Documentation extends Abstract_Endpoint {
 	 */
 	protected function get_routes() {
 		return [
-			''         => [
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => [ $this, 'get_documentation' ],
-				'permission_callback' => [ $this, 'check_permission' ],
-				'summary'             => 'Get OpenAPI documentation',
-				'description'         => 'Returns the complete OpenAPI specification for the FakerPress REST API.',
-			],
 			'/openapi' => [
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'get_openapi_spec' ],
 				'permission_callback' => [ $this, 'check_permission' ],
-				'summary'             => 'Get OpenAPI specification',
-				'description'         => 'Returns the OpenAPI 3.0 specification in JSON format.',
+				'summary'             => __( 'Get OpenAPI specification', 'fakerpress' ),
+				'description'         => __( 'Returns the OpenAPI 3.0 specification in JSON format.', 'fakerpress' ),
 			],
 		];
-	}
-
-	/**
-	 * Get the API documentation.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_REST_Request $request The REST request object.
-	 *
-	 * @return WP_REST_Response
-	 */
-	public function get_documentation( $request ) {
-		$controller = make( Controller::class );
-		$spec       = $controller->get_openapi_documentation();
-
-		// Add tags to the specification.
-		$spec['tags'] = OpenAPI::get_tags();
-
-		return $this->success_response(
-			$spec,
-			__( 'API documentation retrieved successfully.', 'fakerpress' )
-		);
 	}
 
 	/**
@@ -112,6 +83,17 @@ class Documentation extends Abstract_Endpoint {
 
 		// Return raw OpenAPI spec without wrapper.
 		return new WP_REST_Response( $spec, 200 );
+	}
+
+	/**
+	 * Get the endpoint arguments.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function get_endpoint_args(): array {
+		return [];
 	}
 
 	/**
@@ -141,35 +123,35 @@ class Documentation extends Abstract_Endpoint {
 			'properties' => [
 				'success' => [
 					'type'        => 'boolean',
-					'description' => 'Indicates if the request was successful.',
+					'description' => __( 'Indicates if the request was successful.', 'fakerpress' ),
 					'example'     => true,
 				],
 				'data'    => [
 					'type'        => 'object',
-					'description' => 'The OpenAPI specification.',
+					'description' => __( 'The OpenAPI specification.', 'fakerpress' ),
 					'properties'  => [
 						'openapi' => [
 							'type'        => 'string',
-							'description' => 'OpenAPI version.',
+							'description' => __( 'OpenAPI version.', 'fakerpress' ),
 							'example'     => '3.0.0',
 						],
 						'info'    => [
 							'type'        => 'object',
-							'description' => 'API information.',
+							'description' => __( 'API information.', 'fakerpress' ),
 						],
 						'paths'   => [
 							'type'        => 'object',
-							'description' => 'API paths and operations.',
+							'description' => __( 'API paths and operations.', 'fakerpress' ),
 						],
 					],
 				],
 				'message' => [
 					'type'        => 'string',
-					'description' => 'Success message.',
-					'example'     => 'API documentation retrieved successfully.',
+					'description' => __( 'Success message.', 'fakerpress' ),
+					'example'     => __( 'API documentation retrieved successfully.', 'fakerpress' ),
 				],
 			],
 			'required'   => [ 'success', 'data' ],
 		];
 	}
-} 
+}

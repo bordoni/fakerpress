@@ -51,6 +51,7 @@ class Attachment extends Abstract_Module {
 	 */
 	public static function fetch( array $args = [] ): array {
 		// TODO: Implement fetch() method.
+		return [];
 	}
 
 	/**
@@ -72,6 +73,13 @@ class Attachment extends Abstract_Module {
 	 * @return int|WP_Error            Attachment ID or WP_Error.
 	 */
 	protected function handle_download( $url, $post_parent_id = 0 ) {
+		// Include WordPress core functions, this was not present on the REST API.
+		if ( ! function_exists( 'download_url' ) ) {
+			require_once( ABSPATH . 'wp-admin/includes/image.php' );
+			require_once( ABSPATH . 'wp-admin/includes/file.php' );
+			require_once( ABSPATH . 'wp-admin/includes/media.php' );
+		}
+
 		/**
 		 * Allows filtering of the attachment download_url timeout, which is here just to
 		 * prevent fakerpress timing out.

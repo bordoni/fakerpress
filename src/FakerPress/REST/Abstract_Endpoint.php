@@ -31,16 +31,25 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $base_route = '';
+	protected string $base_route = '';
 
 	/**
-	 * The permission required to access this endpoint.
+	 * The permission required to access this endpoint, if not set, the endpoint is public.
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	protected $permission_required = 'manage_options';
+	protected ?string $permission_required = 'manage_options';
+
+	/**
+	 * Whether to automatically convert endpoint args to request schema.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected bool $use_endpoint_args_for_body_schema = false;
 
 	/**
 	 * Register the routes for this endpoint.
@@ -77,7 +86,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 *
 	 * @return string
 	 */
-	public function get_base_route() {
+	public function get_base_route(): string {
 		return $this->base_route;
 	}
 
@@ -86,9 +95,9 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 *
 	 * @since TBD
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	public function get_permission_required() {
+	public function get_permission_required(): ?string {
 		return $this->permission_required;
 	}
 
@@ -97,10 +106,21 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 *
 	 * @since TBD
 	 *
-	 * @return bool
+	 * @return bool|WP_Error
 	 */
-	public function check_permission() {
-		return current_user_can( $this->get_permission_required() );
+	public function check_permission( WP_REST_Request $request ) {
+		$permission = $this->get_permission_required();
+
+		if ( null === $permission ) {
+			return true;
+		}
+
+		$is_logged_in = is_user_logged_in();
+		if ( ! $is_logged_in ) {
+			return new WP_Error( 'rest_not_logged_in', __( 'You must be logged in to access this endpoint.', 'fakerpress' ), [ 'status' => 401 ] );
+		}
+
+		return current_user_can( $permission );
 	}
 
 	/**
@@ -209,7 +229,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 			$value = $request->get_param( $param );
 			$type  = $config['type'] ?? 'string';
 
-			$sanitized[ $param ] = $this->sanitize_parameter( $value, $type );
+			$sanitized[ $param ] = $this->sanitize_parameter( $value, $type, $param );
 		}
 
 		return $sanitized;
@@ -218,27 +238,221 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Sanitize a parameter value.
 	 *
+	 * Sanitizes values based on their type:
+	 * - integer: Casts to integer
+	 * - boolean: Converts to true/false using rest_sanitize_boolean()
+	 * - array: Recursively sanitizes array values
+	 * - object: Recursively sanitizes object properties
+	 * - string: Sanitizes using sanitize_text_field()
+	 *
 	 * @since TBD
 	 *
-	 * @param mixed  $value The parameter value.
-	 * @param string $type  The parameter type.
+	 * @param mixed  $value      The parameter value to sanitize.
+	 * @param string $type       The parameter type (integer, boolean, array, object, string).
+	 * @param ?string $param_name Optional. The parameter name for context-specific sanitization.
 	 *
-	 * @return mixed
+	 * @return mixed The sanitized value.
 	 */
-	protected function sanitize_parameter( $value, $type ) {
+	protected function sanitize_parameter( $value, string $type, ?string $param_name = null ) {
 		switch ( $type ) {
 			case 'integer':
 				return (int) $value;
+			case 'number':
+				return is_float( $value ) ? (float) $value : (int) $value;
 			case 'boolean':
 				return rest_sanitize_boolean( $value );
 			case 'array':
-				return is_array( $value ) ? array_map( 'sanitize_text_field', $value ) : [];
+				return $this->sanitize_array_parameter( $value, $param_name );
 			case 'object':
-				return is_array( $value ) ? array_map( 'sanitize_text_field', $value ) : (object) [];
+				return $this->sanitize_object_parameter( $value, $param_name );
 			case 'string':
 			default:
 				return sanitize_text_field( $value );
 		}
+	}
+
+	/**
+	 * Sanitize an array parameter with proper chaining.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value      The array value to sanitize.
+	 * @param string $param_name The parameter name for context.
+	 *
+	 * @return array
+	 */
+	protected function sanitize_array_parameter( $value, $param_name ) {
+		if ( ! is_array( $value ) ) {
+			return [];
+		}
+
+		// For non-meta arrays, we need schema to know how to sanitize.
+		// Without schema, we cannot safely sanitize, so return empty array.
+		return [];
+	}
+
+	/**
+	 * Sanitize an object parameter with proper chaining.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value      The object value to sanitize.
+	 * @param string $param_name The parameter name for context.
+	 *
+	 * @return array|object
+	 */
+	protected function sanitize_object_parameter( $value, $param_name ) {
+		if ( ! is_array( $value ) && ! is_object( $value ) ) {
+			return (object) [];
+		}
+
+		$array_value = (array) $value;
+
+		// For non-meta objects, we need schema to know how to sanitize.
+		// Without schema, we cannot safely sanitize, so return empty object.
+		return (object) [];
+	}
+
+	/**
+	 * Get the meta type for this endpoint.
+	 *
+	 * Override this method in child classes to specify the correct meta type.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function get_meta_type() {
+		return 'post';
+	}
+
+	/**
+	 * Get the meta schema for this endpoint.
+	 *
+	 * Override this method in child classes to provide specific meta field schemas.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function get_meta_schema() {
+		return [];
+	}
+
+	/**
+	 * Get the endpoint arguments.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	abstract protected function get_endpoint_args(): array;
+
+	/**
+	 * Get common batching arguments for generation endpoints.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function get_batching_args(): array {
+		return [
+			'offset' => [
+				'description'       => __( 'Offset for batched generation (used internally).', 'fakerpress' ),
+				'type'              => 'integer',
+				'minimum'           => 0,
+				'default'           => 0,
+				'sanitize_callback' => 'absint',
+			],
+			'total' => [
+				'description'       => __( 'Total items to generate across all batches (used internally).', 'fakerpress' ),
+				'type'              => 'integer',
+				'minimum'           => 0,
+				'default'           => 0,
+				'sanitize_callback' => 'absint',
+			],
+		];
+	}
+
+	/**
+	 * Convert endpoint args to request schema format.
+	 *
+	 * This method transforms WordPress REST API endpoint args format
+	 * to OpenAPI/JSON Schema format for request body validation.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function convert_endpoint_args_to_schema() {
+		if ( ! method_exists( $this, 'get_endpoint_args' ) ) {
+			return [
+				'type'       => 'object',
+				'properties' => [],
+			];
+		}
+
+		$endpoint_args = $this->get_endpoint_args();
+		$properties    = [];
+
+		foreach ( $endpoint_args as $param => $config ) {
+			$property = [];
+
+			// Map type.
+			if ( isset( $config['type'] ) ) {
+				$property['type'] = $config['type'];
+			}
+
+			// Map description.
+			if ( isset( $config['description'] ) ) {
+				$property['description'] = $config['description'];
+			}
+
+			// Map default value.
+			if ( isset( $config['default'] ) ) {
+				$property['default'] = $config['default'];
+			}
+
+			// Map enum values.
+			if ( isset( $config['enum'] ) ) {
+				$property['enum'] = $config['enum'];
+			}
+
+			// Map minimum/maximum for numbers.
+			if ( isset( $config['minimum'] ) ) {
+				$property['minimum'] = $config['minimum'];
+			}
+			if ( isset( $config['maximum'] ) ) {
+				$property['maximum'] = $config['maximum'];
+			}
+
+			// Map array items.
+			if ( isset( $config['items'] ) ) {
+				$property['items'] = $config['items'];
+			}
+
+			// Map object properties.
+			if ( isset( $config['properties'] ) ) {
+				$property['properties'] = $config['properties'];
+			}
+
+			// Map required status.
+			if ( isset( $config['required'] ) && $config['required'] ) {
+				$property['required'] = true;
+			}
+
+			// Add example if not present but default is available.
+			if ( ! isset( $property['example'] ) && isset( $property['default'] ) ) {
+				$property['example'] = $property['default'];
+			}
+
+			$properties[ $param ] = $property;
+		}
+
+		return [
+			'type'       => 'object',
+			'properties' => $properties,
+		];
 	}
 
 	/**
@@ -321,10 +535,10 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 *
 	 * @return array
 	 */
-	protected function build_openapi_path_schema( $config ) {
+	protected function build_openapi_path_schema( array $config ) {
 		$path_schema = [];
 
-		if ( ! is_array( $config ) ) {
+		if ( is_array( $config ) && isset( $config['methods'] ) ) {
 			$config = [ $config ];
 		}
 
@@ -353,13 +567,14 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 					'description' => $method_config['description'] ?? '',
 					'parameters'  => $this->build_openapi_parameters(),
 					'responses'   => $this->build_openapi_responses(),
+					'tags'        => $this->get_tags(),
 				];
 
 				if ( in_array( $method, [ 'POST', 'PUT', 'PATCH' ], true ) ) {
 					$path_schema[ $method_lower ]['requestBody'] = [
 						'content' => [
 							'application/json' => [
-								'schema' => $this->get_request_schema(),
+								'schema' => $this->convert_endpoint_args_to_schema(),
 							],
 						],
 					];
@@ -371,6 +586,17 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	}
 
 	/**
+	 * Get the tags for this endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string>
+	 */
+	protected function get_tags(): array {
+		return [ trim( $this->get_base_route(), '/' ) ];
+	}
+
+	/**
 	 * Build OpenAPI parameters schema.
 	 *
 	 * @since TBD
@@ -378,7 +604,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 * @return array
 	 */
 	protected function build_openapi_parameters() {
-		return [];
+		return $this->get_request_schema()['properties'] ?? [];
 	}
 
 	/**

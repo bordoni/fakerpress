@@ -12,6 +12,7 @@ namespace FakerPress\REST\Endpoints;
 
 use FakerPress\REST\Abstract_Endpoint;
 use FakerPress\REST\OpenAPI;
+use FakerPress\REST\Traits\Handles_Batching;
 use FakerPress\Module\Factory;
 use FakerPress\Admin\View\Factory as View_Factory;
 use WP_REST_Request;
@@ -29,6 +30,7 @@ use function FakerPress\make;
  * @since TBD
  */
 class Posts extends Abstract_Endpoint {
+	use Handles_Batching;
 
 	/**
 	 * The base route for this endpoint.
@@ -37,7 +39,7 @@ class Posts extends Abstract_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $base_route = '/posts';
+	protected string $base_route = '/posts';
 
 	/**
 	 * The permission required to access this endpoint.
@@ -46,7 +48,16 @@ class Posts extends Abstract_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $permission_required = 'publish_posts';
+	protected ?string $permission_required = 'publish_posts';
+
+	/**
+	 * Whether to automatically convert endpoint args to request schema.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected bool $use_endpoint_args_for_schema = true;
 
 	/**
 	 * Get the routes configuration for this endpoint.
@@ -116,11 +127,11 @@ class Posts extends Abstract_Endpoint {
 			);
 		}
 
-		// Calculate quantity.
-		$quantity = $this->calculate_quantity( $params, $module );
+		// Calculate quantity with batching support.
+		$batch_info = $this->calculate_batched_quantity( $params, $module );
 
 		// Generate the posts.
-		$results = $module->parse_request( $quantity, $params['fakerpress'] );
+		$results = $module->parse_request( $batch_info['quantity'], $params );
 
 		$end_time = microtime( true );
 
@@ -137,51 +148,23 @@ class Posts extends Abstract_Endpoint {
 		$view = make( View_Factory::class )->get( 'posts' );
 		$formatted_links = array_map( [ $view, 'format_link' ], $results );
 
-		$response_data = [
-			'generated' => count( $results ),
-			'ids'       => $results,
-			'links'     => $formatted_links,
-			'time'      => round( $end_time - $start_time, 3 ),
-		];
-
-		return $this->success_response(
-			$response_data,
-			sprintf(
-				__( 'Successfully generated %d %s.', 'fakerpress' ),
-				count( $results ),
-				_n( 'post', 'posts', count( $results ), 'fakerpress' )
-			)
+		$response_data = $this->build_batched_response_data(
+			$results,
+			$batch_info,
+			$formatted_links,
+			$end_time - $start_time
 		);
+
+		$message = $this->format_batched_success_message(
+			count( $results ),
+			'post',
+			$batch_info
+		);
+
+		return $this->success_response( $response_data, $message );
 	}
 
-	/**
-	 * Calculate the quantity to generate based on request parameters.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $params Request parameters.
-	 * @param mixed $module The module instance.
-	 *
-	 * @return int
-	 */
-	protected function calculate_quantity( $params, $module ) {
-		$quantity = $params['quantity'] ?? 10;
 
-		// Handle quantity range.
-		if ( isset( $params['qty'] ) && is_array( $params['qty'] ) ) {
-			$min = absint( $params['qty']['min'] ?? 1 );
-			$max = max( absint( $params['qty']['max'] ?? $min ), $min );
-			$quantity = $module->get_faker()->numberBetween( $min, $max );
-		}
-
-		// Respect module limits.
-		$allowed = $module->get_amount_allowed();
-		if ( $quantity > $allowed ) {
-			$quantity = $allowed;
-		}
-
-		return max( 1, $quantity );
-	}
 
 	/**
 	 * Get endpoint arguments for validation.
@@ -190,71 +173,21 @@ class Posts extends Abstract_Endpoint {
 	 *
 	 * @return array
 	 */
-	protected function get_endpoint_args() {
-		return [
-			'quantity' => [
-				'description'       => __( 'Number of posts to generate.', 'fakerpress' ),
-				'type'              => 'integer',
-				'minimum'           => 1,
-				'maximum'           => 1000,
-				'default'           => 10,
-				'sanitize_callback' => 'absint',
-			],
-			'qty' => [
-				'description' => __( 'Quantity range with min/max values.', 'fakerpress' ),
-				'type'        => 'object',
-				'properties'  => [
-					'min' => [
-						'type'    => 'integer',
-						'minimum' => 1,
-					],
-					'max' => [
-						'type'    => 'integer',
-						'minimum' => 1,
-					],
+	protected function get_endpoint_args(): array {
+		return array_merge(
+			[
+				'quantity' => [
+					'description'       => __( 'Number of posts to generate.', 'fakerpress' ),
+					'type'              => 'integer',
+					'minimum'           => 1,
+					'maximum'           => 1000,
+					'default'           => 10,
+					'sanitize_callback' => 'absint',
 				],
-			],
-			'post_type' => [
-				'description' => __( 'Post type to generate.', 'fakerpress' ),
-				'type'        => 'string',
-				'default'     => 'post',
-			],
-			'post_status' => [
-				'description' => __( 'Post status for generated posts.', 'fakerpress' ),
-				'type'        => 'string',
-				'default'     => 'publish',
-				'enum'        => [ 'publish', 'draft', 'private', 'pending' ],
-			],
-			'author_ids' => [
-				'description' => __( 'Array of author IDs to assign to posts.', 'fakerpress' ),
-				'type'        => 'array',
-				'items'       => [
-					'type' => 'integer',
-				],
-			],
-			'meta' => [
-				'description' => __( 'Meta data to assign to generated posts.', 'fakerpress' ),
-				'type'        => 'object',
-			],
-		];
-	}
-
-	/**
-	 * Get the schema for request parameters.
-	 *
-	 * @since TBD
-	 *
-	 * @return array
-	 */
-	public function get_request_schema() {
-		return [
-			'type'       => 'object',
-			'properties' => [
-				'quantity'    => OpenAPI::get_parameter_schema( 'quantity' ),
-				'qty'         => [
-					'type'       => 'object',
-					'description' => 'Quantity range with min/max values.',
-					'properties' => [
+				'qty' => [
+					'description' => __( 'Quantity range with min/max values.', 'fakerpress' ),
+					'type'        => 'object',
+					'properties'  => [
 						'min' => [
 							'type'    => 'integer',
 							'minimum' => 1,
@@ -265,24 +198,34 @@ class Posts extends Abstract_Endpoint {
 						],
 					],
 				],
-				'post_type'   => [
+				'post_type' => [
+					'description' => __( 'Post type to generate.', 'fakerpress' ),
 					'type'        => 'string',
-					'description' => 'Post type to generate.',
 					'default'     => 'post',
-					'example'     => 'post',
 				],
 				'post_status' => [
+					'description' => __( 'Post status for generated posts.', 'fakerpress' ),
 					'type'        => 'string',
-					'description' => 'Post status for generated posts.',
 					'default'     => 'publish',
-					'enum'        => [ 'publish', 'draft', 'private', 'pending' ],
-					'example'     => 'publish',
+					'enum'        => array_keys( get_post_stati( [], 'names' ) ),
 				],
-				'author_ids'  => OpenAPI::get_parameter_schema( 'author_ids' ),
-				'meta'        => OpenAPI::get_parameter_schema( 'meta' ),
+				'author_ids' => [
+					'description' => __( 'Array of author IDs to assign to posts.', 'fakerpress' ),
+					'type'        => 'array',
+					'items'       => [
+						'type' => 'integer',
+					],
+				],
+				'meta' => [
+					'description' => __( 'Meta data to assign to generated posts.', 'fakerpress' ),
+					'type'        => 'object',
+				],
 			],
-		];
+			$this->get_batching_args()
+		);
 	}
+
+
 
 	/**
 	 * Get the schema for response data.
@@ -292,6 +235,46 @@ class Posts extends Abstract_Endpoint {
 	 * @return array
 	 */
 	public function get_response_schema() {
-		return OpenAPI::get_generation_response_schema( 'posts' );
+		return [
+			'type'       => 'object',
+			'properties' => [
+				'success' => [
+					'type'        => 'boolean',
+					'description' => 'Indicates if the generation was successful.',
+					'example'     => true,
+				],
+				'data'    => [
+					'$ref' => '#/components/schemas/GenerationResult',
+				],
+				'message' => [
+					'type'        => 'string',
+					'description' => 'Success message.',
+					'example'     => __( 'Successfully generated 10 posts.', 'fakerpress' ),
+				],
+			],
+			'required'   => [ 'success', 'data' ],
+		];
+	}
+
+	/**
+	 * Get the request schema for this endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_request_schema() {
+		return [];
+	}
+
+	/**
+	 * Get the meta type for this endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function get_meta_type() {
+		return 'post';
 	}
 } 

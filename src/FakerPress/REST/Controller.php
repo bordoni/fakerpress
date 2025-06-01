@@ -162,21 +162,7 @@ class Controller extends Service_Provider {
 	 * @return array
 	 */
 	public function get_openapi_documentation() {
-		$documentation = [
-			'openapi' => '3.0.0',
-			'info'    => [
-				'title'       => 'FakerPress REST API',
-				'description' => 'REST API endpoints for FakerPress fake data generation.',
-				'version'     => Plugin::VERSION,
-			],
-			'servers' => [
-				[
-					'url'         => rest_url( self::NAMESPACE ),
-					'description' => 'FakerPress REST API',
-				],
-			],
-			'paths'   => [],
-		];
+		$documentation = OpenAPI::get_base_spec();
 
 		foreach ( $this->get_endpoints() as $endpoint ) {
 			if ( method_exists( $endpoint, 'get_openapi_schema' ) ) {

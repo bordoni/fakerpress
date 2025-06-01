@@ -32,8 +32,8 @@ class OpenAPI {
 		return [
 			'openapi' => '3.0.0',
 			'info'    => [
-				'title'       => 'FakerPress REST API',
-				'description' => 'REST API endpoints for FakerPress fake data generation plugin.',
+				'title'       => __( 'FakerPress REST API', 'fakerpress' ),
+				'description' => __( 'REST API endpoints for FakerPress fake data generation plugin.', 'fakerpress' ),
 				'version'     => Plugin::VERSION,
 				'contact'     => [
 					'name' => 'Gustavo Bordoni',
@@ -47,7 +47,7 @@ class OpenAPI {
 			'servers' => [
 				[
 					'url'         => rest_url( Controller::get_namespace() ),
-					'description' => 'FakerPress REST API Server',
+					'description' => __( 'FakerPress REST API Server', 'fakerpress' ),
 				],
 			],
 			'paths'      => [],
@@ -72,17 +72,17 @@ class OpenAPI {
 				'properties' => [
 					'success' => [
 						'type'        => 'boolean',
-						'description' => 'Indicates if the request was successful.',
+						'description' => __( 'Indicates if the request was successful.', 'fakerpress' ),
 						'example'     => true,
 					],
 					'data'    => [
 						'type'        => 'object',
-						'description' => 'The response data.',
+						'description' => __( 'The response data.', 'fakerpress' ),
 					],
 					'message' => [
 						'type'        => 'string',
-						'description' => 'Optional success message.',
-						'example'     => 'Operation completed successfully.',
+						'description' => __( 'Optional success message.', 'fakerpress' ),
+						'example'     => __( 'Operation completed successfully.', 'fakerpress' ),
 					],
 				],
 				'required'   => [ 'success' ],
@@ -92,22 +92,22 @@ class OpenAPI {
 				'properties' => [
 					'success' => [
 						'type'        => 'boolean',
-						'description' => 'Indicates if the request was successful.',
+						'description' => __( 'Indicates if the request was successful.', 'fakerpress' ),
 						'example'     => false,
 					],
 					'code'    => [
 						'type'        => 'string',
-						'description' => 'Error code.',
+						'description' => __( 'Error code.', 'fakerpress' ),
 						'example'     => 'rest_error',
 					],
 					'message' => [
 						'type'        => 'string',
-						'description' => 'Error message.',
-						'example'     => 'An error occurred.',
+						'description' => __( 'Error message.', 'fakerpress' ),
+						'example'     => __( 'An error occurred.', 'fakerpress' ),
 					],
 					'data'    => [
 						'type'        => 'object',
-						'description' => 'Optional error data.',
+						'description' => __( 'Optional error data.', 'fakerpress' ),
 					],
 				],
 				'required'   => [ 'success', 'code', 'message' ],
@@ -117,21 +117,44 @@ class OpenAPI {
 				'properties' => [
 					'generated' => [
 						'type'        => 'integer',
-						'description' => 'Number of items generated.',
+						'description' => __( 'Number of items generated.', 'fakerpress' ),
 						'example'     => 10,
 					],
 					'ids'       => [
 						'type'        => 'array',
-						'description' => 'Array of generated item IDs.',
+						'description' => __( 'Array of generated item IDs.', 'fakerpress' ),
 						'items'       => [
 							'type' => 'integer',
 						],
 						'example'     => [ 1, 2, 3, 4, 5 ],
 					],
+					'links'     => [
+						'type'        => 'array',
+						'description' => __( 'Array of formatted links to generated items.', 'fakerpress' ),
+						'items'       => [
+							'type' => 'string',
+						],
+						'example'     => [ '<a href="...">Item 1</a>', '<a href="...">Item 2</a>' ],
+					],
 					'time'      => [
 						'type'        => 'number',
-						'description' => 'Time taken to generate items in seconds.',
+						'description' => __( 'Time taken to generate items in seconds.', 'fakerpress' ),
 						'example'     => 1.23,
+					],
+					'is_capped' => [
+						'type'        => 'boolean',
+						'description' => __( 'Whether the generation was capped due to limits (batching).', 'fakerpress' ),
+						'example'     => false,
+					],
+					'offset'    => [
+						'type'        => 'integer',
+						'description' => __( 'Current offset for batched generation.', 'fakerpress' ),
+						'example'     => 50,
+					],
+					'total'     => [
+						'type'        => 'integer',
+						'description' => __( 'Total number of items to generate across all batches.', 'fakerpress' ),
+						'example'     => 100,
 					],
 				],
 				'required'   => [ 'generated' ],
@@ -152,13 +175,13 @@ class OpenAPI {
 				'type'        => 'apiKey',
 				'in'          => 'cookie',
 				'name'        => 'wordpress_logged_in',
-				'description' => 'WordPress authentication cookie.',
+				'description' => __( 'WordPress authentication cookie.', 'fakerpress' ),
 			],
 			'nonceAuth'  => [
 				'type'        => 'apiKey',
 				'in'          => 'header',
 				'name'        => 'X-WP-Nonce',
-				'description' => 'WordPress nonce for CSRF protection.',
+				'description' => __( 'WordPress nonce for CSRF protection.', 'fakerpress' ),
 			],
 		];
 	}
@@ -177,7 +200,7 @@ class OpenAPI {
 			case 'quantity':
 				return [
 					'type'        => 'integer',
-					'description' => 'Number of items to generate.',
+					'description' => __( 'Number of items to generate.', 'fakerpress' ),
 					'minimum'     => 1,
 					'maximum'     => 1000,
 					'default'     => 10,
@@ -187,7 +210,7 @@ class OpenAPI {
 			case 'meta':
 				return [
 					'type'        => 'object',
-					'description' => 'Meta data to assign to generated items.',
+					'description' => __( 'Meta data to assign to generated items.', 'fakerpress' ),
 					'additionalProperties' => [
 						'type' => 'string',
 					],
@@ -199,18 +222,18 @@ class OpenAPI {
 			case 'date_range':
 				return [
 					'type'       => 'object',
-					'description' => 'Date range for generated items.',
+					'description' => __( 'Date range for generated items.', 'fakerpress' ),
 					'properties' => [
 						'start' => [
 							'type'        => 'string',
 							'format'      => 'date-time',
-							'description' => 'Start date (ISO 8601 format).',
+							'description' => __( 'Start date (ISO 8601 format).', 'fakerpress' ),
 							'example'     => '2023-01-01T00:00:00Z',
 						],
 						'end'   => [
 							'type'        => 'string',
 							'format'      => 'date-time',
-							'description' => 'End date (ISO 8601 format).',
+							'description' => __( 'End date (ISO 8601 format).', 'fakerpress' ),
 							'example'     => '2023-12-31T23:59:59Z',
 						],
 					],
@@ -219,7 +242,7 @@ class OpenAPI {
 			case 'author_ids':
 				return [
 					'type'        => 'array',
-					'description' => 'Array of author IDs to assign to generated items.',
+					'description' => __( 'Array of author IDs to assign to generated items.', 'fakerpress' ),
 					'items'       => [
 						'type' => 'integer',
 					],
@@ -229,40 +252,9 @@ class OpenAPI {
 			default:
 				return [
 					'type'        => 'string',
-					'description' => 'Parameter value.',
+					'description' => __( 'Parameter value.', 'fakerpress' ),
 				];
 		}
-	}
-
-	/**
-	 * Generate response schema for generation endpoints.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $item_type Type of items being generated (posts, users, etc.).
-	 *
-	 * @return array
-	 */
-	public static function get_generation_response_schema( $item_type = 'items' ) {
-		return [
-			'type'       => 'object',
-			'properties' => [
-				'success' => [
-					'type'        => 'boolean',
-					'description' => 'Indicates if the generation was successful.',
-					'example'     => true,
-				],
-				'data'    => [
-					'$ref' => '#/components/schemas/GenerationResult',
-				],
-				'message' => [
-					'type'        => 'string',
-					'description' => 'Success message.',
-					'example'     => sprintf( '%s generated successfully.', ucfirst( $item_type ) ),
-				],
-			],
-			'required'   => [ 'success', 'data' ],
-		];
 	}
 
 	/**
@@ -275,83 +267,29 @@ class OpenAPI {
 	public static function get_tags() {
 		return [
 			[
-				'name'        => 'Posts',
-				'description' => 'Generate fake posts and custom post types.',
+				'name'        => 'posts',
+				'description' => __( 'Generate fake posts and custom post types.', 'fakerpress' ),
 			],
 			[
-				'name'        => 'Users',
-				'description' => 'Generate fake users.',
+				'name'        => 'users',
+				'description' => __( 'Generate fake users.', 'fakerpress' ),
 			],
 			[
-				'name'        => 'Terms',
-				'description' => 'Generate fake taxonomy terms.',
+				'name'        => 'terms',
+				'description' => __( 'Generate fake taxonomy terms.', 'fakerpress' ),
 			],
 			[
-				'name'        => 'Comments',
-				'description' => 'Generate fake comments.',
+				'name'        => 'comments',
+				'description' => __( 'Generate fake comments.', 'fakerpress' ),
 			],
 			[
-				'name'        => 'Attachments',
-				'description' => 'Generate fake media attachments.',
+				'name'        => 'attachments',
+				'description' => __( 'Generate fake media attachments.', 'fakerpress' ),
 			],
 			[
-				'name'        => 'Meta',
-				'description' => 'Generate fake meta data.',
+				'name'        => 'meta',
+				'description' => __( 'Generate fake meta data.', 'fakerpress' ),
 			],
 		];
-	}
-
-	/**
-	 * Generate example request body for generation endpoints.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $module_type Module type (post, user, etc.).
-	 *
-	 * @return array
-	 */
-	public static function get_example_request( $module_type ) {
-		$base_example = [
-			'quantity' => 10,
-			'meta'     => [
-				'custom_field' => 'custom_value',
-			],
-		];
-
-		switch ( $module_type ) {
-			case 'post':
-				return array_merge( $base_example, [
-					'post_type'   => 'post',
-					'post_status' => 'publish',
-					'author_ids'  => [ 1 ],
-					'date_range'  => [
-						'start' => '2023-01-01T00:00:00Z',
-						'end'   => '2023-12-31T23:59:59Z',
-					],
-				] );
-
-			case 'user':
-				return array_merge( $base_example, [
-					'role' => 'subscriber',
-				] );
-
-			case 'term':
-				return array_merge( $base_example, [
-					'taxonomy' => 'category',
-				] );
-
-			case 'comment':
-				return array_merge( $base_example, [
-					'post_ids' => [ 1, 2, 3 ],
-				] );
-
-			case 'attachment':
-				return array_merge( $base_example, [
-					'file_type' => 'image',
-				] );
-
-			default:
-				return $base_example;
-		}
 	}
 } 

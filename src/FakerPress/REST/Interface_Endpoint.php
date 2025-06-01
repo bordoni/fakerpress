@@ -10,6 +10,8 @@
 
 namespace FakerPress\REST;
 
+use WP_REST_Request;
+
 /**
  * Interface Interface_Endpoint
  *
@@ -51,9 +53,9 @@ interface Interface_Endpoint {
 	 *
 	 * @since TBD
 	 *
-	 * @return bool
+	 * @return bool|\WP_Error
 	 */
-	public function check_permission();
+	public function check_permission( WP_REST_Request $request );
 
 	/**
 	 * Validate the request parameters.

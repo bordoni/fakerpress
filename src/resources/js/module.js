@@ -133,31 +133,56 @@
 		const $button = $submitContainer.find( '.button-primary' );
 		const $response = $submitContainer.find( '.fp-response' );
 
-		if ( $spinner.hasClass( 'is-active' ) ) {
+		// Check if this is a batched request (has offset/total parameters)
+		const isBatchedRequest = requestData && ( requestData.offset !== undefined || requestData.total !== undefined );
+
+		// Only check spinner for initial requests, not batched continuations
+		if ( ! isBatchedRequest && $spinner.hasClass( 'is-active' ) ) {
 			return;
 		}
 
-		$spinner.addClass( 'is-active' );
-		$button.prop( 'disabled', true );
+		// Only set spinner and disable button for initial requests
+		if ( ! isBatchedRequest ) {
+			$spinner.addClass( 'is-active' );
+			$button.prop( 'disabled', true );
+		}
 
 		// Get the endpoint URL
 		const endpointUrl = fp.getEndpointUrl( moduleEndpoint );
 		const restNonce = fp.getRestNonce();
 
+		// Flag to track if error has been handled
+		let errorHandled = false;
+
+		// Prepare the data for the request
+		let postData = requestData.fakerpress || {};
+		
+		// Add batching parameters if they exist
+		if ( requestData.offset !== undefined ) {
+			postData.offset = requestData.offset;
+		}
+		if ( requestData.total !== undefined ) {
+			postData.total = requestData.total;
+		}
+
 		$.ajax( {
 			url: endpointUrl,
 			type: 'POST',
 			dataType: 'json',
-			data: requestData.fakerpress,
+			data: postData,
 			beforeSend: ( xhr ) => {
 				if ( restNonce ) {
 					xhr.setRequestHeader( 'X-WP-Nonce', restNonce );
 				}
 			},
 			complete: ( jqXHR, status ) => {
-				$spinner.removeClass( 'is-active' );
+				// Don't remove spinner here - let the success/error callbacks handle it
+				// This ensures spinner stays active during batching
 				
-				if ( status !== 'success' ) {
+				// Only handle errors in complete if they haven't been handled in the error callback
+				if ( status !== 'success' && ! errorHandled ) {
+					// Always remove spinner and enable button on errors
+					$spinner.removeClass( 'is-active' );
 					$button.prop( 'disabled', false );
 
 					let errorMessage = __( 'An error occurred', 'fakerpress' );
@@ -188,6 +213,7 @@
 			},
 			success: ( data, textStatus, jqXHR ) => {
 				if ( data === null ) {
+					$spinner.removeClass( 'is-active' );
 					$button.prop( 'disabled', false );
 					fp.log( $response, '<%= message %>', { message: __( 'No data received from server', 'fakerpress' ) }, 'notice-error' );
 				} else if ( data.success ) {
@@ -201,8 +227,11 @@
 						requestData.offset = responseData.offset;
 						requestData.total = responseData.total;
 
+						// Continue with next batch - keep spinner active and button disabled
 						fp.moduleGenerate( $form, requestData );
 					} else {
+						// Batching is complete, remove spinner and enable button
+						$spinner.removeClass( 'is-active' );
 						$button.prop( 'disabled', false );
 					}
 
@@ -216,6 +245,7 @@
 						'notice-success' 
 					);
 				} else {
+					$spinner.removeClass( 'is-active' );
 					$button.prop( 'disabled', false );
 					
 					let errorMessage = __( 'Generation failed', 'fakerpress' );
@@ -231,6 +261,9 @@
 				}
 			},
 			error: ( jqXHR, textStatus, errorThrown ) => {
+				// Mark error as handled to prevent duplicate messages in complete callback
+				errorHandled = true;
+				
 				$spinner.removeClass( 'is-active' );
 				$button.prop( 'disabled', false );
 
@@ -285,11 +318,8 @@
 	fp.parseFormData = ( $form ) => {
 		const formData = {};
 		const serializedData = $form.serializeArray();
-		console.log( 'Form Data', serializedData );
-
 		// Convert serialized array to object
 		serializedData.forEach( ( field ) => {
-			console.log( 'Field', field );
 			const { name, value } = field;
 			
 			// Skip WordPress nonce fields since we use REST API authentication
