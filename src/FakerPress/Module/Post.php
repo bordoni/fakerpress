@@ -2,14 +2,10 @@
 
 namespace FakerPress\Module;
 
-use FakerPress\Admin;
-use FakerPress\Plugin;
-use FakerPress\ThirdParty\Faker;
 use FakerPress;
 use function FakerPress\make;
-use function FakerPress\get_request_var;
-use function FakerPress\is_truthy;
 use function FakerPress\get;
+use WP_Error;
 
 class Post extends Abstract_Module {
 	/**
@@ -119,25 +115,20 @@ class Post extends Abstract_Module {
 	}
 
 	/**
+	 * Parse the request data and generate the posts.
+	 *
 	 * @since 0.6.4
 	 *
 	 * @throws \Exception
 	 *
-	 * @param $request
-	 * @param $qty
+	 * @param int   $qty      The quantity of posts to generate.
+	 * @param array $request  The request data.
 	 *
-	 * @return array|string
+	 * @return array|WP_Error
 	 */
-	public function parse_request( $qty, $request = [] ) {
-		if ( is_null( $qty ) ) {
-			$qty = get_request_var( [ Plugin::$slug, 'qty' ] );
-			$min = absint( $qty['min'] );
-			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
-			$qty = $this->get_faker()->numberBetween( $min, $max );
-		}
-
-		if ( 0 === $qty ) {
-			return esc_attr__( 'Zero is not a good number of posts to fake...', 'fakerpress' );
+	public function parse_request( int $qty, array $request = [] ) {
+		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ){
+			return new WP_Error( 'fakerpress_zero_posts', __( 'Zero is not a good number of posts to fake...', 'fakerpress' ) );
 		}
 
 		// Fetch Comment Status

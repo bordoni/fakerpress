@@ -126,11 +126,20 @@ class Terms extends Abstract_Endpoint {
 
 		$end_time = microtime( true );
 
-		// Handle results.
-		if ( is_string( $results ) ) {
+		// Handle empty results.
+		if ( empty( $results ) ) {
 			return $this->error_response(
 				$results,
 				'generation_failed',
+				400
+			);
+		}
+
+		// Handle WP Error.
+		if ( is_wp_error( $results ) ) {
+			return $this->error_response(
+				$results->get_error_message(),
+				$results->get_error_code(),
 				400
 			);
 		}

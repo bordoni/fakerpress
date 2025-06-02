@@ -135,11 +135,11 @@ class Posts extends Abstract_Endpoint {
 
 		$end_time = microtime( true );
 
-		// Handle results.
-		if ( is_string( $results ) ) {
+		// Handle WP Error.
+		if ( is_wp_error( $results ) ) {
 			return $this->error_response(
-				$results,
-				'generation_failed',
+				$results->get_error_message(),
+				$results->get_error_code(),
 				400
 			);
 		}

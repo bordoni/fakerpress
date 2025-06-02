@@ -2,14 +2,11 @@
 
 namespace FakerPress\Module;
 
-use FakerPress\Plugin;
-use FakerPress\Utils;
-use FakerPress\ThirdParty\Faker;
 use FakerPress;
 use function FakerPress\make;
 use function FakerPress\get;
-use function FakerPress\get_request_var;
 use function FakerPress\is_truthy;
+use WP_Error;
 
 class Comment extends Abstract_Module {
 	/**
@@ -119,13 +116,21 @@ class Comment extends Abstract_Module {
 		return $comment_id;
 	}
 
-	public function parse_request( $qty, $request = [] ) {
-		if ( is_null( $qty ) ) {
-			$qty = make( Utils::class )->get_qty_from_range( get_request_var( [ Plugin::$slug, 'qty' ] ) );
-		}
-
-		if ( 0 === $qty ) {
-			return esc_attr__( 'Zero is not a good number of comments to fake...', 'fakerpress' );
+	/**
+	 * Parse the request data and generate the comments.
+	 *
+	 * @since 0.6.4
+	 *
+	 * @throws \Exception
+	 *
+	 * @param int   $qty     The quantity of comments to generate.
+	 * @param array $request The request data.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function parse_request( int $qty, array $request = [] ) {
+		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ){
+			return new WP_Error( 'fakerpress_zero_comments', __( 'Zero is not a good number of comments to fake...', 'fakerpress' ) );
 		}
 
 		$comment_content_size      = get( $request, 'content_size', [ 1, 5 ] );

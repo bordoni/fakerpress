@@ -1,12 +1,10 @@
 <?php
 namespace FakerPress\Module;
+
 use function FakerPress\make;
 use function FakerPress\get;
-use function FakerPress\get_request_var;
-use FakerPress\Plugin;
-use FakerPress\Utils;
-use FakerPress\ThirdParty\Faker;
 use FakerPress;
+use WP_Error;
 
 class Term extends Abstract_Module {
 	/**
@@ -96,28 +94,32 @@ class Term extends Abstract_Module {
 		return $term_object['term_id'];
 	}
 
-	public function parse_request( $qty, $request = [] ) {
-		if ( is_null( $qty ) ) {
-			$qty = make( Utils::class )->get_qty_from_range( get_request_var( [ Plugin::$slug, 'qty' ] ) );
+
+	/**
+	 * Parse the request data and generate the terms.
+	 *
+	 * @since 0.6.4
+	 *
+	 * @throws \Exception
+	 *
+	 * @param int   $qty      The quantity of terms to generate.
+	 * @param array $request  The request data.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function parse_request( int $qty, array $request = [] ) {
+		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ){
+			return new WP_Error( 'fakerpress_zero_terms', __( 'Zero is not a good number of terms to fake...', 'fakerpress' ) );
 		}
 
-		if ( 0 === $qty ){
-			return esc_attr__( 'Zero is not a good number of terms to fake...', 'fakerpress' );
-		}
-
-		$name_size = get_request_var( [ Plugin::$slug, 'size' ] );
+		$name_size = get( $request, 'size' );
 
 		// Fetch taxonomies
 		$taxonomies = get( $request, 'taxonomies' );
 		$taxonomies = array_map( 'trim', explode( ',', $taxonomies ) );
 		$taxonomies = array_intersect( get_taxonomies( [ 'public' => true ] ), $taxonomies );
 
-		// Only has meta after 4.4-beta
-		$has_metas = version_compare( $GLOBALS['wp_version'], '4.4-beta', '>=' );
-
-		if ( $has_metas ) {
-			$metas = get( $request, 'meta' );
-		}
+		$metas = get( $request, 'meta' );
 
 		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->set( 'taxonomy', $taxonomies );
@@ -127,7 +129,7 @@ class Term extends Abstract_Module {
 
 			$term_id = $this->generate()->save();
 
-			if ( $has_metas && $term_id && is_numeric( $term_id ) ){
+			if ( $term_id && is_numeric( $term_id ) ){
 				foreach ( $metas as $meta_index => $meta ) {
 					if ( ! isset( $meta['type'], $meta['name'] ) ) {
 						continue;
