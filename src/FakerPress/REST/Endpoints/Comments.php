@@ -127,6 +127,13 @@ class Comments extends Abstract_Endpoint {
 		$end_time = microtime( true );
 
 		// Handle results.
+		if ( is_wp_error( $results ) ) {
+			return $this->error_response(
+				$results->get_error_message(),
+				$results->get_error_code(),
+				400
+			);
+		}
 		if ( is_string( $results ) ) {
 			return $this->error_response(
 				$results,
