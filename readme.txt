@@ -114,6 +114,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Feature - Add batching support for large data generation requests
 * Feature - Include OpenAPI documentation at `/wp-json/fakerpress/v1/docs`
 * Feature - Add attachment admin interface with customizable image dimensions and content options
+* Feature - Include automatic attribution for Lorem Picsum images in alt text (crediting Unsplash photographers)
 * Enhancement - Modernize JavaScript to ES6 with proper module structure
 * Enhancement - Implement proper REST authentication with wp_rest nonce verification
 * Enhancement - Add standardized error handling and validation across all endpoints

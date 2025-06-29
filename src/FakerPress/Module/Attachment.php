@@ -356,10 +356,26 @@ class Attachment extends Abstract_Module {
 		// Select provider.
 		$provider = $request['provider'];
 		$attachment_url = '';
+		$image_author = null;
 
 		switch ( $provider ) {
 			case 'lorempicsum':
-				$attachment_url = sprintf( 'https://picsum.photos/%d/%d/?random=%s', $width, $height, $faker->uuid() );
+				// Use a specific image ID so we can fetch metadata
+				$image_id = $faker->numberBetween( 0, 1084 ); // Lorem Picsum has ~1084 images
+				$attachment_url = sprintf( 'https://picsum.photos/id/%d/%d/%d', $image_id, $width, $height );
+				
+				// Fetch image metadata to get author info
+				$metadata_url = sprintf( 'https://picsum.photos/id/%d/info', $image_id );
+				$response = wp_remote_get( $metadata_url, [ 'timeout' => 5 ] );
+				
+				if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+					$body = wp_remote_retrieve_body( $response );
+					$metadata = json_decode( $body, true );
+					
+					if ( ! empty( $metadata['author'] ) ) {
+						$image_author = $metadata['author'];
+					}
+				}
 				break;
 			case 'placeholder':
 			default:
@@ -374,6 +390,7 @@ class Attachment extends Abstract_Module {
 			'post_title'     => $faker->sentence( $faker->numberBetween( 3, 8 ) ),
 			'post_author'    => $faker->randomElement( (array) $request['author_ids'] ),
 			'post_date'      => $faker->dateTimeBetween( $request['date_range']['min'], $request['date_range']['max'] )->format( 'Y-m-d H:i:s' ),
+			'image_author'   => $image_author, // Store author for later use
 		];
 
 		// Add description if requested.
@@ -433,7 +450,16 @@ class Attachment extends Abstract_Module {
 
 		// Add alt text if requested.
 		if ( $request['generate_alt_text'] ) {
-			$alt_text = $faker->sentence( $faker->numberBetween( 3, 8 ) );
+			// If we have an image author from Lorem Picsum, include attribution
+			if ( ! empty( $attachment_data['image_author'] ) ) {
+				$alt_text = sprintf( 
+					__( '%s - Photo by %s on Unsplash', 'fakerpress' ),
+					$faker->sentence( $faker->numberBetween( 3, 8 ) ),
+					$attachment_data['image_author']
+				);
+			} else {
+				$alt_text = $faker->sentence( $faker->numberBetween( 3, 8 ) );
+			}
 			update_post_meta( $attachment_id, '_wp_attachment_image_alt', $alt_text );
 		}
 
