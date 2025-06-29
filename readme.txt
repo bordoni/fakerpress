@@ -67,7 +67,7 @@ If you fill up your WordPress with any data for the user profiles you might not 
 FakerPress now includes a comprehensive REST API for programmatic content generation. All modules support REST endpoints with batching capabilities for large-scale generation. Full OpenAPI documentation is available at `/wp-json/fakerpress/v1/docs`.
 
 = Generate Attachments =
-Create realistic image attachments with customizable dimensions, multiple image providers (Placehold.co, Lorem Picsum), and automatic generation of alt text, captions, and descriptions.
+Create realistic image attachments with customizable dimensions, multiple image providers (Placehold.co, Lorem Picsum), and automatic generation of alt text, captions, and descriptions. All images include proper attribution - Lorem Picsum images credit the original Unsplash photographers.
 
 = Types of Meta Included =
 * Attachment
@@ -114,7 +114,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Feature - Add batching support for large data generation requests
 * Feature - Include OpenAPI documentation at `/wp-json/fakerpress/v1/docs`
 * Feature - Add attachment admin interface with customizable image dimensions and content options
-* Feature - Include automatic attribution for Lorem Picsum images in alt text (crediting Unsplash photographers)
+* Feature - Include automatic attribution for all generated images (Lorem Picsum credits Unsplash photographers, Placehold.co credited in captions)
 * Enhancement - Modernize JavaScript to ES6 with proper module structure
 * Enhancement - Implement proper REST authentication with wp_rest nonce verification
 * Enhancement - Add standardized error handling and validation across all endpoints

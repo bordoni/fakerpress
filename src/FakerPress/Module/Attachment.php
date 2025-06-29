@@ -398,10 +398,26 @@ class Attachment extends Abstract_Module {
 			$data['post_content'] = $faker->paragraph( $faker->numberBetween( 3, 5 ) );
 		}
 
-		// Add caption if requested.
+		// Always add caption with attribution
+		$caption = '';
 		if ( $request['generate_caption'] ) {
-			$data['post_excerpt'] = $faker->sentence( $faker->numberBetween( 10, 20 ) );
+			$caption = $faker->sentence( $faker->numberBetween( 10, 20 ) );
 		}
+		
+		// Always add attribution based on provider
+		if ( ! empty( $image_author ) ) {
+			// Lorem Picsum with known author
+			$attribution = sprintf( __( 'Photo by %s on Unsplash', 'fakerpress' ), $image_author );
+		} elseif ( $provider === 'lorempicsum' ) {
+			// Lorem Picsum without author info (fallback)
+			$attribution = __( 'Photo from Unsplash via Lorem Picsum', 'fakerpress' );
+		} else {
+			// Placehold.co
+			$attribution = __( 'Image from Placehold.co', 'fakerpress' );
+		}
+		
+		// Combine caption with attribution
+		$data['post_excerpt'] = $caption ? $caption . ' ' . $attribution : $attribution;
 
 		// Add parent post if specified.
 		if ( ! empty( $request['post_parent'] ) ) {
