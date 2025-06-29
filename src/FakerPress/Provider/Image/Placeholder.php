@@ -42,4 +42,18 @@ class Placeholder extends Base {
 
 		return $url;
 	}
+
+	/**
+	 * Alias for placeholder_image to match the expected method name.
+	 *
+	 * @since TBD
+	 *
+	 * @param  array|int        $width   A range for the images that will be generated.
+	 * @param  float|array|int  $height  Image height.
+	 *
+	 * @return string
+	 */
+	public function placeholder( $width = [ 200, 640 ], $height = 1.25 ) {
+		return $this->placeholder_image( $width, $height );
+	}
 }
