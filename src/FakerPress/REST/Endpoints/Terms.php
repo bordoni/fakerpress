@@ -129,7 +129,7 @@ class Terms extends Abstract_Endpoint {
 		// Handle empty results.
 		if ( empty( $results ) ) {
 			return $this->error_response(
-				$results,
+				__( 'Failed to generate terms. No results were returned.', 'fakerpress' ),
 				'generation_failed',
 				400
 			);

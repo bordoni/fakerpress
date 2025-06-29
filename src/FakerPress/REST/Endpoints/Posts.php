@@ -242,7 +242,7 @@ class Posts extends Abstract_Endpoint {
 			'properties' => [
 				'success' => [
 					'type'        => 'boolean',
-					'description' => 'Indicates if the generation was successful.',
+					'description' => __( 'Indicates if the generation was successful.', 'fakerpress' ),
 					'example'     => true,
 				],
 				'data'    => [
