@@ -2,97 +2,14 @@
 
 namespace FakerPress;
 
-use FakerPress\Module\Factory;
-use FakerPress\Admin\View\Factory as View_Factory;
-
 class Ajax {
 
 	public function __construct() {
 		add_action( 'wp_ajax_' . Plugin::$slug . '.select2-WP_Query', [ __CLASS__, 'query_posts' ] );
 		add_action( 'wp_ajax_' . Plugin::$slug . '.search_authors', [ __CLASS__, 'search_authors' ] );
 		add_action( 'wp_ajax_' . Plugin::$slug . '.select2-search_terms', [ __CLASS__, 'search_terms' ] );
-		add_action( 'wp_ajax_' . Plugin::$slug . '.module_generate', [ __CLASS__, 'module_generate' ] );
 	}
 
-	public static function module_generate( $request = null ) {
-		$response = (object) [
-			'status'  => false,
-			'message' => __( 'Your request has failed', 'fakerpress' ),
-		];
-
-		if ( ( ! is_ajax() && is_null( $request ) ) || ! is_user_logged_in() ) {
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
-		}
-
-		$view = get_request_var( [ Plugin::$slug, 'view' ] );
-		if ( empty( $view ) ) {
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
-		}
-
-		$nonce_slug = Plugin::$slug . '.request.' . $view;
-
-		if ( ! check_admin_referer( $nonce_slug ) ) {
-			$response->message = __( 'Security fail, refresh the page and try again!', 'fakerpress' );
-
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
-		}
-
-		// Here we have a Secure Call
-		$module = make( Factory::class )->get( $view );
-		if ( empty( $module ) ) {
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
-		}
-
-		$permission_required = $module::get_permission_required();
-
-		if ( ! current_user_can( $permission_required ) ) {
-			$response->message = sprintf( __( 'Your user needs the "%s" permission to execute the generation for this module.', 'fakerpress' ), $permission_required );
-
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
-		}
-
-		$response->allowed = $module->get_amount_allowed();
-		$response->offset  = absint( get_request_var( 'offset' ) );
-		$qty               = $response->total = absint( get_request_var( 'total' ) );
-
-		if ( ! $response->total ) {
-			$qty = get_request_var( [ Plugin::$slug, 'qty' ] );
-
-			if ( is_array( $qty ) ) {
-				$min = absint( $qty['min'] );
-				$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
-				$qty = $module->get_faker()->numberBetween( $min, $max );
-			}
-			$response->total = $qty;
-		}
-
-		if ( $qty > $response->allowed ) {
-			$response->is_capped = true;
-			$qty                 = $response->allowed;
-
-			if ( $response->total < $response->offset + $response->allowed ) {
-				$qty                 += $response->total - ( $response->offset + $response->allowed );
-				$response->is_capped = false;
-			}
-		} else {
-			$response->is_capped = false;
-		}
-
-		$data = get_request_var( 'fakerpress', [] );
-
-		$results          = $module->parse_request( $qty, $data );
-		$response->offset += $qty;
-
-		if ( is_string( $results ) ) {
-			$response->message = $results;
-		} else {
-			$response->status  = true;
-			$response->message = implode( ', ', array_map( [ make( View_Factory::class )->get( $view ), 'format_link' ], $results ) );
-			$response->results = $results;
-		}
-
-		return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
-	}
 
 	public static function search_terms( $request = null ) {
 		$response = (object) [
