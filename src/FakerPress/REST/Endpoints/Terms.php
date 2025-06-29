@@ -181,8 +181,10 @@ class Terms extends Abstract_Endpoint {
 					'type'              => 'integer',
 					'minimum'           => 1,
 					'maximum'           => 1000,
-					'default'           => 10,
-					'sanitize_callback' => 'absint',
+					'default'           => null,
+					'sanitize_callback' => function( $value ) {
+						return null === $value ? null : absint( $value );
+					},
 				],
 				'qty' => [
 					'description' => __( 'Quantity range with min/max values.', 'fakerpress' ),

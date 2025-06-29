@@ -207,6 +207,13 @@ class Ajax {
 			$request->query['post_type'] = array_map( 'trim', (array) explode( ',', $request->query['post_type'] ) );
 		}
 
+		// If post_type is empty or not set, default to all public post types
+		if ( empty( $request->query['post_type'] ) ) {
+			$request->query['post_type'] = get_post_types( [ 'public' => true ], 'names' );
+			// Remove attachment post type as it's handled separately
+			unset( $request->query['post_type']['attachment'] );
+		}
+
 		$query = new \WP_Query( $request->query );
 
 		if ( ! $query->have_posts() ) {

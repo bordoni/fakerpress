@@ -4,7 +4,6 @@ use FakerPress\Provider\Image\Placeholder;
 use FakerPress\Provider\Image\LoremPicsum;
 use WP_Error;
 use FakerPress;
-use FakerPress\ThirdParty\Faker;
 
 class Attachment extends Abstract_Module {
 
@@ -100,9 +99,25 @@ class Attachment extends Abstract_Module {
 			return $temporary_file;
 		}
 
+		// First try to get mime type for standard images
 		$mime_type = wp_get_image_mime( $temporary_file );
+		
+		// If that fails, check if it's an SVG or other file type
 		if ( ! $mime_type ) {
-			return new WP_Error( 'invalid-image-mimetype', __( 'Invalid image MimeType', 'fakerpress' ) );
+			$finfo = finfo_open( FILEINFO_MIME_TYPE );
+			$mime_type = finfo_file( $finfo, $temporary_file );
+			finfo_close( $finfo );
+			
+			// If it's SVG, we need to handle it differently
+			if ( $mime_type === 'image/svg+xml' || $mime_type === 'text/xml' ) {
+				// Delete the SVG file as we don't want to process it
+				unlink( $temporary_file );
+				return new WP_Error( 'svg-not-supported', __( 'SVG images are not supported. Please use a different image provider or format.', 'fakerpress' ) );
+			}
+		}
+		
+		if ( ! $mime_type ) {
+			return new WP_Error( 'empty-mimetype', __( 'Empty MimeType', 'fakerpress' ) );
 		}
 
 		$allowed_mime_types = get_allowed_mime_types();
@@ -113,7 +128,7 @@ class Attachment extends Abstract_Module {
 		}
 
 		if ( ! $extension ) {
-			return new WP_Error( 'invalid-image-mimetype', __( 'Invalid image MimeType', 'fakerpress' ) );
+			return new WP_Error( 'invalid-image-mimetype', sprintf( __( 'Invalid image MimeType (%s)', 'fakerpress' ), $mime_type ) );
 		}
 
 		// Build file name with Extension.
@@ -168,13 +183,11 @@ class Attachment extends Abstract_Module {
 	}
 
 	/**
-	 * Gets an Array with all the providers based on a given Type
-	 *
-	 * @param  string $type Which type of provider you are looking for
+	 * Gets an Array with all the providers
 	 *
 	 * @return array  With ID, Text and Type
 	 */
-	public static function get_providers( string $type = 'image' ): array {
+	public static function get_providers(): array {
 		$providers = [
 			[
 				'id'   => Placeholder::ID,
@@ -197,12 +210,264 @@ class Attachment extends Abstract_Module {
 	 *
 	 * @throws \Exception
 	 *
-	 * @param $request
 	 * @param $qty
+	 * @param $request
 	 *
 	 * @return array|string
 	 */
 	public function parse_request( $qty, $request = [] ) {
+		// The quantity is already calculated by the REST endpoint or passed directly
+		// We should use the $qty parameter, not recalculate from request
 
+		// Process date range
+		if ( isset( $request['interval_date'] ) ) {
+			$date_range = [
+				'min' => $request['interval_date']['min'] ?? '-30 days',
+				'max' => $request['interval_date']['max'] ?? 'now',
+			];
+		} else {
+			$date_range = [ 'min' => '-30 days', 'max' => 'now' ];
+		}
+
+		// Process author - it comes as comma-separated string from select2
+		$author_ids = [ 1 ];
+		if ( ! empty( $request['author'] ) ) {
+			if ( is_string( $request['author'] ) ) {
+				$author_ids = array_map( 'absint', explode( ',', $request['author'] ) );
+			} elseif ( is_array( $request['author'] ) ) {
+				$author_ids = array_map( 'absint', $request['author'] );
+			}
+		}
+
+		// Process width range
+		$width = [ 'min' => 200, 'max' => 1200 ];
+		if ( isset( $request['width'] ) && is_array( $request['width'] ) ) {
+			$width = [
+				'min' => absint( $request['width']['min'] ),
+				'max' => absint( $request['width']['max'] ),
+			];
+		}
+
+		// Process height range
+		$height = null;
+		if ( isset( $request['height'] ) && is_array( $request['height'] ) ) {
+			$min_height = absint( $request['height']['min'] );
+			$max_height = absint( $request['height']['max'] );
+			
+			// Only set height if at least one value is non-zero
+			if ( $min_height > 0 || $max_height > 0 ) {
+				$height = [
+					'min' => $min_height,
+					'max' => $max_height,
+				];
+			}
+		}
+
+		$defaults = [
+			'provider'             => $request['provider'] ?? 'placeholder',
+			'width'                => $width,
+			'height'               => $height,
+			'aspect_ratio'         => floatval( $request['aspect_ratio'] ?? 1.5 ),
+			'file_types'           => [ 'jpg' ],
+			'post_parent'          => $request['post_parent'] ?? 0,
+			'author_ids'           => $author_ids,
+			'generate_alt_text'    => ! empty( $request['generate_alt_text'] ),
+			'generate_caption'     => ! empty( $request['generate_caption'] ),
+			'generate_description' => ! empty( $request['generate_description'] ),
+			'date_range'           => $date_range,
+			'meta'                 => $request['meta'] ?? [],
+		];
+
+		// Merge with defaults.
+		$request = wp_parse_args( $request, $defaults );
+
+		// Initialize results array.
+		$results = [];
+
+		// Use the quantity passed in - it's already calculated by the REST endpoint
+		$quantity = absint( $qty );
+		
+		// Ensure we have at least 1
+		if ( $quantity < 1 ) {
+			$quantity = 1;
+		}
+		
+		// Debug logging
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'FakerPress Attachment: Generating ' . $quantity . ' attachments' );
+		}
+
+		// Generate attachments.
+		for ( $i = 0; $i < $quantity; $i++ ) {
+			$attachment_data = $this->generate_attachment_data( $request );
+			
+			if ( ! empty( $attachment_data['attachment_url'] ) ) {
+				// Handle the download and creation of the attachment
+				$attachment_id = $this->handle_download( $attachment_data['attachment_url'], $attachment_data['post_parent'] ?? 0 );
+				
+				if ( is_wp_error( $attachment_id ) ) {
+					// Log the error for debugging
+					if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+						error_log( 'FakerPress Attachment Error: ' . $attachment_id->get_error_message() . ' for URL: ' . $attachment_data['attachment_url'] );
+					}
+					continue;
+				}
+				
+				if ( $attachment_id ) {
+					// Flag the Object as FakerPress
+					update_post_meta( $attachment_id, static::get_flag(), 1 );
+					
+					// Add the Original URL to the meta of the attachment
+					update_post_meta( $attachment_id, static::$meta_key_original_url, $attachment_data['attachment_url'] );
+					
+					// Update additional fields.
+					$this->update_attachment_fields( $attachment_id, $attachment_data, $request );
+					
+					$results[] = $attachment_id;
+				}
+			}
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Generate attachment data based on request parameters.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $request Request parameters.
+	 *
+	 * @return array
+	 */
+	protected function generate_attachment_data( $request ) {
+		$faker = $this->get_faker();
+		
+		// Determine dimensions.
+		$width = $this->get_random_dimension( $request['width'], 800 );
+		
+		if ( $request['height'] !== null ) {
+			$height = $this->get_random_dimension( $request['height'], 600 );
+		} else {
+			// Use aspect ratio.
+			$height = round( $width / $request['aspect_ratio'] );
+		}
+
+		// Select provider.
+		$provider = $request['provider'];
+		$attachment_url = '';
+
+		switch ( $provider ) {
+			case 'lorempicsum':
+				$attachment_url = sprintf( 'https://picsum.photos/%d/%d/?random=%s', $width, $height, $faker->uuid() );
+				break;
+			case 'placeholder':
+			default:
+				// Add .png to get PNG format instead of SVG
+				$attachment_url = sprintf( 'https://placehold.co/%dx%d.png', $width, $height );
+				break;
+		}
+
+		// Generate text content.
+		$data = [
+			'attachment_url' => $attachment_url,
+			'post_title'     => $faker->sentence( $faker->numberBetween( 3, 8 ) ),
+			'post_author'    => $faker->randomElement( (array) $request['author_ids'] ),
+			'post_date'      => $faker->dateTimeBetween( $request['date_range']['min'], $request['date_range']['max'] )->format( 'Y-m-d H:i:s' ),
+		];
+
+		// Add description if requested.
+		if ( $request['generate_description'] ) {
+			$data['post_content'] = $faker->paragraph( $faker->numberBetween( 3, 5 ) );
+		}
+
+		// Add caption if requested.
+		if ( $request['generate_caption'] ) {
+			$data['post_excerpt'] = $faker->sentence( $faker->numberBetween( 10, 20 ) );
+		}
+
+		// Add parent post if specified.
+		if ( ! empty( $request['post_parent'] ) ) {
+			if ( is_array( $request['post_parent'] ) ) {
+				$data['post_parent'] = $faker->randomElement( $request['post_parent'] );
+			} else {
+				$data['post_parent'] = absint( $request['post_parent'] );
+			}
+		} else {
+			$data['post_parent'] = 0;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Update attachment fields after creation.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $attachment_id The attachment ID.
+	 * @param array $attachment_data The attachment data.
+	 * @param array $request The request parameters.
+	 *
+	 * @return void
+	 */
+	protected function update_attachment_fields( $attachment_id, $attachment_data, $request ) {
+		$faker = $this->get_faker();
+
+		// Update post fields if needed.
+		$update_data = [
+			'ID'           => $attachment_id,
+			'post_title'   => $attachment_data['post_title'],
+			'post_content' => $attachment_data['post_content'] ?? '',
+			'post_excerpt' => $attachment_data['post_excerpt'] ?? '',
+			'post_author'  => $attachment_data['post_author'],
+			'post_date'    => $attachment_data['post_date'],
+			'post_date_gmt' => get_gmt_from_date( $attachment_data['post_date'] ),
+		];
+
+		if ( ! empty( $attachment_data['post_parent'] ) ) {
+			$update_data['post_parent'] = $attachment_data['post_parent'];
+		}
+
+		wp_update_post( $update_data );
+
+		// Add alt text if requested.
+		if ( $request['generate_alt_text'] ) {
+			$alt_text = $faker->sentence( $faker->numberBetween( 3, 8 ) );
+			update_post_meta( $attachment_id, '_wp_attachment_image_alt', $alt_text );
+		}
+
+		// Add custom meta if provided.
+		if ( ! empty( $request['meta'] ) && is_array( $request['meta'] ) ) {
+			foreach ( $request['meta'] as $meta_key => $meta_value ) {
+				update_post_meta( $attachment_id, $meta_key, $meta_value );
+			}
+		}
+	}
+
+	/**
+	 * Get random dimension value from input.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $dimension Dimension value or range.
+	 * @param int   $default Default value.
+	 *
+	 * @return int
+	 */
+	protected function get_random_dimension( $dimension, $default = 800 ) {
+		if ( is_numeric( $dimension ) ) {
+			return absint( $dimension );
+		}
+
+		if ( is_array( $dimension ) || is_object( $dimension ) ) {
+			$dimension = (array) $dimension;
+			$min = isset( $dimension['min'] ) ? absint( $dimension['min'] ) : $default;
+			$max = isset( $dimension['max'] ) ? absint( $dimension['max'] ) : $min;
+			
+			return $this->get_faker()->numberBetween( $min, $max );
+		}
+
+		return $default;
 	}
 }

@@ -8,7 +8,7 @@ use FakerPress\ThirdParty\Faker\Provider\Base;
  * @since  0.6.0
  */
 class Placeholder extends Base {
-	const ID = 'placeholder_image';
+	const ID = 'placeholder';
 
 	/**
 	 * Generates a URL for Placeholder.com

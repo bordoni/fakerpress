@@ -53,6 +53,9 @@ class Controller extends Service_Provider {
 		singleton( static::class, $this );
 
 		$this->add_actions();
+		
+		// Ensure REST routes are registered early enough
+		add_action( 'init', [ $this, 'ensure_rest_routes' ], 5 );
 	}
 
 	/**
@@ -114,8 +117,8 @@ class Controller extends Service_Provider {
 			Endpoints\Users::class,
 			Endpoints\Terms::class,
 			Endpoints\Comments::class,
+			Endpoints\Attachments::class,
 			// Additional endpoints can be added here
-			// 'FakerPress\REST\Endpoints\Attachments',
 			// 'FakerPress\REST\Endpoints\Meta',
 		] );
 
@@ -152,6 +155,20 @@ class Controller extends Service_Provider {
 	 */
 	public static function check_permission( $permission = 'manage_options' ) {
 		return current_user_can( $permission );
+	}
+
+	/**
+	 * Ensure REST routes are properly registered.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function ensure_rest_routes() {
+		// Force re-registration of routes if needed
+		if ( did_action( 'rest_api_init' ) ) {
+			$this->register_routes();
+		}
 	}
 
 	/**
