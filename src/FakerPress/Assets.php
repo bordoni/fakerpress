@@ -18,16 +18,7 @@ class Assets extends Service_Provider {
 
 		$admin = make( Admin::class );
 
-		// Register a global CSS files.
-		register_asset(
-			'fakerpress-icon',
-			'font.css',
-			[],
-			'admin_enqueue_scripts',
-			[
-				'in_footer' => false,
-			]
-		);
+		// Font icon CSS removed - now using SVG icon for admin menu
 
 		// Register QS.js.
 		register_asset(

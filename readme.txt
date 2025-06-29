@@ -124,6 +124,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Fix - Correct dropdown population for non-multiple select fields
 * Tweak - Improve parse_request methods across all modules with better type safety
 * Tweak - Add internationalization support for JavaScript files
+* Tweak - Replace font icon with SVG icon for WordPress admin menu
 
 = 0.8.0 &mdash; 20 of May 2025 =
 
