@@ -119,7 +119,6 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Enhancement - Implement proper REST authentication with wp_rest nonce verification
 * Enhancement - Add standardized error handling and validation across all endpoints
 * Enhancement - Support for generating alt text, captions, and descriptions for attachments
-* Fix - Resolve attachment generation returning 0 items
 * Fix - Ensure PNG format for placeholder images to avoid SVG compatibility issues
 * Fix - Fix JavaScript errors with missing field validation
 * Fix - Correct dropdown population for non-multiple select fields
