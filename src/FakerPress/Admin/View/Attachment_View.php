@@ -9,11 +9,9 @@ use function FakerPress\get_request_var;
 use function FakerPress\make;
 
 /**
- * Class Attachment_View.
+ * Class Attachment_View
  *
- * @todo This class is not in use yet.
- *
- * @since   0.6.0
+ * @since   TBD
  *
  * @package FakerPress\Admin\View
  */
@@ -43,7 +41,25 @@ class Attachment_View extends Abstract_View {
 	 * @inheritDoc
 	 */
 	public function has_menu(): bool {
-		return false;
+		return true;
+	}
+
+	/**
+	 * Format the Administration edit link for each attachment instance.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $id ID of the attachment
+	 *
+	 * @return string
+	 */
+	public function format_link( $id ) {
+		$url = get_edit_post_link( $id );
+		if ( ! $url ) {
+			// Fallback to media library link.
+			$url = admin_url( 'upload.php?item=' . $id );
+		}
+		return '<a href="' . esc_url( $url ) . '">' . absint( $id ) . '</a>';
 	}
 
 	/**
@@ -52,7 +68,7 @@ class Attachment_View extends Abstract_View {
 	public function parse_request() {
 		// The Abstract just checks for a nonce actually super handy.
 		if ( ! parent::parse_request() ) {
-			return false;
+			return;
 		}
 
 		// After this point we are safe to say that we have a good POST request
@@ -63,7 +79,7 @@ class Attachment_View extends Abstract_View {
 				sprintf(
 					__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),
 					count( $results ),
-					_n( 'user', 'users', count( $results ), 'fakerpress' ),
+					_n( 'attachment', 'attachments', count( $results ), 'fakerpress' ),
 					implode( ', ', array_map( [ $this, 'format_link' ], $results ) )
 				)
 			);

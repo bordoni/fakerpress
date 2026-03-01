@@ -227,7 +227,23 @@
 					};
 
 					args.ajax.data = function( search, page ) {
-						var post_types = _.intersection( $( '#fakerpress-field-post_types' ).val().split( ',' ), _.pluck( _.where( $( '#fakerpress-field-post_types' ).data( 'options' ), { hierarchical: true } ) , 'id' ) );
+						var post_types = [];
+						var $post_types_field = $( '#fakerpress-field-post_types' );
+						
+						// Check if post_types field exists on the page and has a value
+						if ( $post_types_field.length > 0 && $post_types_field.val() ) {
+							// Use the selected post types from the field
+							var field_value = $post_types_field.val();
+							var field_options = $post_types_field.data( 'options' );
+							
+							if ( field_value && field_options ) {
+								post_types = _.intersection( field_value.split( ',' ), _.pluck( _.where( field_options, { hierarchical: true } ) , 'id' ) );
+							}
+						} else {
+							// Default to all public post types when field doesn't exist or has no value (e.g., on attachments page)
+							// This will be handled server-side to get all public post types
+							post_types = [];
+						}
 
 						return {
 							action: 'fakerpress.select2-' + source,

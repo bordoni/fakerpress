@@ -1,11 +1,6 @@
 <?php
 namespace FakerPress;
-use FakerPress\ThirdParty\Cake\Chronos\Chronos;
-use FakerPress\Provider\HTML;
-
-/**
- * NOT IN USE YET!
- */
+use FakerPress\Module\Attachment;
 
 $fields[] = new Field(
 	'range',
@@ -14,7 +9,7 @@ $fields[] = new Field(
 	],
 	[
 		'label' => __( 'Quantity', 'fakerpress' ),
-		'description' => __( 'How many posts should be generated, use both fields to get a randomized number of posts within the given range.', 'fakerpress' ),
+		'description' => __( 'How many attachments should be generated, use both fields to get a randomized number of attachments within the given range.', 'fakerpress' ),
 	]
 );
 
@@ -30,6 +25,80 @@ $fields[] = new Field(
 	]
 );
 
+// Image Provider Selection
+$_image_providers = Attachment::get_providers();
+
+// Ensure we have the proper format for the dropdown
+if ( empty( $_image_providers ) ) {
+	$_image_providers = [
+		[
+			'id'   => 'placeholder',
+			'text' => esc_attr__( 'Placehold.co', 'fakerpress' ),
+		],
+		[
+			'id'   => 'lorempicsum',
+			'text' => esc_attr__( 'Lorem Picsum', 'fakerpress' ),
+		],
+	];
+}
+
+$fields[] = new Field(
+	'dropdown',
+	[
+		'id' => 'provider',
+		'value' => 'placeholder',
+		'options' => $_image_providers,
+	],
+	[
+		'label' => __( 'Image Provider', 'fakerpress' ),
+		'description' => __( 'Choose which image service to use for generating attachments.', 'fakerpress' ),
+	]
+);
+
+// Image Dimensions
+$fields[] = new Field(
+	'range',
+	[
+		'id' => 'width',
+		'min' => 50,
+		'max' => 3000,
+		'value' => [ 200, 1200 ],
+	],
+	[
+		'label' => __( 'Width', 'fakerpress' ),
+		'description' => __( 'Image width range in pixels.', 'fakerpress' ),
+	]
+);
+
+$fields[] = new Field(
+	'range',
+	[
+		'id' => 'height',
+		'min' => 50,
+		'max' => 3000,
+		'value' => [ 0, 0 ],
+	],
+	[
+		'label' => __( 'Height', 'fakerpress' ),
+		'description' => __( 'Image height range in pixels. Leave at 0 to use aspect ratio instead.', 'fakerpress' ),
+	]
+);
+
+$fields[] = new Field(
+	'number',
+	[
+		'id' => 'aspect_ratio',
+		'value' => 1.5,
+		'min' => 0.1,
+		'max' => 10,
+		'step' => 0.1,
+	],
+	[
+		'label' => __( 'Aspect Ratio', 'fakerpress' ),
+		'description' => __( 'Width/Height ratio (e.g., 1.5 for 3:2, 1.77 for 16:9). Only used when height is 0.', 'fakerpress' ),
+	]
+);
+
 $fields[] = new Field(
 	'dropdown',
 	[
@@ -39,108 +108,63 @@ $fields[] = new Field(
 		'data-nonce' => wp_create_nonce( Plugin::$slug . '-select2-WP_Query' ),
 	],
 	[
-		'label' => __( 'Parents', 'fakerpress' ),
-		'description' => __( 'What posts can be chosen as Parent to the ones created', 'fakerpress' ),
+		'label' => __( 'Parent Posts', 'fakerpress' ),
+		'description' => __( 'Attach generated images to specific posts.', 'fakerpress' ),
 	]
 );
 
-$fields[] = new Field(
-	'dropdown',
-	[
-		'id' => 'comment_status',
-		'multiple' => true,
-		'value' => 'open',
-		'data-options' => [
-			[
-				'id' => 'open',
-				'text' => esc_attr__( 'Allow Comments', 'fakerpress' ),
-			],
-			[
-				'id' => 'closed',
-				'text' => esc_attr__( 'Comments closed', 'fakerpress' ),
-			],
-		],
-	],
-	[
-		'label' => __( 'Comments Status', 'fakerpress' ),
-		'description' => __( 'Sampling group of options for the comment status of the posts', 'fakerpress' ),
-	]
-);
-
+// Content Generation Options
 $fields[] = new Field(
 	'checkbox',
 	[
-		'id' => 'use_html',
+		'id' => 'generate_alt_text',
 		'options' => [
 			[
-				'text' => __( 'Use HTML on your randomized post content?', 'fakerpress' ),
+				'text' => __( 'Generate alt text for accessibility', 'fakerpress' ),
 				'value' => 1,
 			],
 		],
 		'value' => 1,
 	],
 	[
-		'label' => __( 'Use HTML', 'fakerpress' ),
+		'label' => __( 'Alt Text', 'fakerpress' ),
 	]
 );
-
-$_elements = array_merge( HTML::$sets['header'], HTML::$sets['list'], HTML::$sets['block'], HTML::$sets['self_close'] );
-$fields[] = new Field(
-	'dropdown',
-	[
-		'id' => 'html_tags',
-		'multiple' => true,
-		'data-tags' => true,
-		'data-options' => $_elements,
-		'value' => implode( ',', $_elements ),
-	],
-	[
-		'label' => __( 'HTML tags', 'fakerpress' ),
-		'description' => __( 'Select the group of tags that can be selected to print on the Post Content', 'fakerpress' ),
-	]
-);
-
-/*
-This comes back as a Meta Field Template
-$fields[] = new Field(
-	'number',
-	[
-		'id' => 'featured_image_rate',
-		'placeholder' => __( 'e.g.: 75', 'fakerpress' ),
-		'min' => 0,
-		'max' => 100,
-		'value' => 75,
-	],
-	[
-		'label' => __( 'Featured Image Rate', 'fakerpress' ),
-		'description' => __( 'Percentage of the posts created that will have an Featured Image', 'fakerpress' ),
-	]
-);
-
-$_image_providers[] = [
-	'id' => 'placeholdit',
-	'text' => 'Placehold.it',
-];
-
-$_image_providers[] = [
-	'id' => 'lorempicsum',
-	'text' => 'Lorem Picsum',
-];
 
 $fields[] = new Field(
-	'dropdown',
+	'checkbox',
 	[
-		'id' => 'images_origin',
-		'multiple' => true,
-		'value' => implode( ',', wp_list_pluck( $_image_providers, 'id' ) ),
-		'data-options' => $_image_providers,
+		'id' => 'generate_caption',
+		'options' => [
+			[
+				'text' => __( 'Generate image captions', 'fakerpress' ),
+				'value' => 1,
+			],
+		],
+		'value' => 1,
 	],
 	[
-		'label' => __( 'Image Providers', 'fakerpress' ),
-		'description' => __( 'Which image services will the generator use?', 'fakerpress' ),
+		'label' => __( 'Caption', 'fakerpress' ),
 	]
 );
-*/
+
+$fields[] = new Field(
+	'checkbox',
+	[
+		'id' => 'generate_description',
+		'options' => [
+			[
+				'text' => __( 'Generate image descriptions', 'fakerpress' ),
+				'value' => 1,
+			],
+		],
+		'value' => 1,
+	],
+	[
+		'label' => __( 'Description', 'fakerpress' ),
+	]
+);
+
 
 // Mount the options for Users
 $users = get_users(
@@ -168,7 +192,7 @@ $fields[] = new Field(
 	],
 	[
 		'label' => __( 'Author', 'fakerpress' ),
-		'description' => __( 'Choose some users to be authors of posts generated.', 'fakerpress' ),
+		'description' => __( 'Choose users to be owners of generated attachments.', 'fakerpress' ),
 	]
 );
 
@@ -180,35 +204,26 @@ $fields[] = new Field(
 	],
 	[
 		'label' => __( 'Meta Field Rules', 'fakerpress' ),
-		'description' => __( 'Use the fields below to configure a set of rules for your generated Posts', 'fakerpress' ),
+		'description' => __( 'Use the fields below to configure a set of rules for your generated Attachments', 'fakerpress' ),
 	]
 );
-
-$new_fields = [
-	'type' => 'fieldset',
-	'children' => [
-		[
-			'type' => 'raw',
-			'id' => 'my-own-raw',
-			'html' => 'From RAW!'
-		]
-	]
-];
-
 
 ?>
 <div class='wrap'>
 	<h2><?php echo esc_attr( $this->get_title() ); ?></h2>
 
-	<form method='post'>
+	<form method='post' class='fp-module-generator' data-endpoint='attachments'>
 		<?php wp_nonce_field( Plugin::$slug . '.request.' . $this::get_slug() ); ?>
 		<table class="form-table" style="display: table;">
 			<tbody>
 				<?php foreach ( $fields as $field ) { $field->output( true ); } ?>
 
-				<?php make( Fields\Factory::class )->make( $new_fields )->get_html() ?>
 			</tbody>
 		</table>
-		<?php submit_button( __( 'Generate', 'fakerpress' ), 'primary' ); ?>
+		<div class="fp-submit">
+			<?php submit_button( __( 'Generate', 'fakerpress' ), 'primary' ); ?>
+			<span class="spinner"></span>
+			<div class="fp-response"></div>
+		</div>
 	</form>
 </div>

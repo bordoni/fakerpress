@@ -8,7 +8,7 @@ use FakerPress\ThirdParty\Faker\Provider\Base;
  * @since  0.6.0
  */
 class Placeholder extends Base {
-	const ID = 'placeholder_image';
+	const ID = 'placeholder';
 
 	/**
 	 * Generates a URL for Placeholder.com
@@ -41,5 +41,19 @@ class Placeholder extends Base {
 		$url = "https://placehold.co/{$width}x{$height}/";
 
 		return $url;
+	}
+
+	/**
+	 * Alias for placeholder_image to match the expected method name.
+	 *
+	 * @since TBD
+	 *
+	 * @param  array|int        $width   A range for the images that will be generated.
+	 * @param  float|array|int  $height  Image height.
+	 *
+	 * @return string
+	 */
+	public function placeholder( $width = [ 200, 640 ], $height = 1.25 ) {
+		return $this->placeholder_image( $width, $height );
 	}
 }

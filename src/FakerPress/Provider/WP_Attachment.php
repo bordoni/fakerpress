@@ -47,9 +47,9 @@ class WP_Attachment extends Base {
 		$args = wp_parse_args( $args, static::$type_defaults[ $type ] );
 
 		if ( Placeholder::ID === $type ) {
-			$url = call_user_func_array( [ $this->generator, Placeholder::ID ], (array) $args );
+			$url = call_user_func_array( [ $this->generator, 'placeholder' ], (array) $args );
 		} elseif ( LoremPicsum::ID === $type ) {
-			$url = call_user_func_array( [ $this->generator, LoremPicsum::ID ], (array) $args );
+			$url = call_user_func_array( [ $this->generator, 'lorempicsum' ], (array) $args );
 		}
 
 		return $url;

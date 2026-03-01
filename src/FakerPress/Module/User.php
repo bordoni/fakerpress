@@ -8,6 +8,8 @@ use function FakerPress\make;
 use FakerPress\Plugin;
 use FakerPress\ThirdParty\Faker;
 use FakerPress;
+use WP_Error;
+use WP_User;
 
 class User extends Abstract_Module {
 
@@ -68,7 +70,7 @@ class User extends Abstract_Module {
 			$deleted = [];
 
 			foreach ( $user as $id ) {
-				$id = $id instanceof \WP_User ? $id->ID : $id;
+				$id = $id instanceof WP_User ? $id->ID : $id;
 
 				if ( ! is_numeric( $id ) ) {
 					continue;
@@ -81,7 +83,7 @@ class User extends Abstract_Module {
 		}
 
 		if ( is_numeric( $user ) ) {
-			$user = new \WP_User( $user );
+			$user = new WP_User( $user );
 		}
 
 		if ( ! $user instanceof \WP_User || ! $user->exists() ) {
@@ -122,23 +124,29 @@ class User extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Parse the request data and generate the users.
+	 *
+	 * @since 0.6.4
+	 *
+	 * @throws \Exception
+	 *
+	 * @param int   $qty     The quantity of users to generate.
+	 * @param array $request The request data.
+	 *
+	 * @return array|WP_Error
 	 */
-	public function parse_request( $qty, $request = [] ) {
-		if ( is_null( $qty ) ) {
-			$qty = get_request_var( [ Plugin::$slug, 'qty' ] );
-			$min = absint( $qty['min'] );
-			$max = max( absint( isset( $qty['max'] ) ? $qty['max'] : 0 ), $min );
-			$qty = $this->get_faker()->numberBetween( $min, $max );
-		}
-
-		if ( 0 === $qty ) {
-			return esc_attr__( 'Zero is not a good number of users to fake...', 'fakerpress' );
+	public function parse_request( int $qty, array $request = [] ) {
+		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ){
+			return new WP_Error( 'fakerpress_zero_users', __( 'Zero is not a good number of users to fake...', 'fakerpress' ) );
 		}
 
 		$description_size      = get( $request, 'description_size', [ 1, 5 ] );
 		$description_use_html  = get( $request, 'use_html', 'off' ) === 'on';
 		$description_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags' ) ) );
+
+		if ( ! function_exists( 'get_editable_roles' ) ) {
+			require_once( ABSPATH . 'wp-admin/includes/user.php' );
+		}
 
 		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', get( $request, 'roles' ) ) ) );
 		$metas = get( $request, 'meta', [] );
