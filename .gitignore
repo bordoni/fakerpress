@@ -39,6 +39,10 @@ desktop.ini
 node_modules
 tmp
 
+# Planning #
+###########
+plan/
+
 # FakerPress #
 ###########
 build/*
