@@ -17,14 +17,14 @@ use FakerPress\Plugin;
  *
  * Utilities for generating OpenAPI documentation.
  *
- * @since TBD
+ * @since 0.9.0
  */
 class OpenAPI {
 
 	/**
 	 * Get the base OpenAPI specification structure.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -61,7 +61,7 @@ class OpenAPI {
 	/**
 	 * Get common schemas used across endpoints.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -165,7 +165,7 @@ class OpenAPI {
 	/**
 	 * Get security schemes for authentication.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -189,7 +189,7 @@ class OpenAPI {
 	/**
 	 * Generate parameter schema for common parameters.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param string $type Parameter type (quantity, meta, etc.).
 	 *
@@ -260,7 +260,7 @@ class OpenAPI {
 	/**
 	 * Generate tags for endpoint categorization.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */

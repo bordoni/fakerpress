@@ -16,14 +16,14 @@ namespace FakerPress\REST\Traits;
  *
  * Provides batching functionality for generation endpoints.
  *
- * @since TBD
+ * @since 0.9.0
  */
 trait Handles_Batching {
 
 	/**
 	 * Calculate the quantity to generate with batching support.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param array $params Request parameters.
 	 * @param mixed $module The module instance.
@@ -77,7 +77,7 @@ trait Handles_Batching {
 	/**
 	 * Build batched response data.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param array $results        The generation results.
 	 * @param array $batch_info     Batching information from calculate_batched_quantity.
@@ -107,7 +107,7 @@ trait Handles_Batching {
 	/**
 	 * Format success message with batching information.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param int    $generated_count Number of items generated in this batch.
 	 * @param string $item_type       Type of items (posts, users, etc.).

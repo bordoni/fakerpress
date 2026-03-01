@@ -49,8 +49,25 @@ class Attachment extends Abstract_Module {
 	 * @inheritDoc
 	 */
 	public static function fetch( array $args = [] ): array {
-		// TODO: Implement fetch() method.
-		return [];
+		$defaults = [
+			'post_type'      => 'attachment',
+			'post_status'    => 'any',
+			'nopaging'       => true,
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'meta_query'     => [
+				[
+					'key'   => static::get_flag(),
+					'value' => true,
+					'type'  => 'BINARY',
+				],
+			],
+		];
+
+		$args        = wp_parse_args( $args, $defaults );
+		$query_posts = new \WP_Query( $args );
+
+		return array_map( 'absint', $query_posts->posts );
 	}
 
 	/**

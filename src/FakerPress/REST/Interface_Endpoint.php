@@ -17,14 +17,14 @@ use WP_REST_Request;
  *
  * Contract for all REST API endpoint implementations.
  *
- * @since TBD
+ * @since 0.9.0
  */
 interface Interface_Endpoint {
 
 	/**
 	 * Register the routes for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return void
 	 */
@@ -33,7 +33,7 @@ interface Interface_Endpoint {
 	/**
 	 * Get the base route for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return string
 	 */
@@ -42,7 +42,7 @@ interface Interface_Endpoint {
 	/**
 	 * Get the permission required to access this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return string
 	 */
@@ -51,7 +51,7 @@ interface Interface_Endpoint {
 	/**
 	 * Check if the current user has permission to access this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return bool|\WP_Error
 	 */
@@ -60,7 +60,7 @@ interface Interface_Endpoint {
 	/**
 	 * Validate the request parameters.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param \WP_REST_Request $request The REST request object.
 	 *
@@ -71,7 +71,7 @@ interface Interface_Endpoint {
 	/**
 	 * Sanitize the request parameters.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param \WP_REST_Request $request The REST request object.
 	 *
@@ -82,7 +82,7 @@ interface Interface_Endpoint {
 	/**
 	 * Get the OpenAPI schema for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -91,7 +91,7 @@ interface Interface_Endpoint {
 	/**
 	 * Get the schema for request parameters.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -100,7 +100,7 @@ interface Interface_Endpoint {
 	/**
 	 * Get the schema for response data.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */

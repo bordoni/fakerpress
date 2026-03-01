@@ -27,7 +27,7 @@ use function FakerPress\make;
  *
  * Endpoint for generating fake users.
  *
- * @since TBD
+ * @since 0.9.0
  */
 class Users extends Abstract_Endpoint {
 	use Handles_Batching;
@@ -35,7 +35,7 @@ class Users extends Abstract_Endpoint {
 	/**
 	 * The base route for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ class Users extends Abstract_Endpoint {
 	/**
 	 * The permission required to access this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @var ?string
 	 */
@@ -53,7 +53,7 @@ class Users extends Abstract_Endpoint {
 	/**
 	 * Get the routes configuration for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -73,7 +73,7 @@ class Users extends Abstract_Endpoint {
 	/**
 	 * Generate fake users.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param WP_REST_Request $request The REST request object.
 	 *
@@ -167,7 +167,7 @@ class Users extends Abstract_Endpoint {
 	/**
 	 * Get endpoint arguments for validation.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -215,7 +215,7 @@ class Users extends Abstract_Endpoint {
 	/**
 	 * Get the schema for request parameters.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -226,7 +226,7 @@ class Users extends Abstract_Endpoint {
 	/**
 	 * Get the schema for response data.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -255,7 +255,7 @@ class Users extends Abstract_Endpoint {
 	/**
 	 * Get the meta type for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return string
 	 */

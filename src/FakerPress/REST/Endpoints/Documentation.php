@@ -24,14 +24,14 @@ use function FakerPress\make;
  *
  * Endpoint for serving API documentation.
  *
- * @since TBD
+ * @since 0.9.0
  */
 class Documentation extends Abstract_Endpoint {
 
 	/**
 	 * The base route for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ class Documentation extends Abstract_Endpoint {
 	/**
 	 * The permission required to access this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @var ?string
 	 */
@@ -49,7 +49,7 @@ class Documentation extends Abstract_Endpoint {
 	/**
 	 * Get the routes configuration for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -68,7 +68,7 @@ class Documentation extends Abstract_Endpoint {
 	/**
 	 * Get the OpenAPI specification.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param WP_REST_Request $request The REST request object.
 	 *
@@ -88,7 +88,7 @@ class Documentation extends Abstract_Endpoint {
 	/**
 	 * Get the endpoint arguments.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -99,7 +99,7 @@ class Documentation extends Abstract_Endpoint {
 	/**
 	 * Get the schema for request parameters.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -113,7 +113,7 @@ class Documentation extends Abstract_Endpoint {
 	/**
 	 * Get the schema for response data.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */

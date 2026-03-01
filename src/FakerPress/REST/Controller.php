@@ -22,14 +22,14 @@ use function FakerPress\make;
  *
  * Main REST API controller that manages endpoint registration and routing.
  *
- * @since TBD
+ * @since 0.9.0
  */
 class Controller extends Service_Provider {
 
 	/**
 	 * The namespace for all FakerPress REST endpoints.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ class Controller extends Service_Provider {
 	/**
 	 * Array of registered endpoint controllers.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @var Abstract_Endpoint[]
 	 */
@@ -47,7 +47,7 @@ class Controller extends Service_Provider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 */
 	public function register() {
 		singleton( static::class, $this );
@@ -61,7 +61,7 @@ class Controller extends Service_Provider {
 	/**
 	 * Adds the actions required by the REST API.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 */
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_routes' ] );
@@ -70,7 +70,7 @@ class Controller extends Service_Provider {
 	/**
 	 * Register all REST API routes.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return void
 	 */
@@ -83,7 +83,7 @@ class Controller extends Service_Provider {
 	/**
 	 * Get all registered endpoints.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return Abstract_Endpoint[]
 	 */
@@ -98,7 +98,7 @@ class Controller extends Service_Provider {
 	/**
 	 * Load and instantiate all endpoint classes.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return Abstract_Endpoint[]
 	 */
@@ -107,7 +107,7 @@ class Controller extends Service_Provider {
 		/**
 		 * Filter the list of REST endpoint classes to load.
 		 *
-		 * @since TBD
+		 * @since 0.9.0
 		 *
 		 * @param array $endpoint_classes Array of endpoint class names.
 		 */
@@ -136,7 +136,7 @@ class Controller extends Service_Provider {
 	/**
 	 * Get the REST namespace.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return string
 	 */
@@ -147,7 +147,7 @@ class Controller extends Service_Provider {
 	/**
 	 * Check if the current user has permission to access FakerPress endpoints.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param string $permission The required permission capability.
 	 *
@@ -160,7 +160,7 @@ class Controller extends Service_Provider {
 	/**
 	 * Ensure REST routes are properly registered.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return void
 	 */
@@ -174,7 +174,7 @@ class Controller extends Service_Provider {
 	/**
 	 * Get OpenAPI documentation for all endpoints.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */

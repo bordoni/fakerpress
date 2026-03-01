@@ -20,14 +20,14 @@ use WP_Error;
  *
  * Base implementation for all REST API endpoints.
  *
- * @since TBD
+ * @since 0.9.0
  */
 abstract class Abstract_Endpoint implements Interface_Endpoint {
 
 	/**
 	 * The base route for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * The permission required to access this endpoint, if not set, the endpoint is public.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @var ?string
 	 */
@@ -45,7 +45,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Whether to automatically convert endpoint args to request schema.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @var bool
 	 */
@@ -54,7 +54,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Register the routes for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return void
 	 */
@@ -73,7 +73,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Get the routes configuration for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -82,7 +82,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Get the base route for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return string
 	 */
@@ -93,7 +93,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Get the permission required to access this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return ?string
 	 */
@@ -104,7 +104,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Check if the current user has permission to access this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return bool|WP_Error
 	 */
@@ -126,7 +126,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Validate the request parameters.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param WP_REST_Request $request The REST request object.
 	 *
@@ -181,7 +181,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Validate a parameter type.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param mixed  $value The parameter value.
 	 * @param string $type  The expected type.
@@ -207,7 +207,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Sanitize the request parameters.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param WP_REST_Request $request The REST request object.
 	 *
@@ -245,7 +245,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 * - object: Recursively sanitizes object properties
 	 * - string: Sanitizes using sanitize_text_field()
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param mixed  $value      The parameter value to sanitize.
 	 * @param string $type       The parameter type (integer, boolean, array, object, string).
@@ -274,7 +274,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Sanitize an array parameter with proper chaining.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param mixed  $value      The array value to sanitize.
 	 * @param string $param_name The parameter name for context.
@@ -294,7 +294,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Sanitize an object parameter with proper chaining.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param mixed  $value      The object value to sanitize.
 	 * @param string $param_name The parameter name for context.
@@ -318,7 +318,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 *
 	 * Override this method in child classes to specify the correct meta type.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return string
 	 */
@@ -331,7 +331,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 *
 	 * Override this method in child classes to provide specific meta field schemas.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -342,7 +342,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Get the endpoint arguments.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -351,7 +351,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Get common batching arguments for generation endpoints.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -380,7 +380,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 * This method transforms WordPress REST API endpoint args format
 	 * to OpenAPI/JSON Schema format for request body validation.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -458,7 +458,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Create a standardized success response.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param mixed  $data    The response data.
 	 * @param string $message Optional success message.
@@ -482,7 +482,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Create a standardized error response.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param string $message Error message.
 	 * @param string $code    Error code.
@@ -508,7 +508,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Get the OpenAPI schema for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -529,7 +529,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Build OpenAPI path schema for a route configuration.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @param array $config Route configuration.
 	 *
@@ -588,7 +588,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Get the tags for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array<string>
 	 */
@@ -599,7 +599,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Build OpenAPI parameters schema.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -610,7 +610,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Build OpenAPI responses schema.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -654,7 +654,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Get the schema for request parameters.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
@@ -663,7 +663,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Get the schema for response data.
 	 *
-	 * @since TBD
+	 * @since 0.9.0
 	 *
 	 * @return array
 	 */
