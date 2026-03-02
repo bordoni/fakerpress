@@ -9,6 +9,6 @@
  * @since 0.6.0
  */
 function fakerpress_load_plugin(): FakerPress\Plugin {
-	require_once dirname( __FP_FILE__ ) . '/src/FakerPress/Plugin.php';
+	require_once dirname( __FP_FILE__ ) . '/vendor/autoload.php';
 	return FakerPress\Plugin::boot();
 }
