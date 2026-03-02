@@ -3,6 +3,8 @@
 	<file>src/</file>
 	<file>fakerpress.php</file>
 
+	<arg name="extensions" value="php"/>
+
 	<rule ref="WordPress-VIP-Go"/>
 	<rule ref="WordPress-Extra"/>
 	<rule ref="WordPress-Core"/>
