@@ -25,7 +25,7 @@ class Plugin {
 	 *
 	 * @var string
 	 */
-	public const VERSION = '0.8.0';
+	public const VERSION = '0.9.0';
 
 	/**
 	 * @since 0.6.0
