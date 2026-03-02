@@ -1,0 +1,115 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  phpcs:
+    name: PHP Code Standards
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-scripts --prefer-dist --no-progress
+
+      - name: Run PHPCS
+        run: vendor/bin/phpcs
+
+  tests-php:
+    name: WPUnit (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '8.1', '8.2', '8.3' ]
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          extensions: mysqli, pdo_mysql
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Install WordPress test environment
+        run: |
+          # Download WordPress
+          mkdir -p /tmp/wordpress
+          curl -sL https://wordpress.org/latest.tar.gz | tar xz -C /tmp/wordpress --strip-components=1
+
+          # Create wp-config.php
+          cp /tmp/wordpress/wp-config-sample.php /tmp/wordpress/wp-config.php
+          sed -i "s/database_name_here/test/" /tmp/wordpress/wp-config.php
+          sed -i "s/username_here/root/" /tmp/wordpress/wp-config.php
+          sed -i "s/password_here/root/" /tmp/wordpress/wp-config.php
+          sed -i "s/localhost/127.0.0.1/" /tmp/wordpress/wp-config.php
+
+          # Symlink plugin into WordPress
+          mkdir -p /tmp/wordpress/wp-content/plugins
+          ln -s "$GITHUB_WORKSPACE" /tmp/wordpress/wp-content/plugins/fakerpress
+
+      - name: Create .env.testing
+        run: |
+          cat > .env.testing <<'EOF'
+          WP_ROOT_FOLDER=/tmp/wordpress
+          WP_URL=http://localhost
+          WP_DOMAIN=localhost
+          WP_DB_URL=mysql://root:root@127.0.0.1:3306/test
+          WP_TABLE_PREFIX=wp_
+          EOF
+
+      - name: Run WPUnit tests
+        run: vendor/bin/codecept run wpunit
+
+  js-build:
+    name: JS Build & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Lint
+        run: npm run lint

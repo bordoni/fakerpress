@@ -15,6 +15,7 @@
   "prefer-stable": true,
   "autoload": {
     "files": [
+      "vendor/prefixed/autoload.php",
       "src/functions/container.php",
       "src/functions/date.php",
       "src/functions/variables.php",
@@ -27,10 +28,29 @@
       "FakerPress\\Dev\\": "dev/src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "FakerPress\\Tests\\": "tests/_support/"
+    }
+  },
   "require": {
     "lucatume/di52": "~4.0",
     "fakerphp/faker": "^1.24",
     "cakephp/chronos": "^3.1.0"
+  },
+  "require-dev": {
+    "automattic/vipwpcs": "^3.0",
+    "brianhenryie/strauss": "^0.26",
+    "codeception/module-asserts": "^3.0",
+    "codeception/module-cli": "^2.0",
+    "codeception/module-db": "^3.0",
+    "codeception/module-filesystem": "^3.0",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "lucatume/wp-browser": "^4.5",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "squizlabs/php_codesniffer": "^3.8",
+    "stellarwp/coding-standards": "^2.1",
+    "wp-coding-standards/wpcs": "^3.0"
   },
   "authors": [
     {
@@ -58,12 +78,14 @@
       "php": "8.1"
     },
     "allow-plugins": {
-      "composer/installers": true
+      "composer/installers": true,
+      "brianhenryie/strauss": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
     }
   },
   "scripts": {
     "strauss-install": [
-      "test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.22.2/strauss.phar"
+      "test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.26.5/strauss.phar"
     ],
     "clean-faker-lang": [
       "[ -d './vendor/fakerphp/faker/src/Faker/Provider' ] && echo 'Removing folders:' && find ./vendor/fakerphp/faker/src/Faker/Provider -mindepth 1 -maxdepth 1 -type d ! -name 'en_US' -print -exec rm -r {} + || true"
@@ -87,6 +109,9 @@
       "test -f ./bin/wp-cli.phar || curl -o bin/wp-cli.phar -L -C - https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
       "@php -d memory_limit=4G bin/wp-cli.phar"
     ],
+    "test:wpunit": "vendor/bin/codecept run wpunit",
+    "lint:php": "vendor/bin/phpcs",
+    "lint:php:fix": "vendor/bin/phpcbf",
     "post-install-cmd": [
       "@strauss"
     ],
@@ -96,15 +121,23 @@
   },
   "extra": {
     "strauss": {
-      "target_directory": "vendor-prefixed",
+      "target_directory": "vendor/prefixed",
       "namespace_prefix": "FakerPress\\ThirdParty\\",
       "classmap_prefix": "FakerPress_ThirdParty_",
       "constant_prefix": "FAKERPRESS__",
       "exclude_from_prefix": {
         "file_patterns": []
       },
-      "delete_vendor_packages": true,
-      "delete_vendor_files": true
+      "exclude_from_copy": {
+        "file_patterns": [
+          "/.*\\.md$/",
+          "/^LICENSE$/",
+          "/^CHANGELOG$/",
+          "/^composer\\.json$/"
+        ],
+        "packages": []
+      },
+      "delete_vendor_packages": true
     }
   }
 }

@@ -47,6 +47,13 @@ plan/
 ###########
 build/*
 vendor/*
-vendor-prefixed/*
 src/resources/css/*
 src/resources/js/*.min.js
+
+# Test artifacts #
+###########
+tests/_output/*
+!tests/_output/.gitkeep
+tests/_support/_generated/*
+!tests/_support/_generated/.gitkeep
+.env.testing

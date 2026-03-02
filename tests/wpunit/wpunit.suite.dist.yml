@@ -1,0 +1,16 @@
+actor: WpunitTester
+
+modules:
+  enabled:
+    - lucatume\WPBrowser\Module\WPLoader:
+        wpRootFolder: "%WP_ROOT_FOLDER%"
+        dbUrl: "%WP_DB_URL%"
+        wpUrl: "%WP_URL%"
+        wpDomain: "%WP_DOMAIN%"
+        wpAdminEmail: "admin@fakerpress.test"
+        wpTablePrefix: "%WP_TABLE_PREFIX%"
+        plugins:
+          - fakerpress/fakerpress.php
+        activatePlugins:
+          - fakerpress/fakerpress.php
+    - Codeception\Module\Asserts

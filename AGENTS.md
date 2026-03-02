@@ -13,7 +13,7 @@
 ## Quick Start
 
 ```bash
-# 1. Install PHP dependencies + build vendor-prefixed packages (Strauss)
+# 1. Install PHP dependencies + build vendor/prefixed packages (Strauss)
 composer install
 
 # 2. Install Node dependencies
@@ -32,10 +32,10 @@ After these three steps the plugin is ready to activate in WordPress.
 | Command | What it does |
 |---------|-------------|
 | `composer install` | Install deps + run Strauss (auto via post-install hook) |
-| `composer strauss` | Re-run Strauss manually (namespace-prefix third-party packages into `vendor-prefixed/`) |
+| `composer strauss` | Re-run Strauss manually (namespace-prefix third-party packages into `vendor/prefixed/`) |
 | `composer dump-autoload` | Regenerate autoloader without reinstalling |
 
-Strauss vendor-prefixes all third-party packages under `FakerPress\ThirdParty\` into `vendor-prefixed/`. This runs automatically on `composer install` and `composer update`.
+Strauss vendor-prefixes all third-party packages under `FakerPress\ThirdParty\` into `vendor/prefixed/`. This runs automatically on `composer install` and `composer update`.
 
 ### JS / CSS (npm + @wordpress/scripts)
 
@@ -58,8 +58,7 @@ Strauss vendor-prefixes all third-party packages under `FakerPress\ThirdParty\` 
 
 These directories are generated and must NOT be committed:
 
-- `vendor/` — Composer dependencies
-- `vendor-prefixed/` — Strauss-prefixed dependencies
+- `vendor/` — Composer dependencies (includes `vendor/prefixed/` — Strauss-prefixed packages)
 - `build/` — Compiled JS/CSS bundles
 - `src/resources/css/` — Compiled CSS output
 - `node_modules/` — Node dependencies
@@ -94,11 +93,56 @@ src/
 
 ## Architecture Notes
 
-- **Container:** DI52 (vendor-prefixed). Use helpers: `singleton()`, `make()`, `bind()`, `register()`
+- **Container:** DI52 (vendor/prefixed). Use helpers: `singleton()`, `make()`, `bind()`, `register()`
 - **Module lifecycle:** `$module->set(params)->generate()->save()` — `parse_request()` orchestrates this
 - **REST namespace:** `fakerpress/v1` — endpoints at `/fakerpress/v1/{module}/generate`
 - **Service Providers:** extend `FakerPress\Contracts\Service_Provider`, registered via `Plugin::register()`
 - **Version:** `Plugin::VERSION` in `src/FakerPress/Plugin.php`
+
+## Testing
+
+### Test Commands
+
+| Command | What it does |
+|---------|-------------|
+| `composer test:wpunit` | Run WPUnit integration tests via Codeception |
+| `vendor/bin/codecept run wpunit` | Run WPUnit tests directly |
+| `composer lint:php` | Run PHPCS code standards checks |
+| `composer lint:php:fix` | Auto-fix PHPCS violations with PHPCBF |
+
+### Test Directory Structure
+
+```
+tests/
+├── _bootstrap.php              # Global test bootstrap
+├── _data/                      # Test fixtures and data
+├── _output/                    # Test output (gitignored)
+├── _support/
+│   ├── WpunitTester.php        # Actor class
+│   ├── _generated/             # Auto-generated actor methods (gitignored)
+│   └── Helper/
+│       └── Wpunit.php          # Custom helper module
+└── wpunit/
+    ├── _bootstrap.php          # Suite bootstrap (WPLoader handles WP)
+    ├── wpunit.suite.dist.yml   # Suite config (WPLoader + Asserts)
+    └── PluginTest.php          # Plugin smoke tests
+```
+
+### Running Tests Locally
+
+1. Create a `.env.testing` file (gitignored) with your local WordPress paths:
+   ```
+   WP_ROOT_FOLDER=/path/to/wordpress
+   WP_URL=http://fakerpress.test
+   WP_DOMAIN=fakerpress.test
+   WP_DB_URL=mysql://root:root@127.0.0.1:3306/fakerpress_test
+   WP_TABLE_PREFIX=wp_
+   ```
+2. Run `composer test:wpunit`
+
+### Running Tests with SLIC
+
+SLIC containers use `codeception.slic.yml` and `.env.testing.slic` automatically.
 
 ## Coding Standards
 
@@ -108,3 +152,26 @@ src/
 - **Docblocks:** `@since <current_version_in_dev>` for new code (check `Plugin::VERSION`). Aligned params. Period-terminated descriptions.
 - **Namespacing:** PSR-4 autoloading under `FakerPress\`. Third-party code under `FakerPress\ThirdParty\`.
 - **Security:** Nonce verification on all requests. Capability checks via `get_permission_required()`. Sanitize all input.
+
+### PHPCS — Validating PHP Code
+
+**Before writing or modifying PHP code**, internalize these rules so you write compliant code on the first pass — do NOT write code and then fix lint errors in a second pass.
+
+Key rules enforced by `phpcs.xml` (WordPress + StellarWP + VIP-Go):
+- **Tabs for indentation**, never spaces. All PHP files use tabs.
+- **Yoda conditions disabled** — write `$var === true`, not `true === $var`.
+- **Spaces inside parentheses** — `if ( $condition )`, not `if ($condition)`.
+- **Spaces after commas** — `func( $a, $b )`, not `func($a,$b)`.
+- **Opening brace on same line** — `function foo() {`, `if ( $x ) {`.
+- **`snake_case`** for functions and variables, `UPPER_SNAKE` for constants.
+- **Short array syntax** — `[]` not `array()` (`Generic.Arrays.DisallowLongArraySyntax`).
+- **No `else`** — prefer early returns over `else` blocks.
+- **Strict comparisons** — `===` / `!==`, never `==` / `!=`.
+- **Escaping output** — `esc_html()`, `esc_attr()`, `wp_kses()`, etc. on all echoed values.
+- **Nonce verification** — `wp_verify_nonce()` / `check_ajax_referer()` on all form/AJAX handlers.
+- **Direct DB queries** — use `$wpdb->prepare()`, never interpolate. Excluded in `src/Test.php`.
+- **No `extract()`**, no `eval()`, no `compact()` in new code.
+
+Run `composer lint:php -- <file>` to check a single file. Run `composer lint:php:fix -- <file>` to auto-fix.
+
+When making changes to PHP files, run `composer lint:php -- <changed-files>` against only the files you touched before considering the task done. Do NOT run PHPCS against the entire codebase.
