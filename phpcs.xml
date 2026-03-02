@@ -5,7 +5,10 @@
 
 	<arg name="extensions" value="php"/>
 
-	<rule ref="WordPress-VIP-Go"/>
+	<rule ref="WordPress-VIP-Go">
+		<exclude name="WordPressVIPMinimum.JS"/>
+		<exclude name="Generic.Debug.JSHint"/>
+	</rule>
 	<rule ref="WordPress-Extra"/>
 	<rule ref="WordPress-Core"/>
 	<rule ref="WordPress-Docs">
