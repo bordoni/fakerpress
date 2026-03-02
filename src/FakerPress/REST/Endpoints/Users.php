@@ -93,6 +93,11 @@ class Users extends Abstract_Endpoint {
 		// Sanitize the request data.
 		$params = $this->sanitize_request( $request );
 
+		// Translate REST params to module format.
+		if ( isset( $params['role'] ) ) {
+			$params['roles'] = $params['role'];
+		}
+
 		// Get the module.
 		$module = make( Factory::class )->get( 'users' );
 		if ( empty( $module ) ) {

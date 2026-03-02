@@ -102,6 +102,14 @@ class Posts extends Abstract_Endpoint {
 		// Sanitize the request data.
 		$params = $this->sanitize_request( $request );
 
+		// Translate REST params to module format.
+		if ( isset( $params['post_type'] ) ) {
+			$params['post_types'] = $params['post_type'];
+		}
+		if ( isset( $params['author_ids'] ) && is_array( $params['author_ids'] ) ) {
+			$params['author'] = implode( ',', $params['author_ids'] );
+		}
+
 		// Get the module.
 		$module = make( Factory::class )->get( 'posts' );
 		if ( empty( $module ) ) {

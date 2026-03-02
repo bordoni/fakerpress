@@ -116,11 +116,15 @@ class Term extends Abstract_Module {
 		$taxonomies = array_map( 'trim', explode( ',', $taxonomies ) );
 		$taxonomies = array_intersect( get_taxonomies( [ 'public' => true ] ), $taxonomies );
 
-		$metas = get( $request, 'meta' );
+		$metas = get( $request, 'meta', [] );
 
 		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->set( 'taxonomy', $taxonomies );
-			$this->set( 'name', $name_size );
+			if ( null !== $name_size ) {
+				$this->set( 'name', $name_size );
+			} else {
+				$this->set( 'name' );
+			}
 			$this->set( 'description' );
 			$this->set( 'parent_term' );
 

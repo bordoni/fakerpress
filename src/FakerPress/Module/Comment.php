@@ -162,7 +162,12 @@ class Comment extends Abstract_Module {
 			$this->set( 'comment_parent' );
 			$this->set( 'comment_author_IP' );
 			$this->set( 'comment_agent' );
-			$this->set( 'comment_approved' );
+			$comment_approved = get( $request, 'comment_approved' );
+			if ( null !== $comment_approved ) {
+				$this->set( 'comment_approved', $comment_approved );
+			} else {
+				$this->set( 'comment_approved' );
+			}
 			$this->set( 'comment_post_ID', null, [ 'post_type' => $post_types ] );
 			$this->set( 'comment_author_email' );
 			$this->set( 'comment_author_url' );

@@ -174,7 +174,7 @@ class Post extends Abstract_Module {
 
 		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->set( 'post_title' );
-			$this->set( 'post_status', 'publish' );
+			$this->set( 'post_status', get( $request, 'post_status', 'publish' ) );
 			$this->set( 'post_date', $date );
 			$this->set( 'post_parent', $post_parents );
 			$this->set(

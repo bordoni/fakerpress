@@ -93,6 +93,11 @@ class Terms extends Abstract_Endpoint {
 		// Sanitize the request data.
 		$params = $this->sanitize_request( $request );
 
+		// Translate REST params to module format.
+		if ( isset( $params['taxonomy'] ) ) {
+			$params['taxonomies'] = $params['taxonomy'];
+		}
+
 		// Get the module.
 		$module = make( Factory::class )->get( 'terms' );
 		if ( empty( $module ) ) {

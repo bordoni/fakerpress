@@ -93,6 +93,18 @@ class Comments extends Abstract_Endpoint {
 		// Sanitize the request data.
 		$params = $this->sanitize_request( $request );
 
+		// Translate REST comment_status to module's comment_approved format.
+		if ( isset( $params['comment_status'] ) ) {
+			$status_map = [
+				'approve' => '1',
+				'hold'    => '0',
+				'spam'    => 'spam',
+				'trash'   => 'trash',
+			];
+
+			$params['comment_approved'] = $status_map[ $params['comment_status'] ] ?? '1';
+		}
+
 		// Get the module.
 		$module = make( Factory::class )->get( 'comments' );
 		if ( empty( $module ) ) {
