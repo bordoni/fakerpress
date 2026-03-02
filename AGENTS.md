@@ -105,6 +105,6 @@ src/
 - **PHP:** WordPress Coding Standards. Short array syntax (`[]`). Early returns to reduce nesting.
 - **JavaScript:** ES6 with `@wordpress/scripts` linting. Modules exposed on `window.fakerpress`.
 - **CSS:** PostCSS with `postcss-nested` (not native CSS nesting). `&` means "this element".
-- **Docblocks:** `@since 0.9.0` for new code. Aligned params. Period-terminated descriptions.
+- **Docblocks:** `@since <current_version_in_dev>` for new code (check `Plugin::VERSION`). Aligned params. Period-terminated descriptions.
 - **Namespacing:** PSR-4 autoloading under `FakerPress\`. Third-party code under `FakerPress\ThirdParty\`.
 - **Security:** Nonce verification on all requests. Capability checks via `get_permission_required()`. Sanitize all input.
