@@ -28,7 +28,7 @@ jobs:
     outputs:
       zip_name: ${{ env.ZIP_NAME }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.ref }}
 
@@ -88,7 +88,7 @@ jobs:
           ls -la
       
       - name: Upload plugin artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           include-hidden-files: true
           name: ${{ env.ZIP_NAME }}

@@ -20,7 +20,7 @@ jobs:
       previous_tag: ${{ steps.get_previous_tag.outputs.previous_tag }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Need full history for tags
       

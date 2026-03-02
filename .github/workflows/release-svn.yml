@@ -107,7 +107,7 @@ jobs:
       
       - name: Download Artifact
         if: ${{ github.event.inputs.artifact_name != '' || inputs.artifact_name != '' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ${{ github.event.inputs.artifact_name || inputs.artifact_name }}
           path: ${{ steps.create_dirs.outputs.temp_dir }}/artifact

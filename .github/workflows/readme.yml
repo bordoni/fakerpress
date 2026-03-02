@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Generate Readme
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 1
 
@@ -25,14 +25,14 @@ jobs:
       run: dev/generate-markdown-readme
 
     - name: Commit readme file
-      uses: stefanzweifel/git-auto-commit-action@v5
+      uses: stefanzweifel/git-auto-commit-action@v7
       with:
         commit_message: Apply readme.md Changes
         branch: main
         file_pattern: readme.md
 
     - name: Commit readme.php file
-      uses: stefanzweifel/git-auto-commit-action@v5
+      uses: stefanzweifel/git-auto-commit-action@v7
       with:
         commit_message: Apply data/readme.php Changes
         branch: main
