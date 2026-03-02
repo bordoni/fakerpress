@@ -15,13 +15,7 @@
   "prefer-stable": true,
   "autoload": {
     "files": [
-      "vendor/prefixed/autoload.php",
-      "src/functions/container.php",
-      "src/functions/date.php",
-      "src/functions/variables.php",
-      "src/functions/conditionals.php",
-      "src/functions/sorting.php",
-      "src/functions/assets.php"
+      "vendor/prefixed/autoload.php"
     ],
     "psr-4": {
       "FakerPress\\": "src/FakerPress/",

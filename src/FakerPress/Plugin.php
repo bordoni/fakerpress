@@ -138,6 +138,7 @@ class Plugin {
 		$this->plugin_url  = plugins_url( $this->plugin_dir, $this->plugin_path );
 
 		$this->autoload();
+		$this->static_load();
 
 		// Register this as a singleton on the container.
 		singleton( static::class, $this );
@@ -153,6 +154,22 @@ class Plugin {
 	}
 
 	/**
+	 * Loads function files that must be available after the Composer autoloader runs.
+	 *
+	 * @since 0.9.0
+	 *
+	 * @return void
+	 */
+	protected function static_load(): void {
+		require_once $this->plugin_path . 'src' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'container.php';
+		require_once $this->plugin_path . 'src' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'date.php';
+		require_once $this->plugin_path . 'src' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'variables.php';
+		require_once $this->plugin_path . 'src' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'conditionals.php';
+		require_once $this->plugin_path . 'src' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'sorting.php';
+		require_once $this->plugin_path . 'src' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'assets.php';
+	}
+
+	/**
 	 * Autoload the classes for the plugin via Composer.
 	 *
 	 * @since 0.6.2
@@ -160,8 +177,7 @@ class Plugin {
 	 * @return void
 	 */
 	protected function autoload(): void {
-		// Load Composer Vendor Modules
-		require_once $this->plugin_path . 'vendor' . DIRECTORY_SEPARATOR . 'prefixed' . DIRECTORY_SEPARATOR . 'autoload.php';
+		require_once $this->plugin_path . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 	}
 
 	/**
