@@ -122,9 +122,9 @@ tests/
 │   ├── _generated/             # Auto-generated actor methods (gitignored)
 │   └── Helper/
 │       └── Wpunit.php          # Custom helper module
+├── wpunit.suite.dist.yml       # Suite config (WPLoader + Asserts)
 └── wpunit/
     ├── _bootstrap.php          # Suite bootstrap (WPLoader handles WP)
-    ├── wpunit.suite.dist.yml   # Suite config (WPLoader + Asserts)
     └── PluginTest.php          # Plugin smoke tests
 ```
 

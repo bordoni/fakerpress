@@ -24,6 +24,12 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-scripts --prefer-dist --no-progress
 
+      - name: Create dummy prefixed autoload
+        run: mkdir -p vendor/prefixed && echo '<?php // Stub for CI.' > vendor/prefixed/autoload.php
+
+      - name: Set PHPCS installed paths
+        run: vendor/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs,vendor/phpcompatibility/php-compatibility,vendor/phpcompatibility/phpcompatibility-paragonie,vendor/phpcompatibility/phpcompatibility-wp,vendor/phpcsstandards/phpcsutils,vendor/phpcsstandards/phpcsextra,vendor/sirbrillig/phpcs-variable-analysis,vendor/slevomat/coding-standard,vendor/automattic/vipwpcs,vendor/stellarwp/coding-standards
+
       - name: Run PHPCS
         run: vendor/bin/phpcs
 
@@ -88,6 +94,7 @@ jobs:
           WP_DB_URL=mysql://root:root@127.0.0.1:3306/test
           WP_TABLE_PREFIX=wp_
           EOF
+          sed -i 's/^[[:space:]]*//' .env.testing
 
       - name: Run WPUnit tests
         run: vendor/bin/codecept run wpunit
