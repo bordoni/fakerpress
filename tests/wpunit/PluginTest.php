@@ -26,7 +26,7 @@ class PluginTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function it_should_boot(): void {
-		$plugin = make( Plugin::class );
+		$plugin = \FakerPress\make( Plugin::class );
 		$this->assertInstanceOf( Plugin::class, $plugin );
 	}
 
