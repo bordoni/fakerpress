@@ -53,7 +53,7 @@ class Container extends DI52_Container {
 	 */
 	public static function init(): self {
 		if ( empty( self::$instance ) ) {
-			self::$instance = new self;
+			self::$instance = new self();
 		}
 
 		return static::$instance;

@@ -4,7 +4,7 @@
  *
  * Handles fake attachment generation via REST API.
  *
- * @since   TBD
+ * @since TBD
  * @package FakerPress
  */
 
@@ -143,7 +143,7 @@ class Attachments extends Abstract_Endpoint {
 		}
 
 		// Format the response.
-		$view = make( View_Factory::class )->get( 'attachments' );
+		$view            = make( View_Factory::class )->get( 'attachments' );
 		$formatted_links = array_map( [ $view, 'format_link' ], $results );
 
 		$response_data = $this->build_batched_response_data(
@@ -172,17 +172,17 @@ class Attachments extends Abstract_Endpoint {
 	protected function get_endpoint_args(): array {
 		return array_merge(
 			[
-				'quantity' => [
+				'quantity'             => [
 					'description'       => __( 'Number of attachments to generate.', 'fakerpress' ),
 					'type'              => 'integer',
 					'minimum'           => 1,
 					'maximum'           => 100,
 					'default'           => null,
-					'sanitize_callback' => function( $value ) {
+					'sanitize_callback' => function ( $value ) {
 						return null === $value ? null : absint( $value );
 					},
 				],
-				'qty' => [
+				'qty'                  => [
 					'description' => __( 'Quantity range with min/max values.', 'fakerpress' ),
 					'type'        => 'object',
 					'properties'  => [
@@ -196,13 +196,13 @@ class Attachments extends Abstract_Endpoint {
 						],
 					],
 				],
-				'provider' => [
+				'provider'             => [
 					'description' => __( 'Image provider to use for generating images.', 'fakerpress' ),
 					'type'        => 'string',
 					'default'     => 'placeholder',
 					'enum'        => [ 'placeholder', 'lorempicsum' ],
 				],
-				'width' => [
+				'width'                => [
 					'description' => __( 'Image width range or specific value.', 'fakerpress' ),
 					'type'        => [ 'integer', 'object' ],
 					'properties'  => [
@@ -216,7 +216,7 @@ class Attachments extends Abstract_Endpoint {
 						],
 					],
 				],
-				'height' => [
+				'height'               => [
 					'description' => __( 'Image height range or specific value.', 'fakerpress' ),
 					'type'        => [ 'integer', 'object' ],
 					'properties'  => [
@@ -230,14 +230,14 @@ class Attachments extends Abstract_Endpoint {
 						],
 					],
 				],
-				'aspect_ratio' => [
+				'aspect_ratio'         => [
 					'description' => __( 'Aspect ratio for generated images (width/height).', 'fakerpress' ),
 					'type'        => 'number',
 					'minimum'     => 0.1,
 					'maximum'     => 10,
 					'default'     => 1.5,
 				],
-				'file_types' => [
+				'file_types'           => [
 					'description' => __( 'Array of file types to generate (jpg, png, gif, webp).', 'fakerpress' ),
 					'type'        => 'array',
 					'items'       => [
@@ -246,7 +246,7 @@ class Attachments extends Abstract_Endpoint {
 					],
 					'default'     => [ 'jpg' ],
 				],
-				'post_parent' => [
+				'post_parent'          => [
 					'description' => __( 'Parent post ID or array of IDs to attach images to.', 'fakerpress' ),
 					'type'        => [ 'integer', 'array' ],
 					'items'       => [
@@ -254,19 +254,19 @@ class Attachments extends Abstract_Endpoint {
 					],
 					'default'     => 0,
 				],
-				'author_ids' => [
+				'author_ids'           => [
 					'description' => __( 'Array of author IDs to assign to attachments.', 'fakerpress' ),
 					'type'        => 'array',
 					'items'       => [
 						'type' => 'integer',
 					],
 				],
-				'generate_alt_text' => [
+				'generate_alt_text'    => [
 					'description' => __( 'Whether to generate random alt text for images.', 'fakerpress' ),
 					'type'        => 'boolean',
 					'default'     => true,
 				],
-				'generate_caption' => [
+				'generate_caption'     => [
 					'description' => __( 'Whether to generate random captions for images.', 'fakerpress' ),
 					'type'        => 'boolean',
 					'default'     => true,
@@ -276,7 +276,7 @@ class Attachments extends Abstract_Endpoint {
 					'type'        => 'boolean',
 					'default'     => true,
 				],
-				'date_range' => [
+				'date_range'           => [
 					'description' => __( 'Date range for attachment creation dates.', 'fakerpress' ),
 					'type'        => 'object',
 					'properties'  => [
@@ -290,7 +290,7 @@ class Attachments extends Abstract_Endpoint {
 						],
 					],
 				],
-				'meta' => [
+				'meta'                 => [
 					'description' => __( 'Meta data to assign to generated attachments.', 'fakerpress' ),
 					'type'        => 'object',
 				],

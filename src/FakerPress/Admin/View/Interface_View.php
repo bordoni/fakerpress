@@ -5,7 +5,7 @@ namespace FakerPress\Admin\View;
 /**
  * Class View Interface.
  *
- * @since   0.6.0
+ * @since 0.6.0
  *
  * @package FakerPress\Admin\View
  */
@@ -141,5 +141,4 @@ interface Interface_View {
 	 * @return bool
 	 */
 	public function parse_request();
-
 }

@@ -33,7 +33,6 @@ class Post extends Abstract_Module {
 	 * @inheritDoc
 	 */
 	public function hook(): void {
-
 	}
 
 	/**
@@ -127,7 +126,7 @@ class Post extends Abstract_Module {
 	 * @return array|WP_Error
 	 */
 	public function parse_request( int $qty, array $request = [] ) {
-		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ){
+		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ) {
 			return new WP_Error( 'fakerpress_zero_posts', __( 'Zero is not a good number of posts to fake...', 'fakerpress' ) );
 		}
 
@@ -173,7 +172,7 @@ class Post extends Abstract_Module {
 
 		$results = [];
 
-		for ( $i = 0; $i < $qty; $i ++ ) {
+		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->set( 'post_title' );
 			$this->set( 'post_status', 'publish' );
 			$this->set( 'post_date', $date );

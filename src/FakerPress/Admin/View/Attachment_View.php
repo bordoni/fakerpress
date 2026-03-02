@@ -11,7 +11,7 @@ use function FakerPress\make;
 /**
  * Class Attachment_View
  *
- * @since   TBD
+ * @since TBD
  *
  * @package FakerPress\Admin\View
  */
@@ -77,7 +77,7 @@ class Attachment_View extends Abstract_View {
 		if ( ! empty( $results ) ) {
 			return Admin::add_message(
 				sprintf(
-					__( 'Faked %d new %s: [ %s ]', 'fakerpress' ),
+					__( 'Faked %1$d new %2$s: [ %3$s ]', 'fakerpress' ),
 					count( $results ),
 					_n( 'attachment', 'attachments', count( $results ), 'fakerpress' ),
 					implode( ', ', array_map( [ $this, 'format_link' ], $results ) )

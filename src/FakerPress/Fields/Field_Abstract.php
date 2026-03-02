@@ -10,14 +10,14 @@ use function FakerPress\make;
 /**
  * Abstract for Fields.
  *
- * @since  0.5.1
+ * @since 0.5.1
  */
 abstract class Field_Abstract implements Field_Interface {
 
 	/**
 	 * HTML ID for this field.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * Holds this field priority for ordering.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var int
 	 */
@@ -35,7 +35,7 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * Determines if this field was initialized.
 	 *
-	 * @since  0.6.0
+	 * @since 0.6.0
 	 *
 	 * @var bool
 	 */
@@ -44,7 +44,7 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * Hold the configuration for this field instance.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var array
 	 */
@@ -53,7 +53,7 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * Hold a Field that is the parent of this one.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var Field_Interface
 	 */
@@ -62,7 +62,7 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * Hold the children of this field, which should implement Field_Interface.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var array [...Field_Interface]
 	 */
@@ -71,7 +71,7 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * Hold the template instance that we use to render the fields.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var Template
 	 */
@@ -254,19 +254,28 @@ abstract class Field_Abstract implements Field_Interface {
 	 * {@inheritDoc}
 	 */
 	public function add_children( $children ) {
-		$children = array_map( static function ( $child ) {
-			return make( Factory::class )->make( $child );
-		}, $children );
+		$children = array_map(
+			static function ( $child ) {
+				return make( Factory::class )->make( $child );
+			},
+			$children 
+		);
 
 		// Remove non instances of Field_Interface.
-		$children = array_filter( (array) $children, static function ( $child ) {
-			return $child instanceof Field_Interface;
-		} );
+		$children = array_filter(
+			(array) $children,
+			static function ( $child ) {
+				return $child instanceof Field_Interface;
+			} 
+		);
 
 		// Set the parent of all children to the current field.
-		$children = array_map( function ( $children ) {
-			return $children->set_parent( $this );
-		}, $children );
+		$children = array_map(
+			function ( $children ) {
+				return $children->set_parent( $this );
+			},
+			$children 
+		);
 
 		$this->children = array_merge( $this->children, $children );
 

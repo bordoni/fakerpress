@@ -170,9 +170,11 @@ $fields[] = new Field(
 
 		<table class="form-table" style="display: table;">
 			<tbody>
-			<?php foreach ( $fields as $field ) {
+			<?php
+			foreach ( $fields as $field ) {
 				$field->output( true );
-			} ?>
+			}
+			?>
 			</tbody>
 		</table>
 		<div class="fp-submit">

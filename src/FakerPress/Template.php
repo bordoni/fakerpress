@@ -9,7 +9,7 @@ class Template {
 	/**
 	 * The folders into which we will look for the template.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var array
 	 */
@@ -18,7 +18,7 @@ class Template {
 	/**
 	 * The origin class for the plugin where the template lives
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var object
 	 */
@@ -27,7 +27,7 @@ class Template {
 	/**
 	 * The local context for templates, mutable on every self::render() call
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var array
 	 */
@@ -36,7 +36,7 @@ class Template {
 	/**
 	 * The global context for this instance of templates
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var array
 	 */
@@ -45,7 +45,7 @@ class Template {
 	/**
 	 * Allow chaining if class will extract data from the local context
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var boolean
 	 */
@@ -54,7 +54,7 @@ class Template {
 	/**
 	 * Base template for where to look for template
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var array
 	 */
@@ -63,18 +63,18 @@ class Template {
 	/**
 	 * Should we use a lookup into the list of folders to try to find the file
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @var  bool
+	 * @var bool
 	 */
 	protected $template_folder_lookup = false;
 
 	/**
 	 * Configures the class origin plugin path
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @param  object|string  $origin   The base origin for the templates
+	 * @param object|string $origin   The base origin for the templates
 	 *
 	 * @return self
 	 */
@@ -91,7 +91,7 @@ class Template {
 		}
 
 		if ( ! is_string( $origin ) ) {
-			$this->origin = $origin;
+			$this->origin             = $origin;
 			$this->template_base_path = untrailingslashit( $this->origin->path() );
 		} else {
 			$this->template_base_path = untrailingslashit( (array) explode( '/', $origin ) );
@@ -103,9 +103,9 @@ class Template {
 	/**
 	 * Configures the class with the base folder in relation to the Origin
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @param  array|string   $folder  Which folder we are going to look for templates
+	 * @param array|string $folder  Which folder we are going to look for templates
 	 *
 	 * @return self
 	 */
@@ -129,9 +129,9 @@ class Template {
 	/**
 	 * Configures the class with the base folder in relation to the Origin
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @param  mixed   $use  Should we look for template files in the list of folders
+	 * @param mixed $use  Should we look for template files in the list of folders
 	 *
 	 * @return self
 	 */
@@ -144,9 +144,9 @@ class Template {
 	/**
 	 * Configures the class global context
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @param  array  $context  Default global Context
+	 * @param array $context  Default global Context
 	 *
 	 * @return self
 	 */
@@ -160,9 +160,9 @@ class Template {
 	/**
 	 * Configures if the class will extract context for template
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @param  bool  $value  Should we extract context for templates
+	 * @param bool $value  Should we extract context for templates
 	 *
 	 * @return self
 	 */
@@ -177,14 +177,14 @@ class Template {
 	 * Sets a Index inside of the global or local context
 	 * Final to prevent extending the class when the `get` already exists on the child class
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @see    \FakerPress\get
+	 * @see \FakerPress\get
 	 *
-	 * @param  array    $index     Specify each nested index in order.
-	 *                             Example: array( 'lvl1', 'lvl2' );
-	 * @param  mixed    $default   Default value if the search finds nothing.
-	 * @param  boolean  $is_local  Use the Local or Global context
+	 * @param array   $index     Specify each nested index in order.
+	 *                            Example: array( 'lvl1', 'lvl2' );
+	 * @param mixed   $default   Default value if the search finds nothing.
+	 * @param boolean $is_local  Use the Local or Global context
 	 *
 	 * @return mixed The value of the specified index or the default if not found.
 	 */
@@ -199,14 +199,14 @@ class Template {
 		 * Allows filtering the the getting of Context variables, also short circuiting
 		 * Following the same structure as WP Core
 		 *
-		 * @since  4.6.2
+		 * @since 4.6.2
 		 *
-		 * @param  mixed    $value     The value that will be filtered
-		 * @param  array    $index     Specify each nested index in order.
+		 * @param mixed    $value     The value that will be filtered
+		 * @param array    $index     Specify each nested index in order.
 		 *                             Example: array( 'lvl1', 'lvl2' );
-		 * @param  mixed    $default   Default value if the search finds nothing.
-		 * @param  boolean  $is_local  Use the Local or Global context
-		 * @param  self     $template  Current instance of the Template
+		 * @param mixed    $default   Default value if the search finds nothing.
+		 * @param boolean  $is_local  Use the Local or Global context
+		 * @param self     $template  Current instance of the Template
 		 */
 		$value = apply_filters( 'fakerpress_template_context_get', null, $index, $default, $is_local, $this );
 		if ( null !== $value ) {
@@ -220,15 +220,15 @@ class Template {
 	 * Sets a Index inside of the global or local context
 	 * Final to prevent extending the class when the `set` already exists on the child class
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @see    fp_array_set
+	 * @see fp_array_set
 	 *
-	 * @param  string|array  $index     To set a key nested multiple levels deep pass an array
-	 *                                  specifying each key in order as a value.
-	 *                                  Example: array( 'lvl1', 'lvl2', 'lvl3' );
-	 * @param  mixed         $value     The value.
-	 * @param  boolean       $is_local  Use the Local or Global context
+	 * @param string|array $index     To set a key nested multiple levels deep pass an array
+	 *                                 specifying each key in order as a value.
+	 *                                 Example: array( 'lvl1', 'lvl2', 'lvl3' );
+	 * @param mixed        $value     The value.
+	 * @param boolean      $is_local  Use the Local or Global context
 	 *
 	 * @return array Full array with the key set to the specified value.
 	 */
@@ -247,11 +247,11 @@ class Template {
 	/**
 	 * Merges local and global context, and saves it locally
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @param  array  $context  Local Context array of data
-	 * @param  string $file     Complete path to include the PHP File
-	 * @param  array  $name     Template name
+	 * @param array  $context  Local Context array of data
+	 * @param string $file     Complete path to include the PHP File
+	 * @param array  $name     Template name
 	 *
 	 * @return array
 	 */
@@ -267,7 +267,7 @@ class Template {
 		/**
 		 * Allows filtering the Local context
 		 *
-		 * @since  0.5.1
+		 * @since 0.5.1
 		 *
 		 * @param array  $context   Local Context array of data
 		 * @param string $file      Complete path to include the PHP File
@@ -282,7 +282,7 @@ class Template {
 	/**
 	 * Fetches the path for locating files in the Plugin Folder
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @return string
 	 */
@@ -296,7 +296,7 @@ class Template {
 		/**
 		 * Allows filtering of the base path for templates
 		 *
-		 * @since  0.5.1
+		 * @since 0.5.1
 		 *
 		 * @param string $path      Complete path to include the base plugin folder
 		 * @param self   $template  Current instance of the Template
@@ -308,7 +308,7 @@ class Template {
 	 * Fetches the Namespace for the public paths, normally folders to look for
 	 * in the theme's directory.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @return array
 	 */
@@ -324,7 +324,7 @@ class Template {
 		/**
 		 * Allows filtering of the base path for templates
 		 *
-		 * @since  4.7.20
+		 * @since 4.7.20
 		 *
 		 * @param array  $namespace Which is the namespace we will look for files in the theme
 		 * @param self   $template  Current instance of the Template
@@ -335,9 +335,9 @@ class Template {
 	/**
 	 * Fetches the path for locating files given a base folder normally theme related
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @param  mixed  $base  Base path to look into
+	 * @param mixed $base  Base path to look into
 	 *
 	 * @return string
 	 */
@@ -351,7 +351,7 @@ class Template {
 		/**
 		 * Allows filtering of the base path for templates
 		 *
-		 * @since  0.5.1
+		 * @since 0.5.1
 		 *
 		 * @param string $path      Complete path to include the base public folder
 		 * @param self   $template  Current instance of the Template
@@ -362,7 +362,7 @@ class Template {
 	/**
 	 * Fetches the folders in which we will look for a given file
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @return array
 	 */
@@ -372,31 +372,31 @@ class Template {
 		// Only look into public folders if we tell to use folders
 		if ( $this->template_folder_lookup ) {
 			$folders[] = [
-				'id' => 'child-theme',
+				'id'       => 'child-theme',
 				'priority' => 10,
-				'path' => $this->get_template_public_path( STYLESHEETPATH ),
+				'path'     => $this->get_template_public_path( STYLESHEETPATH ),
 			];
 			$folders[] = [
-				'id' => 'parent-theme',
+				'id'       => 'parent-theme',
 				'priority' => 15,
-				'path' => $this->get_template_public_path( TEMPLATEPATH ),
+				'path'     => $this->get_template_public_path( TEMPLATEPATH ),
 			];
 		}
 
 		$folders[] = [
-			'id' => 'plugin',
+			'id'       => 'plugin',
 			'priority' => 20,
-			'path' => $this->get_template_plugin_path(),
+			'path'     => $this->get_template_plugin_path(),
 		];
 
 		/**
 		 * Allows filtering of the list of folders in which we will look for the
 		 * template given.
 		 *
-		 * @since  0.5.1
+		 * @since 0.5.1
 		 *
-		 * @param  array  $folders   Complete path to include the base public folder
-		 * @param  self   $template  Current instance of the Template
+		 * @param array  $folders   Complete path to include the base public folder
+		 * @param self   $template  Current instance of the Template
 		 */
 		$folders = apply_filters( 'fakerpress_template_path_list', $folders, $this );
 
@@ -409,9 +409,9 @@ class Template {
 	 * Tries to locate the correct file we want to load based on the Template class
 	 * configuration and it's list of folders
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @param  mixed  $name  File name we are looking for
+	 * @param mixed $name  File name we are looking for
 	 *
 	 * @return string
 	 */
@@ -440,8 +440,8 @@ class Template {
 				/**
 				 * A more Specific Filter that will include the template name
 				 *
-				 * @since  4.6.2
-				 * @since  4.7.20   The $name param no longer contains the extension
+				 * @since 4.6.2
+				 * @since 4.7.20   The $name param no longer contains the extension
 				 *
 				 * @param string $file      Complete path to include the PHP File
 				 * @param array  $name      Template name
@@ -458,7 +458,7 @@ class Template {
 	/**
 	 * A very simple method to include a Template, allowing filtering and additions using hooks.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @param string  $name    Which file we are talking about including
 	 * @param array   $context Any context data you need to expose to this file
@@ -505,7 +505,7 @@ class Template {
 		/**
 		 * Fires an Action before including the template file
 		 *
-		 * @since  0.5.1
+		 * @since 0.5.1
 		 *
 		 * @param string $file      Complete path to include the PHP File
 		 * @param array  $name      Template name
@@ -521,7 +521,7 @@ class Template {
 		 *    `fakerpress_template_before_include:events/embed`
 		 *    `fakerpress_template_before_include:tickets/login-to-purchase`
 		 *
-		 * @since  0.5.1
+		 * @since 0.5.1
 		 *
 		 * @param string $file      Complete path to include the PHP File
 		 * @param array  $name      Template name
@@ -550,7 +550,7 @@ class Template {
 		/**
 		 * Fires an Action after including the template file
 		 *
-		 * @since  0.5.1
+		 * @since 0.5.1
 		 *
 		 * @param string $file      Complete path to include the PHP File
 		 * @param array  $name      Template name
@@ -566,7 +566,7 @@ class Template {
 		 *    `fakerpress_template_after_include:events/embed`
 		 *    `fakerpress_template_after_include:tickets/login-to-purchase`
 		 *
-		 * @since  0.5.1
+		 * @since 0.5.1
 		 *
 		 * @param string $file      Complete path to include the PHP File
 		 * @param array  $name      Template name
@@ -580,7 +580,7 @@ class Template {
 		/**
 		 * Allow users to filter the final HTML
 		 *
-		 * @since  0.5.1
+		 * @since 0.5.1
 		 *
 		 * @param string $html      The final HTML
 		 * @param string $file      Complete path to include the PHP File
@@ -597,7 +597,7 @@ class Template {
 		 *    `fakerpress_template_html:events/embed`
 		 *    `fakerpress_template_html:tickets/login-to-purchase`
 		 *
-		 * @since  0.5.1
+		 * @since 0.5.1
 		 *
 		 * @param string $html      The final HTML
 		 * @param string $file      Complete path to include the PHP File
@@ -621,7 +621,7 @@ class Template {
 	 * @param array $values   An associative key/value array of the values to set.
 	 * @param bool  $is_local Whether to set the values as global or local; defaults to local as the `set` method does.
 	 *
-	 * @see   Template::set()
+	 * @see Template::set()
 	 */
 	public function set_values( array $values = [], $is_local = true ) {
 		foreach ( $values as $key => $value ) {

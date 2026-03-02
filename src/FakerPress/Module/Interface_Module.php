@@ -3,7 +3,6 @@
 namespace FakerPress\Module;
 
 use FakerPress\ThirdParty\Faker\Generator;
-use FakerPress\ThirdParty\Faker\Provider\Base;
 
 interface Interface_Module {
 

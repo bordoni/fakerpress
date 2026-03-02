@@ -4,15 +4,13 @@
  *
  * Handles the registration and management of REST endpoints for FakerPress modules.
  *
- * @since   TBD
+ * @since TBD
  * @package FakerPress
  */
 
 namespace FakerPress\REST;
 
-use FakerPress\Plugin;
 use FakerPress\Contracts\Service_Provider;
-use WP_REST_Server;
 
 use function FakerPress\singleton;
 use function FakerPress\make;
@@ -111,19 +109,22 @@ class Controller extends Service_Provider {
 		 *
 		 * @param array $endpoint_classes Array of endpoint class names.
 		 */
-		$endpoint_classes = apply_filters( 'fakerpress_rest_endpoint_classes', [
-			Endpoints\Documentation::class,
-			Endpoints\Posts::class,
-			Endpoints\Users::class,
-			Endpoints\Terms::class,
-			Endpoints\Comments::class,
-			Endpoints\Attachments::class,
+		$endpoint_classes = apply_filters(
+			'fakerpress_rest_endpoint_classes',
+			[
+				Endpoints\Documentation::class,
+				Endpoints\Posts::class,
+				Endpoints\Users::class,
+				Endpoints\Terms::class,
+				Endpoints\Comments::class,
+				Endpoints\Attachments::class,
 			// Additional endpoints can be added here
 			// 'FakerPress\REST\Endpoints\Meta',
-		] );
+			] 
+		);
 
 		$endpoints = array_map(
-			static function( $class ) {
+			static function ( $class ) {
 				return class_exists( $class ) ? make( $class ) : null;
 			},
 			$endpoint_classes
@@ -183,7 +184,7 @@ class Controller extends Service_Provider {
 
 		foreach ( $this->get_endpoints() as $endpoint ) {
 			if ( method_exists( $endpoint, 'get_openapi_schema' ) ) {
-				$schema = $endpoint->get_openapi_schema();
+				$schema                 = $endpoint->get_openapi_schema();
 				$documentation['paths'] = array_merge( $documentation['paths'], $schema );
 			}
 		}

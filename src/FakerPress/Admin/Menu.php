@@ -3,7 +3,6 @@
 namespace FakerPress\Admin;
 
 use FakerPress\Admin\View\Factory as View_Factory;
-use function FakerPress\get_request_var;
 use function FakerPress\make;
 
 use FakerPress\Plugin;
@@ -13,7 +12,6 @@ use FakerPress\Admin;
  * Class Menu
  *
  * @since 0.6.4
- *
  */
 class Menu {
 	/**
@@ -46,7 +44,6 @@ class Menu {
 	 * @param integer       $priority   The priority to show this submenu
 	 * @param callable|null $callback   A callback to render this menu item.
 	 * @param string|null   $parent     What is the parent menu.
-	 *
 	 */
 	public static function add( string $slug, $title, $label, string $capability = 'manage_options', int $priority = 10, $callback = null, $parent = null ): void {
 		$slug = sanitize_key( $slug );
@@ -57,7 +54,7 @@ class Menu {
 			'hook'       => null, // Will be set later from WP.
 			'label'      => esc_attr( $label ),
 			'capability' => sanitize_key( $capability ),
-			'priority'   => absint( $priority ),// Used to set up error page.
+			'priority'   => absint( $priority ), // Used to set up error page.
 			'callback'   => $callback, // Used to set up error page.
 			'parent'     => $parent, // Used to set up error page.
 		];
@@ -131,7 +128,7 @@ class Menu {
 	/**
 	 * Filter the `$submenu_file` global right before WordPress builds the Administration Menu
 	 *
-	 * @since  0.6.0
+	 * @since 0.6.0
 	 *
 	 * @param string $submenu_file Which is the current submenu file.
 	 *
@@ -158,11 +155,11 @@ class Menu {
 	 *
 	 * @since 0.6.0
 	 *
-	 * @uses  \FakerPress\Plugin::$slug
-	 * @uses  esc_attr__
-	 * @uses  add_menu_page
-	 * @uses  add_submenu_page
-	 * @uses  current_user_can
+	 * @uses \FakerPress\Plugin::$slug
+	 * @uses esc_attr__
+	 * @uses add_menu_page
+	 * @uses add_submenu_page
+	 * @uses current_user_can
 	 *
 	 * @return null Actions do not return
 	 */

@@ -7,7 +7,7 @@ use FakerPress\Contracts\Service_Provider;
 /**
  * Class Assets.
  *
- * @since   0.6.4
+ * @since 0.6.4
  *
  * @package StellarWP\Jobvite
  */
@@ -118,7 +118,7 @@ class Assets extends Service_Provider {
 			'admin_enqueue_scripts',
 			[
 				'conditionals' => [ $admin, 'is_active' ],
-				'localize' => [
+				'localize'     => [
 					'name' => 'fakerpressRestApi',
 					'data' => [ $this, 'get_rest_localization_data' ],
 				],
@@ -156,5 +156,4 @@ class Assets extends Service_Provider {
 			wp_set_script_translations( 'fakerpress-module', 'fakerpress' );
 		}
 	}
-
 }

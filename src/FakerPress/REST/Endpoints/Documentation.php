@@ -4,7 +4,7 @@
  *
  * Serves OpenAPI specification and documentation for all endpoints.
  *
- * @since   TBD
+ * @since TBD
  * @package FakerPress
  */
 

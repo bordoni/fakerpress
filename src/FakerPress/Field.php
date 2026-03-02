@@ -1,5 +1,6 @@
 <?php
 namespace FakerPress;
+
 use FakerPress\Provider\HTML;
 use FakerPress\Utils;
 
@@ -24,16 +25,16 @@ class Field {
 	public $has_label = false;
 
 	public static $default_container = [
-		'label' => '',
+		'label'       => '',
 		'description' => '',
-		'attributes' => [],
-		'actions' => [],
-		'heads' => [],
-		'class' => [],
-		'wrap' => [
-			'class' => []
+		'attributes'  => [],
+		'actions'     => [],
+		'heads'       => [],
+		'class'       => [],
+		'wrap'        => [
+			'class' => [],
 		],
-		'blocks' => [ 'label', 'fields', 'description', 'actions' ],
+		'blocks'      => [ 'label', 'fields', 'description', 'actions' ],
 	];
 
 	public static $valid_types = [
@@ -170,16 +171,16 @@ class Field {
 			$this->id = (array) $this->field->id;
 		}
 
-		$this->callback = null;
+		$this->callback    = null;
 		$this->conditional = true;
 
-		$this->label = $container->label;
+		$this->label       = $container->label;
 		$this->description = $container->description;
-		$this->attributes = $container->attributes;
-		$this->actions = $container->actions;
-		$this->blocks = $container->blocks;
-		$this->class = $container->class;
-		$this->wrap = $container->wrap;
+		$this->attributes  = $container->attributes;
+		$this->actions     = $container->actions;
+		$this->blocks      = $container->blocks;
+		$this->class       = $container->class;
+		$this->wrap        = $container->wrap;
 	}
 
 	public function output( $print = false ) {
@@ -208,14 +209,14 @@ class Field {
 	}
 
 	public function build( $content, $output = 'string', $html = [] ) {
-		$content = (array) $content;
-		$key = array_search( 'fields', $this->blocks );
+		$content     = (array) $content;
+		$key         = array_search( 'fields', $this->blocks );
 		$is_multiple = is_array( reset( $content ) );
 		if ( ! $is_multiple ) {
 			$content = [ $content ];
 		}
 
-		$before = array_filter( array_slice( $this->blocks, 0, $key ), 'is_array' );
+		$before         = array_filter( array_slice( $this->blocks, 0, $key ), 'is_array' );
 		$before_content = [];
 		foreach ( $before as $i => $block ) {
 			$_html = '';
@@ -226,7 +227,7 @@ class Field {
 			$before_content[] = '<td' . Utils::attr( $block ) . '>' . $_html . '</td>';
 		}
 
-		$after = array_filter( array_slice( $this->blocks, $key + 1, count( $this->blocks ) - ( $key + 1 ) ), 'is_array' );
+		$after         = array_filter( array_slice( $this->blocks, $key + 1, count( $this->blocks ) - ( $key + 1 ) ), 'is_array' );
 		$after_content = [];
 		foreach ( $after as $i => $block ) {
 			$_html = '';
@@ -238,11 +239,15 @@ class Field {
 		}
 
 		if ( in_array( 'heading', $this->blocks ) ) {
-			$html[] = self::type_heading( [
-				'type' => 'heading',
-				'title' => $this->label,
-				'description' => $this->description,
-			], null, 'string' );
+			$html[] = self::type_heading(
+				[
+					'type'        => 'heading',
+					'title'       => $this->label,
+					'description' => $this->description,
+				],
+				null,
+				'string' 
+			);
 		}
 
 		foreach ( $content as $blocks ) {
@@ -352,7 +357,7 @@ class Field {
 	}
 
 	public static function wrapper( $content = [], $field = [], $output = 'string' ) {
-		$attributes = (object) [];
+		$attributes          = (object) [];
 		$attributes->class[] = 'field-wrap';
 		$attributes->class[] = 'type-' . $field->type . '-wrap';
 
@@ -381,7 +386,7 @@ class Field {
 			$html[] = '<fieldset' . Utils::attr( $container->wrap ) . '>';
 		} elseif ( ! in_array( 'table', $container->blocks ) ) {
 			$container->wrap['colspan'] = 2;
-			$html[] = '<td' . Utils::attr( $container->wrap ) . '>';
+			$html[]                     = '<td' . Utils::attr( $container->wrap ) . '>';
 		}
 
 		$html = apply_filters( self::plugin . '/fields/field-start_wrap', $html, $container );
@@ -456,7 +461,8 @@ class Field {
 
 	public static function description( $container, $output = 'string', $html = [] ) {
 		if ( ! empty( $container->description ) ) {
-			$html[] = '<p class="' . Utils::abbr( 'field-description' ) . '">' . $container->description . '</p>';;
+			$html[] = '<p class="' . Utils::abbr( 'field-description' ) . '">' . $container->description . '</p>';
+
 		}
 
 		$html = apply_filters( self::plugin . '/fields/field-description', $html, $container );
@@ -471,7 +477,6 @@ class Field {
 	/******************
 	 * Static methods *
 	 ******************/
-
 	public static function is_valid_type( $type = false ) {
 		// a list of valid field types, to prevent screwy behaviour
 		return in_array( $type, apply_filters( self::plugin . '/fields/valid_types', self::$valid_types ) );
@@ -525,7 +530,7 @@ class Field {
 		if ( isset( $field->_name ) ) {
 
 		} elseif ( ! isset( $field->name ) ) {
-			$field->_name = (array) ( isset( $container->field->name ) ? $container->field->name : $field->_id );
+			$field->_name = (array) ( $container->field->name ?? $field->_id );
 		} else {
 			$field->_name = (array) $field->name;
 		}
@@ -536,7 +541,7 @@ class Field {
 		}
 		$field->_type = $field->type;
 
-		$field->id = self::id( $field->_id );
+		$field->id   = self::id( $field->_id );
 		$field->name = self::name( $field->_name );
 
 		switch ( $field->type ) {
@@ -550,7 +555,7 @@ class Field {
 				}
 
 				$container->has_label = false;
-				$container->blocks = [ 'actions' ];
+				$container->blocks    = [ 'actions' ];
 				break;
 			case 'meta':
 			case 'taxonomy':
@@ -567,10 +572,10 @@ class Field {
 				}
 
 				$container->has_label = false;
-				$container->blocks = [ 'actions' ];
+				$container->blocks    = [ 'actions' ];
 				break;
 			case 'input':
-				# code...
+				// code...
 				break;
 			case 'text':
 				if ( empty( $field->size ) ) {
@@ -608,7 +613,6 @@ class Field {
 
 				break;
 			case 'interval':
-
 				break;
 			case 'date':
 				$field->type = 'text';
@@ -616,10 +620,10 @@ class Field {
 				break;
 		}
 
-		$field = apply_filters( self::plugin . '/fields/field', $field, $container );
+		$field     = apply_filters( self::plugin . '/fields/field', $field, $container );
 		$container = apply_filters( self::plugin . '/fields/container', $container, $field );
 
-		$field = apply_filters( self::plugin . '/fields/field-' . $field->_type, $field, $container );
+		$field     = apply_filters( self::plugin . '/fields/field-' . $field->_type, $field, $container );
 		$container = apply_filters( self::plugin . '/fields/container-' . $field->_type, $container, $field );
 
 		if ( ! empty( $field->class ) ) {
@@ -638,7 +642,6 @@ class Field {
 	/*****************
 	 * Field Methods *
 	 *****************/
-
 	public static function type_input( $field, $container = null, $output = 'string', $html = [] ) {
 		$field = self::parse( $field, $container );
 		if ( is_scalar( $field ) ) {
@@ -830,12 +833,12 @@ class Field {
 			return false;
 		}
 
-		$min = clone $field;
-		$min->_id[] = 'min';
-		$min->_name[] = 'min';
-		$min->type = 'number';
+		$min                = clone $field;
+		$min->_id[]         = 'min';
+		$min->_name[]       = 'min';
+		$min->type          = 'number';
 		$min->{'data-type'} = 'min';
-		$min->min = 0;
+		$min->min           = 0;
 
 		if ( isset( $field->min ) && is_numeric( $field->min ) ) {
 			$min->value = $field->min;
@@ -856,12 +859,12 @@ class Field {
 			$min->placeholder = $min->_placeholder_min;
 		}
 
-		$max = clone $field;
-		$max->_id[] = 'max';
-		$max->_name[] = 'max';
+		$max                = clone $field;
+		$max->_id[]         = 'max';
+		$max->_name[]       = 'max';
 		$max->{'data-type'} = 'max';
-		$max->type = 'number';
-		$max->min = 0;
+		$max->type          = 'number';
+		$max->min           = 0;
 
 		if ( isset( $field->max ) && is_numeric( $field->max ) ) {
 			$max->value = $field->max;
@@ -907,144 +910,144 @@ class Field {
 			return false;
 		}
 
-		$index = clone $field;
-		$index->_id[] = 'index';
-		$index->_name[] = 'index';
-		$index->type = 'button';
-		$index->value = '1';
+		$index           = clone $field;
+		$index->_id[]    = 'index';
+		$index->_name[]  = 'index';
+		$index->type     = 'button';
+		$index->value    = '1';
 		$index->disabled = true;
-		$index->class = [ 'action-order' ];
+		$index->class    = [ 'action-order' ];
 
-		$remove = clone $field;
-		$remove->_id[] = 'remove';
+		$remove          = clone $field;
+		$remove->_id[]   = 'remove';
 		$remove->_name[] = 'remove';
-		$remove->type = 'button';
-		$remove->value = '&minus;';
-		$remove->class = [ 'action-remove' ];
+		$remove->type    = 'button';
+		$remove->value   = '&minus;';
+		$remove->class   = [ 'action-remove' ];
 
-		$duplicate = clone $field;
-		$duplicate->_id[] = 'duplicate';
-		$duplicate->_name[] = 'duplicate';
-		$duplicate->type = 'button';
+		$duplicate             = clone $field;
+		$duplicate->_id[]      = 'duplicate';
+		$duplicate->_name[]    = 'duplicate';
+		$duplicate->type       = 'button';
 		$duplicate->deactivate = true;
-		$duplicate->value = '&plus;';
-		$duplicate->class = [ 'action-duplicate' ];
+		$duplicate->value      = '&plus;';
+		$duplicate->class      = [ 'action-duplicate' ];
 
-		$table = clone $container;
+		$table         = clone $container;
 		$table->blocks = [ 'heading', 'table' ];
-		$table->heads = [
+		$table->heads  = [
 			[
 				'class' => 'order-table',
-				'html' => self::type_button( $index, null, 'string' ),
+				'html'  => self::type_button( $index, null, 'string' ),
 			],
 			[
 				'class' => 'label-table',
-				'html' => '',
+				'html'  => '',
 			],
 			[
 				'class' => 'fields-table',
-				'html' => '',
+				'html'  => '',
 			],
 			[
-				'html' => self::type_button( $remove, null, 'string' ) . self::type_button( $duplicate, null, 'string' ),
+				'html'  => self::type_button( $remove, null, 'string' ) . self::type_button( $duplicate, null, 'string' ),
 				'class' => 'actions-table',
 			],
 		];
-		$blocks = [
+		$blocks        = [
 			[
-				'html' => '',
+				'html'  => '',
 				'class' => 'order-table',
 			],
 			'label',
 			'fields',
 			'description',
 			[
-				'html' => '',
+				'html'  => '',
 				'class' => 'actions-table',
 			],
 		];
 
-		$tax_container = clone $container;
-		$tax_container->id[] = 'taxonomies';
-		$tax_container->type .= '_taxonomies';
-		$tax_container->label = __( 'Taxonomies', 'fakerpress' );
+		$tax_container              = clone $container;
+		$tax_container->id[]        = 'taxonomies';
+		$tax_container->type       .= '_taxonomies';
+		$tax_container->label       = __( 'Taxonomies', 'fakerpress' );
 		$tax_container->description = '';
-		$tax_container->blocks = $blocks;
+		$tax_container->blocks      = $blocks;
 
-		$taxonomies = get_taxonomies( [ 'public' => true ], 'object' );
+		$taxonomies              = get_taxonomies( [ 'public' => true ], 'object' );
 		$_json_taxonomies_output = [];
 		foreach ( $taxonomies as $key => $taxonomy ) {
 			$_json_taxonomies_output[] = [
-				'id' => $taxonomy->name,
+				'id'   => $taxonomy->name,
 				'text' => $taxonomy->labels->name,
 			];
 		}
 
-		$tax_field = clone $field;
-		$tax_field->_id[] = 'taxonomies';
-		$tax_field->_name[] = 'taxonomies';
-		$tax_field->type = 'dropdown';
-		$tax_field->multiple = true;
+		$tax_field                   = clone $field;
+		$tax_field->_id[]            = 'taxonomies';
+		$tax_field->_name[]          = 'taxonomies';
+		$tax_field->type             = 'dropdown';
+		$tax_field->multiple         = true;
 		$tax_field->{'data-options'} = $_json_taxonomies_output;
-		$tax_field->value = 'post_tag, category';
-		$tax_field->class = [ 'taxonomies' ];
-		$tax_field->placeholder = esc_attr__( 'Select Which taxonomies', 'fakerpress' );
+		$tax_field->value            = 'post_tag, category';
+		$tax_field->class            = [ 'taxonomies' ];
+		$tax_field->placeholder      = esc_attr__( 'Select Which taxonomies', 'fakerpress' );
 
 		$content[] = $tax_container->build( self::type_dropdown( $tax_field, null, 'string' ) );
 
-		$terms_container = clone $container;
-		$terms_container->id[] = 'terms';
-		$terms_container->type .= '_terms';
-		$terms_container->label = __( 'Terms', 'fakerpress' );
+		$terms_container              = clone $container;
+		$terms_container->id[]        = 'terms';
+		$terms_container->type       .= '_terms';
+		$terms_container->label       = __( 'Terms', 'fakerpress' );
 		$terms_container->description = '';
-		$terms_container->blocks = $blocks;
+		$terms_container->blocks      = $blocks;
 
-		$terms = clone $field;
-		$terms->_id[] = 'terms';
-		$terms->_name[] = 'terms';
-		$terms->type = 'dropdown';
-		$terms->multiple = true;
-		$terms->description = esc_html__( 'If you do not select any, the plugin will choose from all the existing terms.', 'fakerpress' );
+		$terms                  = clone $field;
+		$terms->_id[]           = 'terms';
+		$terms->_name[]         = 'terms';
+		$terms->type            = 'dropdown';
+		$terms->multiple        = true;
+		$terms->description     = esc_html__( 'If you do not select any, the plugin will choose from all the existing terms.', 'fakerpress' );
 		$terms->{'data-source'} = 'search_terms';
-		$terms->{'data-nonce'} = wp_create_nonce( Plugin::$slug . '-select2-search_terms' );
+		$terms->{'data-nonce'}  = wp_create_nonce( Plugin::$slug . '-select2-search_terms' );
 
 		$terms->placeholder = esc_attr__( 'Which terms can be used', 'fakerpress' );
 
 		$content[] = $terms_container->build( self::type_dropdown( $terms, null, 'string' ) );
 
-		$rate_container = clone $container;
-		$rate_container->id[] = 'rate';
-		$rate_container->type .= 'rate';
-		$rate_container->label = esc_html__( 'Rate', 'fakerpress' );
+		$rate_container              = clone $container;
+		$rate_container->id[]        = 'rate';
+		$rate_container->type       .= 'rate';
+		$rate_container->label       = esc_html__( 'Rate', 'fakerpress' );
 		$rate_container->description = esc_html__( 'Percentage rate of posts that will have terms generated for the amount below', 'fakerpress' );
-		$rate_container->blocks = $blocks;
+		$rate_container->blocks      = $blocks;
 
-		$rate = clone $field;
-		$rate->_id[] = 'rate';
-		$rate->_name[] = 'rate';
-		$rate->type = 'number';
+		$rate              = clone $field;
+		$rate->_id[]       = 'rate';
+		$rate->_name[]     = 'rate';
+		$rate->type        = 'number';
 		$rate->placeholder = esc_attr__( 'Rate', 'fakerpress' );
-		$rate->min = 0;
-		$rate->max = 100;
-		$rate->value = 85;
+		$rate->min         = 0;
+		$rate->max         = 100;
+		$rate->value       = 85;
 
 		$content[] = $rate_container->build( self::type_text( $rate, null, 'string' ) );
 
-		$qty_container = clone $container;
-		$qty_container->id[] = 'qty';
-		$qty_container->type .= '_qty';
-		$qty_container->label = esc_html__( 'Quantity', 'fakerpress' );
+		$qty_container              = clone $container;
+		$qty_container->id[]        = 'qty';
+		$qty_container->type       .= '_qty';
+		$qty_container->label       = esc_html__( 'Quantity', 'fakerpress' );
 		$qty_container->description = __( 'How many terms will be selected. <br> E.g.: From 1 to 4 or just fill the first field for an exact number', 'fakerpress' );
-		$qty_container->blocks = $blocks;
+		$qty_container->blocks      = $blocks;
 
-		$qty = clone $field;
-		$qty->_id[] = 'qty';
+		$qty          = clone $field;
+		$qty->_id[]   = 'qty';
 		$qty->_name[] = 'qty';
-		$qty->type = 'range';
-		$qty->min = 1;
-		$qty->max = 4;
-		$qty->_max = 200;
-		$qty->class = [ 'qty' ];
+		$qty->type    = 'range';
+		$qty->min     = 1;
+		$qty->max     = 4;
+		$qty->_max    = 200;
+		$qty->class   = [ 'qty' ];
 
 		$content[] = $qty_container->build( self::type_range( $qty, null, 'string' ) );
 
@@ -1069,59 +1072,59 @@ class Field {
 			return false;
 		}
 
-		$index = clone $field;
-		$index->_id[] = 'index';
-		$index->_name[] = 'index';
-		$index->type = 'button';
-		$index->value = $field->index + 1;
+		$index           = clone $field;
+		$index->_id[]    = 'index';
+		$index->_name[]  = 'index';
+		$index->type     = 'button';
+		$index->value    = $field->index + 1;
 		$index->disabled = true;
-		$index->class = [ 'action-order' ];
+		$index->class    = [ 'action-order' ];
 
-		$remove = clone $field;
-		$remove->_id[] = 'remove';
+		$remove          = clone $field;
+		$remove->_id[]   = 'remove';
 		$remove->_name[] = 'remove';
-		$remove->type = 'button';
-		$remove->value = '&minus;';
-		$remove->class = [ 'action-remove' ];
+		$remove->type    = 'button';
+		$remove->value   = '&minus;';
+		$remove->class   = [ 'action-remove' ];
 
-		$duplicate = clone $field;
-		$duplicate->_id[] = 'duplicate';
-		$duplicate->_name[] = 'duplicate';
-		$duplicate->type = 'button';
+		$duplicate             = clone $field;
+		$duplicate->_id[]      = 'duplicate';
+		$duplicate->_name[]    = 'duplicate';
+		$duplicate->type       = 'button';
 		$duplicate->deactivate = true;
-		$duplicate->value = '&plus;';
-		$duplicate->class = [ 'action-duplicate' ];
+		$duplicate->value      = '&plus;';
+		$duplicate->class      = [ 'action-duplicate' ];
 
-		$table = clone $container;
+		$table         = clone $container;
 		$table->blocks = [ 'heading', 'table' ];
-		$table->heads = [
+		$table->heads  = [
 			[
 				'class' => 'order-table',
-				'html' => self::type_button( $index, null, 'string' ),
+				'html'  => self::type_button( $index, null, 'string' ),
 			],
 			[
 				'class' => 'label-table',
-				'html' => '',
+				'html'  => '',
 			],
 			[
 				'class' => 'fields-table',
-				'html' => '',
+				'html'  => '',
 			],
 			[
-				'html' => self::type_button( $remove, null, 'string' ) . self::type_button( $duplicate, null, 'string' ),
+				'html'  => self::type_button( $remove, null, 'string' ) . self::type_button( $duplicate, null, 'string' ),
 				'class' => 'actions-table',
 			],
 		];
 
 		$container_blocks = [
 			[
-				'html' => '',
+				'html'  => '',
 				'class' => 'order-table',
 			],
 			'label',
 			'fields',
 			[
-				'html' => '',
+				'html'  => '',
 				'class' => 'actions-table',
 			],
 		];
@@ -1138,22 +1141,22 @@ class Field {
 		}
 
 		foreach ( $configuration as $index => $config ) {
-			$type = clone $field;
-			$type->_id[] = 'type';
-			$type->_name[] = 'type';
-			$type->type = 'dropdown';
-			$type->options = self::get_meta_types();
-			$type->class = [ 'meta_type' ];
+			$type              = clone $field;
+			$type->_id[]       = 'type';
+			$type->_name[]     = 'type';
+			$type->type        = 'dropdown';
+			$type->options     = self::get_meta_types();
+			$type->class       = [ 'meta_type' ];
 			$type->placeholder = esc_attr__( 'Select a Field type', 'fakerpress' );
 			if ( isset( $config['type'] ) ) {
 				$type->value = $config['type'];
 			}
 
-			$name = clone $field;
-			$name->_id[] = 'name';
-			$name->_name[] = 'name';
-			$name->type = 'text';
-			$name->class = [ 'meta_name' ];
+			$name              = clone $field;
+			$name->_id[]       = 'name';
+			$name->_name[]     = 'name';
+			$name->type        = 'text';
+			$name->class       = [ 'meta_name' ];
 			$name->placeholder = esc_attr__( 'Newborn Meta needs a Name, E.g.: _new_image', 'fakerpress' );
 			if ( isset( $config['name'] ) ) {
 				$name->value = $config['name'];
@@ -1161,30 +1164,30 @@ class Field {
 
 			$containers = (object) [];
 
-			$containers->type = clone $container;
-			$containers->type->id[] = 'type';
-			$containers->type->type .= '_type';
-			$containers->type->label = __( 'Type', 'fakerpress' );
+			$containers->type              = clone $container;
+			$containers->type->id[]        = 'type';
+			$containers->type->type       .= '_type';
+			$containers->type->label       = __( 'Type', 'fakerpress' );
 			$containers->type->description = __( 'Select a type of the Meta Field', 'fakerpress' );
-			$containers->type->class = [ 'meta_type-container' ];
-			$containers->type->blocks = $container_blocks;
+			$containers->type->class       = [ 'meta_type-container' ];
+			$containers->type->blocks      = $container_blocks;
 
-			$containers->name = clone $container;
-			$containers->name->id[] = 'name';
-			$containers->name->type .= '_name';
-			$containers->name->label = __( 'Name', 'fakerpress' );
+			$containers->name              = clone $container;
+			$containers->name->id[]        = 'name';
+			$containers->name->type       .= '_name';
+			$containers->name->label       = __( 'Name', 'fakerpress' );
 			$containers->name->description = __( 'Select the name for Meta Field', 'fakerpress' );
-			$containers->name->class = [ 'meta_name-container' ];
-			$containers->name->blocks = $container_blocks;
+			$containers->name->class       = [ 'meta_name-container' ];
+			$containers->name->blocks      = $container_blocks;
 
-			$containers->conf = clone $container;
-			$containers->conf->id[] = 'conf';
-			$containers->conf->type .= '_conf';
-			$containers->conf->label = __( 'Configuration', 'fakerpress' );
+			$containers->conf              = clone $container;
+			$containers->conf->id[]        = 'conf';
+			$containers->conf->type       .= '_conf';
+			$containers->conf->label       = __( 'Configuration', 'fakerpress' );
 			$containers->conf->description = __( '', 'fakerpress' );
-			$containers->conf->class = [ 'meta_conf-container' ];
-			$containers->conf->blocks = $container_blocks;
-			$containers->conf->attributes = [
+			$containers->conf->class       = [ 'meta_conf-container' ];
+			$containers->conf->blocks      = $container_blocks;
+			$containers->conf->attributes  = [
 				'data-config' => $config,
 			];
 
@@ -1207,7 +1210,7 @@ class Field {
 		// Creates Templates for generating Meta via JavaScript
 		foreach ( $type->options as $key => $ftype ) {
 			$is_callable = ( isset( $ftype->template ) && is_callable( $ftype->template ) );
-			$html[] = '<script type="text/html" data-rel="' . self::id( $container->id, true ) . '" class="' . Utils::abbr( 'template-' . $ftype->value ) . '"' . ( $is_callable ? ' data-callable' : '' ) . '>';
+			$html[]      = '<script type="text/html" data-rel="' . self::id( $container->id, true ) . '" class="' . Utils::abbr( 'template-' . $ftype->value ) . '"' . ( $is_callable ? ' data-callable' : '' ) . '>';
 			if ( $is_callable ) {
 				$html[] = call_user_func_array( $ftype->template, [ $field, $ftype ] );
 			}
@@ -1226,30 +1229,30 @@ class Field {
 
 		$default = (object) [
 			'separator' => [
-				'_id' => [ 'meta', 'separator' ],
-				'_name' => [ 'meta', 'separator' ],
-				'type' => 'text',
-				'size' => 'tiny',
-				'class' => [],
-				'value' => ',',
+				'_id'         => [ 'meta', 'separator' ],
+				'_name'       => [ 'meta', 'separator' ],
+				'type'        => 'text',
+				'size'        => 'tiny',
+				'class'       => [],
+				'value'       => ',',
 				'placeholder' => __( 'E.g.: , ', 'fakerpress' ),
-				'label' => __( 'Separator', 'fakerpress' ),
+				'label'       => __( 'Separator', 'fakerpress' ),
 			],
-			'weight' => [
-				'_id' => [ 'meta', 'weight' ],
-				'_name' => [ 'meta', 'weight' ],
-				'type' => 'number',
-				'class' => [],
-				'value' => 90,
-				'min' => 0,
-				'max' => 100,
+			'weight'    => [
+				'_id'         => [ 'meta', 'weight' ],
+				'_name'       => [ 'meta', 'weight' ],
+				'type'        => 'number',
+				'class'       => [],
+				'value'       => 90,
+				'min'         => 0,
+				'max'         => 100,
 				'placeholder' => __( 'E.g.: 55', 'fakerpress' ),
-				'label' => __( 'Weight', 'fakerpress' ),
+				'label'       => __( 'Weight', 'fakerpress' ),
 			],
-			'qty' => [
-				'_id' => [ 'meta', 'qty' ],
+			'qty'       => [
+				'_id'   => [ 'meta', 'qty' ],
 				'_name' => [ 'meta', 'qty' ],
-				'type' => 'range',
+				'type'  => 'range',
 				'class' => [],
 				'label' => __( 'Quantity', 'fakerpress' ),
 			],
@@ -1259,16 +1262,16 @@ class Field {
 		}
 
 		$types->numbers = [
-			'value' => 'numbers',
-			'text' => __( 'Number', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$range = clone $field;
-				$range->_id = [ 'meta', 'number' ];
+			'value'    => 'numbers',
+			'text'     => __( 'Number', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$range        = clone $field;
+				$range->_id   = [ 'meta', 'number' ];
 				$range->_name = [ 'meta', 'number' ];
-				$range->type = 'range';
+				$range->type  = 'range';
 				$range->class = [];
 				$range->label = __( 'Range of possible numbers', 'fakerpress' );
-				$range->_min = 0;
+				$range->_min  = 0;
 
 				$html[] = Field::wrapper( Field::type_range( $range, null, 'string' ), $range );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
@@ -1278,17 +1281,17 @@ class Field {
 		];
 
 		$types->wp_query = [
-			'value' => 'wp_query',
-			'text' => __( 'WP_Query', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$query = clone $field;
-				$query->_id = [ 'meta', 'query' ];
-				$query->_name = [ 'meta', 'query' ];
-				$query->type = 'text';
-				$query->class = [];
-				$query->size = 'large';
+			'value'    => 'wp_query',
+			'text'     => __( 'WP_Query', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$query              = clone $field;
+				$query->_id         = [ 'meta', 'query' ];
+				$query->_name       = [ 'meta', 'query' ];
+				$query->type        = 'text';
+				$query->class       = [];
+				$query->size        = 'large';
 				$query->placeholder = __( 'category=2&posts_per_page=10', 'fakerpress' );
-				$query->label = __( 'Uses <a href="http://codex.wordpress.org/Class_Reference/WP_Query" target="_blank">WP_Query</a>', 'fakerpress' );
+				$query->label       = __( 'Uses <a href="http://codex.wordpress.org/Class_Reference/WP_Query" target="_blank">WP_Query</a>', 'fakerpress' );
 
 				$html[] = Field::wrapper( Field::type_text( $query, null, 'string' ), $query );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
@@ -1298,57 +1301,57 @@ class Field {
 		];
 
 		$types->attachment = [
-			'value' => 'attachment',
-			'text' => __( 'Attachment', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$store = clone $field;
-				$store->_id = [ 'meta', 'store' ];
-				$store->_name = [ 'meta', 'store' ];
-				$store->type = 'dropdown';
-				$store->value = 'id';
-				$store->options = [
+			'value'    => 'attachment',
+			'text'     => __( 'Attachment', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$store              = clone $field;
+				$store->_id         = [ 'meta', 'store' ];
+				$store->_name       = [ 'meta', 'store' ];
+				$store->type        = 'dropdown';
+				$store->value       = 'id';
+				$store->options     = [
 					[
-						'id' => 'id',
+						'id'   => 'id',
 						'text' => esc_attr__( 'Attachment ID' ),
 					],
 					[
-						'id' => 'url',
+						'id'   => 'url',
 						'text' => esc_attr__( 'Attachment URL' ),
 					],
 				];
-				$store->class = [];
+				$store->class       = [];
 				$store->placeholder = __( 'Which value should be saved on the Meta', 'fakerpress' );
-				$store->label = __( 'Stored Data', 'fakerpress' );
+				$store->label       = __( 'Stored Data', 'fakerpress' );
 
-				$providers = clone $field;
-				$providers->_id = [ 'meta', 'provider' ];
-				$providers->_name = [ 'meta', 'provider' ];
-				$providers->type = 'dropdown';
-				$providers->class = [];
-				$providers->multiple = true;
-				$providers->placeholder = __( 'Select at least one Provider', 'fakerpress' );
-				$providers->label = __( 'Which image services will the generator use?', 'fakerpress' );
-				$providers->value = implode( ',', wp_list_pluck( Module\Attachment::get_providers(), 'id' ) );
+				$providers                   = clone $field;
+				$providers->_id              = [ 'meta', 'provider' ];
+				$providers->_name            = [ 'meta', 'provider' ];
+				$providers->type             = 'dropdown';
+				$providers->class            = [];
+				$providers->multiple         = true;
+				$providers->placeholder      = __( 'Select at least one Provider', 'fakerpress' );
+				$providers->label            = __( 'Which image services will the generator use?', 'fakerpress' );
+				$providers->value            = implode( ',', wp_list_pluck( Module\Attachment::get_providers(), 'id' ) );
 				$providers->{'data-options'} = Module\Attachment::get_providers();
 
-				$size_width = clone $field;
-				$size_width->_id = [ 'meta', 'width' ];
-				$size_width->_name = [ 'meta', 'width' ];
-				$size_width->type = 'range';
-				$size_width->class = [];
-				$size_width->label = __( 'Range of possible width sizes for the image', 'fakerpress' );
-				$size_width->_min = 0;
+				$size_width                   = clone $field;
+				$size_width->_id              = [ 'meta', 'width' ];
+				$size_width->_name            = [ 'meta', 'width' ];
+				$size_width->type             = 'range';
+				$size_width->class            = [];
+				$size_width->label            = __( 'Range of possible width sizes for the image', 'fakerpress' );
+				$size_width->_min             = 0;
 				$size_width->_placeholder_min = esc_attr__( 'e.g.: 350', 'fakerpress' );
 				$size_width->_placeholder_max = esc_attr__( 'e.g.: 900', 'fakerpress' );
 				$size_width->_prevent_disable = true;
 
-				$size_height = clone $field;
-				$size_height->_id = [ 'meta', 'height' ];
-				$size_height->_name = [ 'meta', 'height' ];
-				$size_height->type = 'range';
-				$size_height->class = [];
-				$size_height->label = __( 'Range of possible height sizes for the image', 'fakerpress' );
-				$size_height->_min = 0;
+				$size_height                   = clone $field;
+				$size_height->_id              = [ 'meta', 'height' ];
+				$size_height->_name            = [ 'meta', 'height' ];
+				$size_height->type             = 'range';
+				$size_height->class            = [];
+				$size_height->label            = __( 'Range of possible height sizes for the image', 'fakerpress' );
+				$size_height->_min             = 0;
 				$size_height->_placeholder_min = esc_attr__( 'e.g.: 125', 'fakerpress' );
 				$size_height->_placeholder_max = esc_attr__( 'e.g.: 650', 'fakerpress' );
 				$size_height->_prevent_disable = true;
@@ -1366,19 +1369,19 @@ class Field {
 		];
 
 		$types->elements = [
-			'value' => 'elements',
-			'text' => __( 'Elements', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$tags = clone $field;
-				$tags->_id = [ 'meta', 'elements' ];
-				$tags->_name = [ 'meta', 'elements' ];
-				$tags->type = 'dropdown';
-				$tags->multiple = true;
+			'value'    => 'elements',
+			'text'     => __( 'Elements', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$tags                   = clone $field;
+				$tags->_id              = [ 'meta', 'elements' ];
+				$tags->_name            = [ 'meta', 'elements' ];
+				$tags->type             = 'dropdown';
+				$tags->multiple         = true;
 				$tags->{'data-options'} = [];
-				$tags->{'data-tags'} = true;
-				$tags->class = [];
-				$tags->placeholder = __( 'Type all possible elements (Tab or Return)', 'fakerpress' );
-				$tags->label = __( '', 'fakerpress' );
+				$tags->{'data-tags'}    = true;
+				$tags->class            = [];
+				$tags->placeholder      = __( 'Type all possible elements (Tab or Return)', 'fakerpress' );
+				$tags->label            = __( '', 'fakerpress' );
 
 				$html[] = Field::wrapper( Field::type_dropdown( $tags, null, 'string' ), $tags );
 				$html[] = Field::wrapper( Field::type_range( $default->qty, null, 'string' ), $default->qty );
@@ -1390,9 +1393,9 @@ class Field {
 		];
 
 		$types->letter = [
-			'value' => 'letter',
-			'text' => __( 'Letter', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
+			'value'    => 'letter',
+			'text'     => __( 'Letter', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1400,9 +1403,9 @@ class Field {
 		];
 
 		$types->words = [
-			'value' => 'words',
-			'text' => __( 'Words', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
+			'value'    => 'words',
+			'text'     => __( 'Words', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
 
 				$html[] = Field::wrapper( Field::type_range( $default->qty, null, 'string' ), $default->qty );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
@@ -1412,27 +1415,27 @@ class Field {
 		];
 
 		$types->text = [
-			'value' => 'text',
-			'text' => __( 'Text', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$text = clone $field;
-				$text->_id = [ 'meta', 'text_type' ];
-				$text->_name = [ 'meta', 'text_type' ];
-				$text->type = 'dropdown';
+			'value'    => 'text',
+			'text'     => __( 'Text', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$text          = clone $field;
+				$text->_id     = [ 'meta', 'text_type' ];
+				$text->_name   = [ 'meta', 'text_type' ];
+				$text->type    = 'dropdown';
 				$text->options = [
 					[
-						'text' => __( 'Sentences', 'fakerpress' ),
+						'text'  => __( 'Sentences', 'fakerpress' ),
 						'value' => 'sentences',
 					],
 					[
-						'text' => __( 'Paragraphs', 'fakerpress' ),
+						'text'  => __( 'Paragraphs', 'fakerpress' ),
 						'value' => 'paragraphs',
 					],
 				];
-				$text->value = 'paragraphs';
-				$text->class = [];
+				$text->value   = 'paragraphs';
+				$text->class   = [];
 
-				$separator = clone $default->separator;
+				$separator        = clone $default->separator;
 				$separator->value = '\n';
 				$separator->label = __( 'Separator <b space>&mdash;</b> New Line: "\n"', 'fakerpress' );
 
@@ -1446,19 +1449,19 @@ class Field {
 		];
 
 		$types->html = [
-			'value' => 'html',
-			'text' => __( 'HTML', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$elements = clone $field;
-				$elements->_id = [ 'meta', 'elements' ];
-				$elements->_name = [ 'meta', 'elements' ];
-				$elements->type = 'dropdown';
-				$elements->multiple = true;
-				$elements->{'data-tags'} = true;
+			'value'    => 'html',
+			'text'     => __( 'HTML', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$elements                   = clone $field;
+				$elements->_id              = [ 'meta', 'elements' ];
+				$elements->_name            = [ 'meta', 'elements' ];
+				$elements->type             = 'dropdown';
+				$elements->multiple         = true;
+				$elements->{'data-tags'}    = true;
 				$elements->{'data-options'} = array_merge( HTML::$sets['header'], HTML::$sets['list'], HTML::$sets['block'], HTML::$sets['self_close'] );
-				$elements->value = implode( ',', $elements->{'data-options'} );
-				$elements->class = [];
-				$elements->label = __( 'HTML Tags, without &lt; or &gt;', 'fakerpress' );
+				$elements->value            = implode( ',', $elements->{'data-options'} );
+				$elements->class            = [];
+				$elements->label            = __( 'HTML Tags, without &lt; or &gt;', 'fakerpress' );
 
 				$html[] = Field::wrapper( Field::type_dropdown( $elements, null, 'string' ), $elements );
 				$html[] = Field::wrapper( Field::type_range( $default->qty, null, 'string' ), $default->qty );
@@ -1469,16 +1472,16 @@ class Field {
 		];
 
 		$types->lexify = [
-			'value' => 'lexify',
-			'text' => __( 'Lexify', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$template = clone $field;
-				$template->_id = [ 'meta', 'template' ];
-				$template->_name = [ 'meta', 'template' ];
-				$template->type = 'text';
-				$template->class = [];
+			'value'    => 'lexify',
+			'text'     => __( 'Lexify', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$template              = clone $field;
+				$template->_id         = [ 'meta', 'template' ];
+				$template->_name       = [ 'meta', 'template' ];
+				$template->type        = 'text';
+				$template->class       = [];
 				$template->placeholder = __( 'E.g.: John ##??', 'fakerpress' );
-				$template->label = __( 'John ##?? <b spacer>&raquo;</b> John 29ze', 'fakerpress' );
+				$template->label       = __( 'John ##?? <b spacer>&raquo;</b> John 29ze', 'fakerpress' );
 
 				$html[] = Field::wrapper( Field::type_text( $template, null, 'string' ), $template );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
@@ -1488,16 +1491,16 @@ class Field {
 		];
 
 		$types->asciify = [
-			'value' => 'asciify',
-			'text' => __( 'Asciify', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$template = clone $field;
-				$template->_id = [ 'meta', 'template' ];
-				$template->_name = [ 'meta', 'template' ];
-				$template->type = 'text';
-				$template->class = [];
+			'value'    => 'asciify',
+			'text'     => __( 'Asciify', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$template              = clone $field;
+				$template->_id         = [ 'meta', 'template' ];
+				$template->_name       = [ 'meta', 'template' ];
+				$template->type        = 'text';
+				$template->class       = [];
 				$template->placeholder = __( 'E.g.: John ****', 'fakerpress' );
-				$template->label = __( 'John **** <b spacer>&raquo;</b> John r9"+', 'fakerpress' );
+				$template->label       = __( 'John **** <b spacer>&raquo;</b> John r9"+', 'fakerpress' );
 
 				$html[] = Field::wrapper( Field::type_text( $template, null, 'string' ), $template );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
@@ -1507,16 +1510,16 @@ class Field {
 		];
 
 		$types->regexify = [
-			'value' => 'regexify',
-			'text' => __( 'Regexify', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$template = clone $field;
-				$template->_id = [ 'meta', 'template' ];
-				$template->_name = [ 'meta', 'template' ];
-				$template->type = 'text';
-				$template->class = [];
+			'value'    => 'regexify',
+			'text'     => __( 'Regexify', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$template              = clone $field;
+				$template->_id         = [ 'meta', 'template' ];
+				$template->_name       = [ 'meta', 'template' ];
+				$template->type        = 'text';
+				$template->class       = [];
 				$template->placeholder = __( 'E.g.: [A-Z0-9._%+-]+@[A-Z0-9.-]', 'fakerpress' );
-				$template->label = __( '[A-Z0-9._%+-]+@[A-Z0-9.-] <b spacer>&raquo;</b> sm0@y8k96a', 'fakerpress' );
+				$template->label       = __( '[A-Z0-9._%+-]+@[A-Z0-9.-] <b spacer>&raquo;</b> sm0@y8k96a', 'fakerpress' );
 
 				$html[] = Field::wrapper( Field::type_text( $template, null, 'string' ), $template );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
@@ -1526,55 +1529,55 @@ class Field {
 		];
 
 		$types->person = [
-			'value' => 'person',
-			'text' => __( 'Person', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$template = clone $field;
-				$template->_id = [ 'meta', 'template' ];
-				$template->_name = [ 'meta', 'template' ];
-				$template->type = 'dropdown';
-				$template->multiple = true;
-				$template->{'data-tags'} = true;
-				$template->{'data-options'} = [
+			'value'    => 'person',
+			'text'     => __( 'Person', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$template                     = clone $field;
+				$template->_id                = [ 'meta', 'template' ];
+				$template->_name              = [ 'meta', 'template' ];
+				$template->type               = 'dropdown';
+				$template->multiple           = true;
+				$template->{'data-tags'}      = true;
+				$template->{'data-options'}   = [
 					[
-						'text' => __( 'Title', 'fakerpress' ),
+						'text'  => __( 'Title', 'fakerpress' ),
 						'value' => '{% title %}',
 					],
 					[
-						'text' => __( 'First Name', 'fakerpress' ),
+						'text'  => __( 'First Name', 'fakerpress' ),
 						'value' => '{% first_name %}',
 					],
 					[
-						'text' => __( 'Last Name', 'fakerpress' ),
+						'text'  => __( 'Last Name', 'fakerpress' ),
 						'value' => '{% last_name %}',
 					],
 					[
-						'text' => __( 'Suffix', 'fakerpress' ),
+						'text'  => __( 'Suffix', 'fakerpress' ),
 						'value' => '{% suffix %}',
 					],
 				];
-				$template->value = 'title,first_name,last_name,suffix';
-				$template->value = '{% title %}|{% first_name %}|{% last_name %}|{% suffix %}';
+				$template->value              = 'title,first_name,last_name,suffix';
+				$template->value              = '{% title %}|{% first_name %}|{% last_name %}|{% suffix %}';
 				$template->{'data-separator'} = '|';
-				$template->class = [];
-				$template->label = __( 'Name Template', 'fakerpress' );
+				$template->class              = [];
+				$template->label              = __( 'Name Template', 'fakerpress' );
 
-				$gender = clone $field;
-				$gender->_id = [ 'meta', 'gender' ];
-				$gender->_name = [ 'meta', 'gender' ];
-				$gender->type = 'radio';
+				$gender          = clone $field;
+				$gender->_id     = [ 'meta', 'gender' ];
+				$gender->_name   = [ 'meta', 'gender' ];
+				$gender->type    = 'radio';
 				$gender->options = [
 					[
-						'text' => __( 'Male', 'fakerpress' ),
+						'text'  => __( 'Male', 'fakerpress' ),
 						'value' => 'male',
 					],
 					[
-						'text' => __( 'Female', 'fakerpress' ),
+						'text'  => __( 'Female', 'fakerpress' ),
 						'value' => 'female',
 					],
 				];
-				$gender->value = 'female';
-				$gender->class = [];
+				$gender->value   = 'female';
+				$gender->class   = [];
 
 				$html[] = Field::wrapper( Field::type_dropdown( $template, null, 'string' ), $template );
 				$html[] = Field::wrapper( Field::type_radio( $gender, null, 'string' ), $gender );
@@ -1585,85 +1588,85 @@ class Field {
 		];
 
 		$types->geo = [
-			'value' => 'geo',
-			'text' => __( 'Geo Information', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$template = clone $field;
-				$template->_id = [ 'meta', 'template' ];
-				$template->_name = [ 'meta', 'template' ];
-				$template->type = 'dropdown';
-				$template->multiple = true;
-				$template->{'data-tags'} = true;
-				$template->{'data-options'} = [
+			'value'    => 'geo',
+			'text'     => __( 'Geo Information', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$template                     = clone $field;
+				$template->_id                = [ 'meta', 'template' ];
+				$template->_name              = [ 'meta', 'template' ];
+				$template->type               = 'dropdown';
+				$template->multiple           = true;
+				$template->{'data-tags'}      = true;
+				$template->{'data-options'}   = [
 					[
-						'text' => __( 'Country', 'fakerpress' ),
+						'text'  => __( 'Country', 'fakerpress' ),
 						'value' => '{% country %}',
 					],
 					[
-						'text' => __( 'Country Code (e.g.: US)', 'fakerpress' ),
+						'text'  => __( 'Country Code (e.g.: US)', 'fakerpress' ),
 						'value' => '{% country_code %}',
 					],
 					[
-						'text' => __( 'Country ABBR (e.g.: USA', 'fakerpress' ),
+						'text'  => __( 'Country ABBR (e.g.: USA', 'fakerpress' ),
 						'value' => '{% country_abbr %}',
 					],
 					[
-						'text' => __( 'City Prefix', 'fakerpress' ),
+						'text'  => __( 'City Prefix', 'fakerpress' ),
 						'value' => '{% city_prefix %}',
 					],
 					[
-						'text' => __( 'City Suffix', 'fakerpress' ),
+						'text'  => __( 'City Suffix', 'fakerpress' ),
 						'value' => '{% city_suffix %}',
 					],
 					[
-						'text' => __( 'City', 'fakerpress' ),
+						'text'  => __( 'City', 'fakerpress' ),
 						'value' => '{% city %}',
 					],
 					[
-						'text' => __( 'State', 'fakerpress' ),
+						'text'  => __( 'State', 'fakerpress' ),
 						'value' => '{% state %}',
 					],
 					[
-						'text' => __( 'State Abbr', 'fakerpress' ),
+						'text'  => __( 'State Abbr', 'fakerpress' ),
 						'value' => '{% state_abbr %}',
 					],
 					[
-						'text' => __( 'Address', 'fakerpress' ),
+						'text'  => __( 'Address', 'fakerpress' ),
 						'value' => '{% address %}',
 					],
 					[
-						'text' => __( 'Secondary Address', 'fakerpress' ),
+						'text'  => __( 'Secondary Address', 'fakerpress' ),
 						'value' => '{% secondary_address %}',
 					],
 					[
-						'text' => __( 'Building Number', 'fakerpress' ),
+						'text'  => __( 'Building Number', 'fakerpress' ),
 						'value' => '{% building_number %}',
 					],
 					[
-						'text' => __( 'Street Name', 'fakerpress' ),
+						'text'  => __( 'Street Name', 'fakerpress' ),
 						'value' => '{% street_name %}',
 					],
 					[
-						'text' => __( 'Street Address', 'fakerpress' ),
+						'text'  => __( 'Street Address', 'fakerpress' ),
 						'value' => '{% street_address %}',
 					],
 					[
-						'text' => __( 'Postal Code', 'fakerpress' ),
+						'text'  => __( 'Postal Code', 'fakerpress' ),
 						'value' => '{% postalcode %}',
 					],
 					[
-						'text' => __( 'Latitude', 'fakerpress' ),
+						'text'  => __( 'Latitude', 'fakerpress' ),
 						'value' => '{% latitude %}',
 					],
 					[
-						'text' => __( 'Longitude', 'fakerpress' ),
+						'text'  => __( 'Longitude', 'fakerpress' ),
 						'value' => '{% longitude %}',
 					],
 				];
-				$template->value = '{% latitude %}|,|{% longitude %}';
+				$template->value              = '{% latitude %}|,|{% longitude %}';
 				$template->{'data-separator'} = '|';
-				$template->class = [];
-				$template->label = __( 'Address Format', 'fakerpress' );
+				$template->class              = [];
+				$template->label              = __( 'Address Format', 'fakerpress' );
 
 				$html[] = Field::wrapper( Field::type_dropdown( $template, null, 'string' ), $template );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
@@ -1673,37 +1676,37 @@ class Field {
 		];
 
 		$types->phone = [
-			'value' => 'company',
-			'text' => __( 'Company', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$template = clone $field;
-				$template->_id = [ 'meta', 'template' ];
-				$template->_name = [ 'meta', 'template' ];
-				$template->type = 'dropdown';
-				$template->multiple = true;
-				$template->{'data-tags'} = true;
-				$template->{'data-options'} = [
+			'value'    => 'company',
+			'text'     => __( 'Company', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$template                     = clone $field;
+				$template->_id                = [ 'meta', 'template' ];
+				$template->_name              = [ 'meta', 'template' ];
+				$template->type               = 'dropdown';
+				$template->multiple           = true;
+				$template->{'data-tags'}      = true;
+				$template->{'data-options'}   = [
 					[
-						'text' => __( 'Catch Phrase', 'fakerpress' ),
+						'text'  => __( 'Catch Phrase', 'fakerpress' ),
 						'value' => '{% catch_phrase %}',
 					],
 					[
-						'text' => __( 'BS', 'fakerpress' ),
+						'text'  => __( 'BS', 'fakerpress' ),
 						'value' => '{% bs %}',
 					],
 					[
-						'text' => __( 'Company', 'fakerpress' ),
+						'text'  => __( 'Company', 'fakerpress' ),
 						'value' => '{% company %}',
 					],
 					[
-						'text' => __( 'Suffix', 'fakerpress' ),
+						'text'  => __( 'Suffix', 'fakerpress' ),
 						'value' => '{% suffix %}',
 					],
 				];
-				$template->value = '{% company %}|&nbsp;|{% suffix %}';
+				$template->value              = '{% company %}|&nbsp;|{% suffix %}';
 				$template->{'data-separator'} = '|';
-				$template->class = [];
-				$template->label = __( 'Company Format', 'fakerpress' );
+				$template->class              = [];
+				$template->label              = __( 'Company Format', 'fakerpress' );
 
 				$html[] = Field::wrapper( Field::type_dropdown( $template, null, 'string' ), $template );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
@@ -1713,19 +1716,19 @@ class Field {
 		];
 
 		$types->date = [
-			'value' => 'date',
-			'text' => __( 'Date', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
-				$template = clone $field;
-				$template->_id = [ 'meta', 'interval' ];
+			'value'    => 'date',
+			'text'     => __( 'Date', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
+				$template        = clone $field;
+				$template->_id   = [ 'meta', 'interval' ];
 				$template->_name = [ 'meta', 'interval' ];
-				$template->type = 'interval';
+				$template->type  = 'interval';
 				$template->class = [];
 
-				$format = clone $field;
-				$format->_id = [ 'meta', 'format' ];
+				$format        = clone $field;
+				$format->_id   = [ 'meta', 'format' ];
 				$format->_name = [ 'meta', 'format' ];
-				$format->type = 'text';
+				$format->type  = 'text';
 				$format->class = [];
 				$format->value = 'Y-m-d H:i:s';
 				$format->label = __( 'Date Format <b space>&mdash;</b> See <a href="http://php.net/manual/function.date.php" target="_blank">PHP Date</a>', 'fakerpress' );
@@ -1739,9 +1742,9 @@ class Field {
 		];
 
 		$types->timezone = [
-			'value' => 'timezone',
-			'text' => __( 'TimeZone', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
+			'value'    => 'timezone',
+			'text'     => __( 'TimeZone', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1749,9 +1752,9 @@ class Field {
 		];
 
 		$types->email = [
-			'value' => 'email',
-			'text' => __( 'Email', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
+			'value'    => 'email',
+			'text'     => __( 'Email', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1759,9 +1762,9 @@ class Field {
 		];
 
 		$types->domain = [
-			'value' => 'domain',
-			'text' => __( 'Domain', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
+			'value'    => 'domain',
+			'text'     => __( 'Domain', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1769,9 +1772,9 @@ class Field {
 		];
 
 		$types->ip = [
-			'value' => 'ip',
-			'text' => __( 'IP', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
+			'value'    => 'ip',
+			'text'     => __( 'IP', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1779,9 +1782,9 @@ class Field {
 		];
 
 		$types->user_agent = [
-			'value' => 'user_agent',
-			'text' => __( 'Browser User Agent', 'fakerpress' ),
-			'template' => function( $field, $type ) use ( $default ) {
+			'value'    => 'user_agent',
+			'text'     => __( 'Browser User Agent', 'fakerpress' ),
+			'template' => function ( $field, $type ) use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1801,31 +1804,31 @@ class Field {
 			return false;
 		}
 
-		$min = clone $field;
-		$min->_id[] = 'min';
-		$min->_name[] = 'min';
-		$min->type = 'date';
+		$min                = clone $field;
+		$min->_id[]         = 'min';
+		$min->_name[]       = 'min';
+		$min->type          = 'date';
 		$min->{'data-type'} = 'min';
-		$min->value = '';
-		$min->class = [];
-		$min->placeholder = esc_attr__( 'yyyy-mm-dd', 'fakerpress' );
+		$min->value         = '';
+		$min->class         = [];
+		$min->placeholder   = esc_attr__( 'yyyy-mm-dd', 'fakerpress' );
 
-		$max = clone $field;
-		$max->_id[] = 'max';
-		$max->_name[] = 'max';
-		$max->type = 'date';
+		$max                = clone $field;
+		$max->_id[]         = 'max';
+		$max->_name[]       = 'max';
+		$max->type          = 'date';
 		$max->{'data-type'} = 'max';
-		$max->class = [];
-		$max->value = '';
-		$max->placeholder = esc_attr__( 'yyyy-mm-dd', 'fakerpress' );
+		$max->class         = [];
+		$max->value         = '';
+		$max->placeholder   = esc_attr__( 'yyyy-mm-dd', 'fakerpress' );
 
-		$interval = clone $field;
-		$interval->_id[] = 'name';
-		$interval->_name[] = 'name';
-		$interval->type = 'dropdown';
-		$interval->class = [];
+		$interval                       = clone $field;
+		$interval->_id[]                = 'name';
+		$interval->_name[]              = 'name';
+		$interval->type                 = 'dropdown';
+		$interval->class                = [];
 		$interval->{'data-placeholder'} = esc_attr__( 'Select an Interval', 'fakerpress' );
-		$interval->options = Dates::get_intervals();
+		$interval->options              = Dates::get_intervals();
 
 		$content[] = self::type_dropdown( $interval, null, 'string' );
 		$content[] = self::type_date( $min, null, 'string' );

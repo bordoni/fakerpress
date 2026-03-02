@@ -123,7 +123,7 @@ function get_in_any( array $variables, $indexes, $default = null ) {
  *
  * The variable being tested for can be an array if you wish to find a nested value.
  *
- * @see   \StellarWP\Jobvite\get_in_any()
+ * @see \StellarWP\Jobvite\get_in_any()
  *
  * @since 0.6.0
  *
@@ -146,4 +146,3 @@ function get_request_var( $indexes, $default = null ) {
 function get_request_method(): string {
 	return strtoupper( wp_unslash( get( $_SERVER, 'REQUEST_METHOD', 'GET' ) ) );
 }
-

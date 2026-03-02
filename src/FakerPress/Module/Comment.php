@@ -51,7 +51,7 @@ class Comment extends Abstract_Module {
 		];
 		$comments = [];
 
-		$query_comments = new \WP_Comment_Query;
+		$query_comments = new \WP_Comment_Query();
 		$args           = wp_parse_args( $args, $defaults );
 
 		$query_comments = $query_comments->query( $args );
@@ -129,7 +129,7 @@ class Comment extends Abstract_Module {
 	 * @return array|WP_Error
 	 */
 	public function parse_request( int $qty, array $request = [] ) {
-		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ){
+		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ) {
 			return new WP_Error( 'fakerpress_zero_comments', __( 'Zero is not a good number of comments to fake...', 'fakerpress' ) );
 		}
 
@@ -145,7 +145,7 @@ class Comment extends Abstract_Module {
 
 		$results = [];
 
-		for ( $i = 0; $i < $qty; $i ++ ) {
+		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->set( 'comment_date', $min_date, $max_date );
 			$this->set(
 				'comment_content',

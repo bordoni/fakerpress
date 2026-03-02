@@ -20,8 +20,8 @@ class WP_Attachment extends Base {
 	/**
 	 * Hold the default width and height for the diff providers.
 	 *
-	 * @since  0.1.0
-	 * @since  0.5.0 now it's a public static var.
+	 * @since 0.1.0
+	 * @since 0.5.0 now it's a public static var.
 	 *
 	 * @var array
 	 */
@@ -30,7 +30,7 @@ class WP_Attachment extends Base {
 			'width'  => [ 200, 640 ],
 			'height' => 1.25,
 		],
-		LoremPicsum::ID       => [
+		LoremPicsum::ID => [
 			'width'  => [ 1024, 1440 ],
 			'height' => 1.5,
 		],

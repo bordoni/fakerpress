@@ -2,21 +2,19 @@
 
 namespace FakerPress\Module;
 
-use FakerPress\ThirdParty\Faker;
 use FakerPress;
 
 /**
  * Meta Module which will generate one Meta Value at a time
  *
- * @since  0.3.0
- *
+ * @since 0.3.0
  */
 class Meta extends Abstract_Module {
 
 	/**
 	 * Which Faker Dependencies this Module will need
 	 *
-	 * @since  0.3.0
+	 * @since 0.3.0
 	 *
 	 * @var string[]
 	 */
@@ -36,7 +34,7 @@ class Meta extends Abstract_Module {
 	/**
 	 * Which Faker Provider class we are using here
 	 *
-	 * @since  0.3.0
+	 * @since 0.3.0
 	 *
 	 * @var string
 	 */
@@ -45,7 +43,7 @@ class Meta extends Abstract_Module {
 	/**
 	 * Which type of object we are saving to
 	 *
-	 * @since  0.3.0
+	 * @since 0.3.0
 	 *
 	 * @var string
 	 */
@@ -54,7 +52,7 @@ class Meta extends Abstract_Module {
 	/**
 	 * Which object we are saving to
 	 *
-	 * @since  0.3.0
+	 * @since 0.3.0
 	 *
 	 * @var integer
 	 */
@@ -87,7 +85,7 @@ class Meta extends Abstract_Module {
 	/**
 	 * Configure which Object we will save Meta to
 	 *
-	 * @since  0.3.0
+	 * @since 0.3.0
 	 *
 	 * @return self
 	 */
@@ -150,19 +148,19 @@ class Meta extends Abstract_Module {
 		/**
 		 * Allow filtering for the value for a Meta
 		 *
-		 * @since  0.4.8
+		 * @since 0.4.8
 		 *
 		 * @param mixed  $meta_value The Meta value that will be filtered
 		 * @param string $meta_key   Which meta key we are currently filtering for
 		 * @param string $meta_type  Which type of Meta we are dealing with
 		 * @param self   $module     An instance of the Meta Module
 		 */
-		$this->data['meta_value'] = apply_filters( "fakerpress.module.meta.value", $this->data['meta_value'], $this->data['meta_key'], $type, $this );
+		$this->data['meta_value'] = apply_filters( 'fakerpress.module.meta.value', $this->data['meta_value'], $this->data['meta_key'], $type, $this );
 
 		/**
 		 * Allow filtering for the Value of a specific meta value based on it's key
 		 *
-		 * @since  0.4.8
+		 * @since 0.4.8
 		 *
 		 * @param mixed  $meta_value The Meta value that will be filtered
 		 * @param string $meta_type  Which type of Meta we are dealing with

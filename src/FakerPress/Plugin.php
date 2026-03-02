@@ -196,7 +196,7 @@ class Plugin {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @uses  plugin_dir_path
+	 * @uses plugin_dir_path
 	 *
 	 * @param string $append A string to be appended to the root path
 	 *
@@ -210,7 +210,7 @@ class Plugin {
 	 * Return a URL relative to the plugin root
 	 *
 	 * @since 0.1.0
-	 * @uses  plugins_url
+	 * @uses plugins_url
 	 *
 	 * @param string $file A string to be appended to the root url
 	 *
@@ -225,9 +225,9 @@ class Plugin {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @uses  admin_url
-	 * @uses  wp_parse_args
-	 * @uses  add_query_arg
+	 * @uses admin_url
+	 * @uses wp_parse_args
+	 * @uses add_query_arg
 	 *
 	 * @param string|array $args Arguments for the admin URL
 	 * @param string       $hash Hash for the admin URL
@@ -254,7 +254,7 @@ class Plugin {
 	 * Returns a URL for the external project website
 	 *
 	 * @since 0.3.2
-	 * @uses  esc_url_raw
+	 * @uses esc_url_raw
 	 *
 	 * @param string $path Hash for the admin URL
 	 *
@@ -266,9 +266,7 @@ class Plugin {
 
 	public static function get( $name, $default = false ) {
 		$options = static::all();
-		$value   = get( $options, $name, $default );
-
-		return $value;
+		return get( $options, $name, $default );
 	}
 
 	public static function update( $name = null, $value = false ) {
@@ -277,7 +275,7 @@ class Plugin {
 
 		foreach ( (array) $name as $k => $index ) {
 			if ( 0 === $k ) {
-				$opts[ - 1 ] = &$options;
+				$opts[- 1] = &$options;
 			}
 
 			if ( count( $name ) - 1 !== $k && ! isset( $opts[ $k - 1 ][ $index ] ) ) {

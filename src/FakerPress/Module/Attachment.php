@@ -1,5 +1,6 @@
 <?php
 namespace FakerPress\Module;
+
 use FakerPress\Provider\Image\Placeholder;
 use FakerPress\Provider\Image\LoremPicsum;
 use WP_Error;
@@ -11,7 +12,7 @@ class Attachment extends Abstract_Module {
 	 * Holds the key for the meta value of the original URL from where
 	 * a given attachment was downloaded from.
 	 *
-	 * @since  0.5.0
+	 * @since 0.5.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +32,7 @@ class Attachment extends Abstract_Module {
 		return 'attachments';
 	}
 
-	public function hook():void {
+	public function hook(): void {
 	}
 
 	/**
@@ -81,26 +82,26 @@ class Attachment extends Abstract_Module {
 	 * Handle the downloads of Attachments given a URL and Post Parent ID, which will default to 0.
 	 * Currently only support images.
 	 *
-	 * @since  0.5.0
+	 * @since 0.5.0
 	 *
-	 * @param  string  $url            Which URL we are using to download.
-	 * @param  integer $post_parent_id Which post this will be attached to.
+	 * @param string  $url            Which URL we are using to download.
+	 * @param integer $post_parent_id Which post this will be attached to.
 	 *
 	 * @return int|WP_Error            Attachment ID or WP_Error.
 	 */
 	protected function handle_download( $url, $post_parent_id = 0 ) {
 		// Include WordPress core functions, this was not present on the REST API.
 		if ( ! function_exists( 'download_url' ) ) {
-			require_once( ABSPATH . 'wp-admin/includes/file.php' );
-			require_once( ABSPATH . 'wp-admin/includes/image.php' );
-			require_once( ABSPATH . 'wp-admin/includes/media.php' );
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+			require_once ABSPATH . 'wp-admin/includes/media.php';
 		}
 
 		/**
 		 * Allows filtering of the attachment download_url timeout, which is here just to
 		 * prevent fakerpress timing out.
 		 *
-		 * @since  0.5.0
+		 * @since 0.5.0
 		 *
 		 * @param int    $timeout         Download timeout.
 		 * @param string $url             Which url we are downloading it for.
@@ -121,7 +122,7 @@ class Attachment extends Abstract_Module {
 		
 		// If that fails, check if it's an SVG or other file type
 		if ( ! $mime_type ) {
-			$finfo = finfo_open( FILEINFO_MIME_TYPE );
+			$finfo     = finfo_open( FILEINFO_MIME_TYPE );
 			$mime_type = finfo_file( $finfo, $temporary_file );
 			finfo_close( $finfo );
 			
@@ -152,7 +153,7 @@ class Attachment extends Abstract_Module {
 		$filename = implode( '.', [ $this->get_faker()->uuid(), reset( $extension ) ] );
 
 		$file = [
-			'name' => $filename,
+			'name'     => $filename,
 			'tmp_name' => $temporary_file,
 		];
 
@@ -161,7 +162,7 @@ class Attachment extends Abstract_Module {
 
 		// download_url requires deleting the file
 		if ( file_exists( $temporary_file ) ) {
-			 unlink( $temporary_file );
+			unlink( $temporary_file );
 		}
 
 		/**
@@ -171,7 +172,7 @@ class Attachment extends Abstract_Module {
 		*/
 		if ( is_wp_error( $attachment_id ) ) {
 			if ( file_exists( $temporary_file ) ) {
-				 unlink( $temporary_file );
+				unlink( $temporary_file );
 			}
 			return $attachment_id;
 		}
@@ -205,7 +206,7 @@ class Attachment extends Abstract_Module {
 	 * @return array  With ID, Text and Type
 	 */
 	public static function get_providers(): array {
-		$providers = [
+		return [
 			[
 				'id'   => Placeholder::ID,
 				'text' => esc_attr__( 'Placehold.co', 'fakerpress' ),
@@ -217,9 +218,6 @@ class Attachment extends Abstract_Module {
 				'type' => 'image',
 			],
 		];
-
-		return $providers;
-
 	}
 
 	/**
@@ -243,7 +241,10 @@ class Attachment extends Abstract_Module {
 				'max' => $request['interval_date']['max'] ?? 'now',
 			];
 		} else {
-			$date_range = [ 'min' => '-30 days', 'max' => 'now' ];
+			$date_range = [
+				'min' => '-30 days',
+				'max' => 'now',
+			];
 		}
 
 		// Process author - it comes as comma-separated string from select2
@@ -257,7 +258,10 @@ class Attachment extends Abstract_Module {
 		}
 
 		// Process width range
-		$width = [ 'min' => 200, 'max' => 1200 ];
+		$width = [
+			'min' => 200,
+			'max' => 1200,
+		];
 		if ( isset( $request['width'] ) && is_array( $request['width'] ) ) {
 			$width = [
 				'min' => absint( $request['width']['min'] ),
@@ -371,22 +375,22 @@ class Attachment extends Abstract_Module {
 		}
 
 		// Select provider.
-		$provider = $request['provider'];
+		$provider       = $request['provider'];
 		$attachment_url = '';
-		$image_author = null;
+		$image_author   = null;
 
 		switch ( $provider ) {
 			case 'lorempicsum':
 				// Use a specific image ID so we can fetch metadata
-				$image_id = $faker->numberBetween( 0, 1084 ); // Lorem Picsum has ~1084 images
+				$image_id       = $faker->numberBetween( 0, 1084 ); // Lorem Picsum has ~1084 images
 				$attachment_url = sprintf( 'https://picsum.photos/id/%d/%d/%d', $image_id, $width, $height );
 				
 				// Fetch image metadata to get author info
 				$metadata_url = sprintf( 'https://picsum.photos/id/%d/info', $image_id );
-				$response = wp_remote_get( $metadata_url, [ 'timeout' => 5 ] );
+				$response     = wp_remote_get( $metadata_url, [ 'timeout' => 5 ] );
 				
 				if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
-					$body = wp_remote_retrieve_body( $response );
+					$body     = wp_remote_retrieve_body( $response );
 					$metadata = json_decode( $body, true );
 					
 					if ( ! empty( $metadata['author'] ) ) {
@@ -466,12 +470,12 @@ class Attachment extends Abstract_Module {
 
 		// Update post fields if needed.
 		$update_data = [
-			'ID'           => $attachment_id,
-			'post_title'   => $attachment_data['post_title'],
-			'post_content' => $attachment_data['post_content'] ?? '',
-			'post_excerpt' => $attachment_data['post_excerpt'] ?? '',
-			'post_author'  => $attachment_data['post_author'],
-			'post_date'    => $attachment_data['post_date'],
+			'ID'            => $attachment_id,
+			'post_title'    => $attachment_data['post_title'],
+			'post_content'  => $attachment_data['post_content'] ?? '',
+			'post_excerpt'  => $attachment_data['post_excerpt'] ?? '',
+			'post_author'   => $attachment_data['post_author'],
+			'post_date'     => $attachment_data['post_date'],
 			'post_date_gmt' => get_gmt_from_date( $attachment_data['post_date'] ),
 		];
 
@@ -486,7 +490,7 @@ class Attachment extends Abstract_Module {
 			// If we have an image author from Lorem Picsum, include attribution
 			if ( ! empty( $attachment_data['image_author'] ) ) {
 				$alt_text = sprintf( 
-					__( '%s - Photo by %s on Unsplash', 'fakerpress' ),
+					__( '%1$s - Photo by %2$s on Unsplash', 'fakerpress' ),
 					$faker->sentence( $faker->numberBetween( 3, 8 ) ),
 					$attachment_data['image_author']
 				);
@@ -521,8 +525,8 @@ class Attachment extends Abstract_Module {
 
 		if ( is_array( $dimension ) || is_object( $dimension ) ) {
 			$dimension = (array) $dimension;
-			$min = isset( $dimension['min'] ) ? absint( $dimension['min'] ) : $default;
-			$max = isset( $dimension['max'] ) ? absint( $dimension['max'] ) : $min;
+			$min       = isset( $dimension['min'] ) ? absint( $dimension['min'] ) : $default;
+			$max       = isset( $dimension['max'] ) ? absint( $dimension['max'] ) : $min;
 			
 			return $this->get_faker()->numberBetween( $min, $max );
 		}

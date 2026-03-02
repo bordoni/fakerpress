@@ -32,16 +32,13 @@ class Term extends Abstract_Module {
 	 * @inheritDoc
 	 */
 	public function hook(): void {
-
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static function fetch( array $args = [] ): array {
-		$terms = get_option( 'fakerpress.module_flag.term', [] );
-
-		return $terms;
+		return get_option( 'fakerpress.module_flag.term', [] );
 	}
 
 	/**
@@ -49,10 +46,10 @@ class Term extends Abstract_Module {
 	 */
 	public static function delete( $items ) {
 		$deleted = [];
-		foreach ( $items as $taxonomy => $terms ){
+		foreach ( $items as $taxonomy => $terms ) {
 			$deleted[ $taxonomy ] = [];
 
-			foreach ( $terms as $term ){
+			foreach ( $terms as $term ) {
 				$deleted[ $taxonomy ][ $term ] = wp_delete_term( $term, $taxonomy );
 			}
 		}
@@ -68,7 +65,7 @@ class Term extends Abstract_Module {
 	public function filter_save_response( $response, array $data, Abstract_Module $module ) {
 		$args = [
 			'description' => $data['description'],
-			'parent' => $data['parent_term'],
+			'parent'      => $data['parent_term'],
 		];
 
 		$term_object = wp_insert_term( $data['name'], $data['taxonomy'], $args );
@@ -79,11 +76,11 @@ class Term extends Abstract_Module {
 		$flagged = get_option( 'fakerpress.module_flag.' . $this::get_slug(), [] );
 
 		// Ensure that this option is an Array by resetting the variable.
-		if ( ! is_array( $flagged ) ){
+		if ( ! is_array( $flagged ) ) {
 			$flagged = [];
 		}
 
-		if ( ! isset( $flagged[ $data['taxonomy'] ] ) || ! is_array( $flagged[ $data['taxonomy'] ] ) ){
+		if ( ! isset( $flagged[ $data['taxonomy'] ] ) || ! is_array( $flagged[ $data['taxonomy'] ] ) ) {
 			$flagged[ $data['taxonomy'] ] = [];
 		}
 		$flagged[ $data['taxonomy'] ] = array_merge( $flagged[ $data['taxonomy'] ], (array) $term_object['term_id'] );
@@ -108,7 +105,7 @@ class Term extends Abstract_Module {
 	 * @return array|WP_Error
 	 */
 	public function parse_request( int $qty, array $request = [] ) {
-		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ){
+		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ) {
 			return new WP_Error( 'fakerpress_zero_terms', __( 'Zero is not a good number of terms to fake...', 'fakerpress' ) );
 		}
 
@@ -129,7 +126,7 @@ class Term extends Abstract_Module {
 
 			$term_id = $this->generate()->save();
 
-			if ( $term_id && is_numeric( $term_id ) ){
+			if ( $term_id && is_numeric( $term_id ) ) {
 				foreach ( $metas as $meta_index => $meta ) {
 					if ( ! isset( $meta['type'], $meta['name'] ) ) {
 						continue;

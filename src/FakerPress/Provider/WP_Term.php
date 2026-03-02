@@ -2,13 +2,12 @@
 namespace FakerPress\Provider;
 
 use FakerPress\ThirdParty\Faker\Provider\Base;
-use FakerPress;
 use FakerPress\Utils;
 use function FakerPress\make;
 
 class WP_Term extends Base {
 	public function name( $qty = 4 ) {
-		$qty = make( Utils::class )->get_qty_from_range( $qty );
+		$qty  = make( Utils::class )->get_qty_from_range( $qty );
 		$name = $this->generator->sentence( $qty );
 
 		// This removes the last dot on the end of the sentence
@@ -18,7 +17,7 @@ class WP_Term extends Base {
 	}
 
 	public function taxonomy( $taxonomies = [ 'category', 'post_tag' ], $args = [] ) {
-		if ( empty( $taxonomies ) ){
+		if ( empty( $taxonomies ) ) {
 			// Merge the returned terms to those provided
 			$taxonomies = get_taxonomies( $args, 'names' );
 		}
@@ -27,14 +26,14 @@ class WP_Term extends Base {
 	}
 
 	public function description( $min = 5, $max = 50 ) {
-		if ( is_array( $min ) ){
+		if ( is_array( $min ) ) {
 			$description = $this->generator->randomElement( $min );
 		} else {
 			// Not sure if this is the best approach, but it will work no metter what...
-			if ( ! is_numeric( $min ) ){
+			if ( ! is_numeric( $min ) ) {
 				$min = 5;
 			}
-			if ( ! is_numeric( $max ) ){
+			if ( ! is_numeric( $max ) ) {
 				$max = 50;
 			}
 			$description = $this->generator->sentence( $this->generator->numberBetween( $min, $max ) );
@@ -47,7 +46,7 @@ class WP_Term extends Base {
 	}
 
 	public function parent_term( $terms = [], $taxonomies = [], $args = [] ) {
-		if ( ! empty( $taxonomies ) ){
+		if ( ! empty( $taxonomies ) ) {
 			// We only need the ids to be returned
 			$args['fields'] = 'ids';
 
@@ -66,5 +65,4 @@ class WP_Term extends Base {
 		return $slug;
 	}
 	*/
-
 }

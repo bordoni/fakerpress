@@ -4,8 +4,8 @@ namespace FakerPress\Provider\Image;
 use FakerPress\ThirdParty\Faker\Provider\Base;
 
 /**
- * @since  0.4.2
- * @since  0.5.0 Unsplash.it turned into Lorem Picsum
+ * @since 0.4.2
+ * @since 0.5.0 Unsplash.it turned into Lorem Picsum
  */
 class LoremPicsum extends Base {
 	const ID = 'lorempicsum';
@@ -13,19 +13,19 @@ class LoremPicsum extends Base {
 	/**
 	 * Generates a URL for Lorem Picsum, previously known as Unsplash.it
 	 *
-	 * @since  0.4.2
-	 * @since  0.4.9  On this version we started to accept Array or Int in the Second Param
-	 * @since  0.5.0  Moved from Unsplash.it to Lorem Picsum
+	 * @since 0.4.2
+	 * @since 0.4.9  On this version we started to accept Array or Int in the Second Param
+	 * @since 0.5.0  Moved from Unsplash.it to Lorem Picsum
 	 *
-	 * @param  array|int        $width   A range for the images that will be generated, if an int is passed
-	 *                                   we use that value always.
-	 * @param  float|array|int  $height  Image height, int for fixed size, array for randomized and
-	 *                                   float to use a ratio
+	 * @param array|int       $width   A range for the images that will be generated, if an int is passed
+	 *                                  we use that value always.
+	 * @param float|array|int $height  Image height, int for fixed size, array for randomized and
+	 *                                  float to use a ratio
 	 *
 	 * @return string
 	 */
 	public function lorempicsum( $width = [ 800, 1440 ], $height = 1.25 ) {
-		if ( is_array( $width ) ){
+		if ( is_array( $width ) ) {
 			$width = call_user_func_array( [ $this->generator, 'numberBetween' ], $width );
 		}
 
@@ -40,9 +40,6 @@ class LoremPicsum extends Base {
 		}
 
 		// https://picsum.photos/200/640/?random
-		$url = "https://picsum.photos/{$width}/{$height}/?random";
-
-		return $url;
+		return "https://picsum.photos/{$width}/{$height}/?random";
 	}
-
 }

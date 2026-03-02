@@ -40,7 +40,7 @@ function enqueue_asset( $slug ) {
  *
  * @since 0.5.1
  *
- * @param string|array  $group  Which group(s) should be enqueued.
+ * @param string|array $group  Which group(s) should be enqueued.
  */
 function enqueue_asset_group( $group ) {
 	$assets = make( Utils\Assets::class );

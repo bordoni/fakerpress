@@ -2,7 +2,6 @@
 
 namespace FakerPress\Admin\View;
 
-use FakerPress\Admin;
 use FakerPress\Admin\Menu;
 use FakerPress\Plugin;
 use FakerPress\Template;
@@ -13,7 +12,7 @@ use function FakerPress\make;
 /**
  * Class Abstract View.
  *
- * @since   0.6.0
+ * @since 0.6.0
  *
  * @package FakerPress\Admin\View
  */
@@ -156,8 +155,8 @@ abstract class Abstract_View extends Template implements Interface_View {
 	public function setup_template(): void {
 		// Builds the template object for usage.
 		$this->set_template_origin( make( Plugin::class ) )
-		     ->set_template_folder( 'src/templates/pages' )
-		     ->set_template_context_extract( true );
+			->set_template_folder( 'src/templates/pages' )
+			->set_template_context_extract( true );
 	}
 
 	/**
@@ -184,5 +183,4 @@ abstract class Abstract_View extends Template implements Interface_View {
 
 		return true;
 	}
-
 }

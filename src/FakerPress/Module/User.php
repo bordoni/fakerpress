@@ -2,11 +2,8 @@
 
 namespace FakerPress\Module;
 
-use function FakerPress\get_request_var;
 use function FakerPress\get;
 use function FakerPress\make;
-use FakerPress\Plugin;
-use FakerPress\ThirdParty\Faker;
 use FakerPress;
 use WP_Error;
 use WP_User;
@@ -38,7 +35,6 @@ class User extends Abstract_Module {
 	 * @inheritDoc
 	 */
 	public function hook(): void {
-
 	}
 
 	/**
@@ -136,7 +132,7 @@ class User extends Abstract_Module {
 	 * @return array|WP_Error
 	 */
 	public function parse_request( int $qty, array $request = [] ) {
-		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ){
+		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ) {
 			return new WP_Error( 'fakerpress_zero_users', __( 'Zero is not a good number of users to fake...', 'fakerpress' ) );
 		}
 
@@ -145,7 +141,7 @@ class User extends Abstract_Module {
 		$description_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags' ) ) );
 
 		if ( ! function_exists( 'get_editable_roles' ) ) {
-			require_once( ABSPATH . 'wp-admin/includes/user.php' );
+			require_once ABSPATH . 'wp-admin/includes/user.php';
 		}
 
 		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', get( $request, 'roles' ) ) ) );
@@ -153,7 +149,7 @@ class User extends Abstract_Module {
 
 		$results = [];
 
-		for ( $i = 0; $i < $qty; $i ++ ) {
+		for ( $i = 0; $i < $qty; $i++ ) {
 			$this->set( 'role', $roles );
 			$this->set(
 				'description',
@@ -165,12 +161,14 @@ class User extends Abstract_Module {
 			);
 			$this->set( 'user_registered', 'yesterday', 'now' );
 
-			$this->set( [
-				'first_name',
-				'last_name',
-				'user_pass',
-				'user_url',
-			] );
+			$this->set(
+				[
+					'first_name',
+					'last_name',
+					'user_pass',
+					'user_url',
+				] 
+			);
 
 			$this->generate();
 

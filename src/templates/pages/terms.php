@@ -5,20 +5,20 @@ $fields[] = new Field(
 	'range',
 	'qty',
 	[
-		'label' => __( 'Quantity', 'fakerpress' ),
+		'label'       => __( 'Quantity', 'fakerpress' ),
 		'description' => __( 'How many terms should be generated, use both fields to get a randomized number of terms within the given range.', 'fakerpress' ),
 	]
 );
 
 $fields[] = new Field(
 	'range',
-    [
-		'id' => 'size',
+	[
+		'id'  => 'size',
 		'min' => 2,
 		'max' => 5,
 	],
 	[
-		'label' => __( 'Name Size', 'fakerpress' ),
+		'label'       => __( 'Name Size', 'fakerpress' ),
 		'description' => __( 'What is the size of the Term name', 'fakerpress' ),
 	]
 );
@@ -28,7 +28,7 @@ $taxonomies = get_taxonomies( [ 'public' => true ], 'object' );
 $_json_taxonomies_output = [];
 foreach ( $taxonomies as $key => $taxonomy ) {
 	$_json_taxonomies_output[] = [
-		'id' => $taxonomy->name,
+		'id'   => $taxonomy->name,
 		'text' => $taxonomy->labels->name,
 	];
 }
@@ -36,13 +36,13 @@ foreach ( $taxonomies as $key => $taxonomy ) {
 $fields[] = new Field(
 	'dropdown',
 	[
-		'id' => 'taxonomies',
-		'multiple' => true,
-		'value' => 'category, post_tag',
+		'id'           => 'taxonomies',
+		'multiple'     => true,
+		'value'        => 'category, post_tag',
 		'data-options' => $_json_taxonomies_output,
 	],
 	[
-		'label' => __( 'Taxonomies', 'fakerpress' ),
+		'label'       => __( 'Taxonomies', 'fakerpress' ),
 		'description' => __( 'Group of taxonomies that the terms will be created within', 'fakerpress' ),
 	]
 );
@@ -54,7 +54,7 @@ if ( version_compare( $GLOBALS['wp_version'], '4.4-beta', '>=' ) ) {
 			'id' => 'meta',
 		],
 		[
-			'label' => __( 'Meta Field Rules', 'fakerpress' ),
+			'label'       => __( 'Meta Field Rules', 'fakerpress' ),
 			'description' => __( 'Use the fields below to configure a set of rules for your generated Terms', 'fakerpress' ),
 		]
 	);
@@ -69,7 +69,10 @@ if ( version_compare( $GLOBALS['wp_version'], '4.4-beta', '>=' ) ) {
 
 		<table class="form-table" style="display: table;">
 			<tbody>
-				<?php foreach ( $fields as $field ) { $field->output( true ); } ?>
+				<?php
+				foreach ( $fields as $field ) {
+					$field->output( true ); }
+				?>
 			</tbody>
 		</table>
 		<div class="fp-submit">

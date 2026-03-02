@@ -3,13 +3,12 @@
 namespace FakerPress\Module;
 
 use FakerPress\ThirdParty\Faker\Generator;
-use FakerPress\ThirdParty\Faker\Provider\Base;
 use function FakerPress\is_truthy;
 
 /**
  * Class Abstract_Module.
  *
- * @since   0.6.0
+ * @since 0.6.0
  *
  * @package FakerPress\Module
  */
@@ -80,7 +79,7 @@ abstract class Abstract_Module implements Interface_Module {
 		 * @param string $flag Value for the flag.
 		 * @param string $module_class Which module class we are using.
 		 */
-		$flag = apply_filters( "fakerpress.module.flag", $flag, self::class );
+		$flag = apply_filters( 'fakerpress.module.flag', $flag, self::class );
 
 		/**
 		 * String holding the flag used to mark items from this module as FakerPress created.
@@ -309,7 +308,7 @@ abstract class Abstract_Module implements Interface_Module {
 		/**
 		 * Allows us to prevent `_encloseme` and `_pingme` meta when generating Posts
 		 *
-		 * @since  0.4.9
+		 * @since 0.4.9
 		 *
 		 * @param bool $prevent_enclose_ping_meta
 		 */

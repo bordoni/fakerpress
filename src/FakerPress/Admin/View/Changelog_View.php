@@ -5,7 +5,7 @@ namespace FakerPress\Admin\View;
 /**
  * Class Post_View
  *
- * @since   0.6.4
+ * @since 0.6.4
  *
  * @package FakerPress\Admin\View
  */

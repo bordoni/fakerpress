@@ -7,7 +7,7 @@ use FakerPress\Contracts\Service_Provider;
 /**
  * Class Factory
  *
- * @since   0.6.0
+ * @since 0.6.0
  *
  * @package FakerPress\Module
  */
@@ -65,9 +65,12 @@ class Factory extends Service_Provider {
 	 * @return Abstract_Module|null
 	 */
 	public function get( string $slug ) {
-		$views = array_filter( $this->get_all(), static function( $module ) use ( $slug ) {
-			return $module::get_slug() === $slug;
-		} );
+		$views = array_filter(
+			$this->get_all(),
+			static function ( $module ) use ( $slug ) {
+				return $module::get_slug() === $slug;
+			} 
+		);
 
 		if ( empty( $views ) ) {
 			return null;

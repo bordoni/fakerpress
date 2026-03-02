@@ -4,7 +4,7 @@
  *
  * Defines the contract that all REST endpoint classes must implement.
  *
- * @since   TBD
+ * @since TBD
  * @package FakerPress
  */
 

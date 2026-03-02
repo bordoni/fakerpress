@@ -7,13 +7,13 @@ use function FakerPress\is_truthy;
 /**
  * Class used to register and enqueue assets across our plugins.
  *
- * @since  0.5.1
+ * @since 0.5.1
  */
 class Assets {
 	/**
 	 * Stores all the Assets and it's configurations.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var array
 	 */
@@ -22,7 +22,7 @@ class Assets {
 	/**
 	 * Stores the localized scripts for reference.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @var array
 	 */
@@ -31,7 +31,7 @@ class Assets {
 	/**
 	 * Register the Methods in the correct places.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 */
 	public function __construct() {
 		// Hook the actual registering of.
@@ -41,7 +41,7 @@ class Assets {
 	/**
 	 * Register the Assets on the correct hooks.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @return void
 	 */
@@ -104,14 +104,14 @@ class Assets {
 	/**
 	 * Enqueues registered assets based on their groups.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @uses  Assets::enqueue()
+	 * @uses Assets::enqueue()
 	 *
 	 * @param string|array $groups Which groups will be enqueued.
 	 */
 	public function enqueue_group( $groups ) {
-		$assets = $this->get();
+		$assets  = $this->get();
 		$enqueue = [];
 
 		foreach ( $assets as $asset ) {
@@ -140,13 +140,13 @@ class Assets {
 	 * useful where an asset is required in a situation not anticipated when it was originally
 	 * registered.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @param string|array $forcibly_enqueue
 	 */
 	public function enqueue( $forcibly_enqueue = null ) {
 		$forcibly_enqueue = array_filter( (array) $forcibly_enqueue );
-		$assets = $this->get();
+		$assets           = $this->get();
 
 		foreach ( $assets as $asset ) {
 			// Should this asset be enqueued regardless of the current filter/any conditional requirements?
@@ -200,7 +200,7 @@ class Assets {
 			/**
 			 * Allows developers to hook-in and prevent an asset from been loaded.
 			 *
-			 * @since  0.5.1
+			 * @since 0.5.1
 			 *
 			 * @param bool   $enqueue If we should enqueue or not a given asset.
 			 * @param object $asset   Which asset we are dealing with.
@@ -264,7 +264,7 @@ class Assets {
 	 * Returns the path to a minified version of a js or css file, if it exists.
 	 * If the file does not exist, returns false.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @param string $url The absolute URL to the un-minified file.
 	 *
@@ -357,8 +357,8 @@ class Assets {
 	}
 
 	public function get_resource_url( $asset = null ) {
-		$extension = pathinfo( $asset->file, PATHINFO_EXTENSION );
-		$is_vendor = strpos( $asset->file, 'vendor/' ) !== false ? true : false;
+		$extension     = pathinfo( $asset->file, PATHINFO_EXTENSION );
+		$is_vendor     = strpos( $asset->file, 'vendor/' ) !== false ? true : false;
 		$resource_path = 'build/';
 
 		if ( ! $is_vendor ) {
@@ -387,7 +387,7 @@ class Assets {
 		/**
 		 * Filters the resource URL
 		 *
-		 * @since  0.5.1
+		 * @since 0.5.1
 		 *
 		 * @param $url
 		 * @param $resource
@@ -401,7 +401,7 @@ class Assets {
 	/**
 	 * Register an Asset and attach a callback to the required action to display it correctly.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @param object            $origin    The main object for the plugin you are enqueueing the asset for.
 	 * @param string            $slug      Slug to save the asset - passes through `sanitize_title_with_dashes()`.
@@ -496,7 +496,7 @@ class Assets {
 		$asset->origin_name = $origin_name;
 
 		// Origin URL might throw notices so we double check.
-		$asset->origin_url  = trailingslashit( ! empty( $origin->plugin_url ) ? $origin->plugin_url : $origin->url() );
+		$asset->origin_url = trailingslashit( ! empty( $origin->plugin_url ) ? $origin->plugin_url : $origin->url() );
 
 		// If we don't have a type on the arguments we grab from the File path.
 		if ( is_null( $asset->type ) ) {
@@ -557,7 +557,7 @@ class Assets {
 		/**
 		 * Filter an Asset loading variables.
 		 *
-		 * @since  0.5.1
+		 * @since 0.5.1
 		 *
 		 * @param object $asset
 		 */
@@ -576,9 +576,9 @@ class Assets {
 	/**
 	 * Parse the localize argument for a given asset object.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @param  stdClass $asset Argument that set that asset.
+	 * @param stdClass $asset Argument that set that asset.
 	 *
 	 * @return stdClass
 	 */
@@ -601,9 +601,12 @@ class Assets {
 		}
 
 		// Cast all instances as object.
-		$asset->localize = array_map( function( $values ) {
-			return (object) $values;
-		}, $asset->localize );
+		$asset->localize = array_map(
+			function ( $values ) {
+				return (object) $values;
+			},
+			$asset->localize 
+		);
 
 		return $asset;
 	}
@@ -613,7 +616,7 @@ class Assets {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param  string $slug Slug of the Asset.
+	 * @param string $slug Slug of the Asset.
 	 *
 	 * @return bool
 	 */
@@ -629,7 +632,7 @@ class Assets {
 	/**
 	 * Get the Asset Object configuration.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @param string $slug Slug of the Asset.
 	 *
@@ -656,9 +659,9 @@ class Assets {
 	/**
 	 * Checks if an Asset exists.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @param  string $slug Slug of the Asset.
+	 * @param string $slug Slug of the Asset.
 	 *
 	 * @return bool
 	 */

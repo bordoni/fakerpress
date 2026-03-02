@@ -4,21 +4,19 @@
  *
  * Handles fake post generation via REST API.
  *
- * @since   TBD
+ * @since TBD
  * @package FakerPress
  */
 
 namespace FakerPress\REST\Endpoints;
 
 use FakerPress\REST\Abstract_Endpoint;
-use FakerPress\REST\OpenAPI;
 use FakerPress\REST\Traits\Handles_Batching;
 use FakerPress\Module\Factory;
 use FakerPress\Admin\View\Factory as View_Factory;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
-use WP_Error;
 
 use function FakerPress\make;
 
@@ -145,7 +143,7 @@ class Posts extends Abstract_Endpoint {
 		}
 
 		// Format the response.
-		$view = make( View_Factory::class )->get( 'posts' );
+		$view            = make( View_Factory::class )->get( 'posts' );
 		$formatted_links = array_map( [ $view, 'format_link' ], $results );
 
 		$response_data = $this->build_batched_response_data(
@@ -176,17 +174,17 @@ class Posts extends Abstract_Endpoint {
 	protected function get_endpoint_args(): array {
 		return array_merge(
 			[
-				'quantity' => [
+				'quantity'    => [
 					'description'       => __( 'Number of posts to generate.', 'fakerpress' ),
 					'type'              => 'integer',
 					'minimum'           => 1,
 					'maximum'           => 1000,
 					'default'           => null,
-					'sanitize_callback' => function( $value ) {
+					'sanitize_callback' => function ( $value ) {
 						return null === $value ? null : absint( $value );
 					},
 				],
-				'qty' => [
+				'qty'         => [
 					'description' => __( 'Quantity range with min/max values.', 'fakerpress' ),
 					'type'        => 'object',
 					'properties'  => [
@@ -200,7 +198,7 @@ class Posts extends Abstract_Endpoint {
 						],
 					],
 				],
-				'post_type' => [
+				'post_type'   => [
 					'description' => __( 'Post type to generate.', 'fakerpress' ),
 					'type'        => 'string',
 					'default'     => 'post',
@@ -211,14 +209,14 @@ class Posts extends Abstract_Endpoint {
 					'default'     => 'publish',
 					'enum'        => array_keys( get_post_stati( [], 'names' ) ),
 				],
-				'author_ids' => [
+				'author_ids'  => [
 					'description' => __( 'Array of author IDs to assign to posts.', 'fakerpress' ),
 					'type'        => 'array',
 					'items'       => [
 						'type' => 'integer',
 					],
 				],
-				'meta' => [
+				'meta'        => [
 					'description' => __( 'Meta data to assign to generated posts.', 'fakerpress' ),
 					'type'        => 'object',
 				],

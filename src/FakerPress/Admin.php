@@ -2,7 +2,6 @@
 
 namespace FakerPress;
 
-use FakerPress\Admin\Menu;
 use FakerPress\Admin\View\Factory;
 
 class Admin extends Template {
@@ -45,14 +44,14 @@ class Admin extends Template {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @uses  add_filter
+	 * @uses add_filter
 	 *
-	 * @uses  add_action
+	 * @uses add_action
 	 * @return null Construct never returns
 	 */
 	public function __construct() {
 		$this->set_template_origin( make( Plugin::class ) )
-			 ->set_template_folder( 'src/templates/pages' );
+			->set_template_folder( 'src/templates/pages' );
 	}
 
 	/**
@@ -72,7 +71,7 @@ class Admin extends Template {
 
 		/**
 		 * @filter fakerpress.messages.allowed_html
-		 * @since  0.1.2
+		 * @since 0.1.2
 		 */
 		self::$messages[] = $message = (object) [
 			'html'     => wp_kses( wpautop( $html ), apply_filters( 'fakerpress.messages.allowed_html', [] ), [ 'http', 'https' ] ),
@@ -125,10 +124,18 @@ class Admin extends Template {
 			}
 
 			?>
-			<div class="<?php echo wp_kses( implode( ' ', $classes ), [] ); ?>"><?php echo wp_kses( $message->html, apply_filters( 'fakerpress.messages.allowed_html', [] ), [
+			<div class="<?php echo wp_kses( implode( ' ', $classes ), [] ); ?>">
+			<?php
+			echo wp_kses(
+				$message->html,
+				apply_filters( 'fakerpress.messages.allowed_html', [] ),
+				[
 					'http',
-					'https'
-				] ); ?></div>
+					'https',
+				] 
+			);
+			?>
+				</div>
 			<?php
 		}
 	}
@@ -174,7 +181,7 @@ class Admin extends Template {
 			'a'      => [
 				'class' => [],
 				'href'  => [],
-				'title' => []
+				'title' => [],
 			],
 			'br'     => [
 				'class' => [],
@@ -210,9 +217,9 @@ class Admin extends Template {
 	 * Filter the WordPress Version on plugins pages to display plugin version
 	 *
 	 * @since 0.1.0
-	 * @uses  __
+	 * @uses __
 	 *
-	 * @uses  \FakerPress\Plugin::$slug
+	 * @uses \FakerPress\Plugin::$slug
 	 * @return string
 	 */
 	public function _filter_admin_footer_text( $text ) {
@@ -220,13 +227,12 @@ class Admin extends Template {
 			return $text;
 		}
 
-		return
-			'<a target="_blank" href="http://wordpress.org/support/plugin/fakerpress#postform">' . esc_attr__( 'Contact Support', 'fakerpress' ) . '</a> | ' .
+		return '<a target="_blank" href="http://wordpress.org/support/plugin/fakerpress#postform">' . esc_attr__( 'Contact Support', 'fakerpress' ) . '</a> | ' .
 			str_replace(
 				[ '[stars]', '[wp.org]' ],
 				[
 					'<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/fakerpress#postform" >&#9733;&#9733;&#9733;&#9733;&#9733;</a>',
-					'<a target="_blank" href="http://wordpress.org/plugins/fakerpress/" >wordpress.org</a>'
+					'<a target="_blank" href="http://wordpress.org/plugins/fakerpress/" >wordpress.org</a>',
 				],
 				__( 'Add your [stars] on [wp.org] to spread the love.', 'fakerpress' )
 			);
@@ -236,11 +242,11 @@ class Admin extends Template {
 	 * Filter the WordPress Version on plugins pages to display the plugin version
 	 *
 	 * @since 0.1.0
-	 * @uses  \FakerPress\Plugin::admin_url
-	 * @uses  \FakerPress\Plugin::VERSION
-	 * @uses  __
+	 * @uses \FakerPress\Plugin::admin_url
+	 * @uses \FakerPress\Plugin::VERSION
+	 * @uses __
 	 *
-	 * @uses  \FakerPress\Plugin::$slug
+	 * @uses \FakerPress\Plugin::$slug
 	 * @return string
 	 */
 	public function _filter_update_footer( $text ) {

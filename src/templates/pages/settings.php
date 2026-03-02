@@ -1,7 +1,7 @@
 <?php
 namespace FakerPress;
+
 use FakerPress\Admin\View\Abstract_View;
-use FakerPress\Fields;
 
 /**
  * @var Abstract_View $this The instance of the Template that we are using to build this view.
@@ -10,13 +10,13 @@ use FakerPress\Fields;
 $fields[] = new Field(
 	'text',
 	[
-		'id' => 'erase_phrase',
+		'id'          => 'erase_phrase',
 		'placeholder' => 'The cold never bothered me anyway!',
 	],
 	[
-		'label' => __( 'Erase faked data', 'fakerpress' ),
+		'label'       => __( 'Erase faked data', 'fakerpress' ),
 		'description' => __( 'To erase all data generated type "<b>Let it Go!</b>", <i>please back up your database before you proceed!</i>', 'fakerpress' ),
-		'actions' => [
+		'actions'     => [
 			'delete' => __( 'Delete!', 'fakerpress' ),
 		],
 	]

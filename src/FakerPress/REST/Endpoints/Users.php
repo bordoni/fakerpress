@@ -4,21 +4,19 @@
  *
  * Handles fake user generation via REST API.
  *
- * @since   TBD
+ * @since TBD
  * @package FakerPress
  */
 
 namespace FakerPress\REST\Endpoints;
 
 use FakerPress\REST\Abstract_Endpoint;
-use FakerPress\REST\OpenAPI;
 use FakerPress\REST\Traits\Handles_Batching;
 use FakerPress\Module\Factory;
 use FakerPress\Admin\View\Factory as View_Factory;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
-use WP_Error;
 
 use function FakerPress\make;
 
@@ -143,7 +141,7 @@ class Users extends Abstract_Endpoint {
 		}
 
 		// Format the response.
-		$view = make( View_Factory::class )->get( 'users' );
+		$view            = make( View_Factory::class )->get( 'users' );
 		$formatted_links = array_map( [ $view, 'format_link' ], $results );
 
 		$response_data = $this->build_batched_response_data(
@@ -180,11 +178,11 @@ class Users extends Abstract_Endpoint {
 					'minimum'           => 1,
 					'maximum'           => 1000,
 					'default'           => null,
-					'sanitize_callback' => function( $value ) {
+					'sanitize_callback' => function ( $value ) {
 						return null === $value ? null : absint( $value );
 					},
 				],
-				'qty' => [
+				'qty'      => [
 					'description' => __( 'Quantity range with min/max values.', 'fakerpress' ),
 					'type'        => 'object',
 					'properties'  => [
@@ -198,12 +196,12 @@ class Users extends Abstract_Endpoint {
 						],
 					],
 				],
-				'role' => [
+				'role'     => [
 					'description' => __( 'User role for generated users.', 'fakerpress' ),
 					'type'        => 'string',
 					'default'     => 'subscriber',
 				],
-				'meta' => [
+				'meta'     => [
 					'description' => __( 'Meta data to assign to generated users.', 'fakerpress' ),
 					'type'        => 'object',
 				],

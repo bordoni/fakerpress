@@ -5,13 +5,13 @@ namespace FakerPress\Fields;
 /**
  * Interface for Fields.
  *
- * @since  0.5.1
+ * @since 0.5.1
  */
 interface Field_Interface {
 	/**
 	 * The slug of field we dealing with.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @return string Slug of field.
 	 */
@@ -20,7 +20,7 @@ interface Field_Interface {
 	/**
 	 * The slug of field we dealing with.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @return string Slug of field.
 	 */
@@ -29,7 +29,7 @@ interface Field_Interface {
 	/**
 	 * The slug of field we dealing with.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @param string|null $value ID of this field.
 	 *
@@ -40,7 +40,7 @@ interface Field_Interface {
 	/**
 	 * Composes and return the html id of a field based on it's parents and it's own ID.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @param string|null $suffix Something to be appended to the end of the html id.
 	 *
@@ -51,7 +51,7 @@ interface Field_Interface {
 	/**
 	 * Settings for this field object.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @param string $format Which format we should return the HTML. Options: `string` or `array`.
 	 *
@@ -62,7 +62,7 @@ interface Field_Interface {
 	/**
 	 * Get the instance of template that will be used to render this field.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @return Template Instance of the template class used to rende templates.
 	 */
@@ -71,7 +71,7 @@ interface Field_Interface {
 	/**
 	 * Settings for this field object.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @return array Settings for the field.
 	 */
@@ -80,7 +80,7 @@ interface Field_Interface {
 	/**
 	 * A given setting from the settings on this field.
 	 *
-	 * @since  0.5.2
+	 * @since 0.5.2
 	 *
 	 * @param array|string $index   Index passed to get.
 	 * @param mixed        $default Default value for the setting.
@@ -92,7 +92,7 @@ interface Field_Interface {
 	/**
 	 * Configure this field and it's children.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @param array $args Which settings will be use configure this field.
 	 *
@@ -103,7 +103,7 @@ interface Field_Interface {
 	/**
 	 * Get field instance priority.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @return int Which priority this field currently have.
 	 */
@@ -112,7 +112,7 @@ interface Field_Interface {
 	/**
 	 * Array of children fields.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @return array Returns the children fields which must implement Field_Interface.
 	 */
@@ -121,9 +121,9 @@ interface Field_Interface {
 	/**
 	 * Finds a children from this field instance.
 	 *
-	 * @since  0.5.2
+	 * @since 0.5.2
 	 *
-	 * @uses   wp_filter_object_list
+	 * @uses wp_filter_object_list
 	 *
 	 * @param Field_Interface|array|string|int $search   Search for a given children to remove.
 	 * @param string                           $operator Optional. The logical operation to perform. 'or' means
@@ -138,7 +138,7 @@ interface Field_Interface {
 	/**
 	 * Add a children to this field instance.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @param Field_Interface|array $children Which settings will be use
 	 *
@@ -149,9 +149,9 @@ interface Field_Interface {
 	/**
 	 * Remove a children from this field instance.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
-	 * @uses   Field_Interface::find_children
+	 * @uses Field_Interface::find_children
 	 *
 	 * @param Field_Interface|array|string|int $search   Search for a given children to remove.
 	 * @param string                           $operator Optional. The logical operation to perform. 'or' means
@@ -166,7 +166,7 @@ interface Field_Interface {
 	/**
 	 * Sort this Field's children array by priority
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @return Field_Interface  Returns an instance of itself be able to chain calls.
 	 */
@@ -175,7 +175,7 @@ interface Field_Interface {
 	/**
 	 * Parent field object.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @return Field_Interface|null Returns a parent field or null if not present.
 	 */
@@ -184,7 +184,7 @@ interface Field_Interface {
 	/**
 	 * Set the parent field object.
 	 *
-	 * @since  0.5.1
+	 * @since 0.5.1
 	 *
 	 * @param Field_Interface $parent Which field is the parent of this one.
 	 *

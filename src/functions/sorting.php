@@ -5,7 +5,7 @@ namespace FakerPress;
 /**
  * Sorting function based on Priority
  *
- * @since  0.5.1
+ * @since 0.5.1
  *
  * @param object|array $a First Subject to compare.
  * @param object|array $b Second subject to compare.

@@ -5,7 +5,7 @@ namespace FakerPress;
 /**
  * Determines if the provided value should be regarded as 'true'.
  *
- * @since  0.5.1
+ * @since 0.5.1
  *
  * @param mixed $var Value to be tested.
  *
@@ -22,15 +22,18 @@ function is_truthy( $var ): bool {
 	 *
 	 * @param array $truthy_strings
 	 */
-	$truthy_strings = (array) apply_filters( 'fakerpress_is_truthy_strings', [
-		'1',
-		'enable',
-		'enabled',
-		'on',
-		'y',
-		'yes',
-		'true',
-	] );
+	$truthy_strings = (array) apply_filters(
+		'fakerpress_is_truthy_strings',
+		[
+			'1',
+			'enable',
+			'enabled',
+			'on',
+			'y',
+			'yes',
+			'true',
+		] 
+	);
 	// Makes sure we are dealing with lowercase for testing
 	if ( is_string( $var ) ) {
 		$var = strtolower( $var );
@@ -53,7 +56,7 @@ function is_truthy( $var ): bool {
 /**
  * Determines if the provided value is a regular expressions.
  *
- * @since  0.5.1
+ * @since 0.5.1
  *
  * @param mixed $variable Value to be tested.
  *
@@ -71,7 +74,7 @@ function is_regex( $variable ) {
 /**
  * Determines if the provided value is an IP address.
  *
- * @since  0.5.1
+ * @since 0.5.1
  *
  * @param mixed $variable Value to be tested.
  *

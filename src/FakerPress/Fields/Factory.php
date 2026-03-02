@@ -16,7 +16,7 @@ use function FakerPress\make;
  *
  * Factory class responsible for creating and managing field instances.
  *
- * @since   0.6.4
+ * @since 0.6.4
  *
  * @package FakerPress\Fields
  */

@@ -5,7 +5,7 @@
  * Provides common batching logic for generation endpoints to handle
  * large requests that need to be split into smaller batches.
  *
- * @since   TBD
+ * @since TBD
  * @package FakerPress
  */
 
@@ -58,7 +58,7 @@ trait Handles_Batching {
 
 			// Adjust for final batch.
 			if ( $total < $offset + $allowed ) {
-				$qty       += $total - ( $offset + $allowed );
+				$qty      += $total - ( $offset + $allowed );
 				$is_capped = false;
 			}
 		}
@@ -117,7 +117,7 @@ trait Handles_Batching {
 	 */
 	protected function format_batched_success_message( $generated_count, $item_type, $batch_info ) {
 		$message = sprintf(
-			__( 'Successfully generated %d %s.', 'fakerpress' ),
+			__( 'Successfully generated %1$d %2$s.', 'fakerpress' ),
 			$generated_count,
 			_n( $item_type, $item_type . 's', $generated_count, 'fakerpress' )
 		);
@@ -125,8 +125,8 @@ trait Handles_Batching {
 		// Add batching information if this is part of a larger batch.
 		if ( $batch_info['is_capped'] || $batch_info['offset'] > 0 ) {
 			$current_total = $batch_info['offset'] + $batch_info['quantity'];
-			$message .= ' ' . sprintf(
-				__( '(Batch %d of %d total)', 'fakerpress' ),
+			$message      .= ' ' . sprintf(
+				__( '(Batch %1$d of %2$d total)', 'fakerpress' ),
 				$current_total,
 				$batch_info['total']
 			);

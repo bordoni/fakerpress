@@ -8,7 +8,7 @@
  * To remove an action:
  * remove_action( 'some_action', [ make( FakerPress\Hooks::class ), 'some_method' ] );
  *
- * @since   0.6.0
+ * @since 0.6.0
  */
 
 namespace FakerPress;
@@ -20,7 +20,7 @@ use FakerPress\Contracts\Service_Provider;
 /**
  * Class Hooks.
  *
- * @since   0.6.0
+ * @since 0.6.0
  *
  * @package FakerPress
  */
@@ -99,7 +99,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Filter the `$submenu_file` global right before WordPress builds the Administration Menu
 	 *
-	 * @since  0.6.0
+	 * @since 0.6.0
 	 *
 	 * @param string $submenu_file Which is the current submenu file.
 	 *
@@ -138,7 +138,6 @@ class Hooks extends Service_Provider {
 	 * @since 0.6.4
 	 *
 	 * @param \WP_Screen $screen
-	 *
 	 */
 	public function modify_current_screen( $screen ) {
 		// Removes itself since it's required to avoid infinitte loop.

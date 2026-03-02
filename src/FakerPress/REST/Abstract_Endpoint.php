@@ -4,7 +4,7 @@
  *
  * Provides common functionality and implements the Interface_Endpoint.
  *
- * @since   TBD
+ * @since TBD
  * @package FakerPress
  */
 
@@ -214,8 +214,8 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 * @return array
 	 */
 	public function sanitize_request( $request ) {
-		$schema     = $this->get_request_schema();
-		$sanitized  = [];
+		$schema    = $this->get_request_schema();
+		$sanitized = [];
 
 		if ( empty( $schema['properties'] ) ) {
 			return $request->get_params();
@@ -247,8 +247,8 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	 *
 	 * @since 0.9.0
 	 *
-	 * @param mixed  $value      The parameter value to sanitize.
-	 * @param string $type       The parameter type (integer, boolean, array, object, string).
+	 * @param mixed   $value      The parameter value to sanitize.
+	 * @param string  $type       The parameter type (integer, boolean, array, object, string).
 	 * @param ?string $param_name Optional. The parameter name for context-specific sanitization.
 	 *
 	 * @return mixed The sanitized value.
@@ -364,7 +364,7 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 				'default'           => 0,
 				'sanitize_callback' => 'absint',
 			],
-			'total' => [
+			'total'  => [
 				'description'       => __( 'Total items to generate across all batches (used internally).', 'fakerpress' ),
 				'type'              => 'integer',
 				'minimum'           => 0,

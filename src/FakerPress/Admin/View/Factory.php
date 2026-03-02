@@ -9,7 +9,7 @@ use function FakerPress\get_request_var;
 /**
  * Class Factory for Admin Views.
  *
- * @since   0.6.0
+ * @since 0.6.0
  *
  * @package FakerPress\Admin\View
  */
@@ -84,9 +84,12 @@ class Factory extends Service_Provider {
 			return null;
 		}
 
-		$views = array_filter( $this->get_all(), static function( $view ) {
-			return $view->is_current_view();
-		} );
+		$views = array_filter(
+			$this->get_all(),
+			static function ( $view ) {
+				return $view->is_current_view();
+			} 
+		);
 
 		if ( empty( $views ) ) {
 			return null;
@@ -106,9 +109,12 @@ class Factory extends Service_Provider {
 	 * @return Abstract_View|null
 	 */
 	public function get( string $slug ) {
-		$views = array_filter( $this->get_all(), static function( $view ) use ( $slug ) {
-			return $view::get_slug() === $slug;
-		} );
+		$views = array_filter(
+			$this->get_all(),
+			static function ( $view ) use ( $slug ) {
+				return $view::get_slug() === $slug;
+			} 
+		);
 
 		if ( empty( $views ) ) {
 			return null;

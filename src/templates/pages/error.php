@@ -1,11 +1,12 @@
 <?php
 namespace FakerPress;
+
 $tweet_args = [
 	'hashtags' => 'FakerPress',
-	'related' => 'webord',
+	'related'  => 'webord',
 ];
-$locale = get_locale();
-if ( ! empty( $locale ) ){
+$locale     = get_locale();
+if ( ! empty( $locale ) ) {
 	$tweet_args['hashtags'] .= ',' . esc_attr( $locale );
 }
 $tweet_url = esc_url_raw( add_query_arg( $tweet_args, 'https://twitter.com/intent/tweet' ) );

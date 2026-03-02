@@ -12,7 +12,7 @@ class WP_Comment extends Base {
 		$defaults = [
 			'qty' => [ 5, 15 ],
 		];
-		$args = wp_parse_args( $args, $defaults );
+		$args     = wp_parse_args( $args, $defaults );
 
 		if ( true === $html ) {
 			$content = implode( "\n", $this->generator->html_elements( $args ) );
@@ -28,17 +28,15 @@ class WP_Comment extends Base {
 		if ( is_array( $users ) && empty( $users ) ) {
 			$users = get_users(
 				[
-					'blog_id' => $GLOBALS['blog_id'],
+					'blog_id'     => $GLOBALS['blog_id'],
 					'count_total' => false,
-					'fields' => 'ID', // When you pass only one field it returns an array of the values
+					'fields'      => 'ID', // When you pass only one field it returns an array of the values
 				]
 			);
 		}
 
 		// Cast $users as an array and always return an absolute integer
-		$user_id = absint( $this->generator->randomElement( (array) $users ) );
-
-		return $user_id;
+		return absint( $this->generator->randomElement( (array) $users ) );
 	}
 
 	public function comment_author( $comment_author = null ) {
@@ -55,9 +53,9 @@ class WP_Comment extends Base {
 	 * Generate a random comment type with the values given
 	 * Converts 'default' into an empty string for default post comments
 	 *
-	 * @since  0.4.8
+	 * @since 0.4.8
 	 *
-	 * @param  array|string $comment_type Possible comment types to pick from
+	 * @param array|string $comment_type Possible comment types to pick from
 	 *
 	 * @return string
 	 */
@@ -96,11 +94,11 @@ class WP_Comment extends Base {
 	/**
 	 * Generates a Post ID for the Comment
 	 *
-	 * @since  0.1.0
-	 * @since  0.4.8 Argument `$args` to allow custom Post Types
+	 * @since 0.1.0
+	 * @since 0.4.8 Argument `$args` to allow custom Post Types
 	 *
-	 * @param  array|int $comment_post_ID Which ids you want to use
-	 * @param  array     $args            WP_Query args for Searching these Posts
+	 * @param array|int $comment_post_ID Which ids you want to use
+	 * @param array     $args            WP_Query args for Searching these Posts
 	 *
 	 * @return int
 	 */

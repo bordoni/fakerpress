@@ -116,7 +116,7 @@ function singleton( $slug, $class, ?array $after_build_methods = null ) {
  *      // the `hook` and `register` methods will be called on the built instance.
  *      make( 'fakerpress.admin.class' )->doSomething();
  *
- * @since  0.6.0
+ * @since 0.6.0
  *
  * @param string                 $slug                The human-readable and catchy name of the class.
  * @param string|object|callable $class               The full class name or an instance of the class
@@ -140,7 +140,7 @@ function bind( $slug, $class, ?array $after_build_methods = null ) {
  *
  *      make( 'fakerpress.plugin' )->do_something();
  *
- * @since  0.6.0
+ * @since 0.6.0
  *
  * @param string|null $slug_or_class Either the slug of a binding previously registered using `singleton` or
  *                                   `register` or the full class name that should be automagically created or
@@ -162,7 +162,7 @@ function make( $slug_or_class = null ) {
  *
  *      set_var( 'fakerpress.url', 'http://example.com' );
  *
- * @since  0.6.0
+ * @since 0.6.0
  *
  * @param string $slug  The human-readable and catchy name of the var.
  * @param mixed  $value The variable value.
@@ -180,7 +180,7 @@ function set_var( $slug, $value ) {
  *
  *      $url = get_var( 'fakerpress.url' );
  *
- * @since  0.6.0
+ * @since 0.6.0
  *
  * @param string $slug    The slug of the variable registered using `set_var`.
  * @param null   $default The value that should be returned if the variable slug
@@ -208,7 +208,7 @@ function get_var( $slug, $default = null ) {
  *
  *      unset_var( 'fakerpress.url' );
  *
- * @since  0.6.0
+ * @since 0.6.0
  *
  * @param string $slug The slug of the variable registered using `unset_var`.
  *
@@ -230,7 +230,7 @@ function unset_var( $slug ) {
  *
  *      isset_var( 'fakerpress.url' );
  *
- * @since  0.6.0
+ * @since 0.6.0
  *
  * @param string $slug The slug of the variable checked using `isset_var`.
  *
@@ -245,9 +245,9 @@ function isset_var( $slug ) {
  *
  * Service providers must extend the `Service_Provider` class.
  *
- * @see    Service_Provider
+ * @see Service_Provider
  *
- * @since  0.6.0
+ * @since 0.6.0
  *
  * @param string $provider_class
  */
@@ -259,12 +259,12 @@ function register( string $provider_class ): void {
  * Returns a lambda function suitable to use as a callback; when called the function will build the implementation
  * bound to `$classOrInterface` and return the value of a call to `$method` method with the call arguments.
  *
- * @since  0.6.0
+ * @since 0.6.0
  *
- * @param string $slug        A class or interface fully qualified name or a string slug.
- * @param string $method      The method that should be called on the resolved implementation with the
- *                            specified array arguments.
- * @param mixed  [$argsN]      (optional) Any number of arguments that will be passed down to the Callback
+ * @param string   $slug        A class or interface fully qualified name or a string slug.
+ * @param string   $method      The method that should be called on the resolved implementation with the
+ *                              specified array arguments.
+ * @param mixed  [ $argsN]      (optional) Any number of arguments that will be passed down to the Callback
  *
  * @return callable A PHP Callable based on the Slug and Methods passed
  */

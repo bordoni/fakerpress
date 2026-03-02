@@ -14,7 +14,7 @@ use function FakerPress\make;
 /**
  * Class Post_View
  *
- * @since   0.6.4
+ * @since 0.6.4
  *
  * @package FakerPress\Admin\View
  */
@@ -86,10 +86,13 @@ class Settings_View extends Abstract_View {
 
 		// After this point we are safe to say that we have a good POST request
 		$erase_intention = is_string( get_request_var( [ 'fakerpress', 'actions', 'delete' ] ) );
-		$erase_check     = in_array( strtolower( get_request_var( [ 'fakerpress', 'erase_phrase' ] ) ), [
-			'let it go',
-			'let it go!'
-		] );
+		$erase_check     = in_array(
+			strtolower( get_request_var( [ 'fakerpress', 'erase_phrase' ] ) ),
+			[
+				'let it go',
+				'let it go!',
+			] 
+		);
 
 		if ( ! $erase_intention ) {
 			return false;

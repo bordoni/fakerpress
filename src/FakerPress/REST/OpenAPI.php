@@ -4,7 +4,7 @@
  *
  * Provides helper methods for generating OpenAPI documentation schemas.
  *
- * @since   TBD
+ * @since TBD
  * @package FakerPress
  */
 
@@ -30,8 +30,8 @@ class OpenAPI {
 	 */
 	public static function get_base_spec() {
 		return [
-			'openapi' => '3.0.0',
-			'info'    => [
+			'openapi'    => '3.0.0',
+			'info'       => [
 				'title'       => __( 'FakerPress REST API', 'fakerpress' ),
 				'description' => __( 'REST API endpoints for FakerPress fake data generation plugin.', 'fakerpress' ),
 				'version'     => Plugin::VERSION,
@@ -39,12 +39,12 @@ class OpenAPI {
 					'name' => 'Gustavo Bordoni',
 					'url'  => 'https://bordoni.me',
 				],
-				'license' => [
+				'license'     => [
 					'name' => 'GPL v2 or later',
 					'url'  => 'https://www.gnu.org/licenses/gpl-2.0.html',
 				],
 			],
-			'servers' => [
+			'servers'    => [
 				[
 					'url'         => rest_url( Controller::get_namespace() ),
 					'description' => __( 'FakerPress REST API Server', 'fakerpress' ),
@@ -67,7 +67,7 @@ class OpenAPI {
 	 */
 	public static function get_common_schemas() {
 		return [
-			'SuccessResponse' => [
+			'SuccessResponse'  => [
 				'type'       => 'object',
 				'properties' => [
 					'success' => [
@@ -87,7 +87,7 @@ class OpenAPI {
 				],
 				'required'   => [ 'success' ],
 			],
-			'ErrorResponse'   => [
+			'ErrorResponse'    => [
 				'type'       => 'object',
 				'properties' => [
 					'success' => [
@@ -209,21 +209,21 @@ class OpenAPI {
 
 			case 'meta':
 				return [
-					'type'        => 'object',
-					'description' => __( 'Meta data to assign to generated items.', 'fakerpress' ),
+					'type'                 => 'object',
+					'description'          => __( 'Meta data to assign to generated items.', 'fakerpress' ),
 					'additionalProperties' => [
 						'type' => 'string',
 					],
-					'example' => [
+					'example'              => [
 						'custom_field' => 'custom_value',
 					],
 				];
 
 			case 'date_range':
 				return [
-					'type'       => 'object',
+					'type'        => 'object',
 					'description' => __( 'Date range for generated items.', 'fakerpress' ),
-					'properties' => [
+					'properties'  => [
 						'start' => [
 							'type'        => 'string',
 							'format'      => 'date-time',

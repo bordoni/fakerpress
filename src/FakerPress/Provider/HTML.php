@@ -62,7 +62,7 @@ class HTML extends Base {
 			'sup',
 			'hr',
 		],
-		'wp'         => [ '!--more--' ]
+		'wp'         => [ '!--more--' ],
 	];
 
 	/**
@@ -84,15 +84,18 @@ class HTML extends Base {
 	 * @since 0.1.0
 	 *
 	 * @param string $needle
-	 * @param array $haystack
+	 * @param array  $haystack
 	 *
 	 * @return bool
 	 */
 	private function has_element( $needle = '', $haystack = [] ) {
 		$needle   = trim( $needle );
-		$filtered = array_filter( $haystack, static function ( $element ) use ( $needle ) {
-			return preg_match( "/<?(!--)? ?({$needle})+ ?(--)?>?/i", $element ) !== 0;
-		} );
+		$filtered = array_filter(
+			$haystack,
+			static function ( $element ) use ( $needle ) {
+				return preg_match( "/<?(!--)? ?({$needle})+ ?(--)?>?/i", $element ) !== 0;
+			} 
+		);
 
 		return count( $filtered ) > 0;
 	}
@@ -117,7 +120,7 @@ class HTML extends Base {
 		$max_to_more = ( $args->qty / 2 ) + $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
 		$min_to_more = ( $args->qty / 2 ) - $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
 
-		for ( $i = 0; $i < $args->qty; $i ++ ) {
+		for ( $i = 0; $i < $args->qty; $i++ ) {
 			$exclude = $args->exclude;
 			if ( isset( $element ) ) {
 				// Here we check if we need to exclude some elements from the next
@@ -161,7 +164,7 @@ class HTML extends Base {
 	 * @since 0.2.0
 	 *
 	 * @param object|array $element
-	 * @param string[] $sources
+	 * @param string[]     $sources
 	 *
 	 * @return false|string
 	 */
@@ -242,11 +245,11 @@ class HTML extends Base {
 		$total_words = count( $words );
 		$sentences   = [];
 
-		for ( $i = 0; $i < $total_words; $i ++ ) {
+		for ( $i = 0; $i < $total_words; $i++ ) {
 			$group    = Base::numberBetween( 1, Base::numberBetween( 3, 9 ) );
 			$sentence = [];
 
-			for ( $k = 0; $k < $group; $k ++ ) {
+			for ( $k = 0; $k < $group; $k++ ) {
 				$index = $i + $k;
 
 				if ( ! isset( $words[ $index ] ) ) {
@@ -269,7 +272,7 @@ class HTML extends Base {
 
 		$indexes = floor( count( $sentences ) / $qty );
 
-		for ( $i = 0; $i < $qty; $i ++ ) {
+		for ( $i = 0; $i < $qty; $i++ ) {
 			$index = ( $indexes * $i ) + Base::numberBetween( 0, $indexes );
 
 			if ( isset( $sentences[ $index ] ) ) {
@@ -345,7 +348,7 @@ class HTML extends Base {
 				$text   = Lorem::text( Base::numberBetween( 10, 60 ) );
 				$html[] = substr( $text, 0, strlen( $text ) - 1 );
 			} elseif ( in_array( $element->name, self::$sets['list'] ) ) {
-				for ( $i = 0; $i < Base::numberBetween( 1, 15 ); $i ++ ) {
+				for ( $i = 0; $i < Base::numberBetween( 1, 15 ); $i++ ) {
 					$html[] = $this->element( 'li' );
 				}
 			} elseif ( in_array( $element->name, self::$sets['header'] ) ) {
@@ -360,5 +363,4 @@ class HTML extends Base {
 
 		return implode( '', $html );
 	}
-
 }
