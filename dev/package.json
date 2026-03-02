@@ -1,0 +1,12 @@
+{
+  "name": "@fakerpress/readme-generator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "bun run generate-readme.ts",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}

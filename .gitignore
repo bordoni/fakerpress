@@ -37,6 +37,7 @@ desktop.ini
 # Project #
 ###########
 node_modules
+dev/node_modules
 tmp
 
 # Planning #

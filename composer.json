@@ -18,8 +18,7 @@
       "vendor/prefixed/autoload.php"
     ],
     "psr-4": {
-      "FakerPress\\": "src/FakerPress/",
-      "FakerPress\\Dev\\": "dev/src/"
+      "FakerPress\\": "src/FakerPress/"
     }
   },
   "autoload-dev": {

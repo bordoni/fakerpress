@@ -119,6 +119,13 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 * Fix - Ensure PNG format for placeholder images to avoid SVG compatibility issues
 * Fix - Fix JavaScript errors with missing field validation
 * Fix - Correct dropdown population for non-multiple select fields
+* Fix - Translate REST API parameter names to module format for Posts (`post_type`), Terms (`taxonomy`), Users (`role`), and Comments (`comment_status`)
+* Fix - Allow `post_status` parameter to be passed through REST API instead of hardcoding to `publish`
+* Fix - Map REST `comment_status` values (`hold`, `approve`, `spam`, `trash`) to WordPress `comment_approved` format
+* Fix - Prevent null `$metas` foreach crash in Term module when no meta is provided via REST API
+* Fix - Handle null `name_size` in Term module to use provider default instead of generating empty term names
+* Fix - Write mock image body to temp file in Attachment tests to support `download_url()` stream mode
+* Fix - Pass DI container to Controller constructor in filter test to prevent `ArgumentCountError`
 * Tweak - Improve parse_request methods across all modules with better type safety
 * Tweak - Add internationalization support for JavaScript files
 * Tweak - Replace font icon with SVG icon for WordPress admin menu

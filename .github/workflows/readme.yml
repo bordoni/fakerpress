@@ -14,15 +14,13 @@ jobs:
       with:
         fetch-depth: 1
 
-    - name: Install composer
-      uses: php-actions/composer@v6
-      env:
-        COMPOSER_PROCESS_TIMEOUT: 2000
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
       with:
-        php_version: 7.4
+        bun-version: latest
 
-    - name: Execute the markdown Readme generation script
-      run: dev/generate-markdown-readme
+    - name: Generate readme files
+      run: bun run dev/generate-readme.ts
 
     - name: Commit readme file
       uses: stefanzweifel/git-auto-commit-action@v7
