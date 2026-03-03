@@ -79,26 +79,44 @@ const customEntryPoints = compileCustomEntryPoints({
 doNotPrefixSVGIdsClasses(defaultConfig);
 
 /**
- * Add a PostCSS loader rule for Tailwind CSS v4 on CSS files imported from packages/.
- * This uses @tailwindcss/postcss to process Tailwind directives while leaving
- * the legacy PostCSS pipeline (postcss-nested, postcss-mixins, etc.) untouched.
+ * Strips Tailwind v4's :not(#\#) cascade-compatibility shims from all CSS assets.
+ *
+ * These shims are injected by @tailwindcss/node (via LightningCSS) as a cascade layer
+ * backward-compatibility mechanism for browsers released before mid-2022. WordPress 6.4+
+ * (required by FakerPress) targets modern browsers that natively support @layer, so the
+ * shims are unnecessary bloat.
+ *
+ * This plugin runs before RtlCssPlugin (PROCESS_ASSETS_STAGE_OPTIMIZE) so that RTL variants
+ * are also generated without the shims.
  */
-const tailwindPostcssRule = {
-  test: /\.css$/,
-  include: [resolve(__dirname, 'src/resources/packages')],
-  use: [
-    {
-      loader: require.resolve('postcss-loader'),
-      options: {
-        postcssOptions: {
-          plugins: [
-            require('@tailwindcss/postcss'),
-          ],
-        },
-      },
-    },
-  ],
-};
+class StripTailwindLayerHacksPlugin {
+	apply( compiler ) {
+		compiler.hooks.compilation.tap( 'StripTailwindLayerHacksPlugin', ( compilation ) => {
+			compilation.hooks.processAssets.tap(
+				{
+					name: 'StripTailwindLayerHacksPlugin',
+					stage: compilation.PROCESS_ASSETS_STAGE_DERIVED,
+				},
+				() => {
+					for ( const [ filename, asset ] of Object.entries( compilation.assets ) ) {
+						if ( ! filename.endsWith( '.css' ) ) {
+							continue;
+						}
+						const src = asset.source();
+						if ( ! src.includes( ':not(#' ) ) {
+							continue;
+						}
+						const stripped = src.replace( /(:not\(#\\#\))+/g, '' );
+						compilation.updateAsset(
+							filename,
+							new compiler.webpack.sources.RawSource( stripped )
+						);
+					}
+				}
+			);
+		} );
+	}
+}
 
 /**
  * Finally the customizations are merged with the default WebPack configuration.
@@ -129,17 +147,11 @@ module.exports = {
         '@fp': resolve(__dirname, 'src/resources/packages'),
       },
     },
-    module: {
-      ...defaultConfig.module,
-      rules: [
-        // Prepend Tailwind PostCSS rule for packages/ CSS files.
-        tailwindPostcssRule,
-        ...(defaultConfig.module && defaultConfig.module.rules || []),
-      ],
-    },
+    module: defaultConfig.module,
     plugins: [
       ...defaultConfig.plugins,
       new WindowAssignPropertiesPlugin(),
+      new StripTailwindLayerHacksPlugin(),
     ],
   },
 };

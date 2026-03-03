@@ -144,6 +144,29 @@ tests/
 
 SLIC containers use `codeception.slic.yml` and `.env.testing.slic` automatically.
 
+## Tailwind CSS in WordPress Admin
+
+Tailwind is used in `src/resources/packages/admin/` and compiled into `build/admin.css`. Two rules must always hold:
+
+### Never use `@import "tailwindcss"` — use partial imports
+
+`@import "tailwindcss" prefix(fp)` silently injects Tailwind's global preflight reset (`*`, `html`, `h1–h6`, `a`, `img`, `button`, etc.) into the page. The `prefix(fp)` modifier only renames utility classes — it does **not** scope resets. In the WordPress admin this breaks heading sizes, link underlines, form elements, and global layout.
+
+Always use the two partial imports instead:
+
+```css
+@import "tailwindcss/theme" prefix(fp);
+@import "tailwindcss/utilities" prefix(fp);
+```
+
+Then add a minimal scoped reset targeting only `#fakerpress-react-root *` in `@layer base` (already present in `globals.css`).
+
+### Never try to strip `:not(#\#)` shims with a PostCSS plugin
+
+Tailwind v4 injects `:not(#\#)` cascade-compatibility shims via `@tailwindcss/node`'s LightningCSS optimizer inside the `@tailwindcss/postcss` `Once` hook. These shims land in `result.root` **after** PostCSS `OnceExit` fires, making them invisible to any PostCSS plugin you add after `@tailwindcss/postcss`.
+
+The correct fix is the `StripTailwindLayerHacksPlugin` webpack plugin in `webpack.config.js`, which strips them from compiled `.css` assets at `PROCESS_ASSETS_STAGE_DERIVED` (before `RtlCssPlugin`).
+
 ## Coding Standards
 
 - **PHP:** WordPress Coding Standards. Short array syntax (`[]`). Early returns to reduce nesting.
