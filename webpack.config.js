@@ -108,9 +108,13 @@ module.exports = {
   ...{
     entry: (buildType) => {
       const defaultEntryPoints = defaultConfig.entry(buildType);
-      return {
-        ...defaultEntryPoints, ...customEntryPoints,
-      };
+      const allEntries = { ...defaultEntryPoints, ...customEntryPoints };
+      // Strip leading slashes from entry keys to fix webpack auto public path.
+      // createTECPackage produces keys like "/admin" (from dirname("/admin/index.tsx")),
+      // causing webpack to append "../" to the detected script directory.
+      return Object.fromEntries(
+        Object.entries(allEntries).map(([key, value]) => [key.replace(/^\//, ''), value])
+      );
     },
     output: {
       ...defaultConfig.output,

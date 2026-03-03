@@ -6,8 +6,8 @@
 |------|---------|-------|
 | PHP | 8.1+ | MAMP, Homebrew, or system PHP |
 | Composer | 2.x | [getcomposer.org](https://getcomposer.org) |
-| Node | 18.17 | Matches `.nvmrc` — use `nvm use` |
-| npm | 9.6.7 | Ships with Node 18.17 |
+| Node | 18+ | Required by Bun / @wordpress/scripts |
+| Bun | 1.x | [bun.sh](https://bun.sh) |
 | WordPress | 6.4+ | Local install (MAMP, Local, Valet, etc.) |
 
 ## Quick Start
@@ -17,10 +17,10 @@
 composer install
 
 # 2. Install Node dependencies
-nvm use && npm install
+bun install
 
 # 3. Build JS and CSS assets
-npm run build
+bun run build
 ```
 
 After these three steps the plugin is ready to activate in WordPress.
@@ -37,15 +37,15 @@ After these three steps the plugin is ready to activate in WordPress.
 
 Strauss vendor-prefixes all third-party packages under `FakerPress\ThirdParty\` into `vendor/prefixed/`. This runs automatically on `composer install` and `composer update`.
 
-### JS / CSS (npm + @wordpress/scripts)
+### JS / CSS (bun + @wordpress/scripts)
 
 | Command | What it does |
 |---------|-------------|
-| `npm run build` | Production build — compiles JS and PostCSS into `build/` and `src/resources/css/` |
-| `npm run start` | Watch mode with source maps for development |
-| `npm run lint` | Lint JS and CSS |
-| `npm run format:js` | Auto-fix JS lint issues |
-| `npm run format:css` | Auto-fix CSS lint issues |
+| `bun run build` | Production build — compiles JS and PostCSS into `build/` and `src/resources/css/` |
+| `bun run start` | Watch mode with source maps for development |
+| `bun run lint` | Lint JS and CSS |
+| `bun run format:js` | Auto-fix JS lint issues |
+| `bun run format:css` | Auto-fix CSS lint issues |
 
 **Source files:**
 - JS: `src/resources/js/*.js` — compiled to `build/js/` and exposed on `window.fakerpress`
