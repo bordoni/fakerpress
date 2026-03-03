@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@fp/*": ["src/resources/packages/*"]
+    }
+  },
+  "include": ["src/resources/packages/**/*.ts", "src/resources/packages/**/*.tsx"],
+  "exclude": ["node_modules", "build", "**/__tests__/**", "**/__mocks__/**"]
+}

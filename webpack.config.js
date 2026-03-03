@@ -1,3 +1,4 @@
+const {resolve} = require('path');
 const {dirname, basename, extname} = require('path');
 const {readdirSync, statSync, existsSync} = require('fs');
 
@@ -78,6 +79,28 @@ const customEntryPoints = compileCustomEntryPoints({
 doNotPrefixSVGIdsClasses(defaultConfig);
 
 /**
+ * Add a PostCSS loader rule for Tailwind CSS v4 on CSS files imported from packages/.
+ * This uses @tailwindcss/postcss to process Tailwind directives while leaving
+ * the legacy PostCSS pipeline (postcss-nested, postcss-mixins, etc.) untouched.
+ */
+const tailwindPostcssRule = {
+  test: /\.css$/,
+  include: [resolve(__dirname, 'src/resources/packages')],
+  use: [
+    {
+      loader: require.resolve('postcss-loader'),
+      options: {
+        postcssOptions: {
+          plugins: [
+            require('@tailwindcss/postcss'),
+          ],
+        },
+      },
+    },
+  ],
+};
+
+/**
  * Finally the customizations are merged with the default WebPack configuration.
  */
 module.exports = {
@@ -94,6 +117,21 @@ module.exports = {
       ...{
         enabledLibraryTypes: ['window'],
       },
+    },
+    resolve: {
+      ...defaultConfig.resolve,
+      alias: {
+        ...(defaultConfig.resolve && defaultConfig.resolve.alias),
+        '@fp': resolve(__dirname, 'src/resources/packages'),
+      },
+    },
+    module: {
+      ...defaultConfig.module,
+      rules: [
+        // Prepend Tailwind PostCSS rule for packages/ CSS files.
+        tailwindPostcssRule,
+        ...(defaultConfig.module && defaultConfig.module.rules || []),
+      ],
     },
     plugins: [
       ...defaultConfig.plugins,

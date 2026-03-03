@@ -78,6 +78,15 @@ class Settings_View extends Abstract_View {
 	/**
 	 * @inheritDoc
 	 */
+	protected function get_page_data(): array {
+		return [
+			'erase_phrase' => 'Let it Go!',
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function parse_request() {
 		// The Abstract just checks for a nonce actually super handy.
 		if ( ! parent::parse_request() ) {

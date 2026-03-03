@@ -8,8 +8,10 @@
 namespace FakerPress\Fields;
 
 use FakerPress\Contracts\Service_Provider;
+use function FakerPress\bind;
 use function FakerPress\get;
 use function FakerPress\make;
+use function FakerPress\singleton;
 
 /**
  * Class Factory
@@ -39,7 +41,7 @@ class Factory extends Service_Provider {
 	 */
 	public function register() {
 		// Register the provider as a singleton.
-		$this->container->singleton( static::class, $this );
+		singleton( static::class, $this );
 
 		// When fetching all items it will initialize.
 		$this->get_all_types();
@@ -103,7 +105,7 @@ class Factory extends Service_Provider {
 				continue;
 			}
 
-			$this->container->bind( $field_type, $field_type );
+			bind( $field_type, $field_type );
 
 			$this->types[ $field_type::get_slug() ] = $field_type;
 		}

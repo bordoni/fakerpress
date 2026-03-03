@@ -5,6 +5,8 @@ namespace FakerPress\Admin\View;
 use FakerPress\Admin;
 use FakerPress\Module\Post;
 use FakerPress\Plugin;
+use FakerPress\Provider\Image\Placeholder;
+use FakerPress\Provider\Image\LoremPicsum;
 use function FakerPress\get_request_var;
 use function FakerPress\make;
 
@@ -42,6 +44,47 @@ class Post_View extends Abstract_View {
 	 */
 	public function has_menu(): bool {
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_page_data(): array {
+		$post_types = get_post_types( [ 'public' => true ], 'objects' );
+		$taxonomies = get_taxonomies( [ 'public' => true ], 'objects' );
+
+		return [
+			'post_types'       => array_map(
+				static function ( $pt ) {
+					return [
+						'name'  => $pt->name,
+						'label' => $pt->label,
+					];
+				},
+				$post_types 
+			),
+			'taxonomies'       => array_map(
+				static function ( $tax ) {
+					return [
+						'name'  => $tax->name,
+						'label' => $tax->label,
+					];
+				},
+				$taxonomies 
+			),
+			'comment_statuses' => [ 'open', 'closed' ],
+			'html_tags'        => [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'div', 'p', 'blockquote', 'a', 'img' ],
+			'image_providers'  => [
+				[
+					'value' => Placeholder::ID,
+					'label' => 'Placehold.co',
+				],
+				[
+					'value' => LoremPicsum::ID,
+					'label' => 'Lorem Picsum',
+				],
+			],
+		];
 	}
 
 	/**
