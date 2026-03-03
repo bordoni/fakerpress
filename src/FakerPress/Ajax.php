@@ -20,7 +20,7 @@ class Ajax {
 		];
 
 		if ( ( ! is_ajax() && is_null( $request ) ) || ! is_user_logged_in() ) {
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? wp_send_json( $response ) : $response );
 		}
 
 		$request = (object) wp_parse_args(
@@ -39,13 +39,13 @@ class Ajax {
 		if ( ! wp_verify_nonce( $request->nonce, Plugin::$slug . '-select2-search_terms' ) ) {
 			$response->message = esc_attr__( 'Invalid nonce verification', 'fakerpress' );
 
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? wp_send_json( $response ) : $response );
 		}
 
 		if ( ! current_user_can( 'publish_posts' ) ) {
 			$response->message = esc_attr__( 'Your user needs the "publish_posts" permissions to search for terms.', 'fakerpress' );
 
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? wp_send_json( $response ) : $response );
 		}
 
 		if ( empty( $request->post_type ) ) {
@@ -91,7 +91,7 @@ class Ajax {
 			$response->more = false;
 		}
 
-		return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+		return ( is_ajax() ? wp_send_json( $response ) : $response );
 	}
 
 	public static function query_posts( $request = null ) {
@@ -103,7 +103,7 @@ class Ajax {
 		];
 
 		if ( ( ! is_ajax() && is_null( $request ) ) || ! is_user_logged_in() ) {
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? wp_send_json( $response ) : $response );
 		}
 
 		$request = (object) $_POST;
@@ -111,13 +111,13 @@ class Ajax {
 		if ( empty( $request->nonce ) || ! wp_verify_nonce( $request->nonce, Plugin::$slug . '-select2-WP_Query' ) ) {
 			$response->message = esc_attr__( 'Invalid nonce verification', 'fakerpress' );
 
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? wp_send_json( $response ) : $response );
 		}
 
 		if ( ! current_user_can( 'publish_posts' ) ) {
 			$response->message = esc_attr__( 'Your user needs the "publish_posts" permissions to use WP_Query.', 'fakerpress' );
 
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? wp_send_json( $response ) : $response );
 		}
 
 		if ( isset( $request->query['post_type'] ) && ! is_array( $request->query['post_type'] ) ) {
@@ -134,7 +134,7 @@ class Ajax {
 		$query = new \WP_Query( $request->query );
 
 		if ( ! $query->have_posts() ) {
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? wp_send_json( $response ) : $response );
 		}
 
 		$response->status  = true;
@@ -150,7 +150,7 @@ class Ajax {
 			$response->more = false;
 		}
 
-		return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+		return ( is_ajax() ? wp_send_json( $response ) : $response );
 	}
 
 	public static function search_authors( $request = null ) {
@@ -162,7 +162,7 @@ class Ajax {
 		];
 
 		if ( ( ! is_ajax() && is_null( $request ) ) || ! is_user_logged_in() ) {
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? wp_send_json( $response ) : $response );
 		}
 
 		$request = (object) wp_parse_args(
@@ -178,13 +178,13 @@ class Ajax {
 		if ( ! wp_verify_nonce( $request->nonce, Plugin::$slug . '-select2-search_authors' ) ) {
 			$response->message = esc_attr__( 'Invalid nonce verification', 'fakerpress' );
 
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? wp_send_json( $response ) : $response );
 		}
 
 		if ( ! current_user_can( 'publish_posts' ) ) {
 			$response->message = esc_attr__( 'Your user needs the "publish_posts" permissions to search for authors.', 'fakerpress' );
 
-			return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+			return ( is_ajax() ? wp_send_json( $response ) : $response );
 		}
 
 		$response->status  = true;
@@ -216,6 +216,6 @@ class Ajax {
 			$response->more = false;
 		}
 
-		return ( is_ajax() ? exit( json_encode( $response ) ) : $response );
+		return ( is_ajax() ? wp_send_json( $response ) : $response );
 	}
 }

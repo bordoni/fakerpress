@@ -393,8 +393,8 @@ class Attachment extends Abstract_Module {
 					$body     = wp_remote_retrieve_body( $response );
 					$metadata = json_decode( $body, true );
 					
-					if ( ! empty( $metadata['author'] ) ) {
-						$image_author = $metadata['author'];
+					if ( ! empty( $metadata['author'] ) && is_string( $metadata['author'] ) ) {
+						$image_author = sanitize_text_field( $metadata['author'] );
 					}
 				}
 				break;

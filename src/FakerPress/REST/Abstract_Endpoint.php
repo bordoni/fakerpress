@@ -286,9 +286,23 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 			return [];
 		}
 
-		// For non-meta arrays, we need schema to know how to sanitize.
-		// Without schema, we cannot safely sanitize, so return empty array.
-		return [];
+		$sanitizer = function ( $item ) {
+			if ( is_array( $item ) ) {
+				return $this->sanitize_array_parameter( $item, null );
+			}
+			if ( is_numeric( $item ) ) {
+				return is_float( $item ) ? (float) $item : (int) $item;
+			}
+			if ( is_bool( $item ) ) {
+				return $item;
+			}
+			if ( is_string( $item ) ) {
+				return sanitize_text_field( $item );
+			}
+			return $item;
+		};
+
+		return array_map( $sanitizer, $value );
 	}
 
 	/**
@@ -308,9 +322,9 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 
 		$array_value = (array) $value;
 
-		// For non-meta objects, we need schema to know how to sanitize.
-		// Without schema, we cannot safely sanitize, so return empty object.
-		return (object) [];
+		$sanitized = $this->sanitize_array_parameter( $array_value, $param_name );
+
+		return (object) $sanitized;
 	}
 
 	/**

@@ -111,7 +111,7 @@ class Comment extends Abstract_Module {
 		}
 
 		// Flag the Object as FakerPress
-		update_post_meta( $comment_id, static::get_flag(), 1 );
+		update_comment_meta( $comment_id, static::get_flag(), 1 );
 
 		return $comment_id;
 	}
