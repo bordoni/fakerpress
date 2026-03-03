@@ -72,7 +72,7 @@ class WP_Comment extends Base {
 
 	public function comment_author_IP( $ip = null ) {
 		if ( is_null( $ip ) ) {
-			$ip = $this->generator->ipv4;
+			$ip = $this->generator->ipv4();
 		}
 
 		return $ip;
@@ -80,7 +80,7 @@ class WP_Comment extends Base {
 
 	public function comment_agent( $user_agent = null ) {
 		if ( is_null( $user_agent ) ) {
-			$user_agent = $this->generator->userAgent;
+			$user_agent = $this->generator->userAgent();
 		}
 
 		return $user_agent;
@@ -133,7 +133,7 @@ class WP_Comment extends Base {
 
 	public function comment_author_email( $author_email = null ) {
 		if ( is_null( $author_email ) ) {
-			$author_email = $this->generator->safeEmail;
+			$author_email = $this->generator->safeEmail();
 			$author_email = substr( $author_email, 0, strlen( $author_email ) - 1 );
 		}
 
@@ -142,7 +142,7 @@ class WP_Comment extends Base {
 
 	public function comment_author_url( $author_url = null ) {
 		if ( is_null( $author_url ) ) {
-			$author_url = $this->generator->url;
+			$author_url = $this->generator->url();
 			$author_url = substr( $author_url, 0, strlen( $author_url ) - 1 );
 		}
 

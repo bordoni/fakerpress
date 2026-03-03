@@ -43,7 +43,8 @@ class SanitizationTest extends \Codeception\TestCase\WPTestCase {
 		$input  = [ '<script>alert("xss")</script>', 'clean value', '<b>bold</b>' ];
 		$result = $method->invoke( $endpoint, $input, 'test_param' );
 
-		$this->assertSame( 'alert("xss")', $result[0] );
+		// sanitize_text_field() strips script tags and their content entirely.
+		$this->assertSame( '', $result[0] );
 		$this->assertSame( 'clean value', $result[1] );
 		$this->assertSame( 'bold', $result[2] );
 	}
@@ -94,10 +95,10 @@ class SanitizationTest extends \Codeception\TestCase\WPTestCase {
 		$method   = new \ReflectionMethod( $endpoint, 'sanitize_array_parameter' );
 		$method->setAccessible( true );
 
-		$input  = [ [ '<script>xss</script>', 42 ], 'clean' ];
+		$input  = [ [ '<em>emphasis</em>', 42 ], 'clean' ];
 		$result = $method->invoke( $endpoint, $input, 'test_param' );
 
-		$this->assertSame( 'xss', $result[0][0] );
+		$this->assertSame( 'emphasis', $result[0][0] );
 		$this->assertSame( 42, $result[0][1] );
 		$this->assertSame( 'clean', $result[1] );
 	}
@@ -127,11 +128,11 @@ class SanitizationTest extends \Codeception\TestCase\WPTestCase {
 		$method   = new \ReflectionMethod( $endpoint, 'sanitize_object_parameter' );
 		$method->setAccessible( true );
 
-		$input  = [ 'name' => '<script>xss</script>', 'value' => 'clean' ];
+		$input  = [ 'name' => '<b>bold</b> text', 'value' => 'clean' ];
 		$result = $method->invoke( $endpoint, $input, 'test_param' );
 
 		$this->assertIsObject( $result );
-		$this->assertSame( 'xss', $result->name );
+		$this->assertSame( 'bold text', $result->name );
 		$this->assertSame( 'clean', $result->value );
 	}
 
