@@ -11,9 +11,9 @@ import type { RangeValue, DateRange, MetaRule, TaxonomyRule } from './types';
  * Convert a range to the API format.
  */
 function rangeToParam( range: RangeValue ): string | number {
-	return range.min === range.max
-		? range.min
-		: `${ range.min }-${ range.max }`;
+	const min = range.min ?? 1;
+	const max = range.max ?? min;
+	return min === max ? min : `${ min }-${ max }`;
 }
 
 /**
@@ -55,7 +55,7 @@ export function transformTermsForm( data: {
 } ): Record< string, unknown > {
 	return {
 		quantity: rangeToParam( data.qty ),
-		name_size: [ data.size.min, data.size.max ],
+		name_size: [ data.size.min ?? 1, data.size.max ?? data.size.min ?? 1 ],
 		taxonomies: data.taxonomies,
 		meta: metaToParam( data.meta ),
 	};
@@ -75,7 +75,7 @@ export function transformUsersForm( data: {
 	return {
 		quantity: rangeToParam( data.qty ),
 		roles: data.roles,
-		description_size: [ data.description_size.min, data.description_size.max ],
+		description_size: [ data.description_size.min ?? 1, data.description_size.max ?? data.description_size.min ?? 1 ],
 		use_html: data.use_html,
 		html_tags: data.html_tags,
 		meta: metaToParam( data.meta ),
@@ -100,7 +100,7 @@ export function transformCommentsForm( data: {
 		post_type: data.post_type,
 		quantity: rangeToParam( data.qty ),
 		...dateToParams( data.date ),
-		content_size: [ data.content_size.min, data.content_size.max ],
+		content_size: [ data.content_size.min ?? 1, data.content_size.max ?? data.content_size.min ?? 1 ],
 		use_html: data.use_html,
 		html_tags: data.html_tags,
 		meta: metaToParam( data.meta ),
@@ -128,8 +128,10 @@ export function transformAttachmentsForm( data: {
 		quantity: rangeToParam( data.qty ),
 		...dateToParams( data.date ),
 		provider: data.provider,
-		width: [ data.width.min, data.width.max ],
-		height: [ data.height.min, data.height.max ],
+		width: [ data.width.min ?? 200, data.width.max ?? data.width.min ?? 200 ],
+		height: ( data.height.min !== undefined || data.height.max !== undefined )
+			? [ data.height.min ?? 0, data.height.max ?? data.height.min ?? 0 ]
+			: undefined,
 		aspect_ratio: data.aspect_ratio || undefined,
 		parents: data.parents,
 		author: data.author,
@@ -166,10 +168,10 @@ export function transformPostsForm( data: {
 		comment_status: data.comment_status,
 		author: data.authors,
 		use_html: data.use_html,
-		content_size: [ data.content_size.min, data.content_size.max ],
+		content_size: [ data.content_size.min ?? 1, data.content_size.max ?? data.content_size.min ?? 1 ],
 		html_tags: data.html_tags,
 		image_providers: data.image_providers,
-		excerpt_size: [ data.excerpt_size.min, data.excerpt_size.max ],
+		excerpt_size: [ data.excerpt_size.min ?? 1, data.excerpt_size.max ?? data.excerpt_size.min ?? 1 ],
 		taxonomy_rules: data.taxonomy_rules.length > 0
 			? data.taxonomy_rules.map( ( rule ) => ( {
 				taxonomies: rule.taxonomies,

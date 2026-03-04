@@ -23,33 +23,33 @@ export function GenerateButton( {
 		: 0;
 
 	return (
-		<div className="fp-space-y-3 fp-pt-4">
+		<div className="fp:space-y-3 fp:pt-4">
 			<Button
 				onClick={ onClick }
 				disabled={ isGenerating }
-				className="fp-w-full sm:fp-w-auto"
+				className="fp:w-full fp:sm:w-auto"
 			>
-				{ isGenerating && <Loader2 className="fp-animate-spin" /> }
+				{ isGenerating && <Loader2 className="fp:animate-spin" /> }
 				{ isGenerating ? 'Generating...' : 'Generate' }
 			</Button>
 
 			{ isGenerating && progress && (
-				<div className="fp-space-y-1">
-					<Progress value={ progressPercent } className="fp-w-full" />
-					<p className="fp-text-xs fp-text-muted-foreground">
+				<div className="fp:space-y-1">
+					<Progress value={ progressPercent } className="fp:w-full" />
+					<p className="fp:text-xs fp:text-muted-foreground">
 						{ progress.current } / { progress.total } generated
 					</p>
 				</div>
 			) }
 
 			{ results && (
-				<p className="fp-text-sm fp-text-green-600">
+				<p className="fp:text-sm fp:text-green-600">
 					Successfully generated { results.generated } items in { results.time.toFixed( 2 ) }s.
 				</p>
 			) }
 
 			{ error && (
-				<p className="fp-text-sm fp-text-destructive">
+				<p className="fp:text-sm fp:text-destructive">
 					Error: { error }
 				</p>
 			) }

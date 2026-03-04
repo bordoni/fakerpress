@@ -106,36 +106,45 @@ export function ComboboxMulti( {
 					variant="outline"
 					role="combobox"
 					aria-expanded={ open }
-					className="fp-w-full fp-justify-between fp-h-auto fp-min-h-9 fp-py-1.5"
+					className="fp:w-full fp:justify-between fp:h-auto fp:min-h-9 fp:py-1.5"
 				>
-					<div className="fp-flex fp-flex-wrap fp-gap-1 fp-flex-1">
+					<div className="fp:flex fp:flex-wrap fp:gap-1 fp:flex-1">
 						{ value.length === 0 && (
-							<span className="fp-text-muted-foreground fp-font-normal">{ placeholder }</span>
+							<span className="fp:text-muted-foreground fp:font-normal">{ placeholder }</span>
 						) }
 						{ value.map( ( val ) => (
 							<Badge
 								key={ val }
 								variant="secondary"
-								className="fp-gap-1"
+								className="fp:gap-1"
 							>
 								{ getLabel( val ) }
-								<button
-									type="button"
-									className="fp-ml-0.5 fp-rounded-full fp-outline-none hover:fp-bg-secondary-foreground/20"
+								<span
+									role="button"
+									tabIndex={ 0 }
+									aria-label={ `Remove ${ getLabel( val ) }` }
+									className="fp:ml-0.5 fp:rounded-full fp:outline-none fp:hover:bg-secondary-foreground/20 fp:cursor-pointer"
 									onClick={ ( e ) => {
 										e.stopPropagation();
 										handleRemove( val );
 									} }
+									onKeyDown={ ( e ) => {
+										if ( e.key === 'Enter' || e.key === ' ' ) {
+											e.preventDefault();
+											e.stopPropagation();
+											handleRemove( val );
+										}
+									} }
 								>
-									<X className="fp-h-3 fp-w-3" />
-								</button>
+									<X className="fp:h-3 fp:w-3" />
+								</span>
 							</Badge>
 						) ) }
 					</div>
-					<ChevronsUpDown className="fp-h-4 fp-w-4 fp-shrink-0 fp-opacity-50" />
+					<ChevronsUpDown className="fp:h-4 fp:w-4 fp:shrink-0 fp:opacity-50" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="fp-w-[var(--radix-popover-trigger-width)] fp-p-0" align="start">
+			<PopoverContent className="fp:w-[var(--radix-popover-trigger-width)] fp:p-0" align="start">
 				<Command shouldFilter={ ! onSearch }>
 					<CommandInput
 						placeholder={ `Search${ allowCreate ? ' or type to add' : '' }...` }
@@ -158,7 +167,7 @@ export function ComboboxMulti( {
 									value={ option.value }
 									onSelect={ () => handleSelect( option.value ) }
 									className={ cn(
-										value.includes( option.value ) && 'fp-bg-accent'
+										value.includes( option.value ) && 'fp:bg-accent'
 									) }
 								>
 									{ option.label }

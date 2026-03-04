@@ -60,8 +60,8 @@ export interface AjaxSearchResponse {
  * Range value with min and max.
  */
 export interface RangeValue {
-	min: number;
-	max: number;
+	min: number | undefined;
+	max: number | undefined;
 }
 
 /**

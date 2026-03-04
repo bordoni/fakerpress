@@ -88,7 +88,7 @@ export default function SettingsPage() {
 				/>
 			</FormField>
 
-			<div className="fp-pt-4">
+			<div className="fp:pt-4">
 				<Dialog open={ dialogOpen } onOpenChange={ setDialogOpen }>
 					<DialogTrigger asChild>
 						<Button

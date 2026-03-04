@@ -19,7 +19,7 @@ function App( { page }: { page: string } ) {
 	}
 
 	return (
-		<Suspense fallback={ <div className="fp-p-4 fp-text-muted-foreground">Loading...</div> }>
+		<Suspense fallback={ <div className="fp:p-4 fp:text-muted-foreground">Loading...</div> }>
 			<PageComponent />
 		</Suspense>
 	);

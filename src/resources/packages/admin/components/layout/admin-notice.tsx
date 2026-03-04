@@ -27,18 +27,18 @@ export function AdminNotice( { type, title, message, dismissible = true, onDismi
 	const variant = type === 'error' ? 'destructive' : 'default';
 
 	return (
-		<Alert variant={ variant } className="fp-mb-4 fp-relative">
-			<Icon className="fp-h-4 fp-w-4" />
+		<Alert variant={ variant } className="fp:mb-4 fp:relative">
+			<Icon className="fp:h-4 fp:w-4" />
 			<AlertTitle>{ title }</AlertTitle>
 			<AlertDescription>{ message }</AlertDescription>
 			{ dismissible && (
 				<Button
 					variant="ghost"
 					size="icon-xs"
-					className="fp-absolute fp-top-2 fp-right-2"
+					className="fp:absolute fp:top-2 fp:right-2"
 					onClick={ handleDismiss }
 				>
-					<X className="fp-h-3 fp-w-3" />
+					<X className="fp:h-3 fp:w-3" />
 				</Button>
 			) }
 		</Alert>

@@ -54,6 +54,12 @@ Strauss vendor-prefixes all third-party packages under `FakerPress\ThirdParty\` 
 
 **Build tool:** `@wordpress/scripts` with custom webpack config (`webpack.config.js`) using `@stellarwp/tyson` helpers.
 
+## Development Workflow
+
+During active development sessions, `bun run start` is already running in the background in watch mode. **Do not run `bun run build` or restart the watcher** — changes to source files are picked up automatically and the browser receives the updated bundle.
+
+Only run `bun run build` for a one-off production build or when starting fresh with no watcher active.
+
 ## Gitignored Build Artifacts
 
 These directories are generated and must NOT be committed:
@@ -166,6 +172,21 @@ Then add a minimal scoped reset targeting only `#fakerpress-react-root *` in `@l
 Tailwind v4 injects `:not(#\#)` cascade-compatibility shims via `@tailwindcss/node`'s LightningCSS optimizer inside the `@tailwindcss/postcss` `Once` hook. These shims land in `result.root` **after** PostCSS `OnceExit` fires, making them invisible to any PostCSS plugin you add after `@tailwindcss/postcss`.
 
 The correct fix is the `StripTailwindLayerHacksPlugin` webpack plugin in `webpack.config.js`, which strips them from compiled `.css` assets at `PROCESS_ASSETS_STAGE_DERIVED` (before `RtlCssPlugin`).
+
+### Always use `fp:` (colon) prefix notation — never `fp-` (dash)
+
+Tailwind v4 `prefix(fp)` generates CSS selectors with a **colon** separator: `.fp\:flex`, `.fp\:text-2xl`.
+The dash form (`fp-flex`, `fp-text-2xl`) matches no generated rule and the style silently does nothing.
+
+| Wrong | Correct |
+|-------|---------|
+| `fp-flex` | `fp:flex` |
+| `fp-text-2xl` | `fp:text-2xl` |
+| `hover:fp-bg-accent` | `fp:hover:bg-accent` |
+| `sm:fp-w-auto` | `fp:sm:w-auto` |
+| `last:fp-border-b-0` | `fp:last:border-b-0` |
+
+**Rule:** The `fp:` prefix always comes **first**, before any variant modifier (`hover:`, `sm:`, `last:`, etc.).
 
 ## Coding Standards
 

@@ -1,3 +1,6 @@
+/* Limit Tailwind's auto-detection to source packages only. */
+@source "../../**/*.{tsx,ts,jsx,js,html,php}";
+
 @import "tailwindcss/theme" prefix(fp);
 @import "tailwindcss/utilities" prefix(fp);
 

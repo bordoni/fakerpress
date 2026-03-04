@@ -124,6 +124,14 @@ class StripTailwindLayerHacksPlugin {
 module.exports = {
   ...defaultConfig,
   ...{
+    watchOptions: {
+      ...defaultConfig.watchOptions,
+      ignored: [
+        '**/node_modules/**',
+        '**/build/**',
+        '**/vendor/**',
+      ],
+    },
     entry: (buildType) => {
       const defaultEntryPoints = defaultConfig.entry(buildType);
       const allEntries = { ...defaultEntryPoints, ...customEntryPoints };

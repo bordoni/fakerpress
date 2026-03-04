@@ -20,11 +20,11 @@ import { Input } from '../components/ui/input';
 import type { MetaRule } from '../lib/types';
 
 interface AttachmentsFormData {
-	qty: { min: number; max: number };
+	qty: { min: number | undefined; max: number | undefined };
 	date: { preset: string; start: string; end: string };
 	provider: string;
-	width: { min: number; max: number };
-	height: { min: number; max: number };
+	width: { min: number | undefined; max: number | undefined };
+	height: { min: number | undefined; max: number | undefined };
 	aspect_ratio: number;
 	parents: number[];
 	author: number[];
@@ -65,7 +65,7 @@ export default function AttachmentsPage() {
 			date: { preset: 'yesterday', start: '', end: '' },
 			provider: providerOptions[ 0 ]?.value || 'placeholder',
 			width: { min: 200, max: 1200 },
-			height: { min: 0, max: 0 },
+			height: { min: undefined, max: undefined },
 			aspect_ratio: 1.5,
 			parents: [],
 			author: [],
@@ -99,7 +99,10 @@ export default function AttachmentsPage() {
 					name="qty"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Quantity', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Quantity', 'fakerpress' ) }
+							description={ __( 'How many attachments should be generated, use both fields to get a randomized number of attachments within the given range.', 'fakerpress' ) }
+						>
 							<RangeInput
 								minValue={ field.value.min }
 								maxValue={ field.value.max }
@@ -115,7 +118,10 @@ export default function AttachmentsPage() {
 					name="date"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Date', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Date', 'fakerpress' ) }
+							description={ __( 'Choose the range for the attachment dates.', 'fakerpress' ) }
+						>
 							<DateRangeField
 								startDate={ field.value.start }
 								endDate={ field.value.end }
@@ -130,9 +136,12 @@ export default function AttachmentsPage() {
 					name="provider"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Image Provider', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Image Provider', 'fakerpress' ) }
+							description={ __( 'Choose which image service to use for generating attachments.', 'fakerpress' ) }
+						>
 							<Select value={ field.value } onValueChange={ field.onChange }>
-								<SelectTrigger className="fp-w-48">
+								<SelectTrigger className="fp:w-48">
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
@@ -151,7 +160,10 @@ export default function AttachmentsPage() {
 					name="width"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Width', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Width', 'fakerpress' ) }
+							description={ __( 'Image width range in pixels.', 'fakerpress' ) }
+						>
 							<RangeInput
 								minValue={ field.value.min }
 								maxValue={ field.value.max }
@@ -168,7 +180,10 @@ export default function AttachmentsPage() {
 					name="height"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Height', 'fakerpress' ) } description={ __( 'Set to 0 to use aspect ratio instead.', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Height', 'fakerpress' ) }
+							description={ __( 'Image height range in pixels. Leave at 0 to use aspect ratio instead.', 'fakerpress' ) }
+						>
 							<RangeInput
 								minValue={ field.value.min }
 								maxValue={ field.value.max }
@@ -185,14 +200,17 @@ export default function AttachmentsPage() {
 					name="aspect_ratio"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Aspect Ratio', 'fakerpress' ) } description={ __( 'Width/Height ratio. Used when Height is 0.', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Aspect Ratio', 'fakerpress' ) }
+							description={ __( 'Width/Height ratio (e.g., 1.5 for 3:2, 1.77 for 16:9). Only used when height is 0.', 'fakerpress' ) }
+						>
 							<Input
 								type="number"
 								value={ field.value }
 								onChange={ ( e ) => field.onChange( Number( e.target.value ) ) }
 								step={ 0.1 }
 								min={ 0 }
-								className="fp-w-24"
+								className="fp:w-24"
 							/>
 						</FormField>
 					) }
@@ -202,7 +220,10 @@ export default function AttachmentsPage() {
 					name="parents"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Parent Posts', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Parent Posts', 'fakerpress' ) }
+							description={ __( 'Attach generated images to specific posts.', 'fakerpress' ) }
+						>
 							<ComboboxMulti
 								value={ field.value.map( String ) }
 								onChange={ ( vals ) => field.onChange( vals.map( Number ) ) }
@@ -215,58 +236,71 @@ export default function AttachmentsPage() {
 					) }
 				/>
 
-				<FormField label={ __( 'Generate Fields', 'fakerpress' ) }>
-					<div className="fp-space-y-2">
-						<Controller
-							name="alt_text"
-							control={ control }
-							render={ ( { field } ) => (
-								<div className="fp-flex fp-items-center fp-gap-2">
-									<Checkbox
-										id="alt_text"
-										checked={ field.value }
-										onCheckedChange={ field.onChange }
-									/>
-									<Label htmlFor="alt_text">{ __( 'Alt Text', 'fakerpress' ) }</Label>
-								</div>
-							) }
-						/>
-						<Controller
-							name="caption"
-							control={ control }
-							render={ ( { field } ) => (
-								<div className="fp-flex fp-items-center fp-gap-2">
-									<Checkbox
-										id="caption"
-										checked={ field.value }
-										onCheckedChange={ field.onChange }
-									/>
-									<Label htmlFor="caption">{ __( 'Caption', 'fakerpress' ) }</Label>
-								</div>
-							) }
-						/>
-						<Controller
-							name="description"
-							control={ control }
-							render={ ( { field } ) => (
-								<div className="fp-flex fp-items-center fp-gap-2">
-									<Checkbox
-										id="description"
-										checked={ field.value }
-										onCheckedChange={ field.onChange }
-									/>
-									<Label htmlFor="description">{ __( 'Description', 'fakerpress' ) }</Label>
-								</div>
-							) }
-						/>
-					</div>
-				</FormField>
+				<Controller
+					name="alt_text"
+					control={ control }
+					render={ ( { field } ) => (
+						<FormField label={ __( 'Alt Text', 'fakerpress' ) }>
+							<div className="fp:flex fp:items-center fp:gap-2">
+								<Checkbox
+									id="alt_text"
+									checked={ field.value }
+									onCheckedChange={ field.onChange }
+								/>
+								<Label htmlFor="alt_text">
+									{ __( 'Generate alt text for accessibility', 'fakerpress' ) }
+								</Label>
+							</div>
+						</FormField>
+					) }
+				/>
+
+				<Controller
+					name="caption"
+					control={ control }
+					render={ ( { field } ) => (
+						<FormField label={ __( 'Caption', 'fakerpress' ) }>
+							<div className="fp:flex fp:items-center fp:gap-2">
+								<Checkbox
+									id="caption"
+									checked={ field.value }
+									onCheckedChange={ field.onChange }
+								/>
+								<Label htmlFor="caption">
+									{ __( 'Generate image captions', 'fakerpress' ) }
+								</Label>
+							</div>
+						</FormField>
+					) }
+				/>
+
+				<Controller
+					name="description"
+					control={ control }
+					render={ ( { field } ) => (
+						<FormField label={ __( 'Description', 'fakerpress' ) }>
+							<div className="fp:flex fp:items-center fp:gap-2">
+								<Checkbox
+									id="description"
+									checked={ field.value }
+									onCheckedChange={ field.onChange }
+								/>
+								<Label htmlFor="description">
+									{ __( 'Generate image descriptions', 'fakerpress' ) }
+								</Label>
+							</div>
+						</FormField>
+					) }
+				/>
 
 				<Controller
 					name="author"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Author', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Author', 'fakerpress' ) }
+							description={ __( 'Choose users to be owners of generated attachments.', 'fakerpress' ) }
+						>
 							<ComboboxMulti
 								value={ field.value.map( String ) }
 								onChange={ ( vals ) => field.onChange( vals.map( Number ) ) }
@@ -283,9 +317,11 @@ export default function AttachmentsPage() {
 					name="meta"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Meta Field Rules', 'fakerpress' ) }>
-							<MetaFieldRules value={ field.value } onChange={ field.onChange } />
-						</FormField>
+						<MetaFieldRules
+							value={ field.value }
+							onChange={ field.onChange }
+							description={ __( 'Use the fields below to configure a set of rules for your generated Attachments.', 'fakerpress' ) }
+						/>
 					) }
 				/>
 

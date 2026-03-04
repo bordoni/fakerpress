@@ -1,11 +1,7 @@
-import { useState, useCallback, useMemo } from 'react';
-import { format, subDays, startOfWeek, startOfMonth, startOfYear, endOfDay } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Calendar } from '../ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { useState, useCallback } from 'react';
+import { format, subDays, startOfWeek, startOfMonth, startOfYear } from 'date-fns';
+import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { cn } from '../../lib/utils';
 
 const DATE_FORMAT = 'yyyy-MM-dd';
 
@@ -69,26 +65,16 @@ export function DateRangeField( {
 			if ( presetConfig ) {
 				const [ start, end ] = presetConfig.getRange();
 				onStartChange( format( start, DATE_FORMAT ) );
-				onEndChange( format( endOfDay( end ), DATE_FORMAT ) );
+				onEndChange( format( end, DATE_FORMAT ) );
 			}
 		},
 		[ onStartChange, onEndChange ]
 	);
 
-	const startDateObj = useMemo(
-		() => ( startDate ? new Date( startDate + 'T00:00:00' ) : undefined ),
-		[ startDate ]
-	);
-
-	const endDateObj = useMemo(
-		() => ( endDate ? new Date( endDate + 'T00:00:00' ) : undefined ),
-		[ endDate ]
-	);
-
 	return (
-		<div className="fp-flex fp-flex-wrap fp-items-center fp-gap-2">
+		<div className="fp:flex fp:flex-wrap fp:items-center fp:gap-2">
 			<Select value={ preset } onValueChange={ handlePresetChange }>
-				<SelectTrigger className="fp-w-44">
+				<SelectTrigger className="fp:w-44">
 					<SelectValue placeholder="Select an Interval" />
 				</SelectTrigger>
 				<SelectContent>
@@ -100,60 +86,30 @@ export function DateRangeField( {
 				</SelectContent>
 			</Select>
 
-			<DatePickerButton
-				date={ startDateObj }
-				onSelect={ ( d ) => {
-					onStartChange( d ? format( d, DATE_FORMAT ) : '' );
+			<Input
+				type="date"
+				value={ startDate }
+				onChange={ ( e ) => {
+					onStartChange( e.target.value );
 					setPreset( '' );
 				} }
-				placeholder="Start date"
+				className="fp:w-36"
 			/>
 
-			<span className="fp-text-muted-foreground fp-text-sm">&gt;</span>
-
-			<DatePickerButton
-				date={ endDateObj }
-				onSelect={ ( d ) => {
-					onEndChange( d ? format( d, DATE_FORMAT ) : '' );
-					setPreset( '' );
-				} }
-				placeholder="End date"
-			/>
+			{ startDate && (
+				<>
+					<span className="fp:text-muted-foreground fp:text-sm">&gt;</span>
+					<Input
+						type="date"
+						value={ endDate }
+						onChange={ ( e ) => {
+							onEndChange( e.target.value );
+							setPreset( '' );
+						} }
+						className="fp:w-36"
+					/>
+				</>
+			) }
 		</div>
-	);
-}
-
-function DatePickerButton( {
-	date,
-	onSelect,
-	placeholder,
-}: {
-	date?: Date;
-	onSelect: ( date: Date | undefined ) => void;
-	placeholder: string;
-} ) {
-	return (
-		<Popover>
-			<PopoverTrigger asChild>
-				<Button
-					variant="outline"
-					className={ cn(
-						'fp-w-36 fp-justify-start fp-text-left fp-font-normal',
-						! date && 'fp-text-muted-foreground'
-					) }
-				>
-					<CalendarIcon className="fp-mr-2 fp-h-4 fp-w-4" />
-					{ date ? format( date, DATE_FORMAT ) : placeholder }
-				</Button>
-			</PopoverTrigger>
-			<PopoverContent className="fp-w-auto fp-p-0" align="start">
-				<Calendar
-					mode="single"
-					selected={ date }
-					onSelect={ onSelect }
-					initialFocus
-				/>
-			</PopoverContent>
-		</Popover>
 	);
 }

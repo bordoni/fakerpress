@@ -14,8 +14,8 @@ import { GenerateButton } from '../components/form/generate-button';
 import type { MetaRule } from '../lib/types';
 
 interface TermsFormData {
-	qty: { min: number; max: number };
-	size: { min: number; max: number };
+	qty: { min: number | undefined; max: number | undefined };
+	size: { min: number | undefined; max: number | undefined };
 	taxonomies: string[];
 	meta: MetaRule[];
 }
@@ -119,9 +119,11 @@ export default function TermsPage() {
 					name="meta"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Meta Field Rules', 'fakerpress' ) } description={ __( 'Add custom meta fields to generated terms.', 'fakerpress' ) }>
-							<MetaFieldRules value={ field.value } onChange={ field.onChange } />
-						</FormField>
+						<MetaFieldRules
+							value={ field.value }
+							onChange={ field.onChange }
+							description={ __( 'Use the fields below to configure a set of rules for your generated Terms.', 'fakerpress' ) }
+						/>
 					) }
 				/>
 
