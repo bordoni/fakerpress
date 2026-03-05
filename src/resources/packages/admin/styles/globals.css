@@ -1,3 +1,5 @@
+@config "../../../../../tailwind.config.js";
+
 /* Limit Tailwind's auto-detection to source packages only. */
 @source "../../**/*.{tsx,ts,jsx,js,html,php}";
 
@@ -56,9 +58,9 @@
 	 * Provides the box-sizing and border defaults Tailwind utilities expect,
 	 * without leaking margin/padding/font resets to the surrounding WP page.
 	 */
-	#fakerpress-react-root *,
-	#fakerpress-react-root *::before,
-	#fakerpress-react-root *::after {
+	:where(#fakerpress-react-root) *,
+	:where(#fakerpress-react-root) *::before,
+	:where(#fakerpress-react-root) *::after {
 		box-sizing: border-box;
 		border-width: 0;
 		border-style: solid;
@@ -71,25 +73,25 @@
 	 */
 	#fakerpress-react-root {
 		--background: oklch(1 0 0);
-		--foreground: oklch(0.145 0 0);
+		--foreground: oklch(0.24 0.010 241);
 		--card: oklch(1 0 0);
-		--card-foreground: oklch(0.145 0 0);
+		--card-foreground: oklch(0.24 0.010 241);
 		--popover: oklch(1 0 0);
-		--popover-foreground: oklch(0.145 0 0);
-		--primary: oklch(0.205 0 0);
+		--popover-foreground: oklch(0.24 0.010 241);
+		--primary: oklch(0.49 0.12 241);
 		--primary-foreground: oklch(0.985 0 0);
 		--secondary: oklch(0.97 0 0);
-		--secondary-foreground: oklch(0.205 0 0);
+		--secondary-foreground: oklch(0.24 0.010 241);
 		--muted: oklch(0.97 0 0);
-		--muted-foreground: oklch(0.556 0 0);
+		--muted-foreground: oklch(0.40 0.008 245);
 		--accent: oklch(0.97 0 0);
-		--accent-foreground: oklch(0.205 0 0);
+		--accent-foreground: oklch(0.24 0.010 241);
 		--destructive: oklch(0.577 0.245 27.325);
 		--destructive-foreground: oklch(0.577 0.245 27.325);
-		--border: oklch(0.922 0 0);
-		--input: oklch(0.922 0 0);
-		--ring: oklch(0.708 0 0);
-		--radius: 0.5rem;
+		--border: oklch(0.60 0.006 247);
+		--input: oklch(0.60 0.006 247);
+		--ring: oklch(0.49 0.12 241);
+		--radius: 0.3rem;
 		--chart-1: oklch(0.646 0.222 41.116);
 		--chart-2: oklch(0.6 0.118 184.704);
 		--chart-3: oklch(0.398 0.07 227.392);
@@ -104,4 +106,78 @@
 		--sidebar-border: oklch(0.922 0 0);
 		--sidebar-ring: oklch(0.708 0 0);
 	}
+
+	/*
+	 * Cancel WordPress admin form-element overrides inside FakerPress.
+	 * :where([data-fp-root]) contributes zero specificity, so this reset
+	 * lands at most (0,1,1) — below Tailwind utilities (0,2,0) — while
+	 * still beating WP admin's (0,1,1) via source order (our sheet loads after).
+	 */
+	:where([data-fp-root]) input,
+	:where([data-fp-root]) input[type="text"],
+	:where([data-fp-root]) input[type="password"],
+	:where([data-fp-root]) input[type="color"],
+	:where([data-fp-root]) input[type="date"],
+	:where([data-fp-root]) input[type="datetime"],
+	:where([data-fp-root]) input[type="datetime-local"],
+	:where([data-fp-root]) input[type="email"],
+	:where([data-fp-root]) input[type="month"],
+	:where([data-fp-root]) input[type="number"],
+	:where([data-fp-root]) input[type="search"],
+	:where([data-fp-root]) input[type="tel"],
+	:where([data-fp-root]) input[type="time"],
+	:where([data-fp-root]) input[type="url"],
+	:where([data-fp-root]) input[type="week"],
+	:where([data-fp-root]) select,
+	:where([data-fp-root]) textarea {
+		height: auto;
+		min-height: 0;
+		padding: 0;
+		margin: 0;
+		font-size: inherit;
+		font-family: inherit;
+		font-weight: inherit;
+		line-height: inherit;
+		border-width: 0;
+		border-style: solid;
+		border-color: currentColor;
+		border-radius: 0;
+		background-color: transparent;
+		color: inherit;
+		box-shadow: none;
+		outline: none;
+		vertical-align: baseline;
+		appearance: none;
+		-webkit-appearance: none;
+	}
+
+	/*
+	 * Cancel WordPress admin :focus overrides inside FakerPress.
+	 * Same :where() strategy — zero added specificity so Tailwind
+	 * focus-visible utilities (fp:focus-visible:*) still win.
+	 */
+	:where([data-fp-root]) input[type="text"]:focus,
+	:where([data-fp-root]) input[type="password"]:focus,
+	:where([data-fp-root]) input[type="color"]:focus,
+	:where([data-fp-root]) input[type="date"]:focus,
+	:where([data-fp-root]) input[type="datetime"]:focus,
+	:where([data-fp-root]) input[type="datetime-local"]:focus,
+	:where([data-fp-root]) input[type="email"]:focus,
+	:where([data-fp-root]) input[type="month"]:focus,
+	:where([data-fp-root]) input[type="number"]:focus,
+	:where([data-fp-root]) input[type="search"]:focus,
+	:where([data-fp-root]) input[type="tel"]:focus,
+	:where([data-fp-root]) input[type="time"]:focus,
+	:where([data-fp-root]) input[type="url"]:focus,
+	:where([data-fp-root]) input[type="week"]:focus,
+	:where([data-fp-root]) input[type="checkbox"]:focus,
+	:where([data-fp-root]) input[type="radio"]:focus,
+	:where([data-fp-root]) select:focus,
+	:where([data-fp-root]) textarea:focus {
+		border-color: currentColor;
+		box-shadow: none;
+		outline: none;
+		color: inherit;
+	}
+
 }

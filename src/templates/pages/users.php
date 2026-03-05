@@ -8,7 +8,7 @@ use FakerPress\Admin\View\Abstract_View;
  */
 ?>
 <div class='wrap'>
-	<div id="fakerpress-react-root" data-page="users"></div>
+	<div id="fakerpress-react-root" data-fp-root data-page="users"></div>
 	<noscript>
 		<p><?php esc_html_e( 'FakerPress requires JavaScript to be enabled.', 'fakerpress' ); ?></p>
 	</noscript>
