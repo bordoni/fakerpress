@@ -21,8 +21,12 @@ function PopoverContent({
   sideOffset = 4,
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+  const container =
+    typeof document !== 'undefined'
+      ? document.getElementById( 'fakerpress-react-root' )
+      : undefined;
   return (
-    <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Portal container={ container ?? undefined }>
       <PopoverPrimitive.Content
         data-slot="popover-content"
         align={align}

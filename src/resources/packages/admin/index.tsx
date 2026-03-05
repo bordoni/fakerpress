@@ -28,6 +28,7 @@ function App( { page }: { page: string } ) {
 const rootElement = document.getElementById( 'fakerpress-react-root' );
 
 if ( rootElement ) {
+	document.body.setAttribute( 'data-fp-root', '' );
 	const page = rootElement.getAttribute( 'data-page' ) || '';
 	const root = createRoot( rootElement );
 

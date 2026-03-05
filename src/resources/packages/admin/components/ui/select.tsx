@@ -35,7 +35,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "fp:flex fp:w-fit fp:items-center fp:justify-between fp:gap-2 fp:rounded-md fp:border fp:border-input fp:bg-transparent fp:px-3 fp:py-2 fp:text-sm fp:whitespace-nowrap fp:shadow-xs fp:transition-[color,box-shadow] fp:outline-none fp:focus-visible:border-ring fp:focus-visible:ring-[3px] fp:focus-visible:ring-ring/50 fp:disabled:cursor-not-allowed fp:disabled:opacity-50 fp:aria-invalid:border-destructive fp:aria-invalid:ring-destructive/20 fp:data-[placeholder]:text-muted-foreground fp:data-[size=default]:h-9 fp:data-[size=sm]:h-8 fp:*:data-[slot=select-value]:line-clamp-1 fp:*:data-[slot=select-value]:flex fp:*:data-[slot=select-value]:items-center fp:*:data-[slot=select-value]:gap-2 fp:dark:bg-input/30 fp:dark:hover:bg-input/50 fp:dark:aria-invalid:ring-destructive/40 fp:[&_svg]:pointer-events-none fp:[&_svg]:shrink-0 fp:[&_svg:not([class*=size-])]:size-4 fp:[&_svg:not([class*=text-])]:text-muted-foreground",
+        "fp:flex fp:w-fit fp:items-center fp:justify-between fp:gap-2 fp:rounded-md fp:border fp:border-input fp:bg-background fp:px-2 fp:py-1.5 fp:text-sm fp:whitespace-nowrap fp:shadow-xs fp:transition-[color,box-shadow] fp:outline-none fp:focus-visible:border-ring fp:focus-visible:ring-[3px] fp:focus-visible:ring-ring/50 fp:disabled:cursor-not-allowed fp:disabled:opacity-50 fp:aria-invalid:border-destructive fp:aria-invalid:ring-destructive/20 fp:data-[placeholder]:text-muted-foreground fp:data-[size=default]:h-8 fp:data-[size=sm]:h-7 fp:*:data-[slot=select-value]:line-clamp-1 fp:*:data-[slot=select-value]:flex fp:*:data-[slot=select-value]:items-center fp:*:data-[slot=select-value]:gap-2 fp:dark:bg-input/30 fp:dark:hover:bg-input/50 fp:dark:aria-invalid:ring-destructive/40 fp:[&_svg]:pointer-events-none fp:[&_svg]:shrink-0 fp:[&_svg:not([class*=size-])]:size-4 fp:[&_svg:not([class*=text-])]:text-muted-foreground",
         className
       )}
       {...props}
@@ -55,8 +55,12 @@ function SelectContent({
   align = "center",
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Content>) {
+  const container =
+    typeof document !== 'undefined'
+      ? document.getElementById( 'fakerpress-react-root' )
+      : undefined;
   return (
-    <SelectPrimitive.Portal>
+    <SelectPrimitive.Portal container={ container ?? undefined }>
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(

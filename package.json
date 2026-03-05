@@ -16,6 +16,7 @@
     "format:css": "wp-scripts lint-style --fix",
     "format:js": "wp-scripts lint-js src/ --ignore-pattern src/resources/js/qs.js --ignore-pattern src/resources/js/select2.js --fix",
     "build": "wp-scripts build",
+    "build:dev": "wp-scripts build --mode=development --devtool=source-map",
     "start": "wp-scripts start --mode=development --devtool=source-map",
     "test": "wp-scripts test-unit-js",
     "test:watch": "wp-scripts test-unit-js --watch"

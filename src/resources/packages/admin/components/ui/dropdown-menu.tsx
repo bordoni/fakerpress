@@ -34,8 +34,12 @@ function DropdownMenuContent({
   sideOffset = 4,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
+  const container =
+    typeof document !== 'undefined'
+      ? document.getElementById( 'fakerpress-react-root' )
+      : undefined;
   return (
-    <DropdownMenuPrimitive.Portal>
+    <DropdownMenuPrimitive.Portal container={ container ?? undefined }>
       <DropdownMenuPrimitive.Content
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}

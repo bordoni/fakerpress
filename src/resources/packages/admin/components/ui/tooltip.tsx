@@ -36,8 +36,13 @@ function TooltipContent({
   children,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+  const container =
+    typeof document !== 'undefined'
+      ? document.getElementById( 'fakerpress-react-root' )
+      : undefined;
+
   return (
-    <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Portal container={ container ?? undefined }>
       <TooltipPrimitive.Content
         data-slot="tooltip-content"
         sideOffset={sideOffset}

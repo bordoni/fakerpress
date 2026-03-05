@@ -1,15 +1,21 @@
-import { useState, useCallback } from 'react';
 import { format, subDays, startOfWeek, startOfMonth, startOfYear } from 'date-fns';
+import { ArrowRight } from 'lucide-react';
 import { Input } from '../ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from '../ui/select';
 
 const DATE_FORMAT = 'yyyy-MM-dd';
+const CUSTOM_VALUE = 'custom';
+const CUSTOM_LABEL = 'Custom interval';
+
+interface DateRangeValue {
+	preset: string;
+	start: string;
+	end: string;
+}
 
 interface DateRangeFieldProps {
-	startDate: string;
-	endDate: string;
-	onStartChange: ( value: string ) => void;
-	onEndChange: ( value: string ) => void;
+	value: DateRangeValue;
+	onChange: ( value: DateRangeValue ) => void;
 }
 
 const PRESETS: { value: string; label: string; getRange: () => [ Date, Date ] }[] = [
@@ -50,34 +56,35 @@ const PRESETS: { value: string; label: string; getRange: () => [ Date, Date ] }[
 	},
 ];
 
-export function DateRangeField( {
-	startDate,
-	endDate,
-	onStartChange,
-	onEndChange,
-}: DateRangeFieldProps ) {
-	const [ preset, setPreset ] = useState( '' );
+export function getPresetRange( presetValue: string ): [ string, string ] | null {
+	const presetConfig = PRESETS.find( ( p ) => p.value === presetValue );
+	if ( ! presetConfig ) return null;
+	const [ start, end ] = presetConfig.getRange();
+	return [ format( start, DATE_FORMAT ), format( end, DATE_FORMAT ) ];
+}
 
-	const handlePresetChange = useCallback(
-		( value: string ) => {
-			setPreset( value );
-			const presetConfig = PRESETS.find( ( p ) => p.value === value );
-			if ( presetConfig ) {
-				const [ start, end ] = presetConfig.getRange();
-				onStartChange( format( start, DATE_FORMAT ) );
-				onEndChange( format( end, DATE_FORMAT ) );
-			}
-		},
-		[ onStartChange, onEndChange ]
-	);
+export function DateRangeField( { value, onChange }: DateRangeFieldProps ) {
+	const handlePresetChange = ( preset: string ) => {
+		if ( preset === CUSTOM_VALUE ) {
+			onChange( { ...value, preset: CUSTOM_VALUE } );
+			return;
+		}
+		const presetConfig = PRESETS.find( ( p ) => p.value === preset );
+		if ( presetConfig ) {
+			const [ start, end ] = presetConfig.getRange();
+			onChange( { preset, start: format( start, DATE_FORMAT ), end: format( end, DATE_FORMAT ) } );
+		}
+	};
 
 	return (
 		<div className="fp:flex fp:flex-wrap fp:items-center fp:gap-2">
-			<Select value={ preset } onValueChange={ handlePresetChange }>
+			<Select value={ value.preset } onValueChange={ handlePresetChange }>
 				<SelectTrigger className="fp:w-44">
 					<SelectValue placeholder="Select an Interval" />
 				</SelectTrigger>
 				<SelectContent>
+					<SelectItem value={ CUSTOM_VALUE }>{ CUSTOM_LABEL }</SelectItem>
+					<SelectSeparator />
 					{ PRESETS.map( ( p ) => (
 						<SelectItem key={ p.value } value={ p.value }>
 							{ p.label }
@@ -86,30 +93,23 @@ export function DateRangeField( {
 				</SelectContent>
 			</Select>
 
-			<Input
-				type="date"
-				value={ startDate }
-				onChange={ ( e ) => {
-					onStartChange( e.target.value );
-					setPreset( '' );
-				} }
-				className="fp:w-36"
-			/>
-
-			{ startDate && (
-				<>
-					<span className="fp:text-muted-foreground fp:text-sm">&gt;</span>
-					<Input
-						type="date"
-						value={ endDate }
-						onChange={ ( e ) => {
-							onEndChange( e.target.value );
-							setPreset( '' );
-						} }
-						className="fp:w-36"
-					/>
-				</>
-			) }
+			<div className="fp:inline-flex fp:h-8 fp:items-center fp:rounded-md fp:border fp:border-input fp:bg-background fp:focus-within:ring-[3px] fp:focus-within:ring-ring/50 fp:transition-shadow fp:overflow-hidden">
+				<Input
+					type="date"
+					value={ value.start }
+					onChange={ ( e ) => onChange( { ...value, preset: CUSTOM_VALUE, start: e.target.value } ) }
+					className="fp:w-36 fp:border-0 fp:rounded-none fp:shadow-none fp:focus-visible:ring-0"
+				/>
+				<span className="fp:flex fp:items-center fp:self-stretch fp:border-x fp:border-input fp:px-2 fp:text-muted-foreground fp:select-none">
+					<ArrowRight className="fp:size-3.5" />
+				</span>
+				<Input
+					type="date"
+					value={ value.end }
+					onChange={ ( e ) => onChange( { ...value, preset: CUSTOM_VALUE, end: e.target.value } ) }
+					className="fp:w-36 fp:border-0 fp:rounded-none fp:shadow-none fp:focus-visible:ring-0"
+				/>
+			</div>
 		</div>
 	);
 }

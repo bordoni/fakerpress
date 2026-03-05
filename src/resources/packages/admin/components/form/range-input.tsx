@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react';
 import { Input } from '../ui/input';
 
 interface RangeInputProps {
@@ -24,7 +25,7 @@ export function RangeInput( {
 	step = 1,
 }: RangeInputProps ) {
 	return (
-		<div className="fp:flex fp:items-center fp:gap-2">
+		<div className="fp:inline-flex fp:items-center fp:rounded-md fp:border fp:border-input fp:bg-background fp:focus-within:ring-[3px] fp:focus-within:ring-ring/50 fp:transition-shadow fp:overflow-hidden">
 			<Input
 				type="number"
 				value={ minValue ?? '' }
@@ -33,11 +34,13 @@ export function RangeInput( {
 				min={ min }
 				max={ max }
 				step={ step }
-				className="fp:w-24"
+				className="fp:w-24 fp:border-0 fp:rounded-none fp:shadow-none fp:focus-visible:ring-0"
 			/>
 			{ minValue !== undefined && (
 				<>
-					<span className="fp:text-muted-foreground fp:text-sm">&gt;</span>
+					<span className="fp:flex fp:items-center fp:self-stretch fp:border-x fp:border-input fp:px-2 fp:text-muted-foreground fp:select-none">
+						<ArrowRight className="fp:size-3.5" />
+					</span>
 					<Input
 						type="number"
 						value={ maxValue ?? '' }
@@ -46,7 +49,7 @@ export function RangeInput( {
 						min={ min }
 						max={ max }
 						step={ step }
-						className="fp:w-24"
+						className="fp:w-24 fp:border-0 fp:rounded-none fp:shadow-none fp:focus-visible:ring-0"
 					/>
 				</>
 			) }

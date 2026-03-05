@@ -10,7 +10,7 @@ import { AdminNotice } from '../components/layout/admin-notice';
 import { FormField } from '../components/form/form-field';
 import { RangeInput } from '../components/form/range-input';
 import { ComboboxMulti, type ComboboxOption } from '../components/form/combobox-multi';
-import { DateRangeField } from '../components/form/date-range-field';
+import { DateRangeField, getPresetRange } from '../components/form/date-range-field';
 import { MetaFieldRules } from '../components/form/meta-field-rules';
 import { TaxonomyFieldRules } from '../components/form/taxonomy-field-rules';
 import { GenerateButton } from '../components/form/generate-button';
@@ -103,10 +103,13 @@ export default function PostsPage() {
 		} ) );
 	}, [ termSearch.results ] );
 
+	const defaultPreset = 'yesterday';
+	const defaultDateRange = getPresetRange( defaultPreset );
+
 	const { control, handleSubmit, watch } = useForm< PostsFormData >( {
 		defaultValues: {
 			qty: { min: 3, max: 12 },
-			date: { preset: 'yesterday', start: '', end: '' },
+			date: { preset: defaultPreset, start: defaultDateRange?.[ 0 ] ?? '', end: defaultDateRange?.[ 1 ] ?? '' },
 			post_type: defaultPostTypes,
 			parents: [],
 			comment_status: [ 'open' ],
@@ -170,10 +173,8 @@ export default function PostsPage() {
 							description={ __( 'Choose the range for the post dates.', 'fakerpress' ) }
 						>
 							<DateRangeField
-								startDate={ field.value.start }
-								endDate={ field.value.end }
-								onStartChange={ ( start ) => field.onChange( { ...field.value, start } ) }
-								onEndChange={ ( end ) => field.onChange( { ...field.value, end } ) }
+								value={ field.value }
+								onChange={ field.onChange }
 							/>
 						</FormField>
 					) }

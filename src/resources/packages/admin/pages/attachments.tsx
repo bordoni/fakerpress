@@ -10,7 +10,7 @@ import { AdminNotice } from '../components/layout/admin-notice';
 import { FormField } from '../components/form/form-field';
 import { RangeInput } from '../components/form/range-input';
 import { ComboboxMulti, type ComboboxOption } from '../components/form/combobox-multi';
-import { DateRangeField } from '../components/form/date-range-field';
+import { DateRangeField, getPresetRange } from '../components/form/date-range-field';
 import { MetaFieldRules } from '../components/form/meta-field-rules';
 import { GenerateButton } from '../components/form/generate-button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
@@ -59,10 +59,13 @@ export default function AttachmentsPage() {
 		} ) );
 	}, [ authorSearch.results ] );
 
+	const defaultPreset = 'yesterday';
+	const defaultDateRange = getPresetRange( defaultPreset );
+
 	const { control, handleSubmit } = useForm< AttachmentsFormData >( {
 		defaultValues: {
 			qty: { min: 3, max: 12 },
-			date: { preset: 'yesterday', start: '', end: '' },
+			date: { preset: defaultPreset, start: defaultDateRange?.[ 0 ] ?? '', end: defaultDateRange?.[ 1 ] ?? '' },
 			provider: providerOptions[ 0 ]?.value || 'placeholder',
 			width: { min: 200, max: 1200 },
 			height: { min: undefined, max: undefined },
@@ -102,6 +105,7 @@ export default function AttachmentsPage() {
 						<FormField
 							label={ __( 'Quantity', 'fakerpress' ) }
 							description={ __( 'How many attachments should be generated, use both fields to get a randomized number of attachments within the given range.', 'fakerpress' ) }
+							tooltip={ __( 'Enter a minimum value to generate a fixed count, or add a maximum to randomise the count between the two numbers on each run.', 'fakerpress' ) }
 						>
 							<RangeInput
 								minValue={ field.value.min }
@@ -121,12 +125,11 @@ export default function AttachmentsPage() {
 						<FormField
 							label={ __( 'Date', 'fakerpress' ) }
 							description={ __( 'Choose the range for the attachment dates.', 'fakerpress' ) }
+							tooltip={ __( "Pick a date preset (e.g. 'Last 7 days') or set custom Start and End dates. FakerPress will pick a random upload date within this range for each attachment.", 'fakerpress' ) }
 						>
 							<DateRangeField
-								startDate={ field.value.start }
-								endDate={ field.value.end }
-								onStartChange={ ( start ) => field.onChange( { ...field.value, start } ) }
-								onEndChange={ ( end ) => field.onChange( { ...field.value, end } ) }
+								value={ field.value }
+								onChange={ field.onChange }
 							/>
 						</FormField>
 					) }
@@ -139,6 +142,7 @@ export default function AttachmentsPage() {
 						<FormField
 							label={ __( 'Image Provider', 'fakerpress' ) }
 							description={ __( 'Choose which image service to use for generating attachments.', 'fakerpress' ) }
+							tooltip={ __( "Selects the external service used to fetch placeholder images. 'Placeholder' works fully offline; the other providers make live HTTP requests.", 'fakerpress' ) }
 						>
 							<Select value={ field.value } onValueChange={ field.onChange }>
 								<SelectTrigger className="fp:w-48">
@@ -163,6 +167,7 @@ export default function AttachmentsPage() {
 						<FormField
 							label={ __( 'Width', 'fakerpress' ) }
 							description={ __( 'Image width range in pixels.', 'fakerpress' ) }
+							tooltip={ __( 'Enter only a minimum to use a fixed width, or add a maximum to randomise width (in pixels) within that range for each generated image.', 'fakerpress' ) }
 						>
 							<RangeInput
 								minValue={ field.value.min }
@@ -183,6 +188,7 @@ export default function AttachmentsPage() {
 						<FormField
 							label={ __( 'Height', 'fakerpress' ) }
 							description={ __( 'Image height range in pixels. Leave at 0 to use aspect ratio instead.', 'fakerpress' ) }
+							tooltip={ __( 'Enter a pixel height range, or leave both fields empty to derive height automatically from the Aspect Ratio instead.', 'fakerpress' ) }
 						>
 							<RangeInput
 								minValue={ field.value.min }
@@ -203,6 +209,7 @@ export default function AttachmentsPage() {
 						<FormField
 							label={ __( 'Aspect Ratio', 'fakerpress' ) }
 							description={ __( 'Width/Height ratio (e.g., 1.5 for 3:2, 1.77 for 16:9). Only used when height is 0.', 'fakerpress' ) }
+							tooltip={ __( 'Active only when Height is left empty. Expressed as width ÷ height — e.g. 1.78 for 16:9, 1.33 for 4:3, or 1.0 for a square.', 'fakerpress' ) }
 						>
 							<Input
 								type="number"
@@ -223,6 +230,7 @@ export default function AttachmentsPage() {
 						<FormField
 							label={ __( 'Parent Posts', 'fakerpress' ) }
 							description={ __( 'Attach generated images to specific posts.', 'fakerpress' ) }
+							tooltip={ __( 'Search for and select existing posts to attach the generated images to. Leave empty to create unattached (orphan) media library items.', 'fakerpress' ) }
 						>
 							<ComboboxMulti
 								value={ field.value.map( String ) }
@@ -240,7 +248,10 @@ export default function AttachmentsPage() {
 					name="alt_text"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Alt Text', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Alt Text', 'fakerpress' ) }
+							tooltip={ __( 'When enabled, FakerPress generates a random descriptive phrase as the image alt text, improving the realism of test content for accessibility testing.', 'fakerpress' ) }
+						>
 							<div className="fp:flex fp:items-center fp:gap-2">
 								<Checkbox
 									id="alt_text"
@@ -259,7 +270,10 @@ export default function AttachmentsPage() {
 					name="caption"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Caption', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Caption', 'fakerpress' ) }
+							tooltip={ __( 'When enabled, FakerPress generates a short sentence as the image caption, which appears below images in galleries and in many themes.', 'fakerpress' ) }
+						>
 							<div className="fp:flex fp:items-center fp:gap-2">
 								<Checkbox
 									id="caption"
@@ -278,7 +292,10 @@ export default function AttachmentsPage() {
 					name="description"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Description', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Description', 'fakerpress' ) }
+							tooltip={ __( 'When enabled, FakerPress generates a longer paragraph for the attachment\'s description field, visible in the media library detail pane.', 'fakerpress' ) }
+						>
 							<div className="fp:flex fp:items-center fp:gap-2">
 								<Checkbox
 									id="description"
@@ -300,6 +317,7 @@ export default function AttachmentsPage() {
 						<FormField
 							label={ __( 'Author', 'fakerpress' ) }
 							description={ __( 'Choose users to be owners of generated attachments.', 'fakerpress' ) }
+							tooltip={ __( 'Search for and select one or more users. FakerPress randomly assigns each attachment to one of the chosen users. Leave empty to assign to the currently logged-in user.', 'fakerpress' ) }
 						>
 							<ComboboxMulti
 								value={ field.value.map( String ) }

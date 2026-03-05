@@ -144,10 +144,8 @@ export default function CommentsPage() {
 							description={ __( 'Choose the range for the comment dates.', 'fakerpress' ) }
 						>
 							<DateRangeField
-								startDate={ field.value.start }
-								endDate={ field.value.end }
-								onStartChange={ ( start ) => field.onChange( { ...field.value, start } ) }
-								onEndChange={ ( end ) => field.onChange( { ...field.value, end } ) }
+								value={ field.value }
+								onChange={ field.onChange }
 							/>
 						</FormField>
 					) }
