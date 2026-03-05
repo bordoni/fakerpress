@@ -5,6 +5,8 @@ namespace FakerPress\Admin\View;
 use FakerPress\Admin;
 use FakerPress\Module\Attachment;
 use FakerPress\Plugin;
+use FakerPress\Provider\Image\Placeholder;
+use FakerPress\Provider\Image\LoremPicsum;
 use function FakerPress\get_request_var;
 use function FakerPress\make;
 
@@ -42,6 +44,24 @@ class Attachment_View extends Abstract_View {
 	 */
 	public function has_menu(): bool {
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_page_data(): array {
+		return [
+			'image_providers' => [
+				[
+					'value' => Placeholder::ID,
+					'label' => 'Placehold.co',
+				],
+				[
+					'value' => LoremPicsum::ID,
+					'label' => 'Lorem Picsum',
+				],
+			],
+		];
 	}
 
 	/**

@@ -1,3 +1,4 @@
+const {resolve} = require('path');
 const {dirname, basename, extname} = require('path');
 const {readdirSync, statSync, existsSync} = require('fs');
 
@@ -78,16 +79,68 @@ const customEntryPoints = compileCustomEntryPoints({
 doNotPrefixSVGIdsClasses(defaultConfig);
 
 /**
+ * Strips Tailwind v4's :not(#\#) cascade-compatibility shims from all CSS assets.
+ *
+ * These shims are injected by @tailwindcss/node (via LightningCSS) as a cascade layer
+ * backward-compatibility mechanism for browsers released before mid-2022. WordPress 6.4+
+ * (required by FakerPress) targets modern browsers that natively support @layer, so the
+ * shims are unnecessary bloat.
+ *
+ * This plugin runs before RtlCssPlugin (PROCESS_ASSETS_STAGE_OPTIMIZE) so that RTL variants
+ * are also generated without the shims.
+ */
+class StripTailwindLayerHacksPlugin {
+	apply( compiler ) {
+		compiler.hooks.compilation.tap( 'StripTailwindLayerHacksPlugin', ( compilation ) => {
+			compilation.hooks.processAssets.tap(
+				{
+					name: 'StripTailwindLayerHacksPlugin',
+					stage: compilation.PROCESS_ASSETS_STAGE_DERIVED,
+				},
+				() => {
+					for ( const [ filename, asset ] of Object.entries( compilation.assets ) ) {
+						if ( ! filename.endsWith( '.css' ) ) {
+							continue;
+						}
+						const src = asset.source();
+						if ( ! src.includes( ':not(#' ) ) {
+							continue;
+						}
+						const stripped = src.replace( /(:not\(#\\#\))+/g, '' );
+						compilation.updateAsset(
+							filename,
+							new compiler.webpack.sources.RawSource( stripped )
+						);
+					}
+				}
+			);
+		} );
+	}
+}
+
+/**
  * Finally the customizations are merged with the default WebPack configuration.
  */
 module.exports = {
   ...defaultConfig,
   ...{
+    watchOptions: {
+      ...defaultConfig.watchOptions,
+      ignored: [
+        '**/node_modules/**',
+        '**/build/**',
+        '**/vendor/**',
+      ],
+    },
     entry: (buildType) => {
       const defaultEntryPoints = defaultConfig.entry(buildType);
-      return {
-        ...defaultEntryPoints, ...customEntryPoints,
-      };
+      const allEntries = { ...defaultEntryPoints, ...customEntryPoints };
+      // Strip leading slashes from entry keys to fix webpack auto public path.
+      // createTECPackage produces keys like "/admin" (from dirname("/admin/index.tsx")),
+      // causing webpack to append "../" to the detected script directory.
+      return Object.fromEntries(
+        Object.entries(allEntries).map(([key, value]) => [key.replace(/^\//, ''), value])
+      );
     },
     output: {
       ...defaultConfig.output,
@@ -95,9 +148,18 @@ module.exports = {
         enabledLibraryTypes: ['window'],
       },
     },
+    resolve: {
+      ...defaultConfig.resolve,
+      alias: {
+        ...(defaultConfig.resolve && defaultConfig.resolve.alias),
+        '@fp': resolve(__dirname, 'src/resources/packages'),
+      },
+    },
+    module: defaultConfig.module,
     plugins: [
       ...defaultConfig.plugins,
       new WindowAssignPropertiesPlugin(),
+      new StripTailwindLayerHacksPlugin(),
     ],
   },
 };

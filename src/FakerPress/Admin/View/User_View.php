@@ -45,6 +45,27 @@ class User_View extends Abstract_View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	protected function get_page_data(): array {
+		$roles = wp_roles()->get_names();
+
+		return [
+			'roles'     => array_map(
+				static function ( $label, $value ) {
+					return [
+						'value' => $value,
+						'label' => $label,
+					];
+				},
+				$roles,
+				array_keys( $roles ) 
+			),
+			'html_tags' => [ 'h3', 'h4', 'h5', 'h6', 'p' ],
+		];
+	}
+
+	/**
 	 * Format the Administration edit link for each comment instance.
 	 *
 	 * @since 0.6.0

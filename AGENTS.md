@@ -6,8 +6,8 @@
 |------|---------|-------|
 | PHP | 8.1+ | MAMP, Homebrew, or system PHP |
 | Composer | 2.x | [getcomposer.org](https://getcomposer.org) |
-| Node | 18.17 | Matches `.nvmrc` — use `nvm use` |
-| npm | 9.6.7 | Ships with Node 18.17 |
+| Node | 18+ | Required by Bun / @wordpress/scripts |
+| Bun | 1.x | [bun.sh](https://bun.sh) |
 | WordPress | 6.4+ | Local install (MAMP, Local, Valet, etc.) |
 
 ## Quick Start
@@ -17,10 +17,10 @@
 composer install
 
 # 2. Install Node dependencies
-nvm use && npm install
+bun install
 
 # 3. Build JS and CSS assets
-npm run build
+bun run build
 ```
 
 After these three steps the plugin is ready to activate in WordPress.
@@ -37,15 +37,15 @@ After these three steps the plugin is ready to activate in WordPress.
 
 Strauss vendor-prefixes all third-party packages under `FakerPress\ThirdParty\` into `vendor/prefixed/`. This runs automatically on `composer install` and `composer update`.
 
-### JS / CSS (npm + @wordpress/scripts)
+### JS / CSS (bun + @wordpress/scripts)
 
 | Command | What it does |
 |---------|-------------|
-| `npm run build` | Production build — compiles JS and PostCSS into `build/` and `src/resources/css/` |
-| `npm run start` | Watch mode with source maps for development |
-| `npm run lint` | Lint JS and CSS |
-| `npm run format:js` | Auto-fix JS lint issues |
-| `npm run format:css` | Auto-fix CSS lint issues |
+| `bun run build` | Production build — compiles JS and PostCSS into `build/` and `src/resources/css/` |
+| `bun run start` | Watch mode with source maps for development |
+| `bun run lint` | Lint JS and CSS |
+| `bun run format:js` | Auto-fix JS lint issues |
+| `bun run format:css` | Auto-fix CSS lint issues |
 
 **Source files:**
 - JS: `src/resources/js/*.js` — compiled to `build/js/` and exposed on `window.fakerpress`
@@ -53,6 +53,12 @@ Strauss vendor-prefixes all third-party packages under `FakerPress\ThirdParty\` 
 - Packages: `src/resources/packages/` — modern module entry points compiled to `build/packages/`
 
 **Build tool:** `@wordpress/scripts` with custom webpack config (`webpack.config.js`) using `@stellarwp/tyson` helpers.
+
+## Development Workflow
+
+During active development sessions, `bun run start` is already running in the background in watch mode. **Do not run `bun run build` or restart the watcher** — changes to source files are picked up automatically and the browser receives the updated bundle.
+
+Only run `bun run build` for a one-off production build or when starting fresh with no watcher active.
 
 ## Gitignored Build Artifacts
 
@@ -143,6 +149,44 @@ tests/
 ### Running Tests with SLIC
 
 SLIC containers use `codeception.slic.yml` and `.env.testing.slic` automatically.
+
+## Tailwind CSS in WordPress Admin
+
+Tailwind is used in `src/resources/packages/admin/` and compiled into `build/admin.css`. Two rules must always hold:
+
+### Never use `@import "tailwindcss"` — use partial imports
+
+`@import "tailwindcss" prefix(fp)` silently injects Tailwind's global preflight reset (`*`, `html`, `h1–h6`, `a`, `img`, `button`, etc.) into the page. The `prefix(fp)` modifier only renames utility classes — it does **not** scope resets. In the WordPress admin this breaks heading sizes, link underlines, form elements, and global layout.
+
+Always use the two partial imports instead:
+
+```css
+@import "tailwindcss/theme" prefix(fp);
+@import "tailwindcss/utilities" prefix(fp);
+```
+
+Then add a minimal scoped reset targeting only `#fakerpress-react-root *` in `@layer base` (already present in `globals.css`).
+
+### Never try to strip `:not(#\#)` shims with a PostCSS plugin
+
+Tailwind v4 injects `:not(#\#)` cascade-compatibility shims via `@tailwindcss/node`'s LightningCSS optimizer inside the `@tailwindcss/postcss` `Once` hook. These shims land in `result.root` **after** PostCSS `OnceExit` fires, making them invisible to any PostCSS plugin you add after `@tailwindcss/postcss`.
+
+The correct fix is the `StripTailwindLayerHacksPlugin` webpack plugin in `webpack.config.js`, which strips them from compiled `.css` assets at `PROCESS_ASSETS_STAGE_DERIVED` (before `RtlCssPlugin`).
+
+### Always use `fp:` (colon) prefix notation — never `fp-` (dash)
+
+Tailwind v4 `prefix(fp)` generates CSS selectors with a **colon** separator: `.fp\:flex`, `.fp\:text-2xl`.
+The dash form (`fp-flex`, `fp-text-2xl`) matches no generated rule and the style silently does nothing.
+
+| Wrong | Correct |
+|-------|---------|
+| `fp-flex` | `fp:flex` |
+| `fp-text-2xl` | `fp:text-2xl` |
+| `hover:fp-bg-accent` | `fp:hover:bg-accent` |
+| `sm:fp-w-auto` | `fp:sm:w-auto` |
+| `last:fp-border-b-0` | `fp:last:border-b-0` |
+
+**Rule:** The `fp:` prefix always comes **first**, before any variant modifier (`hover:`, `sm:`, `last:`, etc.).
 
 ## Coding Standards
 

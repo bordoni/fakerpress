@@ -45,6 +45,25 @@ class Term_View extends Abstract_View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	protected function get_page_data(): array {
+		$taxonomies = get_taxonomies( [ 'public' => true ], 'objects' );
+
+		return [
+			'taxonomies' => array_map(
+				static function ( $tax ) {
+					return [
+						'name'  => $tax->name,
+						'label' => $tax->label,
+					];
+				},
+				$taxonomies 
+			),
+		];
+	}
+
+	/**
 	 * Format the Administration edit link for each term instance.
 	 *
 	 * @since 0.6.0
