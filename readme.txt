@@ -106,7 +106,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
-= 0.9.0 &mdash; 3 of March 2026 =
+= 0.9.0 &mdash; 9 of March 2026 =
 
 * Feature - Complete REST API implementation replacing legacy AJAX system
 * Feature - Add comprehensive REST API endpoints for all modules (Posts, Users, Terms, Comments, Attachments)
