@@ -67,6 +67,40 @@ const customEntryPoints = compileCustomEntryPoints({
 
 
 /**
+ * Reconfigures postcss-preset-env in the .pcss pipeline to suppress the onComplexSelector warning.
+ *
+ * Tailwind v4 + shadcn/ui group-data-* variants produce complex :is() selectors that
+ * postcss-is-pseudo-class (bundled inside postcss-preset-env) cannot safely expand.
+ * After tyson's createTECPostCss runs, it inserts "postcss-preset-env" as a string in
+ * the postcss-loader options. We replace that string with a configured instance so the
+ * plugin silently leaves the complex :is() in place instead of warning.
+ */
+const pcssRule = defaultConfig.module.rules.find(
+	( r ) => String( r.test ) === String( /\.pcss$/ )
+);
+if ( pcssRule && Array.isArray( pcssRule.use ) ) {
+	pcssRule.use = pcssRule.use.map( ( useEntry ) => {
+		if (
+			typeof useEntry === 'object' &&
+			useEntry.loader?.includes( 'postcss-loader' ) &&
+			Array.isArray( useEntry.options?.postcssOptions?.plugins )
+		) {
+			useEntry.options.postcssOptions.plugins =
+				useEntry.options.postcssOptions.plugins.map( ( plugin ) =>
+					plugin === 'postcss-preset-env'
+						? require( 'postcss-preset-env' )( {
+								features: {
+									'is-pseudo-class': { onComplexSelector: 'ignore' },
+								},
+						  } )
+						: plugin
+				);
+		}
+		return useEntry;
+	} );
+}
+
+/**
  * Prepends a loader for SVG files that will be applied after the default one. Loaders are applied
  * in a LIFO queue in WebPack.
  * By default, `@wordpress/scripts` uses `@svgr/webpack` to handle SVG files and, together with it,
