@@ -1,0 +1,247 @@
+@config "../../../../../tailwind.config.js";
+
+/* Limit Tailwind's auto-detection to source packages only. */
+@source "../../**/*.{tsx,ts,jsx,js,html,php}";
+
+@import "tailwindcss/theme" prefix(fp);
+@import "tailwindcss/utilities" prefix(fp);
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Bridge shadcn/ui semantic tokens → Tailwind v4 color namespace.
+ * Tailwind utilities (e.g. fp:bg-primary) reference --color-primary via --fp-color-primary,
+ * which resolves to var(--primary) — defined per-element below.
+ */
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-destructive-foreground: var(--destructive-foreground);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+}
+
+/*
+ * Declare internal FakerPress layers for cascade organization.
+ * Layer priority (highest → lowest within fp-* layers): fp-utilities > fp-components > fp-base.
+ * NOTE: The WP-admin reset below remains UNLAYERED so it can compete with WordPress admin's own
+ * unlayered CSS through specificity + source order (our sheet loads after WP admin).
+ */
+@layer fp-base, fp-components, fp-utilities;
+
+@layer fp-base {
+	/*
+	 * Theme variables scoped to the FakerPress React root.
+	 * Custom properties are not subject to normal layer priority — they cascade by specificity
+	 * and source order like any other declaration, so keeping them in fp-base is just
+	 * for organizational clarity.
+	 */
+	#fakerpress-react-root {
+		--background: oklch(1 0 0);
+		--foreground: oklch(0.24 0.010 241);
+		--card: oklch(1 0 0);
+		--card-foreground: oklch(0.24 0.010 241);
+		--popover: oklch(1 0 0);
+		--popover-foreground: oklch(0.24 0.010 241);
+		--primary: oklch(0.49 0.12 241);
+		--primary-foreground: oklch(0.985 0 0);
+		--secondary: oklch(0.97 0 0);
+		--secondary-foreground: oklch(0.24 0.010 241);
+		--muted: oklch(0.97 0 0);
+		--muted-foreground: oklch(0.40 0.008 245);
+		--accent: oklch(0.97 0 0);
+		--accent-foreground: oklch(0.24 0.010 241);
+		--destructive: oklch(0.577 0.245 27.325);
+		--destructive-foreground: oklch(0.577 0.245 27.325);
+		--border: oklch(0.60 0.006 247);
+		--input: oklch(0.60 0.006 247);
+		--ring: oklch(0.49 0.12 241);
+		--radius: 0.3rem;
+		--chart-1: oklch(0.646 0.222 41.116);
+		--chart-2: oklch(0.6 0.118 184.704);
+		--chart-3: oklch(0.398 0.07 227.392);
+		--chart-4: oklch(0.828 0.189 84.429);
+		--chart-5: oklch(0.769 0.188 70.08);
+		--sidebar: oklch(0.985 0 0);
+		--sidebar-foreground: oklch(0.145 0 0);
+		--sidebar-primary: oklch(0.205 0 0);
+		--sidebar-primary-foreground: oklch(0.985 0 0);
+		--sidebar-accent: oklch(0.97 0 0);
+		--sidebar-accent-foreground: oklch(0.205 0 0);
+		--sidebar-border: oklch(0.922 0 0);
+		--sidebar-ring: oklch(0.708 0 0);
+	}
+}
+
+/*
+ * WordPress admin reset — UNLAYERED so it competes with WP admin's unlayered CSS
+ * via source order (our sheet loads after WP admin styles).
+ * :where() contributes zero specificity, so Tailwind utilities (0,2,0) always win
+ * over these resets.
+ */
+
+/*
+ * Box-sizing and border defaults Tailwind utilities expect.
+ */
+:where(#fakerpress-react-root) *,
+:where(#fakerpress-react-root) *::before,
+:where(#fakerpress-react-root) *::after {
+	box-sizing: border-box;
+	border-width: 0;
+	border-style: solid;
+	border-color: currentColor;
+}
+
+/*
+ * Headings — WP admin sets font-size, font-weight, color, margin on h1–h6.
+ * Resetting to inherit lets component utilities take full control.
+ */
+:where([data-fp-root]) h1,
+:where([data-fp-root]) h2,
+:where([data-fp-root]) h3,
+:where([data-fp-root]) h4,
+:where([data-fp-root]) h5,
+:where([data-fp-root]) h6 {
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+	margin: 0;
+}
+
+/*
+ * Links — WP admin sets color (#2271b1), text-decoration, transition, and outline.
+ */
+:where([data-fp-root]) a {
+	color: inherit;
+	text-decoration: none;
+	transition: none;
+	outline: none;
+	box-shadow: none;
+}
+
+/*
+ * Lists — WP admin sets list-style: disc and adds margin-bottom on li items.
+ */
+:where([data-fp-root]) ul,
+:where([data-fp-root]) ol {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+:where([data-fp-root]) li {
+	margin-bottom: 0;
+}
+
+/*
+ * Paragraphs — WP admin adds bottom margin via .wp-admin p selectors.
+ */
+:where([data-fp-root]) p {
+	margin: 0;
+	font-size: inherit;
+	line-height: inherit;
+}
+
+/*
+ * Cancel WordPress admin form-element overrides inside FakerPress.
+ * :where([data-fp-root]) contributes zero specificity, so this reset
+ * lands at most (0,1,1) — below Tailwind utilities (0,2,0) — while
+ * still beating WP admin's (0,1,1) via source order (our sheet loads after).
+ */
+:where([data-fp-root]) input,
+:where([data-fp-root]) input[type="text"],
+:where([data-fp-root]) input[type="password"],
+:where([data-fp-root]) input[type="color"],
+:where([data-fp-root]) input[type="date"],
+:where([data-fp-root]) input[type="datetime"],
+:where([data-fp-root]) input[type="datetime-local"],
+:where([data-fp-root]) input[type="email"],
+:where([data-fp-root]) input[type="month"],
+:where([data-fp-root]) input[type="number"],
+:where([data-fp-root]) input[type="search"],
+:where([data-fp-root]) input[type="tel"],
+:where([data-fp-root]) input[type="time"],
+:where([data-fp-root]) input[type="url"],
+:where([data-fp-root]) input[type="week"],
+:where([data-fp-root]) select,
+:where([data-fp-root]) textarea {
+	height: auto;
+	min-height: 0;
+	padding: 0;
+	margin: 0;
+	font-size: inherit;
+	font-family: inherit;
+	font-weight: inherit;
+	line-height: inherit;
+	border-width: 0;
+	border-style: solid;
+	border-color: currentColor;
+	border-radius: 0;
+	background-color: transparent;
+	color: inherit;
+	box-shadow: none;
+	outline: none;
+	vertical-align: baseline;
+	appearance: none;
+	-webkit-appearance: none;
+}
+
+/*
+ * Cancel WordPress admin :focus overrides inside FakerPress.
+ * Same :where() strategy — zero added specificity so Tailwind
+ * focus-visible utilities (fp:focus-visible:*) still win.
+ */
+:where([data-fp-root]) input[type="text"]:focus,
+:where([data-fp-root]) input[type="password"]:focus,
+:where([data-fp-root]) input[type="color"]:focus,
+:where([data-fp-root]) input[type="date"]:focus,
+:where([data-fp-root]) input[type="datetime"]:focus,
+:where([data-fp-root]) input[type="datetime-local"]:focus,
+:where([data-fp-root]) input[type="email"]:focus,
+:where([data-fp-root]) input[type="month"]:focus,
+:where([data-fp-root]) input[type="number"]:focus,
+:where([data-fp-root]) input[type="search"]:focus,
+:where([data-fp-root]) input[type="tel"]:focus,
+:where([data-fp-root]) input[type="time"]:focus,
+:where([data-fp-root]) input[type="url"]:focus,
+:where([data-fp-root]) input[type="week"]:focus,
+:where([data-fp-root]) input[type="checkbox"]:focus,
+:where([data-fp-root]) input[type="radio"]:focus,
+:where([data-fp-root]) select:focus,
+:where([data-fp-root]) textarea:focus {
+	border-color: currentColor;
+	box-shadow: none;
+	outline: none;
+	color: inherit;
+}
