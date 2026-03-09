@@ -5,3 +5,43 @@ gulpfile.babel.js
 package-lock.json
 bun.lock
 .git
+
+# Configuration files.
+.editorconfig
+.babelrc
+.gitattributes
+.gitignore
+.nvmrc
+.jshintignore
+.jshintrc
+
+# Dev files.
+bin/*
+.github/*
+dev/*
+assets/*
+svn-push
+AGENTS.md
+CLAUDE.md
+
+# Build configuration (not needed at runtime).
+webpack.config.js
+tailwind.config.js
+postcss.config.js
+
+# Composer and Package files.
+composer.json
+composer.lock
+package.json
+package.json.md5
+
+# Read me and markdown files.
+contributing.md
+readme.md
+
+# Tests and QA tooling.
+tests/
+codeception.dist.yml
+codeception.slic.yml
+phpcs.xml
+.env.testing
