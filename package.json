@@ -21,7 +21,7 @@
   "main": "Gruntfile.js",
   "devDependencies": {
     "@stellarwp/tyson": "^0.0.7",
-    "@wordpress/scripts": "^30.16.0",
+    "@wordpress/scripts": "^31.6.0",
     "postcss-import": "^16.1.0",
     "postcss-mixins": "^11.0.3",
     "postcss-nested": "^7.0.2",
