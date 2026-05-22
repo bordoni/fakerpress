@@ -198,4 +198,43 @@ class PostsEndpointTest extends \Codeception\TestCase\WPTestCase {
 			$this->assertSame( 'post', $post->post_type );
 		}
 	}
+
+	/**
+	 * Verify that a `date` meta rule generates a post and a valid meta value
+	 * without fataling on the missing Chronos import (wp.org bug report).
+	 *
+	 * @test
+	 */
+	public function it_should_generate_a_post_with_a_date_meta_field(): void {
+		$this->set_admin_user();
+
+		$response = $this->dispatch_rest_request(
+			'POST',
+			$this->route,
+			[
+				'quantity' => 1,
+				'meta'     => [
+					[
+						'type'     => 'date',
+						'name'     => 'fp_test_date_meta',
+						'interval' => [
+							'min' => '2020-01-01',
+							'max' => '2020-12-31',
+						],
+						'format'   => 'Y-m-d H:i:s',
+						'weight'   => 100,
+					],
+				],
+			]
+		);
+
+		$this->assert_success_response( $response );
+
+		$data    = $response->get_data();
+		$post_id = $data['data']['ids'][0];
+		$value   = get_post_meta( $post_id, 'fp_test_date_meta', true );
+
+		$this->assertNotEmpty( $value, 'Date meta value should be saved.' );
+		$this->assertMatchesRegularExpression( '/^2020-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value );
+	}
 }
