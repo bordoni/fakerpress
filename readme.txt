@@ -4,7 +4,7 @@ Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 5.5
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        0.9.0
+Stable tag:        0.9.1
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -105,6 +105,14 @@ Great! There are several ways you can get involved to help make FakerPress bette
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
 == Changelog ==
+
+= 0.9.1 &mdash; 22 of May 2026 =
+
+* Fix - Restore date-type meta generation by importing the `Chronos` class in the `WP_Meta` provider; calling `meta_type_date` no longer fatals with `Class "FakerPress\Provider\Chronos" not found`. [[#209](https://github.com/bordoni/fakerpress/pull/209)]
+* Fix - Honour the selected post type(s) on the Posts generator; the admin form's plural `post_types` value is no longer silently overwritten by the singular alias's default of `post`. [[#210](https://github.com/bordoni/fakerpress/pull/210)]
+* Fix - Suppress the `Undefined property: stdClass::$terms` warning emitted by `WP_Post::tax_input` under PHP 8.x when the taxonomy config does not include a `terms` key.
+* Tweak - REST endpoint `POST /fakerpress/v1/posts/generate` now documents `post_types` (array or comma-separated string) as the canonical parameter; the existing `post_type` singular alias is preserved for backwards compatibility.
+* Tests - Add regression coverage for `meta_type_date`, sparse `tax_input` configs, and every shape of `post_types` payload (CSV, array, singular alias, plural-wins-over-default).
 
 = 0.9.0 &mdash; 9 of March 2026 =
 
