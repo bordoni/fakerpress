@@ -237,4 +237,120 @@ class PostsEndpointTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertNotEmpty( $value, 'Date meta value should be saved.' );
 		$this->assertMatchesRegularExpression( '/^2020-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value );
 	}
+
+	/**
+	 * Verify that the plural `post_types` parameter — the exact key the admin form
+	 * submits — generates posts of the requested type. Regression for the wp.org
+	 * report "Doesn't seem to create Pages now".
+	 *
+	 * @test
+	 */
+	public function it_should_generate_pages_when_post_types_plural_is_sent(): void {
+		$this->set_admin_user();
+
+		$response = $this->dispatch_rest_request(
+			'POST',
+			$this->route,
+			[
+				'quantity'   => 3,
+				'post_types' => 'page',
+			]
+		);
+
+		$this->assert_success_response( $response );
+
+		$data = $response->get_data();
+		$this->assertCount( 3, $data['data']['ids'] );
+
+		foreach ( $data['data']['ids'] as $post_id ) {
+			$post = get_post( $post_id );
+			$this->assertNotNull( $post );
+			$this->assertSame( 'page', $post->post_type );
+		}
+	}
+
+	/**
+	 * Verify that a comma-separated `post_types` value (admin form serialization)
+	 * samples across the requested types and never produces an unrequested type.
+	 *
+	 * @test
+	 */
+	public function it_should_accept_multiple_post_types_as_csv(): void {
+		$this->set_admin_user();
+
+		$response = $this->dispatch_rest_request(
+			'POST',
+			$this->route,
+			[
+				'quantity'   => 6,
+				'post_types' => 'page,post',
+			]
+		);
+
+		$this->assert_success_response( $response );
+
+		$data = $response->get_data();
+		$this->assertCount( 6, $data['data']['ids'] );
+
+		foreach ( $data['data']['ids'] as $post_id ) {
+			$post = get_post( $post_id );
+			$this->assertNotNull( $post );
+			$this->assertContains( $post->post_type, [ 'page', 'post' ] );
+		}
+	}
+
+	/**
+	 * Verify that an array-shaped `post_types` (used by JS clients that send
+	 * structured JSON) is also accepted.
+	 *
+	 * @test
+	 */
+	public function it_should_accept_post_types_as_array(): void {
+		$this->set_admin_user();
+
+		$response = $this->dispatch_rest_request(
+			'POST',
+			$this->route,
+			[
+				'quantity'   => 2,
+				'post_types' => [ 'page' ],
+			]
+		);
+
+		$this->assert_success_response( $response );
+
+		$data = $response->get_data();
+		foreach ( $data['data']['ids'] as $post_id ) {
+			$this->assertSame( 'page', get_post( $post_id )->post_type );
+		}
+	}
+
+	/**
+	 * Sending the plural `post_types` must take precedence over the singular
+	 * `post_type` alias (whose schema default is `post`). This is the exact bug:
+	 * the prior code overwrote `post_types` with `post_type`'s default and silently
+	 * generated posts instead of pages.
+	 *
+	 * @test
+	 */
+	public function it_should_prefer_post_types_over_singular_alias(): void {
+		$this->set_admin_user();
+
+		$response = $this->dispatch_rest_request(
+			'POST',
+			$this->route,
+			[
+				'quantity'   => 2,
+				'post_types' => 'page',
+				'post_type'  => 'post',
+			]
+		);
+
+		$this->assert_success_response( $response );
+
+		$data = $response->get_data();
+		foreach ( $data['data']['ids'] as $post_id ) {
+			$this->assertSame( 'page', get_post( $post_id )->post_type );
+		}
+	}
 }
