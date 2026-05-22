@@ -211,7 +211,9 @@ class WP_Post extends Base {
 		);
 
 		foreach ( $config as $settings ) {
-			$settings = (object) $settings;
+			$settings               = (object) $settings;
+			$settings->taxonomies ??= [];
+			$settings->terms      ??= [];
 
 			if ( ! empty( $settings->taxonomies ) && is_string( $settings->taxonomies ) ) {
 				$settings->taxonomies = explode( ',', $settings->taxonomies );
