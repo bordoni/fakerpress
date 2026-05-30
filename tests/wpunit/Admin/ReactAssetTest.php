@@ -14,11 +14,42 @@ use function FakerPress\make;
 class ReactAssetTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
+	 * Restore the request superglobal after each test.
+	 *
+	 * @since 0.9.0
+	 *
+	 * @return void
+	 */
+	public function tearDown(): void {
+		unset( $_GET['page'] );
+
+		parent::tearDown();
+	}
+
+	/**
+	 * Simulate landing on a FakerPress admin page and register the React bundle.
+	 *
+	 * The bundle is only registered on active FakerPress admin screens, so the
+	 * request context must advertise the plugin page before registration runs.
+	 *
+	 * @since 0.9.0
+	 *
+	 * @return void
+	 */
+	protected function register_on_admin_page(): void {
+		$_GET['page'] = Plugin::$slug;
+
+		make( Assets::class )->register_react_assets();
+	}
+
+	/**
 	 * Verify that the React script handle is registered.
 	 *
 	 * @test
 	 */
 	public function it_should_register_react_script_handle(): void {
+		$this->register_on_admin_page();
+
 		$this->assertTrue( wp_script_is( 'fakerpress-admin-react', 'registered' ) );
 	}
 
@@ -28,6 +59,8 @@ class ReactAssetTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function it_should_register_react_styles_handle(): void {
+		$this->register_on_admin_page();
+
 		$this->assertTrue( wp_style_is( 'fakerpress-admin-react-styles', 'registered' ) );
 	}
 

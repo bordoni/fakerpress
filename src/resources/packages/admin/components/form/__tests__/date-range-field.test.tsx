@@ -4,38 +4,35 @@ import { DateRangeField } from '../date-range-field';
 
 describe( 'DateRangeField', () => {
 	const defaultProps = {
-		startDate: '',
-		endDate: '',
-		onStartChange: jest.fn(),
-		onEndChange: jest.fn(),
+		value: { preset: '', start: '', end: '' },
+		onChange: jest.fn(),
 	};
 
 	beforeEach( () => {
 		jest.clearAllMocks();
 	} );
 
-	it( 'renders preset select and date buttons', () => {
+	it( 'renders preset select and date inputs', () => {
 		render( <DateRangeField { ...defaultProps } /> );
 
 		// The Select trigger should show the placeholder text.
 		expect( screen.getByText( 'Select an Interval' ) ).toBeInTheDocument();
 
-		// Both date picker buttons show their placeholder text when no date is set.
-		expect( screen.getByText( 'Start date' ) ).toBeInTheDocument();
-		expect( screen.getByText( 'End date' ) ).toBeInTheDocument();
+		// Both native date inputs render when no date is set.
+		const dateInputs = document.querySelectorAll( 'input[type="date"]' );
+		expect( dateInputs ).toHaveLength( 2 );
 	} );
 
 	it( 'renders dates when provided', () => {
 		render(
 			<DateRangeField
-				{ ...defaultProps }
-				startDate="2024-01-15"
-				endDate="2024-02-15"
+				value={ { preset: 'custom', start: '2024-01-15', end: '2024-02-15' } }
+				onChange={ jest.fn() }
 			/>
 		);
 
-		expect( screen.getByText( '2024-01-15' ) ).toBeInTheDocument();
-		expect( screen.getByText( '2024-02-15' ) ).toBeInTheDocument();
+		expect( screen.getByDisplayValue( '2024-01-15' ) ).toBeInTheDocument();
+		expect( screen.getByDisplayValue( '2024-02-15' ) ).toBeInTheDocument();
 	} );
 
 	it( 'renders the preset select trigger', () => {

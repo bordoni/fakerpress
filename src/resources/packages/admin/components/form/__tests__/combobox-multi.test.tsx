@@ -47,10 +47,8 @@ describe( 'ComboboxMulti', () => {
 			/>
 		);
 
-		// The X button is inside the Alpha badge span.
-		// Each badge has a child <button> for removal.
-		const alphaBadge = screen.getByText( 'Alpha' );
-		const removeButton = alphaBadge.closest( '[data-slot="badge"]' )!.querySelector( 'button' )!;
+		// Each badge exposes an accessible remove control labelled "Remove <label>".
+		const removeButton = screen.getByLabelText( 'Remove Alpha' );
 		await user.click( removeButton );
 
 		expect( onChange ).toHaveBeenCalledWith( [ 'b' ] );

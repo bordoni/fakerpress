@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { MetaFieldRules } from '../meta-field-rules';
@@ -40,7 +40,8 @@ describe( 'MetaFieldRules', () => {
 			/>
 		);
 
-		expect( screen.getByText( 'test_meta' ) ).toBeInTheDocument();
+		// The rule name renders as the value of its Name input.
+		expect( screen.getByDisplayValue( 'test_meta' ) ).toBeInTheDocument();
 	} );
 
 	it( 'calls onChange without removed rule when remove clicked', async () => {
@@ -56,13 +57,9 @@ describe( 'MetaFieldRules', () => {
 			/>
 		);
 
-		// Expand the first accordion item by clicking its trigger.
-		const trigger = screen.getByText( 'rule1' );
-		await user.click( trigger );
-
-		// Find and click the Remove button inside the expanded content.
-		const removeButton = screen.getByRole( 'button', { name: /remove/i } );
-		await user.click( removeButton );
+		// Each rule renders an always-visible remove control titled "Remove rule".
+		const removeButtons = screen.getAllByTitle( 'Remove rule' );
+		await user.click( removeButtons[ 0 ] );
 
 		expect( onChange ).toHaveBeenCalledWith( [
 			{ type: 'number', name: 'rule2', config: {} },

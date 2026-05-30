@@ -35,7 +35,8 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/build/",
-      "/vendor/"
+      "/vendor/",
+      "/dev/"
     ]
   },
   "main": "Gruntfile.js",
