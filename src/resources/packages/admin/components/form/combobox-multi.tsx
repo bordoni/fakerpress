@@ -123,7 +123,7 @@ export function ComboboxMulti( {
 									role="button"
 									tabIndex={ 0 }
 									aria-label={ `Remove ${ getLabel( val ) }` }
-									className="fp:ml-0.5 fp:rounded-full fp:outline-none fp:hover:bg-secondary-foreground/20 fp:cursor-pointer"
+									className="fp:ml-0.5 fp:inline-flex fp:size-4 fp:shrink-0 fp:items-center fp:justify-center fp:rounded-full fp:outline-none fp:hover:bg-secondary-foreground/20 fp:cursor-pointer"
 									onClick={ ( e ) => {
 										e.stopPropagation();
 										handleRemove( val );
@@ -136,7 +136,7 @@ export function ComboboxMulti( {
 										}
 									} }
 								>
-									<X className="fp:h-3 fp:w-3" />
+									<X className="fp:size-2.5" />
 								</span>
 							</Badge>
 						) ) }
