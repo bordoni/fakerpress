@@ -167,6 +167,8 @@ export function ComboboxMulti( {
 									value={ option.value }
 									onSelect={ () => handleSelect( option.value ) }
 									className={ cn(
+										// Transparent base border avoids layout shift; highlight/hover adds a visible border and background.
+										'fp:border fp:border-transparent fp:hover:border-border fp:hover:bg-accent fp:data-[selected=true]:border-border fp:data-[selected=true]:bg-accent',
 										value.includes( option.value ) && 'fp:bg-accent'
 									) }
 								>
