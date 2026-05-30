@@ -2,6 +2,7 @@
 
 namespace FakerPress\Provider;
 
+use FakerPress\ThirdParty\Cake\Chronos\Chronos;
 use FakerPress\ThirdParty\Faker\Provider\Base;
 use FakerPress;
 use FakerPress\Utils;

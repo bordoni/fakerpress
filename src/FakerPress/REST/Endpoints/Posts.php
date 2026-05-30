@@ -103,9 +103,18 @@ class Posts extends Abstract_Endpoint {
 		$params = $this->sanitize_request( $request );
 
 		// Translate REST params to module format.
-		if ( isset( $params['post_type'] ) ) {
-			$params['post_types'] = $params['post_type'];
+		// The admin form posts `post_types` (plural, the same key the module reads); the public
+		// REST schema also exposes a singular `post_type` alias. Accept whichever arrived and
+		// normalise to the comma-joined string the Post module expects.
+		$post_types_value = $params['post_types'] ?? $params['post_type'] ?? null;
+		if ( null !== $post_types_value ) {
+			if ( is_array( $post_types_value ) ) {
+				$post_types_value = implode( ',', array_map( 'strval', $post_types_value ) );
+			}
+			$params['post_types'] = (string) $post_types_value;
+			unset( $params['post_type'] );
 		}
+
 		if ( isset( $params['author_ids'] ) && is_array( $params['author_ids'] ) ) {
 			$params['author'] = implode( ',', $params['author_ids'] );
 		}
@@ -206,8 +215,15 @@ class Posts extends Abstract_Endpoint {
 						],
 					],
 				],
+				'post_types'  => [
+					'description' => __( 'Post types to sample from. Accepts an array of slugs or a comma-separated string.', 'fakerpress' ),
+					'type'        => [ 'array', 'string' ],
+					'items'       => [
+						'type' => 'string',
+					],
+				],
 				'post_type'   => [
-					'description' => __( 'Post type to generate.', 'fakerpress' ),
+					'description' => __( 'Deprecated singular alias for post_types — accepts a single post type slug.', 'fakerpress' ),
 					'type'        => 'string',
 					'default'     => 'post',
 				],

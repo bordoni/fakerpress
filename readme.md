@@ -7,8 +7,8 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Contributors:** [bordoni](http://profiles.wordpress.org/bordoni)  
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy+content), [lorem ipsun](http://wordpress.org/plugins/tags/lorem+ipsun), [testing](http://wordpress.org/plugins/tags/testing), [developer](http://wordpress.org/plugins/tags/developer)  
 **Requires at least:** 5.5  
-**Tested up to:** 6.8.1  
-**Stable tag:** 0.9.0  
+**Tested up to:** 7.0  
+**Stable tag:** 0.9.1  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 **Requires PHP:** 8.1  
 **Donate link:** https://fakerpress.com/r/sponsor  
@@ -104,7 +104,14 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 ## Changelog ##
 
-### 0.9.0 &mdash; 3 of March 2026 ###
+### 0.9.1 &mdash; 22 of May 2026 ###
+* Fix - Restore date-type meta generation by importing the `Chronos` class in the `WP_Meta` provider; calling `meta_type_date` no longer fatals with `Class "FakerPress\Provider\Chronos" not found`. [[#209](https://github.com/bordoni/fakerpress/pull/209)]
+* Fix - Honour the selected post type(s) on the Posts generator; the admin form's plural `post_types` value is no longer silently overwritten by the singular alias's default of `post`. [[#210](https://github.com/bordoni/fakerpress/pull/210)]
+* Fix - Suppress the `Undefined property: stdClass::$terms` warning emitted by `WP_Post::tax_input` under PHP 8.x when the taxonomy config does not include a `terms` key.
+* Tweak - REST endpoint `POST /fakerpress/v1/posts/generate` now documents `post_types` (array or comma-separated string) as the canonical parameter; the existing `post_type` singular alias is preserved for backwards compatibility.
+* Tests - Add regression coverage for `meta_type_date`, sparse `tax_input` configs, and every shape of `post_types` payload (CSV, array, singular alias, plural-wins-over-default).
+
+### 0.9.0 &mdash; 9 of March 2026 ###
 * Feature - Complete REST API implementation replacing legacy AJAX system
 * Feature - Add comprehensive REST API endpoints for all modules (Posts, Users, Terms, Comments, Attachments)
 * Feature - Implement attachment generation with support for multiple image providers (Placehold.co, Lorem Picsum)
