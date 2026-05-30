@@ -17,7 +17,7 @@ function Switch({
       data-slot="switch"
       data-size={size}
       className={cn(
-        "fp:peer fp:group/switch fp:inline-flex fp:shrink-0 fp:items-center fp:rounded-full fp:border fp:border-transparent fp:shadow-xs fp:transition-all fp:outline-none fp:focus-visible:border-ring fp:focus-visible:ring-[3px] fp:focus-visible:ring-ring/50 fp:disabled:cursor-not-allowed fp:disabled:opacity-50 fp:data-[size=default]:h-[1.15rem] fp:data-[size=default]:w-8 fp:data-[size=sm]:h-3.5 fp:data-[size=sm]:w-6 fp:data-[state=checked]:bg-primary fp:data-[state=unchecked]:bg-input fp:dark:data-[state=unchecked]:bg-input/80",
+        "fp:peer fp:group/switch fp:inline-flex fp:shrink-0 fp:items-center fp:rounded-full fp:border fp:border-foreground/20 fp:shadow-xs fp:transition-all fp:outline-none fp:focus-visible:border-ring fp:focus-visible:ring-[3px] fp:focus-visible:ring-ring/50 fp:disabled:cursor-not-allowed fp:disabled:opacity-50 fp:data-[size=default]:h-[1.15rem] fp:data-[size=default]:w-8 fp:data-[size=sm]:h-3.5 fp:data-[size=sm]:w-6 fp:data-[state=checked]:bg-primary fp:data-[state=unchecked]:bg-input fp:dark:data-[state=unchecked]:bg-input/80",
         className
       )}
       {...props}

@@ -116,7 +116,7 @@ export function ComboboxMulti( {
 							<Badge
 								key={ val }
 								variant="secondary"
-								className="fp:gap-1"
+								className="fp:gap-1 fp:rounded-md fp:border-border"
 							>
 								{ getLabel( val ) }
 								<span
