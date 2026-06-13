@@ -56,9 +56,10 @@ Strauss vendor-prefixes all third-party packages under `FakerPress\ThirdParty\` 
 
 ## Development Workflow
 
-During active development sessions, `bun run start` is already running in the background in watch mode. **Do not run `bun run build` or restart the watcher** — changes to source files are picked up automatically and the browser receives the updated bundle.
+**After any JS or CSS change, recompile before considering the work done.** WordPress only enqueues the compiled output in `build/` and `src/resources/css/` — the source files under `src/resources/` are never loaded directly, so an un-recompiled edit will not appear in the browser or in tests.
 
-Only run `bun run build` for a one-off production build or when starting fresh with no watcher active.
+- Run `bun run build` after each batch of JS/CSS edits to refresh the compiled bundles.
+- If a `bun run start` watcher is already running in the background, edits are picked up automatically and a manual `bun run build` is not required — but if there is any doubt about whether the watcher is active, run `bun run build` to be safe.
 
 ## Gitignored Build Artifacts
 

@@ -73,11 +73,11 @@ export function MetaFieldRules( {
 	);
 
 	return (
-		<div className="fp:border fp:border-[#dfdfdf] fp:mt-4">
-			<h2 className="fp:text-base fp:font-normal fp:px-3 fp:py-2 fp:bg-[#f0f0f0] fp:border-b fp:border-[#dfdfdf]">
+		<div className="fp:mt-4">
+			<h2 className="fp:text-base fp:font-normal fp:pb-2 fp:mb-3 fp:border-b fp:border-[#dfdfdf]">
 				{ title }
 			</h2>
-			<div className="fp:p-3">
+			<div>
 				{ description && (
 					<p className="fp:text-sm fp:italic fp:text-[#555] fp:mb-3">{ description }</p>
 				) }
@@ -154,9 +154,11 @@ export function MetaFieldRules( {
 					</div>
 				) ) }
 
-				<Button type="button" variant="outline" size="sm" onClick={ addRule }>
-					+ Add Meta Rule
-				</Button>
+				<div className="fp:flex fp:justify-end">
+					<Button type="button" variant="outline" size="sm" onClick={ addRule }>
+						+ Add Meta Rule
+					</Button>
+				</div>
 			</div>
 		</div>
 	);

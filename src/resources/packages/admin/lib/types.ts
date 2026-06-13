@@ -112,4 +112,5 @@ export interface WPPostType {
 	labels: Record< string, string >;
 	public: boolean;
 	hierarchical: boolean;
+	default_meta?: MetaRule[];
 }

@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { __ } from '@wordpress/i18n';
 import { usePageConfig } from '../hooks/use-page-config';
 import { useGenerateModule } from '../hooks/use-generate-module';
 import { useAsyncSearch } from '../hooks/use-async-search';
+import { useRestSearch } from '../hooks/use-rest-search';
 import { transformPostsForm } from '../lib/transform';
 import { PageLayout } from '../components/layout/page-layout';
 import { AdminNotice } from '../components/layout/admin-notice';
@@ -32,6 +33,34 @@ interface PostsFormData {
 	excerpt_size: { min: number | undefined; max: number | undefined };
 	taxonomy_rules: TaxonomyRule[];
 	meta: MetaRule[];
+}
+
+/**
+ * Append default meta rules for the given post types to the current list.
+ *
+ * Defaults are added non-destructively: a default whose meta `name` already
+ * exists in `current` is skipped, and existing rules are never removed or
+ * overwritten. Returns the same array reference when nothing is added.
+ */
+function mergeDefaultMeta(
+	current: MetaRule[],
+	postTypes: string[],
+	byType: Record< string, MetaRule[] >
+): MetaRule[] {
+	const existingNames = new Set( current.map( ( rule ) => rule.name ) );
+	const additions: MetaRule[] = [];
+
+	postTypes.forEach( ( postType ) => {
+		( byType[ postType ] || [] ).forEach( ( rule ) => {
+			if ( existingNames.has( rule.name ) ) {
+				return;
+			}
+			existingNames.add( rule.name );
+			additions.push( { ...rule, config: { ...rule.config } } );
+		} );
+	} );
+
+	return additions.length > 0 ? [ ...current, ...additions ] : current;
 }
 
 export default function PostsPage() {
@@ -68,11 +97,24 @@ export default function PostsPage() {
 		return ( data.image_providers || [] ) as { value: string; label: string }[];
 	}, [ data.image_providers ] );
 
+	const defaultMetaByType = useMemo< Record< string, MetaRule[] > >( () => {
+		const postTypes = ( data.post_types || {} ) as Record< string, { name: string; default_meta?: MetaRule[] } >;
+		const map: Record< string, MetaRule[] > = {};
+		Object.values( postTypes ).forEach( ( pt ) => {
+			map[ pt.name ] = pt.default_meta || [];
+		} );
+		return map;
+	}, [ data.post_types ] );
+
 	const defaultPostTypes = useMemo( () => {
 		return postTypeOptions
 			.filter( ( o ) => o.value === 'post' )
 			.map( ( o ) => o.value );
 	}, [ postTypeOptions ] );
+
+	const defaultMeta = useMemo( () => {
+		return mergeDefaultMeta( [], defaultPostTypes, defaultMetaByType );
+	}, [ defaultPostTypes, defaultMetaByType ] );
 
 	const defaultHtmlTags = useMemo( () => {
 		return ( data.html_tags || [] ) as string[];
@@ -80,7 +122,7 @@ export default function PostsPage() {
 
 	const parentSearch = useAsyncSearch( 'fakerpress.select2-WP_Query', ajaxNonces.wp_query || '' );
 	const authorSearch = useAsyncSearch( 'fakerpress.search_authors', ajaxNonces.search_authors || '' );
-	const termSearch = useAsyncSearch( 'fakerpress.search_terms', ajaxNonces.search_terms || '' );
+	const termSearch = useRestSearch( '/fakerpress/v1/terms/search' );
 
 	const parentSearchOptions: ComboboxOption[] = useMemo( () => {
 		return parentSearch.results.map( ( r ) => ( {
@@ -106,7 +148,7 @@ export default function PostsPage() {
 	const defaultPreset = 'yesterday';
 	const defaultDateRange = getPresetRange( defaultPreset );
 
-	const { control, handleSubmit, watch } = useForm< PostsFormData >( {
+	const { control, handleSubmit, watch, setValue, getValues } = useForm< PostsFormData >( {
 		defaultValues: {
 			qty: { min: 3, max: 12 },
 			date: { preset: defaultPreset, start: defaultDateRange?.[ 0 ] ?? '', end: defaultDateRange?.[ 1 ] ?? '' },
@@ -120,11 +162,30 @@ export default function PostsPage() {
 			image_providers: [],
 			excerpt_size: { min: 1, max: 3 },
 			taxonomy_rules: [],
-			meta: [],
+			meta: defaultMeta,
 		},
 	} );
 
 	const useHtml = watch( 'use_html' );
+	const selectedPostTypes = watch( 'post_type' );
+
+	// Append a post type's default meta rules when it is newly selected.
+	const prevPostTypesRef = useRef< string[] >( defaultPostTypes );
+	useEffect( () => {
+		const added = selectedPostTypes.filter( ( pt ) => ! prevPostTypesRef.current.includes( pt ) );
+		prevPostTypesRef.current = selectedPostTypes;
+
+		if ( added.length === 0 ) {
+			return;
+		}
+
+		const current = getValues( 'meta' );
+		const merged = mergeDefaultMeta( current, added, defaultMetaByType );
+
+		if ( merged !== current ) {
+			setValue( 'meta', merged );
+		}
+	}, [ selectedPostTypes, defaultMetaByType, getValues, setValue ] );
 
 	const onSubmit = ( formData: PostsFormData ) => {
 		reset();
@@ -365,7 +426,7 @@ export default function PostsPage() {
 							value={ field.value }
 							onChange={ field.onChange }
 							taxonomyOptions={ taxonomyOptions }
-							onSearchTerms={ ( query ) => termSearch.search( query ) }
+							onSearchTerms={ ( query, taxonomies ) => termSearch.search( query, { taxonomies } ) }
 							termSearchResults={ termSearchOptions }
 							isSearchingTerms={ termSearch.isSearching }
 							description={ __( 'Assign terms from taxonomies to generated posts.', 'fakerpress' ) }

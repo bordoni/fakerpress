@@ -56,12 +56,33 @@ class Post_View extends Abstract_View {
 		return [
 			'post_types'       => array_map(
 				static function ( $pt ) {
+					$default_meta = post_type_supports( $pt->name, 'thumbnail' )
+						? [
+							[
+								'type'   => 'attachment',
+								'name'   => '_thumbnail_id',
+								'config' => (object) [],
+							],
+						]
+						: [];
+
+					/**
+					 * Filters the default meta rules pre-filled in the post generator for a post type.
+					 *
+					 * @since 0.9.1
+					 *
+					 * @param array  $default_meta Default meta rule definitions, each with `type`, `name` and `config`.
+					 * @param string $post_type    The post type name.
+					 */
+					$default_meta = apply_filters( 'fakerpress.posts.default_meta', $default_meta, $pt->name );
+
 					return [
-						'name'  => $pt->name,
-						'label' => $pt->label,
+						'name'         => $pt->name,
+						'label'        => $pt->label,
+						'default_meta' => $default_meta,
 					];
 				},
-				$post_types 
+				$post_types
 			),
 			'taxonomies'       => array_map(
 				static function ( $tax ) {
