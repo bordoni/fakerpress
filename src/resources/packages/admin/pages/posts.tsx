@@ -441,6 +441,7 @@ export default function PostsPage() {
 						<MetaFieldRules
 							value={ field.value }
 							onChange={ field.onChange }
+							providerOptions={ imageProviderOptions }
 							description={ __( 'Use the fields below to configure a set of rules for your generated Posts.', 'fakerpress' ) }
 						/>
 					) }

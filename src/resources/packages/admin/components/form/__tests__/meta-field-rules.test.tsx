@@ -27,7 +27,12 @@ describe( 'MetaFieldRules', () => {
 		);
 
 		expect( onChange ).toHaveBeenCalledWith( [
-			{ type: 'text', name: '', config: {} },
+			{
+				type: 'text',
+				name: '',
+				weight: 100,
+				config: { text_type: 'paragraphs', qty: [ 1, 3 ], separator: '\\n' },
+			},
 		] );
 	} );
 

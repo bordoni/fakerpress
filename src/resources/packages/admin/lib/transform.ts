@@ -31,17 +31,76 @@ function dateToParams( date: DateRange ): Record< string, string > {
 }
 
 /**
+ * Canonical order of config keys per meta type.
+ *
+ * The backend consumes meta config positionally (`array_values()` is passed to
+ * `meta_type_<type>()`), so the keys must be emitted in the exact parameter
+ * order of the matching handler. React builds `config` in interaction order, so
+ * we re-order here to guarantee a correct mapping regardless of the UI. Weight
+ * is appended last by `metaToParam` (it is the final argument of every handler).
+ */
+const META_CONFIG_ORDER: Record< string, string[] > = {
+	numbers: [ 'number' ],
+	wp_query: [ 'query' ],
+	attachment: [ 'store', 'providers' ],
+	elements: [ 'elements', 'qty', 'separator' ],
+	words: [ 'qty' ],
+	text: [ 'text_type', 'qty', 'separator' ],
+	html: [ 'elements', 'qty' ],
+	lexify: [ 'template' ],
+	asciify: [ 'template' ],
+	regexify: [ 'template' ],
+	person: [ 'template', 'gender' ],
+	geo: [ 'template' ],
+	company: [ 'template' ],
+};
+
+/**
+ * Re-order a rule's config object into the canonical handler argument order.
+ */
+function orderedConfig(
+	type: string,
+	config: Record< string, unknown >
+): Record< string, unknown > {
+	const order = META_CONFIG_ORDER[ type ];
+	if ( ! order ) {
+		return { ...config };
+	}
+	const result: Record< string, unknown > = {};
+	order.forEach( ( key ) => {
+		if ( config[ key ] !== undefined ) {
+			result[ key ] = config[ key ];
+		}
+	} );
+	// Preserve any keys not in the canonical list, appended after.
+	Object.keys( config ).forEach( ( key ) => {
+		if ( ! ( key in result ) ) {
+			result[ key ] = config[ key ];
+		}
+	} );
+	return result;
+}
+
+/**
  * Convert meta rules to API format.
  */
 function metaToParam( meta: MetaRule[] ): Record< string, unknown >[] | undefined {
 	if ( ! meta || meta.length === 0 ) {
 		return undefined;
 	}
-	return meta.map( ( rule ) => ( {
-		type: rule.type,
-		name: rule.name,
-		...rule.config,
-	} ) );
+	return meta.map( ( rule ) => {
+		const param: Record< string, unknown > = {
+			type: rule.type,
+			name: rule.name,
+			...orderedConfig( rule.type, rule.config ),
+		};
+		// Weight is the last positional argument for every meta_type_* handler, so
+		// it must be appended after the type-specific config keys.
+		if ( rule.weight !== undefined && rule.weight !== null ) {
+			param.weight = rule.weight;
+		}
+		return param;
+	} );
 }
 
 /**
@@ -172,12 +231,14 @@ export function transformPostsForm( data: {
 		html_tags: data.html_tags,
 		image_providers: data.image_providers,
 		excerpt_size: [ data.excerpt_size.min ?? 1, data.excerpt_size.max ?? data.excerpt_size.min ?? 1 ],
-		taxonomy_rules: data.taxonomy_rules.length > 0
+		// The Post module reads `taxonomy` (not `taxonomy_rules`) and tax_input()
+		// expects a `qty` range plus `rate`; there is no taxonomy weight.
+		taxonomy: data.taxonomy_rules.length > 0
 			? data.taxonomy_rules.map( ( rule ) => ( {
 				taxonomies: rule.taxonomies,
 				terms: rule.terms,
 				rate: rule.rate,
-				quantity: rangeToParam( rule.qty ),
+				qty: [ rule.qty.min ?? 1, rule.qty.max ?? rule.qty.min ?? 1 ],
 			} ) )
 			: undefined,
 		meta: metaToParam( data.meta ),

@@ -61,7 +61,11 @@ class Post_View extends Abstract_View {
 							[
 								'type'   => 'attachment',
 								'name'   => '_thumbnail_id',
-								'config' => (object) [],
+								'weight' => 75,
+								'config' => [
+									'store'     => 'id',
+									'providers' => implode( ',', [ Placeholder::ID, LoremPicsum::ID ] ),
+								],
 							],
 						]
 						: [];

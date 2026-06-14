@@ -79,6 +79,7 @@ export interface DateRange {
 export interface MetaRule {
 	type: string;
 	name: string;
+	weight?: number;
 	config: Record< string, unknown >;
 }
 
