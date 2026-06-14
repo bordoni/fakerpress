@@ -53,6 +53,34 @@ class Post_View extends Abstract_View {
 		$post_types = get_post_types( [ 'public' => true ], 'objects' );
 		$taxonomies = get_taxonomies( [ 'public' => true ], 'objects' );
 
+		// Pre-fill a default taxonomy rule mirroring the stable generator
+		// ( categories + tags when those taxonomies exist on the site ).
+		$default_taxonomy_names = array_values(
+			array_intersect( [ 'category', 'post_tag' ], array_keys( $taxonomies ) )
+		);
+		$default_taxonomy = empty( $default_taxonomy_names )
+			? []
+			: [
+				[
+					'taxonomies' => $default_taxonomy_names,
+					'terms'      => [],
+					'rate'       => 85,
+					'qty'        => [
+						'min' => 1,
+						'max' => 4,
+					],
+				],
+			];
+
+		/**
+		 * Filters the default taxonomy rules pre-filled in the post generator.
+		 *
+		 * @since 0.9.1
+		 *
+		 * @param array $default_taxonomy Default taxonomy rule definitions.
+		 */
+		$default_taxonomy = apply_filters( 'fakerpress.posts.default_taxonomy', $default_taxonomy );
+
 		return [
 			'post_types'       => array_map(
 				static function ( $pt ) {
@@ -109,6 +137,7 @@ class Post_View extends Abstract_View {
 					'label' => 'Lorem Picsum',
 				],
 			],
+			'default_taxonomy' => $default_taxonomy,
 		];
 	}
 

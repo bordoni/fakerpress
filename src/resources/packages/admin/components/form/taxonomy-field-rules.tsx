@@ -3,6 +3,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { ComboboxMulti, type ComboboxOption } from './combobox-multi';
 import { RangeInput } from './range-input';
+import { RuleCard, RuleField } from './rule-card';
 import type { TaxonomyRule } from '../../lib/types';
 
 interface TaxonomyFieldRulesProps {
@@ -60,98 +61,65 @@ export function TaxonomyFieldRules( {
 				) }
 
 				{ value.map( ( rule, index ) => (
-					<div key={ index } className="fp:flex fp:border fp:border-[#ededed] fp:mb-2">
-						<div className="fp:w-10 fp:flex fp:items-start fp:justify-center fp:pt-3 fp:border-r fp:border-[#ededed] fp:bg-[#f9f9f9] fp:text-sm fp:font-medium">
-							{ index + 1 }
-						</div>
+					<RuleCard
+						key={ index }
+						index={ index }
+						onRemove={ () => removeRule( index ) }
+						onAdd={ addRule }
+					>
+						<RuleField label="Taxonomies">
+							<ComboboxMulti
+								value={ rule.taxonomies }
+								onChange={ ( taxonomies ) => updateRule( index, { taxonomies } ) }
+								options={ taxonomyOptions }
+								placeholder="Select taxonomies..."
+							/>
+						</RuleField>
 
-						<div className="fp:flex-1 fp:p-3 fp:space-y-2">
-							<div className="fp:space-y-1">
-								<label className="fp:text-xs fp:font-medium">Taxonomies</label>
-								<ComboboxMulti
-									value={ rule.taxonomies }
-									onChange={ ( taxonomies ) =>
-										updateRule( index, { taxonomies } )
-									}
-									options={ taxonomyOptions }
-									placeholder="Select taxonomies..."
-								/>
-							</div>
+						<RuleField label="Terms">
+							<ComboboxMulti
+								value={ rule.terms.map( String ) }
+								onChange={ ( terms ) => updateRule( index, { terms } ) }
+								placeholder="Search for terms..."
+								onSearch={ ( query ) => onSearchTerms?.( query, rule.taxonomies ) }
+								searchResults={ termSearchResults }
+								isSearching={ isSearchingTerms }
+							/>
+						</RuleField>
 
-							<div className="fp:space-y-1">
-								<label className="fp:text-xs fp:font-medium">Terms</label>
-								<ComboboxMulti
-									value={ rule.terms.map( String ) }
-									onChange={ ( terms ) =>
-										updateRule( index, { terms } )
-									}
-									placeholder="Search for terms..."
-									onSearch={ ( query ) =>
-										onSearchTerms?.( query, rule.taxonomies )
-									}
-									searchResults={ termSearchResults }
-									isSearching={ isSearchingTerms }
-								/>
-							</div>
+						<RuleField
+							label="Rate (%)"
+							description="Percentage rate of posts that will have terms generated."
+						>
+							<Input
+								type="number"
+								value={ rule.rate }
+								onChange={ ( e ) =>
+									updateRule( index, { rate: Number( e.target.value ) } )
+								}
+								min={ 0 }
+								max={ 100 }
+								className="fp:w-24"
+							/>
+						</RuleField>
 
-							<div className="fp:grid fp:grid-cols-2 fp:gap-3">
-								<div className="fp:space-y-1">
-									<label className="fp:text-xs fp:font-medium">Rate (%)</label>
-									<Input
-										type="number"
-										value={ rule.rate }
-										onChange={ ( e ) =>
-											updateRule( index, {
-												rate: Number( e.target.value ),
-											} )
-										}
-										min={ 0 }
-										max={ 100 }
-										className="fp:w-20"
-									/>
-								</div>
-								<div className="fp:space-y-1">
-									<label className="fp:text-xs fp:font-medium">Quantity</label>
-									<RangeInput
-										minValue={ rule.qty.min }
-										maxValue={ rule.qty.max }
-										onMinChange={ ( min ) =>
-											updateRule( index, {
-												qty: { ...rule.qty, min },
-											} )
-										}
-										onMaxChange={ ( max ) =>
-											updateRule( index, {
-												qty: { ...rule.qty, max },
-											} )
-										}
-										min={ 0 }
-									/>
-								</div>
-							</div>
-						</div>
-
-						<div className="fp:flex fp:flex-col fp:border-l fp:border-[#ededed]">
-							<Button
-								type="button"
-								variant="outline"
-								size="icon-sm"
-								onClick={ () => removeRule( index ) }
-								title="Remove rule"
-							>
-								−
-							</Button>
-							<Button
-								type="button"
-								variant="outline"
-								size="icon-sm"
-								onClick={ addRule }
-								title="Add rule"
-							>
-								+
-							</Button>
-						</div>
-					</div>
+						<RuleField
+							label="Quantity"
+							description="How many terms will be selected. From 1 to 4, or just the first field for an exact number."
+						>
+							<RangeInput
+								minValue={ rule.qty.min }
+								maxValue={ rule.qty.max }
+								onMinChange={ ( min ) =>
+									updateRule( index, { qty: { ...rule.qty, min } } )
+								}
+								onMaxChange={ ( max ) =>
+									updateRule( index, { qty: { ...rule.qty, max } } )
+								}
+								min={ 0 }
+							/>
+						</RuleField>
+					</RuleCard>
 				) ) }
 
 				<div className="fp:flex fp:justify-end">

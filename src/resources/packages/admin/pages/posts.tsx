@@ -116,6 +116,10 @@ export default function PostsPage() {
 		return mergeDefaultMeta( [], defaultPostTypes, defaultMetaByType );
 	}, [ defaultPostTypes, defaultMetaByType ] );
 
+	const defaultTaxonomyRules = useMemo< TaxonomyRule[] >( () => {
+		return ( data.default_taxonomy || [] ) as TaxonomyRule[];
+	}, [ data.default_taxonomy ] );
+
 	const defaultHtmlTags = useMemo( () => {
 		return ( data.html_tags || [] ) as string[];
 	}, [ data.html_tags ] );
@@ -161,7 +165,7 @@ export default function PostsPage() {
 			html_tags: defaultHtmlTags,
 			image_providers: [],
 			excerpt_size: { min: 1, max: 3 },
-			taxonomy_rules: [],
+			taxonomy_rules: defaultTaxonomyRules,
 			meta: defaultMeta,
 		},
 	} );

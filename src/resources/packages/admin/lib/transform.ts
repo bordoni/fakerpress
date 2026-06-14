@@ -42,7 +42,7 @@ function dateToParams( date: DateRange ): Record< string, string > {
 const META_CONFIG_ORDER: Record< string, string[] > = {
 	numbers: [ 'number' ],
 	wp_query: [ 'query' ],
-	attachment: [ 'store', 'providers' ],
+	attachment: [ 'store', 'providers', 'width', 'height' ],
 	elements: [ 'elements', 'qty', 'separator' ],
 	words: [ 'qty' ],
 	text: [ 'text_type', 'qty', 'separator' ],
@@ -89,15 +89,27 @@ function metaToParam( meta: MetaRule[] ): Record< string, unknown >[] | undefine
 		return undefined;
 	}
 	return meta.map( ( rule ) => {
-		const param: Record< string, unknown > = {
-			type: rule.type,
-			name: rule.name,
-			...orderedConfig( rule.type, rule.config ),
-		};
-		// Weight is the last positional argument for every meta_type_* handler, so
-		// it must be appended after the type-specific config keys.
-		if ( rule.weight !== undefined && rule.weight !== null ) {
-			param.weight = rule.weight;
+		const config = orderedConfig( rule.type, rule.config );
+		const param: Record< string, unknown > = { type: rule.type, name: rule.name };
+		const weight =
+			rule.weight !== undefined && rule.weight !== null ? rule.weight : undefined;
+
+		// Attachment is the only handler where weight is NOT the final argument:
+		// meta_type_attachment( store, providers, weight, width, height ). Width and
+		// height are always emitted (empty when unset) to keep the positions stable.
+		if ( rule.type === 'attachment' ) {
+			param.store = config.store;
+			param.providers = config.providers;
+			param.weight = weight ?? 100;
+			param.width = config.width ?? [];
+			param.height = config.height ?? [];
+			return param;
+		}
+
+		Object.assign( param, config );
+		// Weight is the last positional argument for every other meta_type_* handler.
+		if ( weight !== undefined ) {
+			param.weight = weight;
 		}
 		return param;
 	} );

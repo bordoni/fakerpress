@@ -4,6 +4,7 @@ import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { ComboboxMulti, type ComboboxOption } from './combobox-multi';
 import { RangeInput } from './range-input';
+import { RuleCard, RuleField } from './rule-card';
 import type { MetaRule } from '../../lib/types';
 
 /**
@@ -157,91 +158,63 @@ export function MetaFieldRules( {
 				) }
 
 				{ value.map( ( rule, index ) => (
-					<div key={ index } className="fp:flex fp:border fp:border-[#ededed] fp:mb-2">
-						<div className="fp:w-10 fp:flex fp:items-start fp:justify-center fp:pt-3 fp:border-r fp:border-[#ededed] fp:bg-[#f9f9f9] fp:text-sm fp:font-medium">
-							{ index + 1 }
-						</div>
-
-						<div className="fp:flex-1 fp:p-3 fp:space-y-2">
-							<div className="fp:grid fp:grid-cols-[1fr_1fr_5rem] fp:gap-3">
-								<div className="fp:space-y-1">
-									<label className="fp:text-xs fp:font-medium">Type</label>
-									<Select
-										value={ rule.type }
-										onValueChange={ ( newType ) =>
-											updateRule( index, {
-												type: newType,
-												config: defaultConfigForType( newType, providerOptions ),
-											} )
-										}
-									>
-										<SelectTrigger>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											{ META_TYPES.map( ( mt ) => (
-												<SelectItem key={ mt.value } value={ mt.value }>
-													{ mt.label }
-												</SelectItem>
-											) ) }
-										</SelectContent>
-									</Select>
-								</div>
-								<div className="fp:space-y-1">
-									<label className="fp:text-xs fp:font-medium">Name</label>
-									<Input
-										value={ rule.name }
-										onChange={ ( e ) =>
-											updateRule( index, { name: e.target.value } )
-										}
-										placeholder="meta_key_name"
-									/>
-								</div>
-								<div className="fp:space-y-1">
-									<label className="fp:text-xs fp:font-medium">Weight</label>
-									<Input
-										type="number"
-										value={ rule.weight ?? 100 }
-										onChange={ ( e ) =>
-											updateRule( index, { weight: Number( e.target.value ) } )
-										}
-										min={ 0 }
-										max={ 100 }
-									/>
-								</div>
-							</div>
-
-							<MetaTypeConfig
-								type={ rule.type }
-								config={ rule.config }
-								providerOptions={ providerOptions }
-								onConfigChange={ ( key, val ) =>
-									updateRuleConfig( index, key, val )
+					<RuleCard
+						key={ index }
+						index={ index }
+						onRemove={ () => removeRule( index ) }
+						onAdd={ addRule }
+					>
+						<RuleField label="Type">
+							<Select
+								value={ rule.type }
+								onValueChange={ ( newType ) =>
+									updateRule( index, {
+										type: newType,
+										config: defaultConfigForType( newType, providerOptions ),
+									} )
 								}
-							/>
-						</div>
+							>
+								<SelectTrigger>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									{ META_TYPES.map( ( mt ) => (
+										<SelectItem key={ mt.value } value={ mt.value }>
+											{ mt.label }
+										</SelectItem>
+									) ) }
+								</SelectContent>
+							</Select>
+						</RuleField>
 
-						<div className="fp:flex fp:flex-col fp:border-l fp:border-[#ededed]">
-							<Button
-								type="button"
-								variant="outline"
-								size="icon-sm"
-								onClick={ () => removeRule( index ) }
-								title="Remove rule"
-							>
-								−
-							</Button>
-							<Button
-								type="button"
-								variant="outline"
-								size="icon-sm"
-								onClick={ addRule }
-								title="Add rule"
-							>
-								+
-							</Button>
-						</div>
-					</div>
+						<RuleField label="Name">
+							<Input
+								value={ rule.name }
+								onChange={ ( e ) => updateRule( index, { name: e.target.value } ) }
+								placeholder="meta_key_name"
+							/>
+						</RuleField>
+
+						<MetaTypeConfig
+							type={ rule.type }
+							config={ rule.config }
+							providerOptions={ providerOptions }
+							onConfigChange={ ( key, val ) => updateRuleConfig( index, key, val ) }
+						/>
+
+						<RuleField label="Weight">
+							<Input
+								type="number"
+								value={ rule.weight ?? 100 }
+								onChange={ ( e ) =>
+									updateRule( index, { weight: Number( e.target.value ) } )
+								}
+								min={ 0 }
+								max={ 100 }
+								className="fp:w-24"
+							/>
+						</RuleField>
+					</RuleCard>
 				) ) }
 
 				<div className="fp:flex fp:justify-end">
@@ -275,9 +248,8 @@ function MetaTypeConfig( {
 				.map( ( p ) => p.trim() )
 				.filter( Boolean );
 			return (
-				<div className="fp:grid fp:grid-cols-2 fp:gap-3">
-					<div className="fp:space-y-1">
-						<label className="fp:text-xs fp:font-medium">Stored Data</label>
+				<>
+					<RuleField label="Stored Data">
 						<Select
 							value={ ( config.store as string ) ?? 'id' }
 							onValueChange={ ( val ) => onConfigChange( 'store', val ) }
@@ -290,23 +262,37 @@ function MetaTypeConfig( {
 								<SelectItem value="url">Attachment URL</SelectItem>
 							</SelectContent>
 						</Select>
-					</div>
-					<div className="fp:space-y-1">
-						<label className="fp:text-xs fp:font-medium">Providers</label>
+					</RuleField>
+					<RuleField
+						label="Providers"
+						description="Which image services will the generator use?"
+					>
 						<ComboboxMulti
 							value={ providers }
 							onChange={ ( vals ) => onConfigChange( 'providers', vals.join( ',' ) ) }
 							options={ providerOptions }
 							placeholder="Select image providers..."
 						/>
-					</div>
-				</div>
+					</RuleField>
+					<RangeConfigField
+						label="Width (px)"
+						config={ config }
+						configKey="width"
+						onConfigChange={ onConfigChange }
+					/>
+					<RangeConfigField
+						label="Height (px)"
+						config={ config }
+						configKey="height"
+						onConfigChange={ onConfigChange }
+					/>
+				</>
 			);
 		}
 		case 'numbers':
 			return (
 				<RangeConfigField
-					label="Range of possible numbers"
+					label="Range of numbers"
 					config={ config }
 					configKey="number"
 					onConfigChange={ onConfigChange }
@@ -315,20 +301,19 @@ function MetaTypeConfig( {
 
 		case 'wp_query':
 			return (
-				<div className="fp:space-y-1">
-					<label className="fp:text-xs fp:font-medium">WP_Query</label>
+				<RuleField label="WP_Query">
 					<Input
 						value={ ( config.query as string ) ?? '' }
 						onChange={ ( e ) => onConfigChange( 'query', e.target.value ) }
 						placeholder="category=2&posts_per_page=10"
 					/>
-				</div>
+				</RuleField>
 			);
 
 		case 'words':
 			return (
 				<RangeConfigField
-					label="Quantity (words)"
+					label="Quantity"
 					config={ config }
 					configKey="qty"
 					onConfigChange={ onConfigChange }
@@ -337,120 +322,106 @@ function MetaTypeConfig( {
 
 		case 'text':
 			return (
-				<div className="fp:space-y-2">
-					<div className="fp:grid fp:grid-cols-2 fp:gap-3">
-						<div className="fp:space-y-1">
-							<label className="fp:text-xs fp:font-medium">Type</label>
-							<Select
-								value={ ( config.text_type as string ) ?? 'paragraphs' }
-								onValueChange={ ( val ) => onConfigChange( 'text_type', val ) }
-							>
-								<SelectTrigger>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="sentences">Sentences</SelectItem>
-									<SelectItem value="paragraphs">Paragraphs</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-						<RangeConfigField
-							label="Quantity"
-							config={ config }
-							configKey="qty"
-							onConfigChange={ onConfigChange }
-						/>
-					</div>
-					<div className="fp:space-y-1">
-						<label className="fp:text-xs fp:font-medium">Separator</label>
+				<>
+					<RuleField label="Format">
+						<Select
+							value={ ( config.text_type as string ) ?? 'paragraphs' }
+							onValueChange={ ( val ) => onConfigChange( 'text_type', val ) }
+						>
+							<SelectTrigger>
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="sentences">Sentences</SelectItem>
+								<SelectItem value="paragraphs">Paragraphs</SelectItem>
+							</SelectContent>
+						</Select>
+					</RuleField>
+					<RangeConfigField
+						label="Quantity"
+						config={ config }
+						configKey="qty"
+						onConfigChange={ onConfigChange }
+					/>
+					<RuleField label="Separator">
 						<Input
 							value={ ( config.separator as string ) ?? '\\n' }
 							onChange={ ( e ) => onConfigChange( 'separator', e.target.value ) }
 							className="fp:w-24"
 						/>
-					</div>
-				</div>
+					</RuleField>
+				</>
 			);
 
 		case 'html':
 			return (
-				<div className="fp:space-y-2">
-					<div className="fp:space-y-1">
-						<label className="fp:text-xs fp:font-medium">
-							HTML tags (comma separated, without &lt; &gt;)
-						</label>
+				<>
+					<RuleField label="HTML tags" description="Comma separated, without < or >.">
 						<Input
 							value={ ( config.elements as string ) ?? '' }
 							onChange={ ( e ) => onConfigChange( 'elements', e.target.value ) }
 							placeholder="h2,h3,p,ul,ol"
 						/>
-					</div>
+					</RuleField>
 					<RangeConfigField
-						label="Quantity (elements)"
+						label="Quantity"
 						config={ config }
 						configKey="qty"
 						onConfigChange={ onConfigChange }
 					/>
-				</div>
+				</>
 			);
 
 		case 'lexify':
 		case 'asciify':
 		case 'regexify':
 			return (
-				<div className="fp:space-y-1">
-					<label className="fp:text-xs fp:font-medium">Template</label>
+				<RuleField label="Template">
 					<Input
 						value={ ( config.template as string ) ?? '' }
 						onChange={ ( e ) => onConfigChange( 'template', e.target.value ) }
 						placeholder={ TEMPLATE_PLACEHOLDERS[ type ] }
 					/>
-				</div>
+				</RuleField>
 			);
 
 		case 'elements':
 			return (
-				<div className="fp:space-y-2">
-					<div className="fp:space-y-1">
-						<label className="fp:text-xs fp:font-medium">Elements (comma separated)</label>
+				<>
+					<RuleField label="Elements" description="Comma separated.">
 						<Input
 							value={ ( config.elements as string ) ?? '' }
 							onChange={ ( e ) => onConfigChange( 'elements', e.target.value ) }
 							placeholder="Type all possible elements"
 						/>
-					</div>
-					<div className="fp:grid fp:grid-cols-2 fp:gap-3">
-						<RangeConfigField
-							label="Quantity"
-							config={ config }
-							configKey="qty"
-							onConfigChange={ onConfigChange }
+					</RuleField>
+					<RangeConfigField
+						label="Quantity"
+						config={ config }
+						configKey="qty"
+						onConfigChange={ onConfigChange }
+					/>
+					<RuleField label="Separator">
+						<Input
+							value={ ( config.separator as string ) ?? ',' }
+							onChange={ ( e ) => onConfigChange( 'separator', e.target.value ) }
+							className="fp:w-16"
 						/>
-						<div className="fp:space-y-1">
-							<label className="fp:text-xs fp:font-medium">Separator</label>
-							<Input
-								value={ ( config.separator as string ) ?? ',' }
-								onChange={ ( e ) => onConfigChange( 'separator', e.target.value ) }
-								className="fp:w-16"
-							/>
-						</div>
-					</div>
-				</div>
+					</RuleField>
+				</>
 			);
 
 		case 'person':
 			return (
-				<div className="fp:grid fp:grid-cols-2 fp:gap-3">
-					<div className="fp:space-y-1">
-						<label className="fp:text-xs fp:font-medium">Name Template</label>
+				<>
+					<RuleField label="Name Template">
 						<Input
 							value={ ( config.template as string ) ?? '' }
 							onChange={ ( e ) => onConfigChange( 'template', e.target.value ) }
 							placeholder="{% first_name %}|{% last_name %}"
 						/>
-					</div>
-					<div className="fp:space-y-1">
-						<label className="fp:text-xs fp:font-medium">Gender</label>
+					</RuleField>
+					<RuleField label="Gender">
 						<Select
 							value={ ( config.gender as string ) ?? 'female' }
 							onValueChange={ ( val ) => onConfigChange( 'gender', val ) }
@@ -463,32 +434,30 @@ function MetaTypeConfig( {
 								<SelectItem value="male">Male</SelectItem>
 							</SelectContent>
 						</Select>
-					</div>
-				</div>
+					</RuleField>
+				</>
 			);
 
 		case 'geo':
 			return (
-				<div className="fp:space-y-1">
-					<label className="fp:text-xs fp:font-medium">Geo Template</label>
+				<RuleField label="Geo Template">
 					<Input
 						value={ ( config.template as string ) ?? '' }
 						onChange={ ( e ) => onConfigChange( 'template', e.target.value ) }
 						placeholder="{% city %}|{% state_abbr %}"
 					/>
-				</div>
+				</RuleField>
 			);
 
 		case 'company':
 			return (
-				<div className="fp:space-y-1">
-					<label className="fp:text-xs fp:font-medium">Company Template</label>
+				<RuleField label="Company Template">
 					<Input
 						value={ ( config.template as string ) ?? '' }
 						onChange={ ( e ) => onConfigChange( 'template', e.target.value ) }
 						placeholder="{% company %}"
 					/>
-				</div>
+				</RuleField>
 			);
 
 		default:
@@ -503,11 +472,13 @@ function MetaTypeConfig( {
  */
 function RangeConfigField( {
 	label,
+	description,
 	config,
 	configKey,
 	onConfigChange,
 }: {
 	label: string;
+	description?: string;
 	config: Record< string, unknown >;
 	configKey: string;
 	onConfigChange: ( key: string, value: unknown ) => void;
@@ -516,8 +487,7 @@ function RangeConfigField( {
 		? ( config[ configKey ] as ( number | undefined )[] )
 		: [];
 	return (
-		<div className="fp:space-y-1">
-			<label className="fp:text-xs fp:font-medium">{ label }</label>
+		<RuleField label={ label } description={ description }>
 			<RangeInput
 				minValue={ range[ 0 ] }
 				maxValue={ range[ 1 ] }
@@ -525,6 +495,6 @@ function RangeConfigField( {
 				onMaxChange={ ( max ) => onConfigChange( configKey, [ range[ 0 ], max ] ) }
 				min={ 0 }
 			/>
-		</div>
+		</RuleField>
 	);
 }
