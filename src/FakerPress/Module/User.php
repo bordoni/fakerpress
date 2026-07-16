@@ -138,13 +138,20 @@ class User extends Abstract_Module {
 
 		$description_size      = get( $request, 'description_size', [ 1, 5 ] );
 		$description_use_html  = get( $request, 'use_html', 'off' ) === 'on';
-		$description_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags' ) ) );
+		$description_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags', '' ) ) );
 
 		if ( ! function_exists( 'get_editable_roles' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/user.php';
 		}
 
-		$roles = array_intersect( array_keys( get_editable_roles() ), array_map( 'trim', explode( ',', get( $request, 'roles' ) ) ) );
+		$requested_roles = array_filter( array_map( 'trim', explode( ',', (string) get( $request, 'roles', '' ) ) ) );
+		$roles           = array_intersect( array_keys( get_editable_roles() ), $requested_roles );
+
+		// Fall back to the site's configured default role when nothing valid was requested,
+		// matching WordPress's own new-user behaviour instead of leaving users role-less.
+		if ( empty( $roles ) ) {
+			$roles = [ get_option( 'default_role', 'subscriber' ) ];
+		}
 		$metas = get( $request, 'meta', [] );
 
 		$results = [];
