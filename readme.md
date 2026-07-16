@@ -105,8 +105,9 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 ## Changelog ##
 
 ### 0.9.2 &mdash; 15 of July 2026 ###
-= 0.9.1 &mdash; 22 of May 2026 =
+* Fix - Resolve the fatal error on WordPress 7.0 when generating attachments (`Call to undefined function FakerPress\Module\media_handle_sideload()`); WordPress 7.0 preloads `wp-admin/includes/file.php`, so the single `download_url()` guard skipped `media.php`. Each admin include is now guarded by the function it actually provides. [[#221](https://github.com/bordoni/fakerpress/pull/221)]
 
+### 0.9.1 &mdash; 22 of May 2026 ###
 * Fix - Restore date-type meta generation by importing the `Chronos` class in the `WP_Meta` provider; calling `meta_type_date` no longer fatals with `Class "FakerPress\Provider\Chronos" not found`. [[#209](https://github.com/bordoni/fakerpress/pull/209)]
 * Fix - Honour the selected post type(s) on the Posts generator; the admin form's plural `post_types` value is no longer silently overwritten by the singular alias's default of `post`. [[#210](https://github.com/bordoni/fakerpress/pull/210)]
 * Fix - Suppress the `Undefined property: stdClass::$terms` warning emitted by `WP_Post::tax_input` under PHP 8.x when the taxonomy config does not include a `terms` key.
