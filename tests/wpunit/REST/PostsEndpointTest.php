@@ -353,4 +353,32 @@ class PostsEndpointTest extends \Codeception\TestCase\WPTestCase {
 			$this->assertSame( 'page', get_post( $post_id )->post_type );
 		}
 	}
+
+	/**
+	 * A sparse payload (no post_parent, html_tags, images_origin or post_types) must not emit a
+	 * `explode(): Passing null` deprecation. Regression for the wp.org "critical error" report.
+	 *
+	 * @test
+	 */
+	public function it_should_not_emit_explode_deprecation_on_sparse_payload(): void {
+		$this->set_admin_user();
+
+		$deprecations = [];
+		set_error_handler(
+			static function ( $errno, $errstr ) use ( &$deprecations ) {
+				if ( false !== strpos( $errstr, 'explode' ) || false !== strpos( $errstr, 'Passing null' ) ) {
+					$deprecations[] = $errstr;
+				}
+				return true;
+			},
+			E_DEPRECATED
+		);
+
+		$response = $this->dispatch_rest_request( 'POST', $this->route, [ 'quantity' => 2 ] );
+
+		restore_error_handler();
+
+		$this->assert_success_response( $response );
+		$this->assertSame( [], $deprecations, 'No explode()/null deprecation should be emitted for a sparse request.' );
+	}
 }

@@ -131,11 +131,11 @@ class Post extends Abstract_Module {
 		}
 
 		// Fetch Comment Status
-		$comment_status = get( $request, 'comment_status' );
+		$comment_status = get( $request, 'comment_status', '' );
 		$comment_status = array_map( 'trim', explode( ',', $comment_status ) );
 
 		// Fetch Post Author
-		$post_author = get( $request, 'author' );
+		$post_author = get( $request, 'author', '' );
 		$post_author = array_map( 'trim', explode( ',', $post_author ) );
 		$post_author = array_intersect( get_users( [ 'fields' => 'ID' ] ), $post_author );
 
@@ -146,23 +146,23 @@ class Post extends Abstract_Module {
 		];
 
 		// Fetch Post Types
-		$post_types = get( $request, 'post_types' );
+		$post_types = get( $request, 'post_types', '' );
 		$post_types = array_map( 'trim', explode( ',', $post_types ) );
 		$post_types = array_intersect( get_post_types( [ 'public' => true ] ), $post_types );
 
 		// Fetch Post Content
 		$post_content_size      = get( $request, 'content_size', [ 5, 15 ] );
 		$post_content_use_html  = ( (int) get( $request, 'use_html', 0 ) ) === 1;
-		$post_content_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags' ) ) );
+		$post_content_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags', '' ) ) );
 
 		// Fetch Post Excerpt.
 		$post_excerpt_size = get( $request, 'excerpt_size', [ 1, 3 ] );
 
 		// Fetch and clean Post Parents
-		$post_parents = get( $request, 'post_parent' );
+		$post_parents = get( $request, 'post_parent', '' );
 		$post_parents = array_map( 'trim', explode( ',', $post_parents ) );
 
-		$images_origin = array_map( 'trim', explode( ',', get( $request, 'images_origin' ) ) );
+		$images_origin = array_map( 'trim', explode( ',', get( $request, 'images_origin', '' ) ) );
 
 		// Fetch Taxonomies
 		$taxonomies_configuration = get( $request, 'taxonomy' );
