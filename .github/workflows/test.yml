@@ -67,10 +67,22 @@ jobs:
           extensions: mysqli, pdo_mysql
           coverage: none
 
+      # Download packages authenticated (avoids GitHub API rate limits), but skip the
+      # post-install Strauss script here — see the dedicated step below.
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress
+        run: composer install --no-scripts --prefer-dist --no-progress
         env:
           COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GITHUB_TOKEN }}"}}'
+
+      # Strauss only rewrites already-downloaded vendor files, so it needs no GitHub access.
+      # Run it with an empty auth and no global token so its internal Composer boot never
+      # validates the runner's ambient (invalid) github-oauth token and aborts.
+      - name: Prefix dependencies with Strauss
+        run: |
+          composer config --global --unset github-oauth.github.com 2>/dev/null || true
+          composer strauss
+        env:
+          COMPOSER_AUTH: '{}'
 
       - name: Install WordPress test environment
         run: |
