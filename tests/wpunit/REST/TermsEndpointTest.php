@@ -157,4 +157,94 @@ class TermsEndpointTest extends \Codeception\TestCase\WPTestCase {
 			$this->assertNotInstanceOf( \WP_Error::class, $term );
 		}
 	}
+
+	/**
+	 * Verify that the plural `taxonomies` parameter — the exact key the admin form submits —
+	 * generates terms in the requested taxonomy. Regression for #218 ("Tags not being generated":
+	 * the singular alias's `category` default was overwriting the selected taxonomy).
+	 *
+	 * @test
+	 */
+	public function it_should_generate_tags_when_taxonomies_plural_is_sent(): void {
+		$this->set_admin_user();
+
+		$response = $this->dispatch_rest_request(
+			'POST',
+			$this->route,
+			[
+				'quantity'   => 3,
+				'taxonomies' => 'post_tag',
+			]
+		);
+
+		$this->assert_success_response( $response );
+
+		$data = $response->get_data();
+		$this->assertCount( 3, $data['data']['ids'] );
+
+		foreach ( $data['data']['ids'] as $term_id ) {
+			$term = get_term( $term_id );
+			$this->assertNotInstanceOf( \WP_Error::class, $term );
+			$this->assertSame( 'post_tag', $term->taxonomy );
+		}
+	}
+
+	/**
+	 * Verify that the plural `taxonomies` value wins over the singular `taxonomy` alias, so the
+	 * alias can never silently force terms into `category`.
+	 *
+	 * @test
+	 */
+	public function it_should_prefer_taxonomies_over_singular_alias(): void {
+		$this->set_admin_user();
+
+		$response = $this->dispatch_rest_request(
+			'POST',
+			$this->route,
+			[
+				'quantity'   => 3,
+				'taxonomies' => 'post_tag',
+				'taxonomy'   => 'category',
+			]
+		);
+
+		$this->assert_success_response( $response );
+
+		$data = $response->get_data();
+		foreach ( $data['data']['ids'] as $term_id ) {
+			$term = get_term( $term_id );
+			$this->assertNotInstanceOf( \WP_Error::class, $term );
+			$this->assertSame( 'post_tag', $term->taxonomy );
+		}
+	}
+
+	/**
+	 * Verify that a comma-separated `taxonomies` value (admin form serialization) samples across
+	 * the requested taxonomies and never produces an unrequested one.
+	 *
+	 * @test
+	 */
+	public function it_should_accept_multiple_taxonomies_as_csv(): void {
+		$this->set_admin_user();
+
+		$response = $this->dispatch_rest_request(
+			'POST',
+			$this->route,
+			[
+				'quantity'   => 6,
+				'taxonomies' => 'category,post_tag',
+			]
+		);
+
+		$this->assert_success_response( $response );
+
+		$data = $response->get_data();
+		$this->assertCount( 6, $data['data']['ids'] );
+
+		foreach ( $data['data']['ids'] as $term_id ) {
+			$term = get_term( $term_id );
+			$this->assertNotInstanceOf( \WP_Error::class, $term );
+			$this->assertContains( $term->taxonomy, [ 'category', 'post_tag' ] );
+		}
+	}
 }
