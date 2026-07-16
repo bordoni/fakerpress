@@ -155,4 +155,117 @@ class UsersEndpointTest extends \Codeception\TestCase\WPTestCase {
 			$this->assertNotFalse( $user, "User ID {$user_id} should exist in the database." );
 		}
 	}
+
+	/**
+	 * Verify that the plural `roles` parameter — the exact key the admin form submits —
+	 * assigns the selected role. Regression for #216 (bulk generation always assigned
+	 * Subscriber because the singular alias's `subscriber` default overwrote the selection).
+	 *
+	 * @test
+	 */
+	public function it_should_assign_the_selected_role_via_roles_plural(): void {
+		$this->set_admin_user();
+
+		$response = $this->dispatch_rest_request(
+			'POST',
+			$this->route,
+			[
+				'quantity' => 3,
+				'roles'    => 'administrator',
+			]
+		);
+
+		$this->assert_success_response( $response );
+
+		$data = $response->get_data();
+		$this->assertCount( 3, $data['data']['ids'] );
+
+		foreach ( $data['data']['ids'] as $user_id ) {
+			$user = get_userdata( $user_id );
+			$this->assertNotFalse( $user );
+			$this->assertContains( 'administrator', $user->roles );
+			$this->assertNotContains( 'subscriber', $user->roles );
+		}
+	}
+
+	/**
+	 * Verify that the plural `roles` value wins over the singular `role` alias, so the alias
+	 * can never silently force generated users to Subscriber.
+	 *
+	 * @test
+	 */
+	public function it_should_prefer_roles_over_singular_alias(): void {
+		$this->set_admin_user();
+
+		$response = $this->dispatch_rest_request(
+			'POST',
+			$this->route,
+			[
+				'quantity' => 3,
+				'roles'    => 'editor',
+				'role'     => 'subscriber',
+			]
+		);
+
+		$this->assert_success_response( $response );
+
+		$data = $response->get_data();
+		foreach ( $data['data']['ids'] as $user_id ) {
+			$user = get_userdata( $user_id );
+			$this->assertNotFalse( $user );
+			$this->assertContains( 'editor', $user->roles );
+		}
+	}
+
+	/**
+	 * Verify that when no role is requested, generated users take the site's configured default
+	 * role (Settings > General), not a hard-coded Subscriber. Second half of #216.
+	 *
+	 * @test
+	 */
+	public function it_should_use_the_site_default_role_when_none_requested(): void {
+		$this->set_admin_user();
+		update_option( 'default_role', 'author' );
+
+		$response = $this->dispatch_rest_request( 'POST', $this->route, [ 'quantity' => 2 ] );
+
+		$this->assert_success_response( $response );
+
+		$data = $response->get_data();
+		foreach ( $data['data']['ids'] as $user_id ) {
+			$user = get_userdata( $user_id );
+			$this->assertNotFalse( $user );
+			$this->assertContains( 'author', $user->roles );
+		}
+	}
+
+	/**
+	 * Verify that a comma-separated `roles` value samples across the requested roles and never
+	 * produces an unrequested role.
+	 *
+	 * @test
+	 */
+	public function it_should_accept_multiple_roles_as_csv(): void {
+		$this->set_admin_user();
+
+		$response = $this->dispatch_rest_request(
+			'POST',
+			$this->route,
+			[
+				'quantity' => 6,
+				'roles'    => 'editor,author',
+			]
+		);
+
+		$this->assert_success_response( $response );
+
+		$data = $response->get_data();
+		$this->assertCount( 6, $data['data']['ids'] );
+
+		foreach ( $data['data']['ids'] as $user_id ) {
+			$user = get_userdata( $user_id );
+			$this->assertNotFalse( $user );
+			$this->assertNotEmpty( array_intersect( [ 'editor', 'author' ], $user->roles ) );
+		}
+	}
 }
