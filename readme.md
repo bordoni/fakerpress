@@ -8,7 +8,7 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy+content), [lorem ipsun](http://wordpress.org/plugins/tags/lorem+ipsun), [testing](http://wordpress.org/plugins/tags/testing), [developer](http://wordpress.org/plugins/tags/developer)  
 **Requires at least:** 5.5  
 **Tested up to:** 7.0  
-**Stable tag:** 0.9.1  
+**Stable tag:** 0.9.2  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 **Requires PHP:** 8.1  
 **Donate link:** https://fakerpress.com/r/sponsor  
@@ -103,6 +103,8 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 
 ## Changelog ##
+
+### 0.9.2 &mdash; 15 of July 2026 ###
 
 ### 0.9.1 &mdash; 22 of May 2026 ###
 * Fix - Restore date-type meta generation by importing the `Chronos` class in the `WP_Meta` provider; calling `meta_type_date` no longer fatals with `Class "FakerPress\Provider\Chronos" not found`. [[#209](https://github.com/bordoni/fakerpress/pull/209)]
