@@ -105,6 +105,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 ## Changelog ##
 
 ### 0.9.2 &mdash; 15 of July 2026 ###
+* Fix - Stop the `explode(): Passing null to parameter #2` PHP 8.1+ deprecation when generating posts with a sparse payload; the `Post` module now defaults every splittable request value (comment status, author, post types, HTML tags, post parent, image origins) to an empty string before splitting. [[#224](https://github.com/bordoni/fakerpress/pull/224)]
 * Fix - Resolve the fatal error on WordPress 7.0 when generating attachments (`Call to undefined function FakerPress\Module\media_handle_sideload()`); WordPress 7.0 preloads `wp-admin/includes/file.php`, so the single `download_url()` guard skipped `media.php`. Each admin include is now guarded by the function it actually provides. [[#221](https://github.com/bordoni/fakerpress/pull/221)]
 
 ### 0.9.1 &mdash; 22 of May 2026 ###
