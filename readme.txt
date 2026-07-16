@@ -108,6 +108,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 = 0.9.2 &mdash; 15 of July 2026 =
 
+* Fix - "Erase faked data" now deletes generated categories and other terms; `Term::fetch()`/`delete()` were reading the singular `fakerpress.module_flag.term` option while generation wrote the plural `fakerpress.module_flag.terms`, so no terms were ever collected for deletion. [[#228](https://github.com/bordoni/fakerpress/pull/228)]
 * Fix - Generate terms in the selected taxonomy again; the Terms endpoint no longer lets the singular `taxonomy` alias's `category` default overwrite the admin form's plural `taxonomies` value, so choosing Tags now creates tags instead of categories. [[#227](https://github.com/bordoni/fakerpress/pull/227)]
 * Fix - Stop the `explode(): Passing null to parameter #2` PHP 8.1+ deprecation when generating posts with a sparse payload; the `Post` module now defaults every splittable request value (comment status, author, post types, HTML tags, post parent, image origins) to an empty string before splitting. [[#224](https://github.com/bordoni/fakerpress/pull/224)]
 * Fix - Resolve the fatal error on WordPress 7.0 when generating attachments (`Call to undefined function FakerPress\Module\media_handle_sideload()`); WordPress 7.0 preloads `wp-admin/includes/file.php`, so the single `download_url()` guard skipped `media.php`. Each admin include is now guarded by the function it actually provides. [[#221](https://github.com/bordoni/fakerpress/pull/221)]
