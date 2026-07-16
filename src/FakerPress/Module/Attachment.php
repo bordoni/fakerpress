@@ -79,6 +79,30 @@ class Attachment extends Abstract_Module {
 	}
 
 	/**
+	 * Loads the WordPress admin includes required to sideload attachments.
+	 *
+	 * Each include is guarded by a function it actually provides. WordPress 7.0 loads
+	 * `wp-admin/includes/file.php` (which defines `download_url()`) earlier during bootstrap,
+	 * so a single `download_url()` guard would skip `media.php` and `image.php` and fatal on
+	 * `media_handle_sideload()`. See https://github.com/bordoni/fakerpress/issues/221.
+	 *
+	 * @since 0.9.2
+	 *
+	 * @return void
+	 */
+	protected function load_media_dependencies() {
+		if ( ! function_exists( 'download_url' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+		if ( ! function_exists( 'wp_read_image_metadata' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+		}
+		if ( ! function_exists( 'media_handle_sideload' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/media.php';
+		}
+	}
+
+	/**
 	 * Handle the downloads of Attachments given a URL and Post Parent ID, which will default to 0.
 	 * Currently only support images.
 	 *
@@ -90,12 +114,8 @@ class Attachment extends Abstract_Module {
 	 * @return int|WP_Error            Attachment ID or WP_Error.
 	 */
 	protected function handle_download( $url, $post_parent_id = 0 ) {
-		// Include WordPress core functions, this was not present on the REST API.
-		if ( ! function_exists( 'download_url' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/file.php';
-			require_once ABSPATH . 'wp-admin/includes/image.php';
-			require_once ABSPATH . 'wp-admin/includes/media.php';
-		}
+		// Include WordPress core functions, these are not present on the REST API context.
+		$this->load_media_dependencies();
 
 		/**
 		 * Allows filtering of the attachment download_url timeout, which is here just to
