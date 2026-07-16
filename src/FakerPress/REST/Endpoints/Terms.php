@@ -94,8 +94,18 @@ class Terms extends Abstract_Endpoint {
 		$params = $this->sanitize_request( $request );
 
 		// Translate REST params to module format.
-		if ( isset( $params['taxonomy'] ) ) {
-			$params['taxonomies'] = $params['taxonomy'];
+		// The admin form posts `taxonomies` (plural, the same key the module reads); the public
+		// REST schema also exposes a singular `taxonomy` alias. Accept whichever arrived and
+		// normalise to the comma-joined string the Term module expects. Preferring the plural
+		// value stops the singular alias's default from silently forcing every term into
+		// `category`. See https://github.com/bordoni/fakerpress/issues/218.
+		$taxonomies_value = $params['taxonomies'] ?? $params['taxonomy'] ?? null;
+		if ( null !== $taxonomies_value ) {
+			if ( is_array( $taxonomies_value ) ) {
+				$taxonomies_value = implode( ',', array_map( 'sanitize_key', array_map( 'strval', $taxonomies_value ) ) );
+			}
+			$params['taxonomies'] = sanitize_text_field( (string) $taxonomies_value );
+			unset( $params['taxonomy'] );
 		}
 
 		// Get the module.
@@ -203,10 +213,16 @@ class Terms extends Abstract_Endpoint {
 						],
 					],
 				],
-				'taxonomy' => [
-					'description' => __( 'Taxonomy to generate terms for.', 'fakerpress' ),
+				'taxonomies' => [
+					'description' => __( 'Taxonomies to generate terms for. Accepts an array of slugs or a comma-separated string.', 'fakerpress' ),
+					'type'        => [ 'array', 'string' ],
+					'items'       => [
+						'type' => 'string',
+					],
+				],
+				'taxonomy'   => [
+					'description' => __( 'Deprecated singular alias for taxonomies — accepts a single taxonomy slug.', 'fakerpress' ),
 					'type'        => 'string',
-					'default'     => 'category',
 				],
 				'meta'     => [
 					'description' => __( 'Meta data to assign to generated terms.', 'fakerpress' ),
