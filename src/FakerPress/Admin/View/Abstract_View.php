@@ -164,6 +164,69 @@ abstract class Abstract_View extends Template implements Interface_View {
 	 */
 	public function hook(): void {
 		add_action( 'admin_menu', [ $this, 'register_menu' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'localize_page_config' ] );
+	}
+
+	/**
+	 * Localize the React admin script with page configuration data.
+	 *
+	 * Each View subclass can override `get_page_data()` to provide
+	 * page-specific data (taxonomies, post types, roles, etc.).
+	 *
+	 * @since 0.9.0
+	 *
+	 * @return void
+	 */
+	public function localize_page_config(): void {
+		if ( ! $this->is_current_view() ) {
+			return;
+		}
+
+		if ( ! wp_script_is( 'fakerpress-admin-react', 'registered' ) ) {
+			return;
+		}
+
+		wp_localize_script(
+			'fakerpress-admin-react',
+			'fakerpressPageConfig',
+			[
+				'page'       => static::get_slug(),
+				'restRoot'   => esc_url_raw( rest_url() ),
+				'restNonce'  => wp_create_nonce( 'wp_rest' ),
+				'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
+				'ajaxNonces' => $this->get_ajax_nonces(),
+				'data'       => $this->get_page_data(),
+			] 
+		);
+	}
+
+	/**
+	 * Get AJAX nonces for this page.
+	 *
+	 * @since 0.9.0
+	 *
+	 * @return array<string, string> Nonce map keyed by action.
+	 */
+	protected function get_ajax_nonces(): array {
+		return [
+			'search_authors' => wp_create_nonce( Plugin::$slug . '-select2-search_authors' ),
+			'search_terms'   => wp_create_nonce( Plugin::$slug . '-select2-search_terms' ),
+			'wp_query'       => wp_create_nonce( Plugin::$slug . '-select2-WP_Query' ),
+		];
+	}
+
+	/**
+	 * Get page-specific data for the React interface.
+	 *
+	 * Subclasses should override this method to provide data
+	 * such as taxonomies, post types, roles, etc.
+	 *
+	 * @since 0.9.0
+	 *
+	 * @return array<string, mixed> Page-specific data.
+	 */
+	protected function get_page_data(): array {
+		return [];
 	}
 
 	/**

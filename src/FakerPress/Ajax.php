@@ -2,16 +2,38 @@
 
 namespace FakerPress;
 
+/**
+ * Class Ajax.
+ *
+ * Handles AJAX requests for Select2 search fields.
+ *
+ * @since 0.1.0
+ *
+ * @package FakerPress
+ */
 class Ajax {
 
+	/**
+	 * Register AJAX hooks.
+	 *
+	 * @since 0.1.0
+	 */
 	public function __construct() {
-		add_action( 'wp_ajax_' . Plugin::$slug . '.select2-WP_Query', [ __CLASS__, 'query_posts' ] );
-		add_action( 'wp_ajax_' . Plugin::$slug . '.search_authors', [ __CLASS__, 'search_authors' ] );
-		add_action( 'wp_ajax_' . Plugin::$slug . '.select2-search_terms', [ __CLASS__, 'search_terms' ] );
+		add_action( 'wp_ajax_' . Plugin::$slug . '.select2-WP_Query', [ $this, 'query_posts' ] );
+		add_action( 'wp_ajax_' . Plugin::$slug . '.search_authors', [ $this, 'search_authors' ] );
+		add_action( 'wp_ajax_' . Plugin::$slug . '.select2-search_terms', [ $this, 'search_terms' ] );
 	}
 
-
-	public static function search_terms( $request = null ) {
+	/**
+	 * Handles term search AJAX requests.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array|null $request Optional request data override.
+	 *
+	 * @return object|void Response object or void when sending JSON.
+	 */
+	public function search_terms( $request = null ) {
 		$response = (object) [
 			'status'  => false,
 			'message' => __( 'Your request has failed', 'fakerpress' ),
@@ -94,7 +116,16 @@ class Ajax {
 		return ( is_ajax() ? wp_send_json( $response ) : $response );
 	}
 
-	public static function query_posts( $request = null ) {
+	/**
+	 * Handles post query AJAX requests.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array|null $request Optional request data override.
+	 *
+	 * @return object|void Response object or void when sending JSON.
+	 */
+	public function query_posts( $request = null ) {
 		$response = (object) [
 			'status'  => false,
 			'message' => __( 'Your request has failed', 'fakerpress' ),
@@ -153,7 +184,16 @@ class Ajax {
 		return ( is_ajax() ? wp_send_json( $response ) : $response );
 	}
 
-	public static function search_authors( $request = null ) {
+	/**
+	 * Handles author search AJAX requests.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array|null $request Optional request data override.
+	 *
+	 * @return object|void Response object or void when sending JSON.
+	 */
+	public function search_authors( $request = null ) {
 		$response = (object) [
 			'status'  => false,
 			'message' => __( 'Your request has failed', 'fakerpress' ),

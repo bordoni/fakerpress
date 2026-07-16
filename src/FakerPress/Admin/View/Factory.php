@@ -5,6 +5,8 @@ namespace FakerPress\Admin\View;
 use FakerPress\Plugin;
 use FakerPress\Contracts\Service_Provider;
 use function FakerPress\get_request_var;
+use function FakerPress\singleton;
+use function FakerPress\make;
 
 /**
  * Class Factory for Admin Views.
@@ -43,8 +45,8 @@ class Factory extends Service_Provider {
 				User_View::class,
 			];
 			foreach ( $views_classes as $view_class ) {
-				$this->container->singleton( $view_class, $view_class, [ 'setup_template', 'hook' ] );
-				$this->views[] = $this->container->make( $view_class );
+				singleton( $view_class, $view_class, [ 'setup_template', 'hook' ] );
+				$this->views[] = make( $view_class );
 			}
 		}
 
@@ -65,7 +67,7 @@ class Factory extends Service_Provider {
 	 */
 	public function register() {
 		// Register the provider as a singleton.
-		$this->container->singleton( static::class, $this );
+		singleton( static::class, $this );
 
 		// When fetching all items it will initialize.
 		$this->get_all();

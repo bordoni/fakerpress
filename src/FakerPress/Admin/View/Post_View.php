@@ -5,6 +5,8 @@ namespace FakerPress\Admin\View;
 use FakerPress\Admin;
 use FakerPress\Module\Post;
 use FakerPress\Plugin;
+use FakerPress\Provider\Image\Placeholder;
+use FakerPress\Provider\Image\LoremPicsum;
 use function FakerPress\get_request_var;
 use function FakerPress\make;
 
@@ -42,6 +44,101 @@ class Post_View extends Abstract_View {
 	 */
 	public function has_menu(): bool {
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_page_data(): array {
+		$post_types = get_post_types( [ 'public' => true ], 'objects' );
+		$taxonomies = get_taxonomies( [ 'public' => true ], 'objects' );
+
+		// Pre-fill a default taxonomy rule mirroring the stable generator
+		// ( categories + tags when those taxonomies exist on the site ).
+		$default_taxonomy_names = array_values(
+			array_intersect( [ 'category', 'post_tag' ], array_keys( $taxonomies ) )
+		);
+		$default_taxonomy = empty( $default_taxonomy_names )
+			? []
+			: [
+				[
+					'taxonomies' => $default_taxonomy_names,
+					'terms'      => [],
+					'rate'       => 85,
+					'qty'        => [
+						'min' => 1,
+						'max' => 4,
+					],
+				],
+			];
+
+		/**
+		 * Filters the default taxonomy rules pre-filled in the post generator.
+		 *
+		 * @since 0.9.1
+		 *
+		 * @param array $default_taxonomy Default taxonomy rule definitions.
+		 */
+		$default_taxonomy = apply_filters( 'fakerpress.posts.default_taxonomy', $default_taxonomy );
+
+		return [
+			'post_types'       => array_map(
+				static function ( $pt ) {
+					$default_meta = post_type_supports( $pt->name, 'thumbnail' )
+						? [
+							[
+								'type'   => 'attachment',
+								'name'   => '_thumbnail_id',
+								'weight' => 75,
+								'config' => [
+									'store'     => 'id',
+									'providers' => implode( ',', [ Placeholder::ID, LoremPicsum::ID ] ),
+								],
+							],
+						]
+						: [];
+
+					/**
+					 * Filters the default meta rules pre-filled in the post generator for a post type.
+					 *
+					 * @since 0.9.1
+					 *
+					 * @param array  $default_meta Default meta rule definitions, each with `type`, `name` and `config`.
+					 * @param string $post_type    The post type name.
+					 */
+					$default_meta = apply_filters( 'fakerpress.posts.default_meta', $default_meta, $pt->name );
+
+					return [
+						'name'         => $pt->name,
+						'label'        => $pt->label,
+						'default_meta' => $default_meta,
+					];
+				},
+				$post_types
+			),
+			'taxonomies'       => array_map(
+				static function ( $tax ) {
+					return [
+						'name'  => $tax->name,
+						'label' => $tax->label,
+					];
+				},
+				$taxonomies 
+			),
+			'comment_statuses' => [ 'open', 'closed' ],
+			'html_tags'        => [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'div', 'p', 'blockquote', 'a', 'img' ],
+			'image_providers'  => [
+				[
+					'value' => Placeholder::ID,
+					'label' => 'Placehold.co',
+				],
+				[
+					'value' => LoremPicsum::ID,
+					'label' => 'Lorem Picsum',
+				],
+			],
+			'default_taxonomy' => $default_taxonomy,
+		];
 	}
 
 	/**

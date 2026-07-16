@@ -49,27 +49,30 @@ class Plugin {
 	public $plugin_url;
 
 	/**
-	 * Variable holding the folder name of the plugin
+	 * Variable holding the folder name of the plugin.
 	 *
 	 * @since 0.1.0
+	 * @deprecated 0.9.0 Use `get_var( 'fakerpress.slug' )` instead.
 	 *
 	 * @var string
 	 */
 	public static $folder = 'fakerpress';
 
 	/**
-	 * Variable holding the slug name of the plugin
+	 * Variable holding the slug name of the plugin.
 	 *
 	 * @since 0.1.0
+	 * @deprecated 0.9.0 Use `get_slug()` instance method or `get_var( 'fakerpress.slug' )` instead.
 	 *
 	 * @var string
 	 */
 	public static $slug = 'fakerpress';
 
 	/**
-	 * The __FILE__ that initialized the plugin
+	 * The __FILE__ that initialized the plugin.
 	 *
 	 * @since 0.1.0
+	 * @deprecated 0.9.0 Use `get_var( 'fakerpress.file' )` instead.
 	 *
 	 * @var string
 	 */
@@ -143,6 +146,11 @@ class Plugin {
 		// Register this as a singleton on the container.
 		singleton( static::class, $this );
 
+		// Store key plugin values in the container for DI-friendly access.
+		set_var( 'fakerpress.slug', static::$slug );
+		set_var( 'fakerpress.version', static::VERSION );
+		set_var( 'fakerpress.file', static::$_file );
+
 		$this->bind_implementations();
 
 		/**
@@ -208,29 +216,54 @@ class Plugin {
 	}
 
 	/**
-	 * Return a Path relative to the plugin root
+	 * Returns the plugin slug.
+	 *
+	 * @since 0.9.0
+	 *
+	 * @return string The plugin slug.
+	 */
+	public function get_slug(): string {
+		return static::$slug;
+	}
+
+	/**
+	 * Returns the plugin version.
+	 *
+	 * @since 0.9.0
+	 *
+	 * @return string The plugin version.
+	 */
+	public function get_version(): string {
+		return static::VERSION;
+	}
+
+	/**
+	 * Return a Path relative to the plugin root.
 	 *
 	 * @since 0.1.0
+	 * @deprecated 0.9.0 Use `make( Plugin::class )->plugin_path` instead.
 	 *
 	 * @uses plugin_dir_path
 	 *
-	 * @param string $append A string to be appended to the root path
+	 * @param string $append A string to be appended to the root path.
 	 *
-	 * @return string         The path after being appended by the variable
+	 * @return string The path after being appended by the variable.
 	 */
 	public static function path( string $append = '' ): string {
 		return (string) make( static::class )->plugin_path . str_replace( '/', DIRECTORY_SEPARATOR, $append );
 	}
 
 	/**
-	 * Return a URL relative to the plugin root
+	 * Return a URL relative to the plugin root.
 	 *
 	 * @since 0.1.0
+	 * @deprecated 0.9.0 Use `make( Plugin::class )->plugin_url` instead.
+	 *
 	 * @uses plugins_url
 	 *
-	 * @param string $file A string to be appended to the root url
+	 * @param string $file A string to be appended to the root url.
 	 *
-	 * @return string         The url to the file
+	 * @return string The url to the file.
 	 */
 	public static function url( string $file = '' ): string {
 		return (string) make( static::class )->plugin_url . $file;
