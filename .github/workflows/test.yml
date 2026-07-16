@@ -23,6 +23,8 @@ jobs:
 
       - name: Install Composer dependencies
         run: composer install --no-scripts --prefer-dist --no-progress
+        env:
+          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GITHUB_TOKEN }}"}}'
 
       - name: Create dummy prefixed autoload
         run: mkdir -p vendor/prefixed && echo '<?php // Stub for CI.' > vendor/prefixed/autoload.php
@@ -67,6 +69,8 @@ jobs:
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress
+        env:
+          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GITHUB_TOKEN }}"}}'
 
       - name: Install WordPress test environment
         run: |
