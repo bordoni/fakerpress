@@ -5,6 +5,7 @@ use FakerPress\Provider\Image\Placeholder;
 use FakerPress\Provider\Image\LoremPicsum;
 use WP_Error;
 use FakerPress;
+use function FakerPress\get;
 
 class Attachment extends Abstract_Module {
 
