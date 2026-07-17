@@ -3,6 +3,7 @@
 namespace FakerPress\Module;
 
 use FakerPress\ThirdParty\Faker\Generator;
+use function FakerPress\fakerpress_get_available_locales;
 use function FakerPress\is_truthy;
 
 /**
@@ -40,6 +41,15 @@ abstract class Abstract_Module implements Interface_Module {
 	 * @var string
 	 */
 	protected $provider_class;
+
+	/**
+	 * Faker locale for generated content.
+	 *
+	 * @since 0.10.0
+	 *
+	 * @var ?string
+	 */
+	protected ?string $locale = null;
 
 	/**
 	 * Stores the generated data.
@@ -108,7 +118,11 @@ abstract class Abstract_Module implements Interface_Module {
 	 */
 	public function get_faker(): Generator {
 		if ( ! $this->faker ) {
-			$this->faker = \FakerPress\ThirdParty\Faker\Factory::create();
+			$locale = $this->locale && isset( fakerpress_get_available_locales()[ $this->locale ] )
+				? $this->locale
+				: null;
+
+			$this->faker = \FakerPress\ThirdParty\Faker\Factory::create( $locale );
 
 			// We need to merge the Provider to the Dependencies, so everything is loaded.
 			$providers = array_merge( $this->get_dependencies(), (array) $this->get_provider_class() );
@@ -121,6 +135,21 @@ abstract class Abstract_Module implements Interface_Module {
 		}
 
 		return $this->faker;
+	}
+
+	/**
+	 * Set the Faker locale for generated content.
+	 *
+	 * @since 0.10.0
+	 *
+	 * @param ?string $locale Locale code (e.g. 'fr_FR'), or null for default.
+	 *
+	 * @return self
+	 */
+	public function set_locale( ?string $locale ): self {
+		$this->locale = '' !== $locale ? $locale : null;
+
+		return $this;
 	}
 
 	/**

@@ -47,6 +47,27 @@ $fields[] = new Field(
 	]
 );
 
+$_locale_options = [];
+foreach ( fakerpress_get_available_locales() as $locale_code => $locale_label ) {
+	$_locale_options[] = [
+		'id'   => $locale_code,
+		'text' => $locale_label,
+	];
+}
+
+$fields[] = new Field(
+	'dropdown',
+	[
+		'id'           => 'locale',
+		'data-options' => $_locale_options,
+		'value'        => 'en_US',
+	],
+	[
+		'label'       => __( 'Locale', 'fakerpress' ),
+		'description' => __( 'Language for generated content. Falls back to English if the locale data is unavailable.', 'fakerpress' ),
+	]
+);
+
 if ( version_compare( $GLOBALS['wp_version'], '4.4-beta', '>=' ) ) {
 	$fields[] = new Field(
 		'meta',

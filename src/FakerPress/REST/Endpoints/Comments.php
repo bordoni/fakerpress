@@ -226,7 +226,8 @@ class Comments extends Abstract_Endpoint {
 					'type'        => 'object',
 				],
 			],
-			$this->get_batching_args()
+			$this->get_batching_args(),
+			$this->get_locale_args()
 		);
 	}
 

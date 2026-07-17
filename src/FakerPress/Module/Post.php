@@ -130,6 +130,8 @@ class Post extends Abstract_Module {
 			return new WP_Error( 'fakerpress_zero_posts', __( 'Zero is not a good number of posts to fake...', 'fakerpress' ) );
 		}
 
+		$this->set_locale( get( $request, 'locale', null ) );
+
 		// Fetch Comment Status
 		$comment_status = get( $request, 'comment_status', '' );
 		$comment_status = array_map( 'trim', explode( ',', $comment_status ) );
