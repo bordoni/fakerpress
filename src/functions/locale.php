@@ -1,4 +1,6 @@
 <?php
+namespace FakerPress;
+
 /**
  * Locale helper functions for FakerPress.
  *
