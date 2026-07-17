@@ -167,6 +167,7 @@ class Plugin {
 		require_once $this->plugin_path . 'src' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'conditionals.php';
 		require_once $this->plugin_path . 'src' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'sorting.php';
 		require_once $this->plugin_path . 'src' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'assets.php';
+		require_once $this->plugin_path . 'src' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'locale.php';
 	}
 
 	/**

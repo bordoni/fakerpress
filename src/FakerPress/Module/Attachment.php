@@ -5,6 +5,7 @@ use FakerPress\Provider\Image\Placeholder;
 use FakerPress\Provider\Image\LoremPicsum;
 use WP_Error;
 use FakerPress;
+use function FakerPress\get;
 
 class Attachment extends Abstract_Module {
 
@@ -305,6 +306,8 @@ class Attachment extends Abstract_Module {
 	public function parse_request( $qty, $request = [] ) {
 		// The quantity is already calculated by the REST endpoint or passed directly
 		// We should use the $qty parameter, not recalculate from request
+
+		$this->set_locale( get( $request, 'locale', null ) );
 
 		// Process date range
 		if ( isset( $request['interval_date'] ) ) {

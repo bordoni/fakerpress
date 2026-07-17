@@ -31,6 +31,14 @@ trait Handles_Batching {
 	 * @return array Array containing quantity, offset, total, and is_capped.
 	 */
 	protected function calculate_batched_quantity( $params, $module ) {
+		// Apply the requested locale before any get_faker() call below, so the
+		// generator is built with the right locale on first instantiation. parse_request()
+		// sets it again later, but that runs after this method may have already cached
+		// an en_US faker via numberBetween() for a qty range.
+		if ( isset( $params['locale'] ) ) {
+			$module->set_locale( $params['locale'] );
+		}
+
 		$allowed = $module->get_amount_allowed();
 		$offset  = absint( $params['offset'] ?? 0 );
 		$total   = absint( $params['total'] ?? 0 );
