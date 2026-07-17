@@ -148,7 +148,16 @@ abstract class Abstract_Module implements Interface_Module {
 	 * @return self
 	 */
 	public function set_locale( ?string $locale ): self {
-		$this->locale = '' !== $locale ? $locale : null;
+		$locale = '' !== $locale ? $locale : null;
+
+		// Invalidate any cached faker when the locale changes, so the generator is
+		// rebuilt with the new locale on the next get_faker() call. Without this,
+		// the first get_faker() pins the locale for the entire request.
+		if ( $this->locale !== $locale ) {
+			$this->faker = null;
+		}
+
+		$this->locale = $locale;
 
 		return $this;
 	}
