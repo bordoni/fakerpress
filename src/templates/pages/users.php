@@ -99,7 +99,7 @@ $fields[] = new Field(
 	'dropdown',
 	[
 		'id'           => 'locale',
-		'data-options' => $_locale_options,
+		'options'      => $_locale_options,
 		'value'        => 'en_US',
 	],
 	[
