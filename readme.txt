@@ -106,7 +106,7 @@ Thank you for wanting to make FakerPress better for everyone! [We salute you](ht
 
 == Changelog ==
 
-= 0.9.2 &mdash; 15 of July 2026 =
+= 0.9.2 &mdash; 20 of July 2026 =
 
 * Fix - Silence the `Using null as an array offset is deprecated` PHP 8.1+ notices logged from WordPress core's `Requests/Iri.php` when fetching external images; the Attachment module now routes `download_url()` and the Lorem Picsum metadata request through helpers that suppress the core deprecation and restore the previous error-reporting level. [[#230](https://github.com/bordoni/fakerpress/pull/230)]
 * Fix - Bulk user generation now honours the selected role instead of always assigning Subscriber; the Users endpoint prefers the admin form's plural `roles` value over the singular `role` alias's default, and the User module falls back to the site's configured default role when none is requested. [[#229](https://github.com/bordoni/fakerpress/pull/229)]
