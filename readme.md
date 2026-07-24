@@ -15,13 +15,6 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 
 ## Description ##
 
-Whenever you create a new Theme or Plugin you will always need to create custom data to test whether your plugin is working or not, and as Developers ourselves we had this problem quite alot.
-
-Our goal with this plugin is to fill this gap where you have problem with a good solution both for Developers and for Users of WordPress.
-
-> **Note: This plugin requires PHP 8.1 or higher to be activated.**
-
-[**Checkout our GitHub Repository**](http://fakerpress.com/r/github)
 ### Components Included ###
 * Posts
 * Custom Post Types
@@ -34,32 +27,32 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 * Custom Comment Types
 * Attachments (NEW)
 
-### Creating Dummy Content ###
-Normally a WordPress developer will need to perform the task of filling up an empty theme with dummy content, and doing this manually can be really time consuming, the main reasons this plugin was create was to speed up this process.
+### Create Dummy Content ###
+During the development process, a WordPress developer will often need to fill up an empty theme or test site with placeholder content. Doing so manually can be time consuming. FakerPress allows you to speed up this process.
 
 ### Random Featured Images ###
-Create randomly generated attachments as the Featured Images for your WordPress dummy content.
+FakerPress creates randomly generated attachments as Featured Images for your WordPress test content.
 
-### Create random Meta Information ###
-WordPress has Meta for Users, Posts, Terms and Comments, FakerPress will allow you to generate custom dummy meta for all four, with *20 types of Data*
+### Random Meta Information ###
+FakerPress enables you to generate custom placeholder meta information for Users, Posts, Terms, and Comments with 20 types of data.
 
-### Delete the Content Generated ###
-After you are done with your testing it should be easy to delete all the content created using FakerPress, now you will be able to do it.
+### Delete Generated Content ###
+After testing is complete, you can delete any FakerPress-generated dummy content all at once.
 
-### Generate Random HTML ###
-When creating dummy posts what you really want is that the HTML is really random so that you might see bugs that an XML import wouldn't.
+### Randomized HTML ###
+When creating placeholder posts, FakerPress creates randomized HTML to allow you to catch bugs that an XML import may not.
 
-### Generate Images in your HTML ###
-When you are testing your website images are important, so FakerPress will allow you to output Images to your HTML tests.
+### Include Images in HTML ###
+FakerPress also allows you to output images to your HTML tests, enabling testing for placeholder media.
 
-### Real Browser data on User Comments ###
-For comments our plugin is prepared to generate a real Browser data instead of leaving the field empty.
+### Comments with Real Browser Data ###
+FakerPress includes examples of real browser data with generated comments, allowing for more robust testing.
 
-### Random Terms generation ###
-For creating and assigning the terms you will have a much better tool that will allow you to select which kind of taxonomy you want to assign to your posts, and leaving the randomization to the plugin's code.
+### Generate Random Terms ###
+FakerPress includes custom settings to determine the quantity and type of terms generated for test content. The plugin then handles randomization to generate terms within those parameters for tailored test data.
 
-### Real random User profiles ###
-If you fill up your WordPress with any data for the user profiles you might not catch an edge case, this plugin will fill up the fields with data that will really matter in the tests.
+### Random User Profiles ###
+Manually generated data for test profiles might not catch edge cases. With FakerPress, randomized data fills up relevant fields with randomized information for more robust testing.
 
 ### Modern REST API ###
 FakerPress now includes a comprehensive REST API for programmatic content generation. All modules support REST endpoints with batching capabilities for large-scale generation. Full OpenAPI documentation is available at `/wp-json/fakerpress/v1/docs`.
@@ -90,13 +83,13 @@ Create realistic image attachments with customizable dimensions, multiple image 
 * Browser User Agent
 
 ### Languages ###
-We moved away from _Transifex_ due to the new GlotPress on WordPress.org, so if you want to translate FakerPress to your language please [follow this guidelines](https://make.wordpress.org/polyglots/handbook/rosetta/theme-plugin-directories/#translating-themes-plugins).
+To translate FakerPress into your language, please visit the project in [GlotPress](https://translate.wordpress.org/projects/wp-plugins/fakerpress/). You can find additional support and best practices through your [locale's Translation Team](https://make.wordpress.org/polyglots/teams/).
 
 ### See room for improvement? ###
 Great! There are several ways you can get involved to help make FakerPress better:
 
-1. **Report Bugs:** If you find a bug, error or other problem, please report it! You can do this by [creating a new topic](http://wordpress.org/support/plugin/fakerpress) in the plugin forum. Once a developer can verify the bug by reproducing it, they will create an official bug report in GitHub where the bug will be worked on.
-2. **Suggest New Features:** Have an awesome idea? Please share it! Simply [create a new topic](http://wordpress.org/support/plugin/fakerpress) in the plugin forum to express your thoughts on why the feature should be included and get a discussion going around your idea.
+1. **Report Bugs:** If you find a bug, error, or other problem, please report it! You can do this by [creating a new topic](https://wordpress.org/support/plugin/fakerpress) in the plugin forum. Once a developer can verify the bug by reproducing it, they will create an official bug report in GitHub where the bug will be worked on.
+2. **Suggest New Features:** Have an awesome idea? Please share it! Simply [create a new topic](https://wordpress.org/support/plugin/fakerpress) in the plugin forum to express your thoughts on why the feature should be included and get a discussion going around your idea.
 3. **Issue Pull Requests:** If you're a developer, the easiest way to get involved is to help out on [issues already reported](https://github.com/bordoni/fakerpress/issues) in GitHub. Be sure to check out the [contributing guide](https://github.com/bordoni/fakerpress/blob/master/contributing.md) for developers.
 
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
