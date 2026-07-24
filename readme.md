@@ -15,6 +15,13 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 
 ## Description ##
 
+When creating a new theme or plugin, you always need to create a custom data set to test whether it's working as expected - or not. As developers ourselves, we've run into this problem quite often.
+
+The goal of FakerPress is to fill this gap, offering a solution for both developers and WordPress users.
+
+> **Note: This plugin requires PHP 8.1 or higher to be activated.**
+
+[**Checkout our GitHub Repository**](http://fakerpress.com/r/github)
 ### Components Included ###
 * Posts
 * Custom Post Types
