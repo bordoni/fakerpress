@@ -21,6 +21,8 @@ The goal of FakerPress is to fill this gap, offering a solution for both develop
 
 [**Checkout our GitHub Repository**](http://fakerpress.com/r/github)
 
+---
+
 = Components Included =
 
 * Posts
