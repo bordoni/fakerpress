@@ -133,6 +133,8 @@ class Comment extends Abstract_Module {
 			return new WP_Error( 'fakerpress_zero_comments', __( 'Zero is not a good number of comments to fake...', 'fakerpress' ) );
 		}
 
+		$this->set_locale( get( $request, 'locale', null ) );
+
 		$comment_content_size      = get( $request, 'content_size', [ 1, 5 ] );
 		$comment_content_use_html  = is_truthy( get( $request, 'use_html', 'off' ) );
 		$comment_content_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags' ) ) );

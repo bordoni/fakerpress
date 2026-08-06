@@ -15,6 +15,8 @@ use WP_REST_Response;
 use WP_REST_Server;
 use WP_Error;
 
+use function FakerPress\fakerpress_get_available_locales;
+
 /**
  * Abstract class Abstract_Endpoint
  *
@@ -384,6 +386,31 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 				'minimum'           => 0,
 				'default'           => 0,
 				'sanitize_callback' => 'absint',
+			],
+		];
+	}
+
+	/**
+	 * Get the locale argument definition shared across all generation endpoints.
+	 *
+	 * @since 0.10.0
+	 *
+	 * @return array
+	 */
+	protected function get_locale_args(): array {
+		return [
+			'locale' => [
+				'description'       => __( 'Locale for generated content (e.g. fr_FR, de_DE). Falls back to en_US.', 'fakerpress' ),
+				'type'              => 'string',
+				'default'           => null,
+				'sanitize_callback' => 'sanitize_text_field',
+				'validate_callback' => function ( $value ) {
+					if ( $value === null || '' === $value ) {
+						return true;
+					}
+
+					return isset( fakerpress_get_available_locales()[ $value ] );
+				},
 			],
 		];
 	}

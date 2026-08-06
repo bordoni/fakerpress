@@ -109,6 +109,8 @@ class Term extends Abstract_Module {
 			return new WP_Error( 'fakerpress_zero_terms', __( 'Zero is not a good number of terms to fake...', 'fakerpress' ) );
 		}
 
+		$this->set_locale( get( $request, 'locale', null ) );
+
 		$name_size = get( $request, 'size' );
 
 		// Fetch taxonomies

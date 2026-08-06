@@ -136,6 +136,8 @@ class User extends Abstract_Module {
 			return new WP_Error( 'fakerpress_zero_users', __( 'Zero is not a good number of users to fake...', 'fakerpress' ) );
 		}
 
+		$this->set_locale( get( $request, 'locale', null ) );
+
 		$description_size      = get( $request, 'description_size', [ 1, 5 ] );
 		$description_use_html  = get( $request, 'use_html', 'off' ) === 'on';
 		$description_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags', '' ) ) );
