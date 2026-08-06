@@ -37,6 +37,7 @@ class Factory extends Service_Provider {
 				Comment_View::class,
 				Post_View::class,
 				Settings_View::class,
+				Scramble_View::class,
 				Error_View::class,
 				Changelog_View::class,
 				Term_View::class,
