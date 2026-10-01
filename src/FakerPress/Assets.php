@@ -114,7 +114,7 @@ class Assets extends Service_Provider {
 		register_asset(
 			'fakerpress-module',
 			'module.js',
-			[ 'jquery', 'underscore', 'fakerpress-qs', 'wp-api-request', 'wp-i18n' ],
+			[ 'jquery', 'underscore', 'fakerpress-qs', 'wp-api-fetch', 'wp-i18n' ],
 			'admin_enqueue_scripts',
 			[
 				'conditionals' => [ $admin, 'is_active' ],
