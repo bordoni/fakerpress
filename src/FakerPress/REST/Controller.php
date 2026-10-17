@@ -52,7 +52,7 @@ class Controller extends Service_Provider {
 
 		$this->add_actions();
 		
-		// Ensure REST routes are registered early enough
+		// Ensure REST routes are registered early enough.
 		add_action( 'init', [ $this, 'ensure_rest_routes' ], 5 );
 	}
 
@@ -118,8 +118,7 @@ class Controller extends Service_Provider {
 				Endpoints\Terms::class,
 				Endpoints\Comments::class,
 				Endpoints\Attachments::class,
-			// Additional endpoints can be added here
-			// 'FakerPress\REST\Endpoints\Meta',
+			// Add more endpoint classes here, e.g. FakerPress\REST\Endpoints\Meta.
 			] 
 		);
 
@@ -130,7 +129,7 @@ class Controller extends Service_Provider {
 			$endpoint_classes
 		);
 
-		// Filter out null values (classes that don't exist)
+		// Filter out null values (classes that don't exist).
 		return array_filter( $endpoints );
 	}
 
@@ -166,7 +165,7 @@ class Controller extends Service_Provider {
 	 * @return void
 	 */
 	public function ensure_rest_routes() {
-		// Force re-registration of routes if needed
+		// Force re-registration of routes if needed.
 		if ( did_action( 'rest_api_init' ) ) {
 			$this->register_routes();
 		}

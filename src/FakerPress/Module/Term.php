@@ -86,7 +86,7 @@ class Term extends Abstract_Module {
 		}
 		$flagged[ $data['taxonomy'] ] = array_merge( $flagged[ $data['taxonomy'] ], (array) $term_object['term_id'] );
 
-		// When in posts relating is harder so we store in the Options Table
+		// When in posts relating is harder so we store in the Options Table.
 		update_option( 'fakerpress.module_flag.' . $this::get_slug(), $flagged );
 
 		return $term_object['term_id'];
@@ -112,7 +112,7 @@ class Term extends Abstract_Module {
 
 		$name_size = get( $request, 'size' );
 
-		// Fetch taxonomies
+		// Fetch taxonomies.
 		$taxonomies = get( $request, 'taxonomies' );
 		$taxonomies = array_map( 'trim', explode( ',', $taxonomies ) );
 		$taxonomies = array_intersect( get_taxonomies( [ 'public' => true ] ), $taxonomies );

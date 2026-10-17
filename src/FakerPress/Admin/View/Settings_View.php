@@ -93,7 +93,7 @@ class Settings_View extends Abstract_View {
 			return;
 		}
 
-		// After this point we are safe to say that we have a good POST request
+		// After this point we are safe to say that we have a good POST request.
 		$erase_intention = is_string( get_request_var( [ 'fakerpress', 'actions', 'delete' ] ) );
 		$erase_check     = in_array(
 			strtolower( get_request_var( [ 'fakerpress', 'erase_phrase' ] ) ),

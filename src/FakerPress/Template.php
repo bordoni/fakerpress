@@ -84,7 +84,7 @@ class Template {
 		}
 
 		if ( is_string( $origin ) ) {
-			// Origin needs to be a class with a `instance` method
+			// Origin needs to be a class with a `instance` method.
 			if ( class_exists( $origin ) && method_exists( $origin, 'instance' ) ) {
 				$origin = call_user_func( [ $origin, 'instance' ] );
 			}
@@ -110,17 +110,17 @@ class Template {
 	 * @return self
 	 */
 	public function set_template_folder( $folder = null ) {
-		// Allows configuring a already set class
+		// Allows configuring a already set class.
 		if ( ! isset( $folder ) ) {
 			$folder = $this->folder;
 		}
 
-		// If Folder is String make it an Array
+		// If Folder is String make it an Array.
 		if ( is_string( $folder ) ) {
 			$folder = (array) explode( '/', $folder );
 		}
 
-		// Cast as Array and save
+		// Cast as Array and save.
 		$this->folder = (array) $folder;
 
 		return $this;
@@ -151,7 +151,7 @@ class Template {
 	 * @return self
 	 */
 	public function add_template_globals( $context = [] ) {
-		// Cast as Array merge and save
+		// Cast as Array merge and save.
 		$this->global = wp_parse_args( (array) $context, $this->global );
 
 		return $this;
@@ -167,7 +167,7 @@ class Template {
 	 * @return self
 	 */
 	public function set_template_context_extract( $value = false ) {
-		// Cast as bool and save
+		// Cast as bool and save.
 		$this->template_context_extract = is_truthy( $value );
 
 		return $this;
@@ -256,12 +256,12 @@ class Template {
 	 * @return array
 	 */
 	public function merge_context( $context = [], $file = null, $name = null ) {
-		// Allow for simple null usage as well as array() for nothing
+		// Allow for simple null usage as well as array() for nothing.
 		if ( is_null( $context ) ) {
 			$context = [];
 		}
 
-		// Applies local context on top of Global one
+		// Applies local context on top of Global one.
 		$context = wp_parse_args( (array) $context, $this->global );
 
 		/**
@@ -287,10 +287,10 @@ class Template {
 	 * @return string
 	 */
 	protected function get_template_plugin_path() {
-		// Craft the plugin Path
+		// Craft the plugin Path.
 		$path = array_merge( (array) $this->template_base_path, $this->folder );
 
-		// Implode to avoid Window Problems
+		// Implode to avoid Window Problems.
 		$path = implode( DIRECTORY_SEPARATOR, $path );
 
 		/**
@@ -342,10 +342,10 @@ class Template {
 	 * @return string
 	 */
 	protected function get_template_public_path( $base ) {
-		// Craft the plugin Path
+		// Craft the plugin Path.
 		$path = array_merge( (array) $base, (array) $this->get_template_public_namespace() );
 
-		// Implode to avoid Window Problems
+		// Implode to avoid Window Problems.
 		$path = implode( DIRECTORY_SEPARATOR, $path );
 
 		/**
@@ -369,7 +369,7 @@ class Template {
 	protected function get_template_path_list() {
 		$folders = [];
 
-		// Only look into public folders if we tell to use folders
+		// Only look into public folders if we tell to use folders.
 		if ( $this->template_folder_lookup ) {
 			$folders[] = [
 				'id'       => 'child-theme',
@@ -416,7 +416,7 @@ class Template {
 	 * @return string
 	 */
 	public function get_template_file( $name ) {
-		// If name is String make it an Array
+		// If name is String make it an Array.
 		if ( is_string( $name ) ) {
 			$name = (array) explode( '/', $name );
 		}
@@ -429,13 +429,13 @@ class Template {
 				continue;
 			}
 
-			// Build the File Path
+			// Build the File Path.
 			$file = implode( DIRECTORY_SEPARATOR, array_merge( (array) $folder['path'], $name ) );
 
-			// Append the Extension to the file path
+			// Append the Extension to the file path.
 			$file .= '.php';
 
-			// Skip non-existent files
+			// Skip non-existent files.
 			if ( file_exists( $file ) ) {
 				/**
 				 * A more Specific Filter that will include the template name
@@ -451,7 +451,7 @@ class Template {
 			}
 		}
 
-		// Couldn't find a template on the Stack
+		// Couldn't find a template on the Stack.
 		return false;
 	}
 
@@ -467,12 +467,12 @@ class Template {
 	 * @return string|false Either the final content HTML or `false` if no template could be found.
 	 */
 	public function render( $name, $context = [], $echo = true ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.echoFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
-		// If name is String make it an Array
+		// If name is String make it an Array.
 		if ( is_string( $name ) ) {
 			$name = (array) explode( '/', $name );
 		}
 
-		// Clean this Variable
+		// Clean this Variable.
 		$name = array_map( 'sanitize_key', $name );
 
 		if ( ! empty( $this->origin->template_namespace ) ) {
@@ -481,25 +481,25 @@ class Template {
 			$namespace = $name;
 		}
 
-		// Setup the Hook name
+		// Setup the Hook name.
 		$hook_name = implode( '/', $namespace );
 
-		// Check if the file exists
+		// Check if the file exists.
 		$file = $this->get_template_file( $name );
 
-		// Check if it's a valid variable
+		// Check if it's a valid variable.
 		if ( ! $file ) {
 			return false;
 		}
 
-		// Before we load the file we check if it exists
+		// Before we load the file we check if it exists.
 		if ( ! file_exists( $file ) ) {
 			return false;
 		}
 
 		ob_start();
 
-		// Merges the local data passed to template to the global scope
+		// Merges the local data passed to template to the global scope.
 		$this->merge_context( $context, $file, $name );
 
 		/**
@@ -531,7 +531,7 @@ class Template {
 
 		// Only do this if really needed (by default it wont).
 		if ( true === $this->template_context_extract && ! empty( $this->context ) ) {
-			// We don't allow extracting of a variable called $name
+			// We don't allow extracting of a variable called $name.
 			if ( isset( $this->context['name'] ) ) {
 				unset( $this->context['name'] );
 			}
@@ -574,7 +574,7 @@ class Template {
 		 */
 		do_action( "fakerpress_template_after_include:$hook_name", $file, $name, $this );
 
-		// Only fetch the contents after the action
+		// Only fetch the contents after the action.
 		$html = ob_get_clean();
 
 		/**

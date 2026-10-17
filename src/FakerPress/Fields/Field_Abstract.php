@@ -99,7 +99,7 @@ abstract class Field_Abstract implements Field_Interface {
 		$ids    = [];
 		$parent = $this;
 
-		// Fetch the ID of all parents
+		// Fetch the ID of all parents.
 		while ( $parent = $parent->get_parent() ) {
 			$ids[] = $parent->get_id();
 		}

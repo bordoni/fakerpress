@@ -99,7 +99,7 @@ class Ajax {
 
 		$terms = get_terms( array_merge( $args, [ 'taxonomy' => (array) $request->taxonomies ] ) );
 
-		// Setting up Select2
+		// Setting up Select2.
 		foreach ( $terms as $term ) {
 			$response->results[] = [
 				'id'       => $term->term_id,
@@ -156,10 +156,10 @@ class Ajax {
 			$request->query['post_type'] = array_map( 'trim', (array) explode( ',', $request->query['post_type'] ) );
 		}
 
-		// If post_type is empty or not set, default to all public post types
+		// If post_type is empty or not set, default to all public post types.
 		if ( empty( $request->query['post_type'] ) ) {
 			$request->query['post_type'] = get_post_types( [ 'public' => true ], 'names' );
-			// Remove attachment post type as it's handled separately
+			// Remove attachment post type as it's handled separately.
 			unset( $request->query['post_type']['attachment'] );
 		}
 

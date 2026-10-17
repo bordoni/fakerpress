@@ -372,10 +372,10 @@ class Base extends Faker_Base {
 		if ( $maxNbChars < 5 ) {
 			throw new \InvalidArgumentException( 'text() can only generate text of at least 5 characters' );
 		} elseif ( $maxNbChars < 25 ) {
-			// join words
+			// Join words.
 			while ( empty( $text ) ) {
 				$size = 0;
-				// determine how many words are needed to reach the $maxNbChars once;
+				// Determine how many words are needed to reach the $maxNbChars once.
 				while ( $size < $maxNbChars ) {
 					$word   = ( $size ? ' ' : '' ) . static::word();
 					$text[] = $word;
@@ -386,10 +386,10 @@ class Base extends Faker_Base {
 			$text[0][0]                  = static::toUpper( $text[0][0] );
 			$text[ count( $text ) - 1 ] .= '.';
 		} elseif ( $maxNbChars < 100 ) {
-			// join sentences
+			// Join sentences.
 			while ( empty( $text ) ) {
 				$size = 0;
-				// determine how many sentences are needed to reach the $maxNbChars once;
+				// Determine how many sentences are needed to reach the $maxNbChars once.
 				while ( $size < $maxNbChars ) {
 					$sentence = ( $size ? ' ' : '' ) . static::sentence();
 					$text[]   = $sentence;
@@ -398,10 +398,10 @@ class Base extends Faker_Base {
 				array_pop( $text );
 			}
 		} else {
-			// join paragraphs
+			// Join paragraphs.
 			while ( empty( $text ) ) {
 				$size = 0;
-				// determine how many paragraphs are needed to reach the $maxNbChars once;
+				// Determine how many paragraphs are needed to reach the $maxNbChars once.
 				while ( $size < $maxNbChars ) {
 					$paragraph = ( $size ? "\n" : '' ) . static::paragraph();
 					$text[]    = $paragraph;

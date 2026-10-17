@@ -28,10 +28,10 @@ class Placeholder extends Base {
 			$width = call_user_func_array( [ $this->generator, 'numberBetween' ], $width );
 		}
 
-		// Makes sure we have an Int
+		// Makes sure we have an Int.
 		$width = absint( $width );
 
-		// Check For float (ratio)
+		// Check For float (ratio).
 		if ( is_float( $height ) ) {
 			$height = floor( $width / floatval( $height ) );
 		} elseif ( is_array( $height ) ) {

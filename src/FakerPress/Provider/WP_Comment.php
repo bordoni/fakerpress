@@ -24,28 +24,28 @@ class WP_Comment extends Base {
 	}
 
 	public function user_id( $users = [] ) {
-		// We only need to query if there is no users passed
+		// We only need to query if there is no users passed.
 		if ( is_array( $users ) && empty( $users ) ) {
 			$users = get_users(
 				[
 					'blog_id'     => $GLOBALS['blog_id'],
 					'count_total' => false,
-					'fields'      => 'ID', // When you pass only one field it returns an array of the values
+					'fields'      => 'ID', // When you pass only one field it returns an array of the values.
 				]
 			);
 		}
 
-		// Cast $users as an array and always return an absolute integer
+		// Cast $users as an array and always return an absolute integer.
 		return absint( $this->generator->randomElement( (array) $users ) );
 	}
 
 	public function comment_author( $comment_author = null ) {
-		// Lacks the method to random a bunch of elements
+		// Lacks the method to random a bunch of elements.
 		return $this->generator->name();
 	}
 
 	public function comment_parent( $comment_parent = null ) {
-		// Lacks the method to random a bunch of elements
+		// Lacks the method to random a bunch of elements.
 		return absint( $comment_parent );
 	}
 
@@ -60,7 +60,7 @@ class WP_Comment extends Base {
 	 * @return string
 	 */
 	public function comment_type( $comment_type = null ) {
-		// Fetch a Random element from the possible comment types
+		// Fetch a Random element from the possible comment types.
 		$comment_type = $this->generator->randomElement( (array) $comment_type );
 
 		if ( 'default' === $comment_type || is_null( $comment_type ) ) {
@@ -107,7 +107,7 @@ class WP_Comment extends Base {
 	public function comment_post_ID( $comment_post_ID = null, $args = [] ) {
 
 		if ( is_null( $comment_post_ID ) ) {
-			// We should be able to pass these arguments
+			// We should be able to pass these arguments.
 			$defaults = [
 				'posts_per_page'   => -1,
 				'post_type'        => 'post',
@@ -115,10 +115,10 @@ class WP_Comment extends Base {
 				'suppress_filters' => true, // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.SuppressFilters_suppress_filters -- Existing behaviour, the random post pool ignores third-party query filters.
 			];
 
-			// Apply the defaults
+			// Apply the defaults.
 			$args = wp_parse_args( $args, $defaults );
 
-			// We need only the IDs here
+			// We need only the IDs here.
 			$args['fields'] = 'ids';
 
 			$query = new \WP_Query( $args );
@@ -154,7 +154,7 @@ class WP_Comment extends Base {
 	}
 
 	public function comment_date( $min = 'now', $max = null ) {
-		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
+		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime.
 		try {
 			$min = new Chronos( $min );
 		} catch ( \Exception $e ) {
@@ -162,7 +162,7 @@ class WP_Comment extends Base {
 		}
 
 		if ( ! is_null( $max ) ) {
-			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
+			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime.
 			try {
 				$max = new Chronos( $max );
 			} catch ( \Exception $e ) {

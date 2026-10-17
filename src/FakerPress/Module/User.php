@@ -107,15 +107,15 @@ class User extends Abstract_Module {
 			return false;
 		}
 
-		// Only set role if needed
+		// Only set role if needed.
 		if ( ! is_null( $data['role'] ) ) {
 			$user = new \WP_User( $user_id );
 
-			// Here we could add in the future the possibility to set multiple roles at once
+			// Here we could add in the future the possibility to set multiple roles at once.
 			$user->set_role( $data['role'] );
 		}
 
-		// Flag the Object as FakerPress
+		// Flag the Object as FakerPress.
 		update_user_meta( $user_id, static::get_flag(), 1 );
 
 		return $user_id;

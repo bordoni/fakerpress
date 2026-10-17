@@ -88,7 +88,7 @@ class Comment_View extends Abstract_View {
 			return;
 		}
 
-		// After this point we are safe to say that we have a good POST request
+		// After this point we are safe to say that we have a good POST request.
 		$results = (array) make( Comment::class )->parse_request( null, get_request_var( Plugin::$slug, [] ) );
 
 		if ( ! empty( $results ) ) {

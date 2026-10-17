@@ -18,7 +18,7 @@ class Assets extends Service_Provider {
 
 		$admin = make( Admin::class );
 
-		// Font icon CSS removed - now using SVG icon for admin menu
+		// Font icon CSS removed - now using SVG icon for admin menu.
 
 		// Register QS.js.
 		register_asset(

@@ -47,7 +47,7 @@ function set( array $array, $key, $value ) { // phpcs:ignore Universal.NamingCon
 		$key_pointer = &$key_pointer[ $i ];
 	}
 
-	// Set the value for the specified key
+	// Set the value for the specified key.
 	$key_pointer = $value;
 
 	return $array;

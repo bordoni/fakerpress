@@ -97,9 +97,9 @@ class Admin extends Template {
 	public function _action_admin_notices() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		foreach ( self::$messages as $k => $message ) {
 			$classes = [
-				// Plugin class to give the styling
+				// Plugin class to give the styling.
 				'fakerpress-message',
-				// This is to use WordPress JS to move them above the h2
+				// This is to use WordPress JS to move them above the h2.
 				'notice',
 			];
 

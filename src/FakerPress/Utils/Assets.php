@@ -163,7 +163,7 @@ class Assets {
 				continue;
 			}
 
-			// If this asset was late called
+			// If this asset was late called.
 			if ( ! $asset->is_registered ) {
 				$this->register_in_wp( $asset );
 			}
@@ -181,7 +181,7 @@ class Assets {
 
 				// If we have a set of conditionals we loop on then and get if they are true.
 				foreach ( $asset->conditionals as $key => $conditional ) {
-					// Avoid doing anything to the operator
+					// Avoid doing anything to the operator.
 					if ( 'operator' === $key ) {
 						continue;
 					}
@@ -381,7 +381,7 @@ class Assets {
 		$resource = $resource_path . $asset->file;
 		$file     = wp_normalize_path( $asset->origin_path . $resource );
 
-		// Turn the Path into a URL
+		// Turn the Path into a URL.
 		$url = plugins_url( basename( $asset->file ), $file );
 
 		/**
@@ -522,7 +522,7 @@ class Assets {
 		 */
 		$asset->version = apply_filters( 'fakerpress_asset_version', $asset->version, $asset );
 
-		// Clean these
+		// Clean these.
 		$asset->priority  = absint( $asset->priority );
 		$asset->in_footer = (bool) $asset->in_footer;
 		$asset->media     = esc_attr( $asset->media );

@@ -114,7 +114,7 @@ class HTML extends Base {
 		$args                   = (object) wp_parse_args( $args, $defaults );
 		$args->did_more_element = false;
 
-		// Randomize the quantity based on range
+		// Randomize the quantity based on range.
 		$args->qty = make( Utils::class )->get_qty_from_range( $args->qty );
 
 		$max_to_more = ( $args->qty / 2 ) + $this->generator->numberBetween( 0, max( floor( $args->qty / 2 ), 1 ) );
@@ -124,7 +124,7 @@ class HTML extends Base {
 			$exclude = $args->exclude;
 			if ( isset( $element ) ) {
 				// Here we check if we need to exclude some elements from the next
-				// This one is to exclude header elements from apearing one after the other, or in the end of the string
+				// This one is to exclude header elements from apearing one after the other, or in the end of the string.
 				if ( in_array( $element, self::$sets['header'] ) || $args->qty - 1 === $i ) {
 					$exclude = array_merge( (array) $exclude, self::$sets['header'] );
 				} elseif ( $i > 1 && ( in_array( $els[ $i - 1 ], self::$sets['list'] ) || in_array( $els[ $i - 2 ], self::$sets['list'] ) ) ) {

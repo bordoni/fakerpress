@@ -39,7 +39,7 @@ class WP_Attachment extends Base {
 	public function attachment_url( $type = LoremPicsum::ID, $args = [] ) {
 		$url = '';
 
-		// Check if defaults exists
+		// Check if defaults exists.
 		if ( ! isset( self::$type_defaults[ $type ] ) ) {
 			return $url;
 		}
@@ -78,7 +78,7 @@ class WP_Attachment extends Base {
 				[
 					'blog_id'     => get_current_blog_id(),
 					'count_total' => false,
-					'fields'      => 'ID', // When you pass only one field it returns an array of the values
+					'fields'      => 'ID', // When you pass only one field it returns an array of the values.
 				]
 			);
 		}

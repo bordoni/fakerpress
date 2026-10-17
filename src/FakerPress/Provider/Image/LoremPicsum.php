@@ -31,17 +31,17 @@ class LoremPicsum extends Base {
 			$width = call_user_func_array( [ $this->generator, 'numberBetween' ], $width );
 		}
 
-		// Makes sure we have an Int
+		// Makes sure we have an Int.
 		$width = absint( $width );
 
-		// Check For float (ratio)
+		// Check For float (ratio).
 		if ( is_float( $height ) ) {
 			$height = floor( $width / floatval( $height ) );
 		} elseif ( is_array( $height ) ) {
 			$height = call_user_func_array( [ $this->generator, 'numberBetween' ], $height );
 		}
 
-		// https://picsum.photos/200/640/?random
+		// Builds a URL like https://picsum.photos/200/640/?random so every request returns a random photo.
 		return "https://picsum.photos/{$width}/{$height}/?random";
 	}
 }

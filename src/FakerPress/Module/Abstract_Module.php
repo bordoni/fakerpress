@@ -221,7 +221,7 @@ abstract class Abstract_Module implements Interface_Module {
 			return $this;
 		}
 
-		// Allow a bunch of params
+		// Allow a bunch of params.
 		$arguments = func_get_args();
 
 		/**

@@ -36,7 +36,7 @@ class WP_Post extends Base {
 
 	public function post_type( $haystack = [] ) {
 		if ( empty( $haystack ) ) {
-			// Later on we will remove the Attachment rule
+			// Later on we will remove the Attachment rule.
 			$haystack = array_diff(
 				get_post_types(
 					[
@@ -64,7 +64,7 @@ class WP_Post extends Base {
 		$format   = 'Y-m-d H:i:s';
 		$interval = (array) $interval;
 
-		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
+		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime.
 		try {
 			$min = new Chronos( array_shift( $interval ) );
 		} catch ( \Exception $e ) {
@@ -73,7 +73,7 @@ class WP_Post extends Base {
 		}
 
 		if ( ! empty( $interval ) ) {
-			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
+			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime.
 			try {
 				$max = new Chronos( array_shift( $interval ) );
 			} catch ( \Exception $e ) {
@@ -86,7 +86,7 @@ class WP_Post extends Base {
 			$max = new Chronos( 'now' );
 		}
 
-		// If max has no Time set it to the end of the day
+		// If max has no Time set it to the end of the day.
 		$max_has_time = array_filter( [ $max->hour, $max->minute, $max->second ] );
 		$max_has_time = ! empty( $max_has_time );
 		if ( ! $max_has_time ) {
@@ -141,7 +141,7 @@ class WP_Post extends Base {
 				[
 					'blog_id'     => get_current_blog_id(),
 					'count_total' => false,
-					'fields'      => 'ID', // When you pass only one field it returns an array of the values
+					'fields'      => 'ID', // When you pass only one field it returns an array of the values.
 				]
 			);
 		}
@@ -191,7 +191,7 @@ class WP_Post extends Base {
 			return $output;
 		}
 
-		// The percentage of change in which the terms will be applied
+		// The percentage of change in which the terms will be applied.
 		$rates = apply_filters(
 			'fakerpress/provider/WP_Post/tax_input.rates',
 			[
@@ -201,7 +201,7 @@ class WP_Post extends Base {
 			] 
 		);
 
-		// The amount of terms that might have, provide a number for exact and [ int, int ] to range
+		// The amount of terms that might have, provide a number for exact and [ int, int ] to range.
 		$ranges = apply_filters(
 			'fakerpress/provider/WP_Post/tax_input.ranges',
 			[
@@ -239,7 +239,7 @@ class WP_Post extends Base {
 					$terms = $settings->terms;
 				}
 
-				// Get all the term ids
+				// Get all the term ids.
 				$terms = array_filter( array_map( 'absint', $terms ) );
 
 				if ( ! isset( $settings->qty ) ) {
@@ -254,7 +254,7 @@ class WP_Post extends Base {
 					$rate = (int) $settings->rate;
 				}
 
-				// Select the elements based on qty
+				// Select the elements based on qty.
 				$output[ $taxonomy ] = $this->generator->optional( ( (int) $rate ) / 100, null )->randomElements( $terms, (int) $qty );
 			}
 		}

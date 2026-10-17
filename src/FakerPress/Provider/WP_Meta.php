@@ -151,7 +151,7 @@ class WP_Meta extends Base {
 		$args           = wp_parse_args( $query, [] );
 		$args['fields'] = 'ids';
 
-		// Make easier for Attachment Queries
+		// Make easier for Attachment Queries.
 		if ( isset( $args['post_type'] ) && ! isset( $args['post_status'] ) && in_array( 'attachment', (array) $args['post_type'] ) ) {
 			$args['post_status'] = 'any';
 		}
@@ -174,38 +174,38 @@ class WP_Meta extends Base {
 
 		$arguments = [];
 
-		// Specially for Meta we do the Randomization here
+		// Specially for Meta we do the Randomization here.
 		if ( ! empty( $width ) && $this->meta_parse_qty( $width ) ) {
 			$arguments['width'] = $this->meta_parse_qty( $width );
 		}
 
-		// Specially for Meta we do the Randomization here
+		// Specially for Meta we do the Randomization here.
 		if ( ! empty( $height ) && $this->meta_parse_qty( $height ) ) {
 			$arguments['height'] = $this->meta_parse_qty( $height );
 		}
 
-		// Generate the Attachment
+		// Generate the Attachment.
 		$attachment->set( 'attachment_url', $provider, $arguments );
 
-		// If it's meta for a post we need to mark the attachment as child of that post
+		// If it's meta for a post we need to mark the attachment as child of that post.
 		if ( 'post' === $this->meta_object->name ) {
 			$attachment->set( 'post_parent', $this->meta_object->id, 1 );
 		}
 
-		// Actually save the Attachment and get it's ID
+		// Actually save the Attachment and get it's ID.
 		$value = $attachment->generate()->save();
 
-		// If there was an error, just bail now
+		// If there was an error, just bail now.
 		if ( ! $value || is_wp_error( $value ) ) {
 			return null;
 		}
 
-		// If asked URL, change to URL
+		// If asked URL, change to URL.
 		if ( 'url' === $type ) {
 			$value = wp_get_attachment_url( $value );
 		}
 
-		// Apply Weight
+		// Apply Weight.
 		$value = $this->generator->optional( $weight / 100, null )->randomElement( (array) $value );
 
 		return $value;
@@ -391,7 +391,7 @@ class WP_Meta extends Base {
 	public function meta_type_date( $interval, $format = 'Y-m-d H:i:s', $weight = 50 ) {
 		$interval = (array) $interval;
 
-		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
+		// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime.
 		try {
 			$min = new Chronos( $interval['min'] );
 		} catch ( \Exception $e ) {
@@ -400,7 +400,7 @@ class WP_Meta extends Base {
 		}
 
 		if ( ! empty( $interval ) ) {
-			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime
+			// Unfortunately there is not such solution to this problem, we need to try and catch with DateTime.
 			try {
 				$max = new Chronos( $interval['max'] );
 			} catch ( \Exception $e ) {
@@ -413,7 +413,7 @@ class WP_Meta extends Base {
 			$max = new Chronos( 'now' );
 		}
 
-		// If max has no Time set it to the end of the day
+		// If max has no Time set it to the end of the day.
 		$max_has_time = array_filter( [ $max->hour, $max->minute, $max->second ] );
 		$max_has_time = ! empty( $max_has_time );
 		if ( ! $max_has_time ) {

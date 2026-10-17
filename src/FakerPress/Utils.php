@@ -45,7 +45,7 @@ class Utils {
 				if ( 'class' === $key ) {
 					$value = array_map( [ static::class, 'abbr' ], (array) $value );
 
-					// Make sure buttons also get the `button` class
+					// Make sure buttons also get the `button` class.
 					if ( in_array( 'fp-type-button', $value ) ) {
 						$value[] = 'button';
 					}
@@ -106,43 +106,43 @@ class Utils {
 	 */
 	public function get_qty_from_range( $range, $total = null ) {
 		if ( is_array( $range ) ) {
-			// Remove non-wanted items
+			// Remove non-wanted items.
 			$range = array_filter( $range );
 
-			// Grabs Min
+			// Grabs Min.
 			$min = reset( $range );
 
-			// Grabs Max if range has 2 elements
+			// Grabs Max if range has 2 elements.
 			if ( count( $range ) > 1 ) {
 				$max = end( $range );
 			} else {
-				// Otherwise just set qty to the Min
+				// Otherwise just set qty to the Min.
 				$qty = $min;
 			}
 		} elseif ( is_numeric( $range ) ) {
-			// If we have a numeric we just set it
+			// If we have a numeric we just set it.
 			$qty = $range;
 		} else {
-			// All the other cases are a qty 0
+			// All the other cases are a qty 0.
 			return 0;
 		}
 
-		// Now we treat the Range and select a random number
+		// Now we treat the Range and select a random number.
 		if ( ! isset( $qty ) ) {
 			$qty = Base::numberBetween( $min, $max );
 		}
 
-		// If an array for the total was provided, turn it to a integer
+		// If an array for the total was provided, turn it to a integer.
 		if ( is_array( $total ) ) {
 			$total = count( $total );
 		}
 
-		// If we have a numeric total, make sure we don't go over that
+		// If we have a numeric total, make sure we don't go over that.
 		if ( is_numeric( $total ) ) {
 			$qty = min( $qty, $total );
 		}
 
-		// We just make sure we are dealing with an absolute number
+		// We just make sure we are dealing with an absolute number.
 		return absint( $qty );
 	}
 

@@ -147,10 +147,10 @@ class Field {
 	public $wrap;
 
 	public function __construct( $type, $field, $container = [] ) {
-		// Default Error Structure
+		// Default Error Structure.
 		$this->error = false;
 
-		// Non Valid types are just set to Raw
+		// Non Valid types are just set to Raw.
 		if ( ! self::is_valid_type( $type ) ) {
 			$type = 'raw';
 		}
@@ -160,13 +160,13 @@ class Field {
 				'id' => $field,
 			];
 		} else {
-			// Setup the Container if required
+			// Setup the Container if required.
 			$this->field = (object) $field;
 		}
 
 		$container = (object) wp_parse_args( $container, self::$default_container );
 
-		// set the ID
+		// Set the ID.
 		$this->type = $type;
 		if ( ! isset( $this->field->id ) ) {
 			$this->id = (array) Utils::abbr( uniqid( '', true ) );
@@ -192,13 +192,13 @@ class Field {
 		}
 
 		if ( $this->callback && is_callable( $this->callback ) ) {
-			// if there's a callback, run it
+			// If there's a callback, run it.
 			call_user_func( $this->callback );
 		} elseif ( in_array( $this->type, self::$valid_types ) ) {
-			// the specified type exists, run the appropriate method
+			// The specified type exists, run the appropriate method.
 			$field = call_user_func_array( [ __CLASS__, 'type_' . $this->type ], [ $this->field, $this, 'string', [] ] );
 
-			// filter the output
+			// Filter the output.
 			$field = apply_filters( self::plugin . '/fields/field-output-' . $this->type, $field, $this );
 
 			if ( $print ) {
@@ -481,7 +481,7 @@ class Field {
 	 * Static methods *
 	 ******************/
 	public static function is_valid_type( $type = false ) {
-		// a list of valid field types, to prevent screwy behaviour
+		// A list of valid field types, to prevent screwy behaviour.
 		return in_array( $type, apply_filters( self::plugin . '/fields/valid_types', self::$valid_types ) );
 	}
 
@@ -530,7 +530,7 @@ class Field {
 			$field->_name = isset( $field->name ) ? (array) $field->name : (array) ( $container->field->name ?? $field->_id );
 		}
 
-		// Setup Public Attributes
+		// Setup Public Attributes.
 		if ( empty( $field->type ) ) {
 			$field->type = $container->type;
 		}
@@ -1124,13 +1124,13 @@ class Field {
 			],
 		];
 
-		// Store the Configuration
+		// Store the Configuration.
 		$configuration = $field->config;
 
-		// Prevents Unwanted Attributes
+		// Prevents Unwanted Attributes.
 		unset( $field->config );
 
-		// Makes Sure we at least have some configuration to avoid bugs
+		// Makes Sure we at least have some configuration to avoid bugs.
 		if ( empty( $configuration ) ) {
 			$configuration = [ true ];
 		}
@@ -1202,7 +1202,7 @@ class Field {
 			$html = $content;
 		}
 
-		// Creates Templates for generating Meta via JavaScript
+		// Creates Templates for generating Meta via JavaScript.
 		foreach ( $type->options as $key => $ftype ) {
 			$is_callable = ( isset( $ftype->template ) && is_callable( $ftype->template ) );
 			$html[]      = '<script type="text/html" data-rel="' . self::id( $container->id, true ) . '" class="' . Utils::abbr( 'template-' . $ftype->value ) . '"' . ( $is_callable ? ' data-callable' : '' ) . '>';
@@ -1355,7 +1355,7 @@ class Field {
 				$html[] = Field::wrapper( Field::type_dropdown( $providers, null, 'string' ), $providers );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
-				// Image Dimensions
+				// Image Dimensions.
 				$html[] = Field::wrapper( Field::type_range( $size_width, null, 'string' ), $size_width );
 				$html[] = Field::wrapper( Field::type_range( $size_height, null, 'string' ), $size_height );
 

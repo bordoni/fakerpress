@@ -10,7 +10,7 @@ class WP_Term extends Base {
 		$qty  = make( Utils::class )->get_qty_from_range( $qty );
 		$name = $this->generator->sentence( $qty );
 
-		// This removes the last dot on the end of the sentence
+		// This removes the last dot on the end of the sentence.
 		$name = rtrim( $name, '.' );
 
 		return $name;
@@ -18,7 +18,7 @@ class WP_Term extends Base {
 
 	public function taxonomy( $taxonomies = [ 'category', 'post_tag' ], $args = [] ) {
 		if ( empty( $taxonomies ) ) {
-			// Merge the returned terms to those provided
+			// No taxonomies given, pick from every taxonomy that matches $args.
 			$taxonomies = get_taxonomies( $args, 'names' );
 		}
 
@@ -38,7 +38,7 @@ class WP_Term extends Base {
 			}
 			$description = $this->generator->sentence( $this->generator->numberBetween( $min, $max ) );
 
-			// This removes the last dot on the end of the sentence
+			// This removes the last dot on the end of the sentence.
 			$description = substr( $description, 0, strlen( $description ) - 1 );
 		}
 
@@ -47,10 +47,10 @@ class WP_Term extends Base {
 
 	public function parent_term( $terms = [], $taxonomies = [], $args = [] ) {
 		if ( ! empty( $taxonomies ) ) {
-			// We only need the ids to be returned
+			// We only need the ids to be returned.
 			$args['fields'] = 'ids';
 
-			// Merge the returned terms to the one provided
+			// Merge the returned terms to the one provided.
 			$terms = array_merge( (array) $terms, get_terms( array_merge( $args, [ 'taxonomy' => $taxonomies ] ) ) );
 		}
 
