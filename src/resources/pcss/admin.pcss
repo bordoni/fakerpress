@@ -2,46 +2,47 @@
 =============================================*/
 
 .fp-link-footer {
-    text-decoration: none;
-    margin-right: 5px;
-    margin-left: 5px;
+	text-decoration: none;
+	margin-right: 5px;
+	margin-left: 5px;
 
-    &:hover {
-        text-decoration: underline;
+	&:hover {
+		text-decoration: underline;
 
-        span {
-            text-decoration: none;
-        }
-    }
+		span {
+			text-decoration: none;
+		}
+	}
 }
 
 
 .select2-drop {
-    padding-top: 8px;
+	padding-top: 8px;
 
-    &.select2-drop-active {
-        border: 2px solid #2271b1;
-        border-top: 0;
-    }
+	&.select2-drop-active {
+		border: 2px solid #2271b1;
+		border-top: 0;
+	}
 
-    .select2-search {
-        &:after {
-            content: "\f179";
-            display: block;
-            position: absolute;
-            top: 9px;
-            text-align: center;
-            font: normal 20px/1 dashicons !important;
-            right: 13px;
-            speak: never;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+	.select2-search {
 
-        input[type="text"] {
-            background: #fff !important;
-            padding-right: 30px;
-        }
-    }
+		&::after {
+			content: "\f179";
+			display: block;
+			position: absolute;
+			top: 9px;
+			text-align: center;
+			font: 400 20px/1 dashicons !important;
+			right: 13px;
+			speak: never;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+
+		input[type="text"] {
+			background: #fff !important;
+			padding-right: 30px;
+		}
+	}
 }
 

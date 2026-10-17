@@ -2,10 +2,8 @@
 
 /* Limit Tailwind's auto-detection to source packages only. */
 @source "../../**/*.{tsx,ts,jsx,js,html,php}";
-
 @import "tailwindcss/theme" prefix(fp);
 @import "tailwindcss/utilities" prefix(fp);
-
 @custom-variant dark (&:is(.dark *));
 
 /*
@@ -61,6 +59,7 @@
 @layer fp-base, fp-components, fp-utilities;
 
 @layer fp-base {
+
 	/*
 	 * Theme variables scoped to the FakerPress React root.
 	 * Custom properties are not subject to normal layer priority — they cascade by specificity
@@ -69,23 +68,23 @@
 	 */
 	#fakerpress-react-root {
 		--background: oklch(1 0 0);
-		--foreground: oklch(0.24 0.010 241);
+		--foreground: oklch(0.24 0.01 241);
 		--card: oklch(1 0 0);
-		--card-foreground: oklch(0.24 0.010 241);
+		--card-foreground: oklch(0.24 0.01 241);
 		--popover: oklch(1 0 0);
-		--popover-foreground: oklch(0.24 0.010 241);
+		--popover-foreground: oklch(0.24 0.01 241);
 		--primary: oklch(0.49 0.12 241);
 		--primary-foreground: oklch(0.985 0 0);
 		--secondary: oklch(0.97 0 0);
-		--secondary-foreground: oklch(0.24 0.010 241);
+		--secondary-foreground: oklch(0.24 0.01 241);
 		--muted: oklch(0.97 0 0);
-		--muted-foreground: oklch(0.40 0.008 245);
+		--muted-foreground: oklch(0.4 0.008 245);
 		--accent: oklch(0.97 0 0);
-		--accent-foreground: oklch(0.24 0.010 241);
+		--accent-foreground: oklch(0.24 0.01 241);
 		--destructive: oklch(0.577 0.245 27.325);
 		--destructive-foreground: oklch(0.577 0.245 27.325);
-		--border: oklch(0.60 0.006 247);
-		--input: oklch(0.60 0.006 247);
+		--border: oklch(0.6 0.006 247);
+		--input: oklch(0.6 0.006 247);
 		--ring: oklch(0.49 0.12 241);
 		--radius: 0.3rem;
 		--chart-1: oklch(0.646 0.222 41.116);
@@ -120,7 +119,7 @@
 	box-sizing: border-box;
 	border-width: 0;
 	border-style: solid;
-	border-color: currentColor;
+	border-color: currentcolor;
 }
 
 /*
@@ -206,7 +205,7 @@
 	line-height: inherit;
 	border-width: 0;
 	border-style: solid;
-	border-color: currentColor;
+	border-color: currentcolor;
 	border-radius: 0;
 	background-color: transparent;
 	color: inherit;
@@ -240,7 +239,7 @@
 :where([data-fp-root]) input[type="radio"]:focus,
 :where([data-fp-root]) select:focus,
 :where([data-fp-root]) textarea:focus {
-	border-color: currentColor;
+	border-color: currentcolor;
 	box-shadow: none;
 	outline: none;
 	color: inherit;
