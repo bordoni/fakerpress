@@ -46,5 +46,24 @@ module.exports = {
 				ignoreAtRules: [ 'config', 'source' ],
 			},
 		],
+
+		// Dashicons is WordPress's icon font. A generic fallback family would render
+		// the glyph's code point as a letter instead of the icon.
+		'font-family-no-missing-generic-family-keyword': [
+			true,
+			{
+				ignoreFontFamilies: [ 'dashicons' ],
+			},
+		],
 	},
+	overrides: [
+		{
+			// Legacy jQuery UI, Select2 and datepicker styles rely on source order:
+			// reordering rules to satisfy this rule would change the cascade.
+			files: [ 'src/resources/pcss/**/*.pcss' ],
+			rules: {
+				'no-descending-specificity': null,
+			},
+		},
+	],
 };
