@@ -9,7 +9,7 @@ use FakerPress\Utils;
  */
 class Field {
 
-	const plugin = 'fakerpress';
+	const plugin = 'fakerpress'; // phpcs:ignore Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase -- Public constant on a deprecated class, renaming it breaks Field::plugin references.
 
 	public $type = 'raw';
 
@@ -186,7 +186,7 @@ class Field {
 		$this->wrap        = $container->wrap;
 	}
 
-	public function output( $print = false ) {
+	public function output( $print = false ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.printFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 		if ( ! $this->conditional ) {
 			return false;
 		}
@@ -202,7 +202,7 @@ class Field {
 			$field = apply_filters( self::plugin . '/fields/field-output-' . $this->type, $field, $this );
 
 			if ( $print ) {
-				echo balanceTags( $field );
+				echo balanceTags( $field ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, StellarWP.XSS.EscapeOutput.OutputNotEscaped -- Field markup from the type_* builders, which escape attribute values through Utils::attr().
 			} else {
 				return $field;
 			}
@@ -512,7 +512,7 @@ class Field {
 			$field = (object) $field;
 		}
 
-		if ( ! is_a( $container, __CLASS__ ) ) {
+		if ( ! ( $container instanceof self ) ) {
 			$container = (object) wp_parse_args( $container, self::$default_container );
 		}
 		if ( ! isset( $container->id ) ) {
@@ -521,21 +521,13 @@ class Field {
 
 		$field = (object) wp_parse_args( $field, ( ! empty( $container->field ) ? $container->field : [] ) );
 
-		// Setup Private Attributes (_*)
-		if ( isset( $field->_id ) ) {
-
-		} elseif ( empty( $field->id ) ) {
-			$field->_id = (array) $container->id;
-		} else {
-			$field->_id = (array) $field->id;
+		// Setup Private Attributes (_*), keeping any that were passed in.
+		if ( ! isset( $field->_id ) ) {
+			$field->_id = empty( $field->id ) ? (array) $container->id : (array) $field->id;
 		}
 
-		if ( isset( $field->_name ) ) {
-
-		} elseif ( ! isset( $field->name ) ) {
-			$field->_name = (array) ( $container->field->name ?? $field->_id );
-		} else {
-			$field->_name = (array) $field->name;
+		if ( ! isset( $field->_name ) ) {
+			$field->_name = isset( $field->name ) ? (array) $field->name : (array) ( $container->field->name ?? $field->_id );
 		}
 
 		// Setup Public Attributes
@@ -653,7 +645,7 @@ class Field {
 
 		$content[] = '<input' . Utils::attr( $field ) . '/>';
 
-		if ( is_a( $container, __CLASS__ ) ) {
+		if ( $container instanceof self ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
@@ -698,7 +690,7 @@ class Field {
 			$content[] = '<div class="' . Utils::abbr( 'field-description' ) . '">' . $field->description . '</div>';
 		}
 
-		if ( is_a( $container, __CLASS__ ) ) {
+		if ( $container instanceof self ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
@@ -736,7 +728,7 @@ class Field {
 			$content[] = '<label class="' . Utils::abbr( 'field-label' ) . '" for="' . self::id( $radio->_id ) . '">' . $opt['text'] . '</label><br />';
 		}
 
-		if ( is_a( $container, __CLASS__ ) ) {
+		if ( $container instanceof self ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
@@ -774,7 +766,7 @@ class Field {
 			$content[] = '<label class="' . Utils::abbr( 'field-label' ) . '" for="' . self::id( $checkbox->_id ) . '">' . $opt['text'] . '</label><br />';
 		}
 
-		if ( is_a( $container, __CLASS__ ) ) {
+		if ( $container instanceof self ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
@@ -812,12 +804,12 @@ class Field {
 				if ( isset( $field->value ) && $field->value === $option['value'] ) {
 					$option['selected'] = true;
 				}
-				$content[] = '<option' . Utils::attr( $option ) . '>' . esc_attr( $option['text'] ) . '</option>';
+				$content[] = '<option' . Utils::attr( $option ) . '>' . esc_html( $option['text'] ) . '</option>';
 			}
 			$content[] = '</select>';
 		}
 
-		if ( is_a( $container, __CLASS__ ) ) {
+		if ( $container instanceof self ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
@@ -894,7 +886,7 @@ class Field {
 		$content[] = '<div title="' . esc_attr__( 'To', 'fakerpress' ) . '" class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
 		$content[] = self::type_input( $max, null, 'string', [] );
 
-		if ( is_a( $container, __CLASS__ ) ) {
+		if ( $container instanceof self ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
@@ -1056,7 +1048,7 @@ class Field {
 
 		$content = $table->build( $content );
 
-		if ( is_a( $container, __CLASS__ ) ) {
+		if ( $container instanceof self ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
@@ -1187,7 +1179,7 @@ class Field {
 			$containers->conf->id[]        = 'conf';
 			$containers->conf->type       .= '_conf';
 			$containers->conf->label       = __( 'Configuration', 'fakerpress' );
-			$containers->conf->description = __( '', 'fakerpress' );
+			$containers->conf->description = '';
 			$containers->conf->class       = [ 'meta_conf-container' ];
 			$containers->conf->blocks      = $container_blocks;
 			$containers->conf->attributes  = [
@@ -1204,7 +1196,7 @@ class Field {
 
 		$content = $table->build( $content );
 
-		if ( is_a( $container, __CLASS__ ) ) {
+		if ( $container instanceof self ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
@@ -1267,7 +1259,7 @@ class Field {
 		$types->numbers = [
 			'value'    => 'numbers',
 			'text'     => __( 'Number', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$range        = clone $field;
 				$range->_id   = [ 'meta', 'number' ];
 				$range->_name = [ 'meta', 'number' ];
@@ -1286,7 +1278,7 @@ class Field {
 		$types->wp_query = [
 			'value'    => 'wp_query',
 			'text'     => __( 'WP_Query', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$query              = clone $field;
 				$query->_id         = [ 'meta', 'query' ];
 				$query->_name       = [ 'meta', 'query' ];
@@ -1306,7 +1298,7 @@ class Field {
 		$types->attachment = [
 			'value'    => 'attachment',
 			'text'     => __( 'Attachment', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$store              = clone $field;
 				$store->_id         = [ 'meta', 'store' ];
 				$store->_name       = [ 'meta', 'store' ];
@@ -1374,7 +1366,7 @@ class Field {
 		$types->elements = [
 			'value'    => 'elements',
 			'text'     => __( 'Elements', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$tags                   = clone $field;
 				$tags->_id              = [ 'meta', 'elements' ];
 				$tags->_name            = [ 'meta', 'elements' ];
@@ -1384,7 +1376,7 @@ class Field {
 				$tags->{'data-tags'}    = true;
 				$tags->class            = [];
 				$tags->placeholder      = __( 'Type all possible elements (Tab or Return)', 'fakerpress' );
-				$tags->label            = __( '', 'fakerpress' );
+				$tags->label            = '';
 
 				$html[] = Field::wrapper( Field::type_dropdown( $tags, null, 'string' ), $tags );
 				$html[] = Field::wrapper( Field::type_range( $default->qty, null, 'string' ), $default->qty );
@@ -1398,7 +1390,7 @@ class Field {
 		$types->letter = [
 			'value'    => 'letter',
 			'text'     => __( 'Letter', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function () use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1408,7 +1400,7 @@ class Field {
 		$types->words = [
 			'value'    => 'words',
 			'text'     => __( 'Words', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function () use ( $default ) {
 
 				$html[] = Field::wrapper( Field::type_range( $default->qty, null, 'string' ), $default->qty );
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
@@ -1420,7 +1412,7 @@ class Field {
 		$types->text = [
 			'value'    => 'text',
 			'text'     => __( 'Text', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$text          = clone $field;
 				$text->_id     = [ 'meta', 'text_type' ];
 				$text->_name   = [ 'meta', 'text_type' ];
@@ -1454,7 +1446,7 @@ class Field {
 		$types->html = [
 			'value'    => 'html',
 			'text'     => __( 'HTML', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$elements                   = clone $field;
 				$elements->_id              = [ 'meta', 'elements' ];
 				$elements->_name            = [ 'meta', 'elements' ];
@@ -1477,7 +1469,7 @@ class Field {
 		$types->lexify = [
 			'value'    => 'lexify',
 			'text'     => __( 'Lexify', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$template              = clone $field;
 				$template->_id         = [ 'meta', 'template' ];
 				$template->_name       = [ 'meta', 'template' ];
@@ -1496,7 +1488,7 @@ class Field {
 		$types->asciify = [
 			'value'    => 'asciify',
 			'text'     => __( 'Asciify', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$template              = clone $field;
 				$template->_id         = [ 'meta', 'template' ];
 				$template->_name       = [ 'meta', 'template' ];
@@ -1515,7 +1507,7 @@ class Field {
 		$types->regexify = [
 			'value'    => 'regexify',
 			'text'     => __( 'Regexify', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$template              = clone $field;
 				$template->_id         = [ 'meta', 'template' ];
 				$template->_name       = [ 'meta', 'template' ];
@@ -1534,7 +1526,7 @@ class Field {
 		$types->person = [
 			'value'    => 'person',
 			'text'     => __( 'Person', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$template                     = clone $field;
 				$template->_id                = [ 'meta', 'template' ];
 				$template->_name              = [ 'meta', 'template' ];
@@ -1593,7 +1585,7 @@ class Field {
 		$types->geo = [
 			'value'    => 'geo',
 			'text'     => __( 'Geo Information', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$template                     = clone $field;
 				$template->_id                = [ 'meta', 'template' ];
 				$template->_name              = [ 'meta', 'template' ];
@@ -1681,7 +1673,7 @@ class Field {
 		$types->phone = [
 			'value'    => 'company',
 			'text'     => __( 'Company', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$template                     = clone $field;
 				$template->_id                = [ 'meta', 'template' ];
 				$template->_name              = [ 'meta', 'template' ];
@@ -1721,7 +1713,7 @@ class Field {
 		$types->date = [
 			'value'    => 'date',
 			'text'     => __( 'Date', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function ( $field ) use ( $default ) {
 				$template        = clone $field;
 				$template->_id   = [ 'meta', 'interval' ];
 				$template->_name = [ 'meta', 'interval' ];
@@ -1747,7 +1739,7 @@ class Field {
 		$types->timezone = [
 			'value'    => 'timezone',
 			'text'     => __( 'TimeZone', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function () use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1757,7 +1749,7 @@ class Field {
 		$types->email = [
 			'value'    => 'email',
 			'text'     => __( 'Email', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function () use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1767,7 +1759,7 @@ class Field {
 		$types->domain = [
 			'value'    => 'domain',
 			'text'     => __( 'Domain', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function () use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1777,7 +1769,7 @@ class Field {
 		$types->ip = [
 			'value'    => 'ip',
 			'text'     => __( 'IP', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function () use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1787,7 +1779,7 @@ class Field {
 		$types->user_agent = [
 			'value'    => 'user_agent',
 			'text'     => __( 'Browser User Agent', 'fakerpress' ),
-			'template' => function ( $field, $type ) use ( $default ) {
+			'template' => function () use ( $default ) {
 				$html[] = Field::wrapper( Field::type_number( $default->weight, null, 'string' ), $default->weight );
 
 				return implode( "\r\n", $html );
@@ -1838,7 +1830,7 @@ class Field {
 		$content[] = '<div class="dashicons dashicons-arrow-right-alt2 dashicon-date" style="display: inline-block;"></div>';
 		$content[] = self::type_date( $max, null, 'string' );
 
-		if ( is_a( $container, __CLASS__ ) ) {
+		if ( $container instanceof self ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
@@ -1863,7 +1855,7 @@ class Field {
 			$content = '';
 		}
 
-		if ( is_a( $container, __CLASS__ ) ) {
+		if ( $container instanceof self ) {
 			$html[] = $container->build( $content );
 		} else {
 			$html = $content;
