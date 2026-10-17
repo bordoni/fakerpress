@@ -216,7 +216,7 @@ export default function CommentsPage() {
 						<MetaFieldRules
 							value={ field.value }
 							onChange={ field.onChange }
-							description={ __( 'Use the fields below to configure a set of rules for your generated Comments.', 'fakerpress' ) }
+							description={ __( 'Use the fields below to configure a set of rules for your generated Comments', 'fakerpress' ) }
 						/>
 					) }
 				/>

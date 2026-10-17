@@ -11,6 +11,8 @@ interface RangeInputProps {
 	min?: number;
 	max?: number;
 	step?: number;
+	/** Always show the max field (disabled until min is set), as the stable rule ranges do. */
+	showMax?: boolean;
 }
 
 export function RangeInput( {
@@ -23,6 +25,7 @@ export function RangeInput( {
 	min,
 	max,
 	step = 1,
+	showMax = false,
 }: RangeInputProps ) {
 	return (
 		<div className="fp:inline-flex fp:items-center fp:rounded-md fp:border fp:border-input fp:bg-background fp:focus-within:ring-[3px] fp:focus-within:ring-ring/50 fp:transition-shadow fp:overflow-hidden">
@@ -36,7 +39,7 @@ export function RangeInput( {
 				step={ step }
 				className="fp:w-24 fp:border-0 fp:rounded-none fp:shadow-none fp:focus-visible:ring-0"
 			/>
-			{ minValue !== undefined && (
+			{ ( showMax || minValue !== undefined ) && (
 				<>
 					<span className="fp:flex fp:items-center fp:self-stretch fp:border-x fp:border-input fp:px-2 fp:text-muted-foreground fp:select-none">
 						<ArrowRight className="fp:size-3.5" />
@@ -49,7 +52,9 @@ export function RangeInput( {
 						min={ min }
 						max={ max }
 						step={ step }
-						className="fp:w-24 fp:border-0 fp:rounded-none fp:shadow-none fp:focus-visible:ring-0"
+						disabled={ minValue === undefined }
+						aria-label={ maxPlaceholder }
+						className="fp:w-24 fp:border-0 fp:rounded-none fp:shadow-none fp:focus-visible:ring-0 fp:disabled:bg-muted"
 					/>
 				</>
 			) }

@@ -53,6 +53,7 @@ const META_CONFIG_ORDER: Record< string, string[] > = {
 	person: [ 'template', 'gender' ],
 	geo: [ 'template' ],
 	company: [ 'template' ],
+	date: [ 'interval', 'format' ],
 };
 
 /**
@@ -85,12 +86,15 @@ function orderedConfig(
  * Convert meta rules to API format.
  */
 function metaToParam( meta: MetaRule[] ): Record< string, unknown >[] | undefined {
-	if ( ! meta || meta.length === 0 ) {
+	// The rules UI always shows at least one rule, so blank ones (no type or no
+	// name yet) are expected here; the backend would skip them anyway.
+	const rules = ( meta ?? [] ).filter( ( rule ) => rule.type && rule.name.trim() );
+	if ( rules.length === 0 ) {
 		return undefined;
 	}
-	return meta.map( ( rule ) => {
+	return rules.map( ( rule ) => {
 		const config = orderedConfig( rule.type, rule.config );
-		const param: Record< string, unknown > = { type: rule.type, name: rule.name };
+		const param: Record< string, unknown > = { type: rule.type, name: rule.name.trim() };
 		const weight =
 			rule.weight !== undefined && rule.weight !== null ? rule.weight : undefined;
 
@@ -245,8 +249,9 @@ export function transformPostsForm( data: {
 		excerpt_size: [ data.excerpt_size.min ?? 1, data.excerpt_size.max ?? data.excerpt_size.min ?? 1 ],
 		// The Post module reads `taxonomy` (not `taxonomy_rules`) and tax_input()
 		// expects a `qty` range plus `rate`; there is no taxonomy weight.
-		taxonomy: data.taxonomy_rules.length > 0
-			? data.taxonomy_rules.map( ( rule ) => ( {
+		// Rules without taxonomies are the blank placeholder the rules UI keeps on screen.
+		taxonomy: data.taxonomy_rules.some( ( rule ) => rule.taxonomies.length > 0 )
+			? data.taxonomy_rules.filter( ( rule ) => rule.taxonomies.length > 0 ).map( ( rule ) => ( {
 				taxonomies: rule.taxonomies,
 				terms: rule.terms,
 				rate: rule.rate,

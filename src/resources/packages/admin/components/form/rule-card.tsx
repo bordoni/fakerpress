@@ -1,52 +1,96 @@
 import type { ReactNode } from 'react';
-import { Button } from '../ui/button';
+import { cn } from '../../lib/utils';
 
-interface RuleCardProps {
-	/** Zero-based index of the rule; displayed as a 1-based badge. */
-	index: number;
-	/** Remove this rule. */
-	onRemove: () => void;
-	/** Append a new rule. */
-	onAdd: () => void;
+interface RuleSectionProps {
+	/** Section heading, e.g. "Meta Field Rules". */
+	title: string;
+	/** Italic helper line under the heading. */
+	description?: ReactNode;
 	children: ReactNode;
 }
 
 /**
- * A single rule card: a white bordered panel with a numbered badge and
- * remove/add controls in the header, followed by label-left field rows.
- *
- * Mirrors the layout of the legacy (stable) generator so the React UI reads
- * like a native WordPress form rather than a stack of disconnected inputs.
+ * A rules section: the grey heading band and italic description used by the
+ * stable generator's Taxonomy and Meta Field Rules, followed by its rule cards.
  */
-export function RuleCard( { index, onRemove, onAdd, children }: RuleCardProps ) {
+export function RuleSection( { title, description, children }: RuleSectionProps ) {
 	return (
-		<div className="fp:bg-white fp:border fp:border-[#c3c4c7] fp:rounded-md fp:p-4 fp:mb-3">
-			<div className="fp:flex fp:items-center fp:justify-between fp:mb-3">
-				<span className="fp:flex fp:items-center fp:justify-center fp:size-6 fp:rounded fp:bg-[#f0f0f1] fp:text-xs fp:font-semibold fp:text-[#646970]">
-					{ index + 1 }
-				</span>
-				<div className="fp:flex fp:gap-1">
-					<Button
+		<div className="fp:py-[15px]">
+			<h3 className="fp:-ml-[22px] fp:mb-2.5 fp:bg-[#f9f9f9] fp:py-1.5 fp:pl-[22px] fp:text-[1.3em] fp:font-semibold fp:leading-7 fp:text-[#1d2327]">
+				{ title }
+			</h3>
+			{ description && (
+				<p className="fp:mx-px fp:mt-1 fp:mb-[5px] fp:text-sm fp:italic fp:leading-7 fp:text-[#666]">
+					{ description }
+				</p>
+			) }
+			<div>{ children }</div>
+		</div>
+	);
+}
+
+interface RuleCardProps {
+	/** Zero-based index of the rule; displayed as a 1-based badge. */
+	index: number;
+	/** Remove this rule (or clear it, when it is the only one). */
+	onRemove: () => void;
+	/** Append a new, empty rule. */
+	onAdd: () => void;
+	/** Disable the remove control (the only rule, and it is already empty). */
+	removeDisabled?: boolean;
+	children: ReactNode;
+}
+
+/**
+ * A single rule, laid out like the stable generator's rule tables: a grey
+ * gutter with the rule number on the left, label-left field rows in the
+ * middle, and stacked remove/add buttons in a grey gutter on the right.
+ * Consecutive cards share a border so a list of rules reads as one block.
+ */
+export function RuleCard( { index, onRemove, onAdd, removeDisabled = false, children }: RuleCardProps ) {
+	return (
+		<div
+			className={ cn(
+				'fp:flex fp:flex-col fp:border fp:border-[#dfdfdf] fp:bg-[#f9f9f9]',
+				index > 0 && 'fp:border-t-0'
+			) }
+			data-fp-rule={ index + 1 }
+		>
+			<div className="fp:h-[5px] fp:shrink-0 fp:border-b fp:border-[#f4f4f4] fp:bg-white" />
+			<div className="fp:flex fp:flex-1">
+				<div className="fp:w-[37px] fp:shrink-0 fp:bg-[#f4f4f4] fp:pt-1">
+					<button
 						type="button"
-						variant="outline"
-						size="icon-sm"
-						onClick={ onRemove }
-						title="Remove rule"
+						className="button fp-rule-action"
+						disabled
+						aria-label={ `Rule ${ index + 1 }` }
 					>
-						−
-					</Button>
-					<Button
+						{ index + 1 }
+					</button>
+				</div>
+				<div className="fp:min-w-0 fp:flex-1 fp:bg-white fp:py-3">{ children }</div>
+				<div className="fp:flex fp:w-[37px] fp:shrink-0 fp:flex-col fp:gap-0.5 fp:bg-[#f4f4f4] fp:pt-1">
+					<button
 						type="button"
-						variant="outline"
-						size="icon-sm"
+						className="button fp-rule-action"
+						onClick={ onRemove }
+						disabled={ removeDisabled }
+						title="Remove rule"
+						aria-label="Remove rule"
+					>
+						&minus;
+					</button>
+					<button
+						type="button"
+						className="button fp-rule-action"
 						onClick={ onAdd }
 						title="Add rule"
+						aria-label="Add rule"
 					>
 						+
-					</Button>
+					</button>
 				</div>
 			</div>
-			<div className="fp:space-y-3">{ children }</div>
 		</div>
 	);
 }
@@ -60,21 +104,62 @@ interface RuleFieldProps {
 }
 
 /**
- * A single labelled field row: label on the left, control on the right,
- * with an optional italic description beneath the control.
+ * A single labelled row inside a rule: label on the left, control on the
+ * right, with an optional italic description beneath the control.
  */
 export function RuleField( { label, description, children }: RuleFieldProps ) {
 	return (
-		<div className="fp:flex fp:flex-col fp:gap-1.5 fp:sm:flex-row fp:sm:gap-4">
-			<div className="fp:sm:w-40 fp:sm:shrink-0 fp:sm:pt-2">
-				<label className="fp:text-sm fp:font-medium fp:text-[#1d2327]">{ label }</label>
+		<div className="fp:flex fp:flex-col fp:py-2 fp:sm:flex-row">
+			<div className="fp:shrink-0 fp:pr-2 fp:pl-5 fp:sm:w-[139px]">
+				<label className="fp:mt-[5px] fp:inline-block fp:text-sm fp:leading-[18.2px] fp:text-[#3c434a]">
+					{ label }
+				</label>
 			</div>
-			<div className="fp:flex-1 fp:space-y-1">
+			<div className="fp:min-w-0 fp:flex-1 fp:px-2 fp:max-sm:pl-5">
 				{ children }
-				{ description && (
-					<p className="fp:text-xs fp:italic fp:text-[#646970]">{ description }</p>
-				) }
+				{ description && <RuleDescription>{ description }</RuleDescription> }
 			</div>
+		</div>
+	);
+}
+
+/**
+ * Small italic helper text, as used under rule controls.
+ */
+export function RuleDescription( { children }: { children: ReactNode } ) {
+	return (
+		<p className="fp:mx-px fp:mt-1 fp:mb-[5px] fp:text-[12.6px] fp:italic fp:leading-[18.9px] fp:text-[#666]">
+			{ children }
+		</p>
+	);
+}
+
+interface RuleConfigItemProps {
+	/** Small grey label next to (or, for wide controls, below) the control. */
+	label?: ReactNode;
+	/** Put the label under the control instead of beside it. */
+	labelBelow?: boolean;
+	children: ReactNode;
+}
+
+/**
+ * One control inside a meta rule's "Configuration" row, with the small grey
+ * inline label the stable generator uses (e.g. "Weight", "Stored Data").
+ */
+export function RuleConfigItem( { label, labelBelow = false, children }: RuleConfigItemProps ) {
+	return (
+		<div
+			className={ cn(
+				'fp:flex fp:gap-x-2 fp:not-first:mt-2',
+				labelBelow ? 'fp:flex-col fp:items-start' : 'fp:flex-wrap fp:items-center'
+			) }
+		>
+			{ children }
+			{ label && (
+				<span className="fp:text-xs fp:leading-[16.8px] fp:text-[#888] fp:[&_b]:px-[3px] fp:[&_b]:text-[15px]">
+					{ label }
+				</span>
+			) }
 		</div>
 	);
 }

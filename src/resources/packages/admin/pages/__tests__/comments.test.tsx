@@ -23,10 +23,10 @@ describe( 'CommentsPage', () => {
 	it( 'renders all form fields', () => {
 		render( <CommentsPage /> );
 
-		expect( screen.getByText( 'Type' ) ).toBeInTheDocument();
+		expect( screen.getByText( 'Type', { selector: '[data-slot="label"]' } ) ).toBeInTheDocument();
 		expect( screen.getByText( 'Post Type' ) ).toBeInTheDocument();
-		expect( screen.getByText( 'Quantity' ) ).toBeInTheDocument();
-		expect( screen.getByText( 'Date' ) ).toBeInTheDocument();
+		expect( screen.getByText( 'Quantity', { selector: '[data-slot="label"]' } ) ).toBeInTheDocument();
+		expect( screen.getByText( 'Date', { selector: '[data-slot="label"]' } ) ).toBeInTheDocument();
 		expect( screen.getByText( 'Content Size' ) ).toBeInTheDocument();
 	} );
 

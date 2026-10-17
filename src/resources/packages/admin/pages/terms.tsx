@@ -122,7 +122,7 @@ export default function TermsPage() {
 						<MetaFieldRules
 							value={ field.value }
 							onChange={ field.onChange }
-							description={ __( 'Use the fields below to configure a set of rules for your generated Terms.', 'fakerpress' ) }
+							description={ __( 'Use the fields below to configure a set of rules for your generated Terms', 'fakerpress' ) }
 						/>
 					) }
 				/>

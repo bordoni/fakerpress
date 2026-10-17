@@ -176,7 +176,7 @@ export default function UsersPage() {
 						<MetaFieldRules
 							value={ field.value }
 							onChange={ field.onChange }
-							description={ __( 'Use the fields below to configure a set of rules for your generated Users.', 'fakerpress' ) }
+							description={ __( 'Use the fields below to configure a set of rules for your generated users', 'fakerpress' ) }
 						/>
 					) }
 				/>

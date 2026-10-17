@@ -245,3 +245,21 @@
 	outline: none;
 	color: inherit;
 }
+
+/*
+ * Rule number / remove / add controls: WordPress's own `.button`, so they follow the admin colour
+ * scheme and disabled state, sized like the stable generator's 22×23 rule buttons. The ID keeps
+ * this above `.wp-core-ui .button` (0,2,0), which Tailwind utilities (0,1,0) cannot beat.
+ */
+#fakerpress-react-root .fp-rule-action.button {
+	display: block;
+	width: 22px;
+	height: 23px;
+	min-height: 22px;
+	margin: 0 auto;
+	padding: 0;
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 20px;
+	text-align: center;
+}

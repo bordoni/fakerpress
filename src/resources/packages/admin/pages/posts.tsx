@@ -433,7 +433,7 @@ export default function PostsPage() {
 							onSearchTerms={ ( query, taxonomies ) => termSearch.search( query, { taxonomies } ) }
 							termSearchResults={ termSearchOptions }
 							isSearchingTerms={ termSearch.isSearching }
-							description={ __( 'Assign terms from taxonomies to generated posts.', 'fakerpress' ) }
+							description={ __( 'Use the fields below to configure the rules for the Taxonomy and Terms selected', 'fakerpress' ) }
 						/>
 					) }
 				/>
@@ -446,7 +446,7 @@ export default function PostsPage() {
 							value={ field.value }
 							onChange={ field.onChange }
 							providerOptions={ imageProviderOptions }
-							description={ __( 'Use the fields below to configure a set of rules for your generated Posts.', 'fakerpress' ) }
+							description={ __( 'Use the fields below to configure a set of rules for your generated Posts', 'fakerpress' ) }
 						/>
 					) }
 				/>
