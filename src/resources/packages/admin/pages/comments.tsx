@@ -8,7 +8,10 @@ import { PageLayout } from '../components/layout/page-layout';
 import { AdminNotice } from '../components/layout/admin-notice';
 import { FormField } from '../components/form/form-field';
 import { RangeInput } from '../components/form/range-input';
-import { ComboboxMulti, type ComboboxOption } from '../components/form/combobox-multi';
+import {
+	ComboboxMulti,
+	type ComboboxOption,
+} from '../components/form/combobox-multi';
 import { DateRangeField } from '../components/form/date-range-field';
 import { MetaFieldRules } from '../components/form/meta-field-rules';
 import { GenerateButton } from '../components/form/generate-button';
@@ -29,7 +32,8 @@ interface CommentsFormData {
 
 export default function CommentsPage() {
 	const { data } = usePageConfig();
-	const { generate, isGenerating, progress, results, error, reset } = useGenerateModule( 'comments' );
+	const { generate, isGenerating, progress, results, error, reset } =
+		useGenerateModule( 'comments' );
 
 	const commentTypeOptions: ComboboxOption[] = useMemo( () => {
 		const types = ( data.comment_types || [ 'default' ] ) as string[];
@@ -37,8 +41,14 @@ export default function CommentsPage() {
 	}, [ data.comment_types ] );
 
 	const postTypeOptions: ComboboxOption[] = useMemo( () => {
-		const postTypes = ( data.post_types || {} ) as Record< string, { name: string; label: string } >;
-		return Object.values( postTypes ).map( ( pt ) => ( { value: pt.name, label: pt.label } ) );
+		const postTypes = ( data.post_types || {} ) as Record<
+			string,
+			{ name: string; label: string }
+		>;
+		return Object.values( postTypes ).map( ( pt ) => ( {
+			value: pt.name,
+			label: pt.label,
+		} ) );
 	}, [ data.post_types ] );
 
 	const htmlTagOptions: ComboboxOption[] = useMemo( () => {
@@ -72,11 +82,17 @@ export default function CommentsPage() {
 				<AdminNotice
 					type="success"
 					title={ __( 'Success', 'fakerpress' ) }
-					message={ `Generated ${ results.generated } comments in ${ results.time.toFixed( 2 ) }s.` }
+					message={ `Generated ${
+						results.generated
+					} comments in ${ results.time.toFixed( 2 ) }s.` }
 				/>
 			) }
 			{ error && (
-				<AdminNotice type="error" title={ __( 'Error', 'fakerpress' ) } message={ error } />
+				<AdminNotice
+					type="error"
+					title={ __( 'Error', 'fakerpress' ) }
+					message={ error }
+				/>
 			) }
 
 			<form onSubmit={ handleSubmit( onSubmit ) }>
@@ -86,13 +102,19 @@ export default function CommentsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Type', 'fakerpress' ) }
-							description={ __( 'Select the type of comments to generate.', 'fakerpress' ) }
+							description={ __(
+								'Select the type of comments to generate.',
+								'fakerpress'
+							) }
 						>
 							<ComboboxMulti
 								value={ field.value }
 								onChange={ field.onChange }
 								options={ commentTypeOptions }
-								placeholder={ __( 'Select types...', 'fakerpress' ) }
+								placeholder={ __(
+									'Select types...',
+									'fakerpress'
+								) }
 							/>
 						</FormField>
 					) }
@@ -104,13 +126,19 @@ export default function CommentsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Post Type', 'fakerpress' ) }
-							description={ __( 'Generate comments on posts of these types.', 'fakerpress' ) }
+							description={ __(
+								'Generate comments on posts of these types.',
+								'fakerpress'
+							) }
 						>
 							<ComboboxMulti
 								value={ field.value }
 								onChange={ field.onChange }
 								options={ postTypeOptions }
-								placeholder={ __( 'Select post types...', 'fakerpress' ) }
+								placeholder={ __(
+									'Select post types...',
+									'fakerpress'
+								) }
 							/>
 						</FormField>
 					) }
@@ -122,13 +150,20 @@ export default function CommentsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Quantity', 'fakerpress' ) }
-							description={ __( 'How many comments to generate. Use both fields to randomize within the given range.', 'fakerpress' ) }
+							description={ __(
+								'How many comments to generate. Use both fields to randomize within the given range.',
+								'fakerpress'
+							) }
 						>
 							<RangeInput
 								minValue={ field.value.min }
 								maxValue={ field.value.max }
-								onMinChange={ ( min ) => field.onChange( { ...field.value, min } ) }
-								onMaxChange={ ( max ) => field.onChange( { ...field.value, max } ) }
+								onMinChange={ ( min ) =>
+									field.onChange( { ...field.value, min } )
+								}
+								onMaxChange={ ( max ) =>
+									field.onChange( { ...field.value, max } )
+								}
 								min={ 1 }
 							/>
 						</FormField>
@@ -141,7 +176,10 @@ export default function CommentsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Date', 'fakerpress' ) }
-							description={ __( 'Choose the range for the comment dates.', 'fakerpress' ) }
+							description={ __(
+								'Choose the range for the comment dates.',
+								'fakerpress'
+							) }
 						>
 							<DateRangeField
 								value={ field.value }
@@ -157,13 +195,20 @@ export default function CommentsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Content Size', 'fakerpress' ) }
-							description={ __( 'Number of sentences in the comment content.', 'fakerpress' ) }
+							description={ __(
+								'Number of sentences in the comment content.',
+								'fakerpress'
+							) }
 						>
 							<RangeInput
 								minValue={ field.value.min }
 								maxValue={ field.value.max }
-								onMinChange={ ( min ) => field.onChange( { ...field.value, min } ) }
-								onMaxChange={ ( max ) => field.onChange( { ...field.value, max } ) }
+								onMinChange={ ( min ) =>
+									field.onChange( { ...field.value, min } )
+								}
+								onMaxChange={ ( max ) =>
+									field.onChange( { ...field.value, max } )
+								}
 								min={ 0 }
 							/>
 						</FormField>
@@ -176,12 +221,25 @@ export default function CommentsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Use HTML', 'fakerpress' ) }
-							description={ __( 'When enabled, comment content will include HTML markup.', 'fakerpress' ) }
+							description={ __(
+								'When enabled, comment content will include HTML markup.',
+								'fakerpress'
+							) }
 						>
 							<div className="fp:flex fp:items-center fp:gap-2">
-								<Switch id="use_html" checked={ field.value } onCheckedChange={ field.onChange } />
-								<Label htmlFor="use_html" className="fp:text-sm">
-									{ __( 'Enable HTML in content', 'fakerpress' ) }
+								<Switch
+									id="use_html"
+									checked={ field.value }
+									onCheckedChange={ field.onChange }
+								/>
+								<Label
+									htmlFor="use_html"
+									className="fp:text-sm"
+								>
+									{ __(
+										'Enable HTML in content',
+										'fakerpress'
+									) }
 								</Label>
 							</div>
 						</FormField>
@@ -195,13 +253,19 @@ export default function CommentsPage() {
 						render={ ( { field } ) => (
 							<FormField
 								label={ __( 'HTML Tags', 'fakerpress' ) }
-								description={ __( 'HTML elements that can appear in generated comment content.', 'fakerpress' ) }
+								description={ __(
+									'HTML elements that can appear in generated comment content.',
+									'fakerpress'
+								) }
 							>
 								<ComboboxMulti
 									value={ field.value }
 									onChange={ field.onChange }
 									options={ htmlTagOptions }
-									placeholder={ __( 'Select HTML tags...', 'fakerpress' ) }
+									placeholder={ __(
+										'Select HTML tags...',
+										'fakerpress'
+									) }
 									allowCreate
 								/>
 							</FormField>
@@ -216,7 +280,10 @@ export default function CommentsPage() {
 						<MetaFieldRules
 							value={ field.value }
 							onChange={ field.onChange }
-							description={ __( 'Use the fields below to configure a set of rules for your generated Comments', 'fakerpress' ) }
+							description={ __(
+								'Use the fields below to configure a set of rules for your generated Comments',
+								'fakerpress'
+							) }
 						/>
 					) }
 				/>

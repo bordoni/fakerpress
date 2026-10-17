@@ -11,7 +11,13 @@ interface AdminNoticeProps {
 	onDismiss?: () => void;
 }
 
-export function AdminNotice( { type, title, message, dismissible = true, onDismiss }: AdminNoticeProps ) {
+export function AdminNotice( {
+	type,
+	title,
+	message,
+	dismissible = true,
+	onDismiss,
+}: AdminNoticeProps ) {
 	const [ visible, setVisible ] = useState( true );
 
 	if ( ! visible ) {

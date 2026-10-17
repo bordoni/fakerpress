@@ -22,10 +22,15 @@ export default function SettingsPage() {
 
 	const [ phrase, setPhrase ] = useState( '' );
 	const [ dialogOpen, setDialogOpen ] = useState( false );
-	const [ status, setStatus ] = useState< { type: 'success' | 'error'; message: string } | null >( null );
+	const [ status, setStatus ] = useState< {
+		type: 'success' | 'error';
+		message: string;
+	} | null >( null );
 	const [ isSubmitting, setIsSubmitting ] = useState( false );
 
-	const phraseMatches = phrase.toLowerCase().replace( /!$/, '' ) === erasePhrase.toLowerCase().replace( /!$/, '' );
+	const phraseMatches =
+		phrase.toLowerCase().replace( /!$/, '' ) ===
+		erasePhrase.toLowerCase().replace( /!$/, '' );
 
 	const handleDelete = useCallback( async () => {
 		setIsSubmitting( true );
@@ -51,7 +56,9 @@ export default function SettingsPage() {
 			addField( '_wp_http_referer', window.location.href );
 
 			// Use the actual WP nonce from the page.
-			const wpNonceInput = document.querySelector< HTMLInputElement >( 'input[name="_wpnonce"]' );
+			const wpNonceInput = document.querySelector< HTMLInputElement >(
+				'input[name="_wpnonce"]'
+			);
 			if ( wpNonceInput ) {
 				addField( '_wpnonce', wpNonceInput.value );
 			}
@@ -59,7 +66,13 @@ export default function SettingsPage() {
 			document.body.appendChild( form );
 			form.submit();
 		} catch {
-			setStatus( { type: 'error', message: __( 'Failed to delete data. Please try again.', 'fakerpress' ) } );
+			setStatus( {
+				type: 'error',
+				message: __(
+					'Failed to delete data. Please try again.',
+					'fakerpress'
+				),
+			} );
 			setIsSubmitting( false );
 		}
 	}, [ phrase, restNonce ] );
@@ -69,7 +82,11 @@ export default function SettingsPage() {
 			{ status && (
 				<AdminNotice
 					type={ status.type }
-					title={ status.type === 'success' ? __( 'Success', 'fakerpress' ) : __( 'Error', 'fakerpress' ) }
+					title={
+						status.type === 'success'
+							? __( 'Success', 'fakerpress' )
+							: __( 'Error', 'fakerpress' )
+					}
 					message={ status.message }
 					onDismiss={ () => setStatus( null ) }
 				/>
@@ -78,13 +95,19 @@ export default function SettingsPage() {
 			<FormField
 				label={ __( 'Erase faked data', 'fakerpress' ) }
 				htmlFor="erase_phrase"
-				description={ __( 'To erase all data generated type "Let it Go!", please back up your database before you proceed!', 'fakerpress' ) }
+				description={ __(
+					'To erase all data generated type "Let it Go!", please back up your database before you proceed!',
+					'fakerpress'
+				) }
 			>
 				<Input
 					id="erase_phrase"
 					value={ phrase }
 					onChange={ ( e ) => setPhrase( e.target.value ) }
-					placeholder={ __( 'The cold never bothered me anyway!', 'fakerpress' ) }
+					placeholder={ __(
+						'The cold never bothered me anyway!',
+						'fakerpress'
+					) }
 				/>
 			</FormField>
 
@@ -100,13 +123,21 @@ export default function SettingsPage() {
 					</DialogTrigger>
 					<DialogContent>
 						<DialogHeader>
-							<DialogTitle>{ __( 'Confirm Deletion', 'fakerpress' ) }</DialogTitle>
+							<DialogTitle>
+								{ __( 'Confirm Deletion', 'fakerpress' ) }
+							</DialogTitle>
 							<DialogDescription>
-								{ __( 'This will permanently delete all FakerPress-generated data. This action cannot be undone.', 'fakerpress' ) }
+								{ __(
+									'This will permanently delete all FakerPress-generated data. This action cannot be undone.',
+									'fakerpress'
+								) }
 							</DialogDescription>
 						</DialogHeader>
 						<DialogFooter>
-							<Button variant="outline" onClick={ () => setDialogOpen( false ) }>
+							<Button
+								variant="outline"
+								onClick={ () => setDialogOpen( false ) }
+							>
 								{ __( 'Cancel', 'fakerpress' ) }
 							</Button>
 							<Button
@@ -114,7 +145,9 @@ export default function SettingsPage() {
 								onClick={ handleDelete }
 								disabled={ isSubmitting }
 							>
-								{ isSubmitting ? __( 'Deleting...', 'fakerpress' ) : __( 'Delete All Data', 'fakerpress' ) }
+								{ isSubmitting
+									? __( 'Deleting...', 'fakerpress' )
+									: __( 'Delete All Data', 'fakerpress' ) }
 							</Button>
 						</DialogFooter>
 					</DialogContent>

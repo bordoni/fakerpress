@@ -33,7 +33,9 @@ describe( 'PostsPage', () => {
 	it( 'renders all form fields', () => {
 		render( <PostsPage /> );
 
-		expect( screen.getByText( 'Quantity', { selector: '[data-slot="label"]' } ) ).toBeInTheDocument();
+		expect(
+			screen.getByText( 'Quantity', { selector: '[data-slot="label"]' } )
+		).toBeInTheDocument();
 		expect( screen.getByText( 'Post Type' ) ).toBeInTheDocument();
 		expect( screen.getByText( 'Comment Status' ) ).toBeInTheDocument();
 		expect( screen.getByText( 'Content Size' ) ).toBeInTheDocument();

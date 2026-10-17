@@ -10,8 +10,14 @@ import { PageLayout } from '../components/layout/page-layout';
 import { AdminNotice } from '../components/layout/admin-notice';
 import { FormField } from '../components/form/form-field';
 import { RangeInput } from '../components/form/range-input';
-import { ComboboxMulti, type ComboboxOption } from '../components/form/combobox-multi';
-import { DateRangeField, getPresetRange } from '../components/form/date-range-field';
+import {
+	ComboboxMulti,
+	type ComboboxOption,
+} from '../components/form/combobox-multi';
+import {
+	DateRangeField,
+	getPresetRange,
+} from '../components/form/date-range-field';
 import { MetaFieldRules } from '../components/form/meta-field-rules';
 import { TaxonomyFieldRules } from '../components/form/taxonomy-field-rules';
 import { GenerateButton } from '../components/form/generate-button';
@@ -65,10 +71,14 @@ function mergeDefaultMeta(
 
 export default function PostsPage() {
 	const { data, ajaxNonces } = usePageConfig();
-	const { generate, isGenerating, progress, results, error, reset } = useGenerateModule( 'posts' );
+	const { generate, isGenerating, progress, results, error, reset } =
+		useGenerateModule( 'posts' );
 
 	const postTypeOptions: ComboboxOption[] = useMemo( () => {
-		const postTypes = ( data.post_types || {} ) as Record< string, { name: string; label: string } >;
+		const postTypes = ( data.post_types || {} ) as Record<
+			string,
+			{ name: string; label: string }
+		>;
 		return Object.values( postTypes ).map( ( pt ) => ( {
 			value: pt.name,
 			label: pt.label,
@@ -76,7 +86,10 @@ export default function PostsPage() {
 	}, [ data.post_types ] );
 
 	const taxonomyOptions: ComboboxOption[] = useMemo( () => {
-		const taxonomies = ( data.taxonomies || {} ) as Record< string, { name: string; label: string } >;
+		const taxonomies = ( data.taxonomies || {} ) as Record<
+			string,
+			{ name: string; label: string }
+		>;
 		return Object.values( taxonomies ).map( ( tax ) => ( {
 			value: tax.name,
 			label: tax.label,
@@ -94,11 +107,17 @@ export default function PostsPage() {
 	}, [ data.html_tags ] );
 
 	const imageProviderOptions: ComboboxOption[] = useMemo( () => {
-		return ( data.image_providers || [] ) as { value: string; label: string }[];
+		return ( data.image_providers || [] ) as {
+			value: string;
+			label: string;
+		}[];
 	}, [ data.image_providers ] );
 
 	const defaultMetaByType = useMemo< Record< string, MetaRule[] > >( () => {
-		const postTypes = ( data.post_types || {} ) as Record< string, { name: string; default_meta?: MetaRule[] } >;
+		const postTypes = ( data.post_types || {} ) as Record<
+			string,
+			{ name: string; default_meta?: MetaRule[] }
+		>;
 		const map: Record< string, MetaRule[] > = {};
 		Object.values( postTypes ).forEach( ( pt ) => {
 			map[ pt.name ] = pt.default_meta || [];
@@ -124,8 +143,14 @@ export default function PostsPage() {
 		return ( data.html_tags || [] ) as string[];
 	}, [ data.html_tags ] );
 
-	const parentSearch = useAsyncSearch( 'fakerpress.select2-WP_Query', ajaxNonces.wp_query || '' );
-	const authorSearch = useAsyncSearch( 'fakerpress.search_authors', ajaxNonces.search_authors || '' );
+	const parentSearch = useAsyncSearch(
+		'fakerpress.select2-WP_Query',
+		ajaxNonces.wp_query || ''
+	);
+	const authorSearch = useAsyncSearch(
+		'fakerpress.search_authors',
+		ajaxNonces.search_authors || ''
+	);
 	const termSearch = useRestSearch( '/fakerpress/v1/terms/search' );
 
 	const parentSearchOptions: ComboboxOption[] = useMemo( () => {
@@ -152,23 +177,28 @@ export default function PostsPage() {
 	const defaultPreset = 'yesterday';
 	const defaultDateRange = getPresetRange( defaultPreset );
 
-	const { control, handleSubmit, watch, setValue, getValues } = useForm< PostsFormData >( {
-		defaultValues: {
-			qty: { min: 3, max: 12 },
-			date: { preset: defaultPreset, start: defaultDateRange?.[ 0 ] ?? '', end: defaultDateRange?.[ 1 ] ?? '' },
-			post_type: defaultPostTypes,
-			parents: [],
-			comment_status: [ 'open' ],
-			authors: [],
-			use_html: true,
-			content_size: { min: 1, max: 5 },
-			html_tags: defaultHtmlTags,
-			image_providers: [],
-			excerpt_size: { min: 1, max: 3 },
-			taxonomy_rules: defaultTaxonomyRules,
-			meta: defaultMeta,
-		},
-	} );
+	const { control, handleSubmit, watch, setValue, getValues } =
+		useForm< PostsFormData >( {
+			defaultValues: {
+				qty: { min: 3, max: 12 },
+				date: {
+					preset: defaultPreset,
+					start: defaultDateRange?.[ 0 ] ?? '',
+					end: defaultDateRange?.[ 1 ] ?? '',
+				},
+				post_type: defaultPostTypes,
+				parents: [],
+				comment_status: [ 'open' ],
+				authors: [],
+				use_html: true,
+				content_size: { min: 1, max: 5 },
+				html_tags: defaultHtmlTags,
+				image_providers: [],
+				excerpt_size: { min: 1, max: 3 },
+				taxonomy_rules: defaultTaxonomyRules,
+				meta: defaultMeta,
+			},
+		} );
 
 	const useHtml = watch( 'use_html' );
 	const selectedPostTypes = watch( 'post_type' );
@@ -176,7 +206,9 @@ export default function PostsPage() {
 	// Append a post type's default meta rules when it is newly selected.
 	const prevPostTypesRef = useRef< string[] >( defaultPostTypes );
 	useEffect( () => {
-		const added = selectedPostTypes.filter( ( pt ) => ! prevPostTypesRef.current.includes( pt ) );
+		const added = selectedPostTypes.filter(
+			( pt ) => ! prevPostTypesRef.current.includes( pt )
+		);
 		prevPostTypesRef.current = selectedPostTypes;
 
 		if ( added.length === 0 ) {
@@ -202,11 +234,17 @@ export default function PostsPage() {
 				<AdminNotice
 					type="success"
 					title={ __( 'Success', 'fakerpress' ) }
-					message={ `Generated ${ results.generated } posts in ${ results.time.toFixed( 2 ) }s.` }
+					message={ `Generated ${
+						results.generated
+					} posts in ${ results.time.toFixed( 2 ) }s.` }
 				/>
 			) }
 			{ error && (
-				<AdminNotice type="error" title={ __( 'Error', 'fakerpress' ) } message={ error } />
+				<AdminNotice
+					type="error"
+					title={ __( 'Error', 'fakerpress' ) }
+					message={ error }
+				/>
 			) }
 
 			<form onSubmit={ handleSubmit( onSubmit ) }>
@@ -216,13 +254,20 @@ export default function PostsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Quantity', 'fakerpress' ) }
-							description={ __( 'How many posts to generate. Use both fields to randomize within the given range.', 'fakerpress' ) }
+							description={ __(
+								'How many posts to generate. Use both fields to randomize within the given range.',
+								'fakerpress'
+							) }
 						>
 							<RangeInput
 								minValue={ field.value.min }
 								maxValue={ field.value.max }
-								onMinChange={ ( min ) => field.onChange( { ...field.value, min } ) }
-								onMaxChange={ ( max ) => field.onChange( { ...field.value, max } ) }
+								onMinChange={ ( min ) =>
+									field.onChange( { ...field.value, min } )
+								}
+								onMaxChange={ ( max ) =>
+									field.onChange( { ...field.value, max } )
+								}
 								min={ 1 }
 							/>
 						</FormField>
@@ -235,7 +280,10 @@ export default function PostsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Date', 'fakerpress' ) }
-							description={ __( 'Choose the range for the post dates.', 'fakerpress' ) }
+							description={ __(
+								'Choose the range for the post dates.',
+								'fakerpress'
+							) }
 						>
 							<DateRangeField
 								value={ field.value }
@@ -251,13 +299,19 @@ export default function PostsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Post Type', 'fakerpress' ) }
-							description={ __( 'Select which post types to generate.', 'fakerpress' ) }
+							description={ __(
+								'Select which post types to generate.',
+								'fakerpress'
+							) }
 						>
 							<ComboboxMulti
 								value={ field.value }
 								onChange={ field.onChange }
 								options={ postTypeOptions }
-								placeholder={ __( 'Select post types...', 'fakerpress' ) }
+								placeholder={ __(
+									'Select post types...',
+									'fakerpress'
+								) }
 							/>
 						</FormField>
 					) }
@@ -269,12 +323,20 @@ export default function PostsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Parent Posts', 'fakerpress' ) }
-							description={ __( 'Optionally assign generated posts as children of these posts.', 'fakerpress' ) }
+							description={ __(
+								'Optionally assign generated posts as children of these posts.',
+								'fakerpress'
+							) }
 						>
 							<ComboboxMulti
 								value={ field.value.map( String ) }
-								onChange={ ( vals ) => field.onChange( vals.map( Number ) ) }
-								placeholder={ __( 'Search for posts...', 'fakerpress' ) }
+								onChange={ ( vals ) =>
+									field.onChange( vals.map( Number ) )
+								}
+								placeholder={ __(
+									'Search for posts...',
+									'fakerpress'
+								) }
 								onSearch={ parentSearch.search }
 								searchResults={ parentSearchOptions }
 								isSearching={ parentSearch.isSearching }
@@ -289,13 +351,19 @@ export default function PostsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Comment Status', 'fakerpress' ) }
-							description={ __( 'Whether comments are open or closed on generated posts.', 'fakerpress' ) }
+							description={ __(
+								'Whether comments are open or closed on generated posts.',
+								'fakerpress'
+							) }
 						>
 							<ComboboxMulti
 								value={ field.value }
 								onChange={ field.onChange }
 								options={ commentStatusOptions }
-								placeholder={ __( 'Select comment status...', 'fakerpress' ) }
+								placeholder={ __(
+									'Select comment status...',
+									'fakerpress'
+								) }
 							/>
 						</FormField>
 					) }
@@ -307,12 +375,20 @@ export default function PostsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Author', 'fakerpress' ) }
-							description={ __( 'Assign generated posts to these authors. Leave empty to use random users.', 'fakerpress' ) }
+							description={ __(
+								'Assign generated posts to these authors. Leave empty to use random users.',
+								'fakerpress'
+							) }
 						>
 							<ComboboxMulti
 								value={ field.value.map( String ) }
-								onChange={ ( vals ) => field.onChange( vals.map( Number ) ) }
-								placeholder={ __( 'Search for authors...', 'fakerpress' ) }
+								onChange={ ( vals ) =>
+									field.onChange( vals.map( Number ) )
+								}
+								placeholder={ __(
+									'Search for authors...',
+									'fakerpress'
+								) }
 								onSearch={ authorSearch.search }
 								searchResults={ authorSearchOptions }
 								isSearching={ authorSearch.isSearching }
@@ -327,7 +403,10 @@ export default function PostsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Use HTML', 'fakerpress' ) }
-							description={ __( 'When enabled, post content will include HTML markup.', 'fakerpress' ) }
+							description={ __(
+								'When enabled, post content will include HTML markup.',
+								'fakerpress'
+							) }
 						>
 							<div className="fp:flex fp:items-center fp:gap-2">
 								<Switch
@@ -335,8 +414,14 @@ export default function PostsPage() {
 									checked={ field.value }
 									onCheckedChange={ field.onChange }
 								/>
-								<Label htmlFor="use_html" className="fp:text-sm">
-									{ __( 'Enable HTML in post content', 'fakerpress' ) }
+								<Label
+									htmlFor="use_html"
+									className="fp:text-sm"
+								>
+									{ __(
+										'Enable HTML in post content',
+										'fakerpress'
+									) }
 								</Label>
 							</div>
 						</FormField>
@@ -349,13 +434,20 @@ export default function PostsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Content Size', 'fakerpress' ) }
-							description={ __( 'Number of paragraphs in post content.', 'fakerpress' ) }
+							description={ __(
+								'Number of paragraphs in post content.',
+								'fakerpress'
+							) }
 						>
 							<RangeInput
 								minValue={ field.value.min }
 								maxValue={ field.value.max }
-								onMinChange={ ( min ) => field.onChange( { ...field.value, min } ) }
-								onMaxChange={ ( max ) => field.onChange( { ...field.value, max } ) }
+								onMinChange={ ( min ) =>
+									field.onChange( { ...field.value, min } )
+								}
+								onMaxChange={ ( max ) =>
+									field.onChange( { ...field.value, max } )
+								}
 								min={ 0 }
 							/>
 						</FormField>
@@ -369,13 +461,19 @@ export default function PostsPage() {
 						render={ ( { field } ) => (
 							<FormField
 								label={ __( 'HTML Tags', 'fakerpress' ) }
-								description={ __( 'HTML elements that can appear in generated post content.', 'fakerpress' ) }
+								description={ __(
+									'HTML elements that can appear in generated post content.',
+									'fakerpress'
+								) }
 							>
 								<ComboboxMulti
 									value={ field.value }
 									onChange={ field.onChange }
 									options={ htmlTagOptions }
-									placeholder={ __( 'Select HTML tags...', 'fakerpress' ) }
+									placeholder={ __(
+										'Select HTML tags...',
+										'fakerpress'
+									) }
 									allowCreate
 								/>
 							</FormField>
@@ -390,13 +488,19 @@ export default function PostsPage() {
 						render={ ( { field } ) => (
 							<FormField
 								label={ __( 'Image Providers', 'fakerpress' ) }
-								description={ __( 'Providers for images embedded in HTML content.', 'fakerpress' ) }
+								description={ __(
+									'Providers for images embedded in HTML content.',
+									'fakerpress'
+								) }
 							>
 								<ComboboxMulti
 									value={ field.value }
 									onChange={ field.onChange }
 									options={ imageProviderOptions }
-									placeholder={ __( 'Select image providers...', 'fakerpress' ) }
+									placeholder={ __(
+										'Select image providers...',
+										'fakerpress'
+									) }
 								/>
 							</FormField>
 						) }
@@ -409,13 +513,20 @@ export default function PostsPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Excerpt Size', 'fakerpress' ) }
-							description={ __( 'Number of sentences in the post excerpt.', 'fakerpress' ) }
+							description={ __(
+								'Number of sentences in the post excerpt.',
+								'fakerpress'
+							) }
 						>
 							<RangeInput
 								minValue={ field.value.min }
 								maxValue={ field.value.max }
-								onMinChange={ ( min ) => field.onChange( { ...field.value, min } ) }
-								onMaxChange={ ( max ) => field.onChange( { ...field.value, max } ) }
+								onMinChange={ ( min ) =>
+									field.onChange( { ...field.value, min } )
+								}
+								onMaxChange={ ( max ) =>
+									field.onChange( { ...field.value, max } )
+								}
 								min={ 0 }
 							/>
 						</FormField>
@@ -430,10 +541,15 @@ export default function PostsPage() {
 							value={ field.value }
 							onChange={ field.onChange }
 							taxonomyOptions={ taxonomyOptions }
-							onSearchTerms={ ( query, taxonomies ) => termSearch.search( query, { taxonomies } ) }
+							onSearchTerms={ ( query, taxonomies ) =>
+								termSearch.search( query, { taxonomies } )
+							}
 							termSearchResults={ termSearchOptions }
 							isSearchingTerms={ termSearch.isSearching }
-							description={ __( 'Use the fields below to configure the rules for the Taxonomy and Terms selected', 'fakerpress' ) }
+							description={ __(
+								'Use the fields below to configure the rules for the Taxonomy and Terms selected',
+								'fakerpress'
+							) }
 						/>
 					) }
 				/>
@@ -446,7 +562,10 @@ export default function PostsPage() {
 							value={ field.value }
 							onChange={ field.onChange }
 							providerOptions={ imageProviderOptions }
-							description={ __( 'Use the fields below to configure a set of rules for your generated Posts', 'fakerpress' ) }
+							description={ __(
+								'Use the fields below to configure a set of rules for your generated Posts',
+								'fakerpress'
+							) }
 						/>
 					) }
 				/>

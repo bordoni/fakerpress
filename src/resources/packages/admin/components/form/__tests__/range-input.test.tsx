@@ -25,7 +25,9 @@ describe( 'RangeInput', () => {
 
 	it( 'calls onMinChange when min input changes', () => {
 		const onMinChange = jest.fn();
-		render( <RangeInput { ...defaultProps } onMinChange={ onMinChange } /> );
+		render(
+			<RangeInput { ...defaultProps } onMinChange={ onMinChange } />
+		);
 
 		const inputs = screen.getAllByRole( 'spinbutton' );
 		fireEvent.change( inputs[ 0 ], { target: { value: '5' } } );
@@ -35,7 +37,9 @@ describe( 'RangeInput', () => {
 
 	it( 'calls onMaxChange when max input changes', () => {
 		const onMaxChange = jest.fn();
-		render( <RangeInput { ...defaultProps } onMaxChange={ onMaxChange } /> );
+		render(
+			<RangeInput { ...defaultProps } onMaxChange={ onMaxChange } />
+		);
 
 		const inputs = screen.getAllByRole( 'spinbutton' );
 		fireEvent.change( inputs[ 1 ], { target: { value: '20' } } );
