@@ -1,4 +1,10 @@
 <?php
+/**
+ * Generation module for image attachments downloaded from the image providers.
+ *
+ * @package FakerPress
+ */
+
 namespace FakerPress\Module;
 
 use FakerPress\Provider\Image\Placeholder;
@@ -6,6 +12,10 @@ use FakerPress\Provider\Image\LoremPicsum;
 use WP_Error;
 use FakerPress;
 
+/**
+ * Generates attachments: builds image URLs for Placehold.co or Lorem Picsum, sideloads them into the media library,
+ * fills in title, caption, alt text and meta, and flags them as FakerPress content.
+ */
 class Attachment extends Abstract_Module {
 
 	/**
@@ -18,6 +28,11 @@ class Attachment extends Abstract_Module {
 	 */
 	public static $meta_key_original_url = '_fakerpress_original_url';
 
+	/**
+	 * Faker providers this module needs besides the WP_Attachment provider.
+	 *
+	 * @var string[]
+	 */
 	protected $dependencies = [
 		FakerPress\ThirdParty\Faker\Provider\Lorem::class,
 		FakerPress\ThirdParty\Faker\Provider\DateTime::class,
@@ -26,12 +41,27 @@ class Attachment extends Abstract_Module {
 		FakerPress\Provider\Image\LoremPicsum::class,
 	];
 
+	/**
+	 * Faker provider that generates the attachment fields.
+	 *
+	 * @var string
+	 */
 	protected $provider_class = FakerPress\Provider\WP_Attachment::class;
 
+	/**
+	 * Gets the slug of the module.
+	 *
+	 * @return string
+	 */
 	public static function get_slug(): string {
 		return 'attachments';
 	}
 
+	/**
+	 * The attachment module binds no WordPress hooks.
+	 *
+	 * @return void
+	 */
 	public function hook(): void {
 	}
 
@@ -47,7 +77,11 @@ class Attachment extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Fetches the IDs of every attachment flagged as created by FakerPress.
+	 *
+	 * @param array $args WP_Query arguments that override the defaults.
+	 *
+	 * @return int[] Attachment IDs.
 	 */
 	public static function fetch( array $args = [] ): array {
 		$defaults = [
@@ -72,7 +106,11 @@ class Attachment extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Not implemented for attachments yet.
+	 *
+	 * @param mixed $item Unused.
+	 *
+	 * @return void
 	 */
 	public static function delete( $item ) {
 		// TODO: Implement delete() method.
@@ -261,7 +299,15 @@ class Attachment extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Downloads the generated image URL into the media library and flags the attachment as created by FakerPress.
+	 *
+	 * Also stores the original URL in the `_fakerpress_original_url` meta.
+	 *
+	 * @param mixed           $response Response so far, ignored.
+	 * @param array           $data     Generated attachment data, `attachment_url` is required.
+	 * @param Abstract_Module $module   Module being saved.
+	 *
+	 * @return int|WP_Error|false The attachment ID, the download error, or false when there is no URL.
 	 */
 	public function filter_save_response( $response, array $data, Abstract_Module $module ) {
 		if ( empty( $data['attachment_url'] ) ) {
@@ -280,9 +326,9 @@ class Attachment extends Abstract_Module {
 	}
 
 	/**
-	 * Gets an Array with all the providers
+	 * Gets the image providers the attachment module can use.
 	 *
-	 * @return array  With ID, Text and Type
+	 * @return array List of providers, each with `id`, `text` (label) and `type`.
 	 */
 	public static function get_providers(): array {
 		return [
@@ -300,14 +346,19 @@ class Attachment extends Abstract_Module {
 	}
 
 	/**
+	 * Parses the request data and generates the attachments.
+	 *
+	 * Each attachment gets an image URL from the chosen provider, is sideloaded, flagged as FakerPress content and
+	 * then gets its title, author, date, caption, alt text and meta. Failed downloads are skipped.
+	 *
 	 * @since 0.6.4
 	 *
-	 * @throws \Exception
+	 * @throws \Exception Exceptions from the Faker generators are not caught.
 	 *
-	 * @param $qty
-	 * @param $request
+	 * @param int   $qty     Number of attachments to generate, at least one is always generated.
+	 * @param array $request The request data: provider, width, height, aspect_ratio, author, post_parent, interval_date, generate_* flags and meta.
 	 *
-	 * @return array|string
+	 * @return int[] IDs of the created attachments.
 	 */
 	public function parse_request( $qty, $request = [] ) {
 		// The quantity is already calculated by the REST endpoint or passed directly

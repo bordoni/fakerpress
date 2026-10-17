@@ -1,4 +1,9 @@
 <?php
+/**
+ * Generation module for a single meta value on a post, term, comment or user.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Module;
 
@@ -83,9 +88,12 @@ class Meta extends Abstract_Module {
 	}
 
 	/**
-	 * Configure which Object we will save Meta to
+	 * Configure which Object we will save Meta to.
 	 *
 	 * @since 0.3.0
+	 *
+	 * @param int    $id   ID of the object the meta belongs to.
+	 * @param string $name Meta object type passed to `update_metadata()`: post, term, comment or user.
 	 *
 	 * @return self
 	 */
@@ -96,6 +104,18 @@ class Meta extends Abstract_Module {
 		return $this;
 	}
 
+	/**
+	 * Sets which meta type, key and arguments the next `generate()` call will use.
+	 *
+	 * Clears the previous key and value first; an empty type or name leaves the module without a type,
+	 * so nothing is generated. Also tells the WP_Meta provider which object the meta is for.
+	 *
+	 * @param string $type Meta type, matching a `meta_type_{$type}()` method on the WP_Meta provider.
+	 * @param string $name Meta key to save the value under.
+	 * @param array  $args Arguments for the meta type method, passed in order.
+	 *
+	 * @return Interface_Module
+	 */
 	public function with( string $type, string $name, $args ): Interface_Module {
 		$this->data['meta_key']   = null;
 		$this->data['meta_value'] = null; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Key in the module's own data array, not a query argument.
@@ -121,7 +141,14 @@ class Meta extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Generates the meta value with the WP_Meta provider method for the configured type.
+	 *
+	 * Without a matching method, a single argument is used as the value as is. The result goes through
+	 * the `fakerpress.module.meta.value` and `fakerpress.module.meta.{$meta_key}.value` filters.
+	 *
+	 * @param bool $force Whether to regenerate a value that already exists.
+	 *
+	 * @return Interface_Module
 	 */
 	public function generate( bool $force = false ): Interface_Module {
 		// Only regenerate if there is no data, or we are forcing it.
@@ -177,7 +204,13 @@ class Meta extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Saves the generated value with `update_metadata()` on the configured object.
+	 *
+	 * @param mixed           $response Response so far, ignored.
+	 * @param array           $data     Module data with `meta_key` and `meta_value`.
+	 * @param Abstract_Module $module   Module being saved.
+	 *
+	 * @return int|bool Meta ID for a new key, true on update, false when there is no key or value or the update failed.
 	 */
 	public function filter_save_response( $response, array $data, Abstract_Module $module ) {
 		if ( ! isset( $data['meta_value'] ) ) {
@@ -192,14 +225,22 @@ class Meta extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Not implemented for meta values.
+	 *
+	 * The body is empty, so calling it raises a TypeError for the missing array return.
+	 *
+	 * @param array $args Unused.
 	 */
 	public static function fetch( array $args = [] ): array {
 		// TODO: Implement fetch() method.
 	}
 
 	/**
-	 * @inheritDoc
+	 * Not implemented for meta values.
+	 *
+	 * @param mixed $item Unused.
+	 *
+	 * @return void
 	 */
 	public static function delete( $item ) {
 		// TODO: Implement delete() method.

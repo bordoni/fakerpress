@@ -1,4 +1,9 @@
 <?php
+/**
+ * Generation module for users.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Module;
 
@@ -10,10 +15,15 @@ use function FakerPress\get;
 use function FakerPress\make;
 use function FakerPress\is_truthy;
 
+/**
+ * Generates users with the WP_User provider, sets their role, flags them as FakerPress content and adds their meta.
+ */
 class User extends Abstract_Module {
 
 	/**
-	 * @inheritDoc
+	 * Faker providers this module needs besides the WP_User provider.
+	 *
+	 * @var string[]
 	 */
 	protected $dependencies = [
 		FakerPress\ThirdParty\Faker\Provider\Lorem::class,
@@ -22,7 +32,9 @@ class User extends Abstract_Module {
 	];
 
 	/**
-	 * @inheritDoc
+	 * Faker provider that generates the user fields.
+	 *
+	 * @var string
 	 */
 	protected $provider_class = FakerPress\Provider\WP_User::class;
 
@@ -40,7 +52,11 @@ class User extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Fetches the IDs of every user flagged as created by FakerPress.
+	 *
+	 * @param array $args WP_User_Query arguments that override the defaults.
+	 *
+	 * @return int[] User IDs.
 	 */
 	public static function fetch( array $args = [] ): array {
 		$defaults = [
@@ -61,7 +77,13 @@ class User extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Deletes a user, or a list of users, created by FakerPress, reassigning their content to the current user.
+	 *
+	 * Users without the FakerPress flag are left alone.
+	 *
+	 * @param int|\WP_User|array $user User ID, user object, or a list of either.
+	 *
+	 * @return array|bool Results keyed by user ID for a list, otherwise whether the user was deleted.
 	 */
 	public static function delete( $user ) {
 		if ( is_array( $user ) ) {
@@ -98,7 +120,13 @@ class User extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Inserts the user with `wp_insert_user()`, applies the generated role and flags the user as created by FakerPress.
+	 *
+	 * @param mixed           $response Response so far, ignored.
+	 * @param array           $data     Generated user fields for `wp_insert_user()`, plus `role`.
+	 * @param Abstract_Module $module   Module being saved.
+	 *
+	 * @return int|false The new user ID, or false when the insert failed.
 	 */
 	public function filter_save_response( $response, array $data, Abstract_Module $module ) {
 		$user_id = wp_insert_user( $data );
@@ -126,12 +154,12 @@ class User extends Abstract_Module {
 	 *
 	 * @since 0.6.4
 	 *
-	 * @throws \Exception
+	 * @throws \Exception Exceptions from the Faker generators are not caught.
 	 *
 	 * @param int   $qty     The quantity of users to generate.
 	 * @param array $request The request data.
 	 *
-	 * @return array|WP_Error
+	 * @return array|WP_Error IDs of the created users, or a WP_Error when the quantity is below one.
 	 */
 	public function parse_request( int $qty, array $request = [] ) {
 		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ) {

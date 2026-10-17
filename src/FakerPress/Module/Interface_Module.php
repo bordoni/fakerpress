@@ -1,9 +1,17 @@
 <?php
+/**
+ * Contract every FakerPress generation module implements.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Module;
 
 use FakerPress\ThirdParty\Faker\Generator;
 
+/**
+ * Describes a module that generates, saves, lists and deletes one kind of fake WordPress data.
+ */
 interface Interface_Module {
 
 	/**
@@ -82,21 +90,24 @@ interface Interface_Module {
 	/**
 	 * Method that sets the data for an individual generator method.
 	 *
+	 * Any arguments after `$key` are stored and passed to the generator method when the data is generated.
+	 *
 	 * @since 0.6.4
 	 *
 	 * @param array|string $key Name of a particular method or a set of methods.
-	 * @param ...mixed $data Any number of arguments.
 	 *
 	 * @return Interface_Module
 	 */
 	public function set( $key ): Interface_Module;
 
 	/**
-	 * Use this method to save the fake data to the database
+	 * Use this method to save the fake data to the database.
 	 *
 	 * @since 0.6.0
 	 *
-	 * @return int|bool|\WP_Error Should return an error, or the $wpdb->insert_id or bool for the state
+	 * @param bool $reset Whether to reset the module data after saving.
+	 *
+	 * @return int|bool|\WP_Error Should return an error, or the $wpdb->insert_id or bool for the state.
 	 */
 	public function save( bool $reset = true );
 
@@ -105,7 +116,7 @@ interface Interface_Module {
 	 *
 	 * @since 0.6.0
 	 *
-	 * @param int|\WP_Post|string $item What are we deleting
+	 * @param int|\WP_Post|string $item What are we deleting.
 	 *
 	 * @return bool|\WP_Error
 	 */
@@ -118,7 +129,7 @@ interface Interface_Module {
 	 *
 	 * @param array $args Overwrite the default arguments used to fetch the items.
 	 *
-	 * @return bool|\WP_Error
+	 * @return array IDs of the items this module created.
 	 */
 	public static function fetch( array $args = [] ): array;
 
@@ -146,7 +157,7 @@ interface Interface_Module {
 	/**
 	 * A method to make it easier to debug which variables will be actually saved.
 	 *
-	 * @param 0.6.0
+	 * @since 0.6.0
 	 *
 	 * @return array
 	 */
@@ -155,16 +166,16 @@ interface Interface_Module {
 	/**
 	 * A method to get the data for a given key.
 	 *
-	 * @param string $key
+	 * @param string $key Name of the generator method the data was set for.
 	 *
-	 * @return array|null
+	 * @return object|null The stored data object (key, generator, arguments and value), or null when not set.
 	 */
 	public function get( string $key ): ?object;
 
 	/**
 	 * A method to get the value for a given key.
 	 *
-	 * @param string $key
+	 * @param string $key Name of the generator method the data was set for.
 	 *
 	 * @return mixed
 	 */
@@ -173,7 +184,7 @@ interface Interface_Module {
 	/**
 	 * Determines if a value is set for a given key.
 	 *
-	 * @param string $key
+	 * @param string $key Name of the generator method the data was set for.
 	 *
 	 * @return bool
 	 */
