@@ -94,8 +94,16 @@ class Users extends Abstract_Endpoint {
 		$params = $this->sanitize_request( $request );
 
 		// Translate REST params to module format.
-		if ( isset( $params['role'] ) ) {
-			$params['roles'] = $params['role'];
+		// The admin form posts `roles` (plural, the same key the module reads); the public
+		// REST schema also exposes a singular `role` alias. Accept whichever arrived and
+		// normalise to the comma-joined string the User module expects.
+		$roles_value = $params['roles'] ?? $params['role'] ?? null;
+		if ( null !== $roles_value ) {
+			if ( is_array( $roles_value ) ) {
+				$roles_value = implode( ',', array_map( 'sanitize_key', array_map( 'strval', $roles_value ) ) );
+			}
+			$params['roles'] = sanitize_text_field( (string) $roles_value );
+			unset( $params['role'] );
 		}
 
 		// Get the module.
@@ -201,10 +209,16 @@ class Users extends Abstract_Endpoint {
 						],
 					],
 				],
+				'roles'    => [
+					'description' => __( 'User roles to sample from. Accepts an array of slugs or a comma-separated string.', 'fakerpress' ),
+					'type'        => [ 'array', 'string' ],
+					'items'       => [
+						'type' => 'string',
+					],
+				],
 				'role'     => [
-					'description' => __( 'User role for generated users.', 'fakerpress' ),
+					'description' => __( 'Deprecated singular alias for roles — accepts a single role slug.', 'fakerpress' ),
 					'type'        => 'string',
-					'default'     => 'subscriber',
 				],
 				'meta'     => [
 					'description' => __( 'Meta data to assign to generated users.', 'fakerpress' ),

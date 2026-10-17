@@ -4,7 +4,7 @@ Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 5.5
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        0.9.1
+Stable tag:        0.9.2
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -13,9 +13,9 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 
 == Description ==
 
-Whenever you create a new Theme or Plugin you will always need to create custom data to test whether your plugin is working or not, and as Developers ourselves we had this problem quite alot.
+When creating a new theme or plugin, you always need to create a custom data set to test whether it's working as expected - or not. As developers ourselves, we've run into this problem quite often.
 
-Our goal with this plugin is to fill this gap where you have problem with a good solution both for Developers and for Users of WordPress.
+The goal of FakerPress is to fill this gap, offering a solution for both developers and WordPress users.
 
 > **Note: This plugin requires PHP 8.1 or higher to be activated.**
 
@@ -36,40 +36,52 @@ Our goal with this plugin is to fill this gap where you have problem with a good
 * Custom Comment Types
 * Attachments (NEW)
 
-= Creating Dummy Content =
-Normally a WordPress developer will need to perform the task of filling up an empty theme with dummy content, and doing this manually can be really time consuming, the main reasons this plugin was create was to speed up this process.
+= Create Dummy Content =
+
+During the development process, a WordPress developer will often need to fill up an empty theme or test site with placeholder content. Doing so manually can be time consuming. FakerPress allows you to speed up this process.
 
 = Random Featured Images =
-Create randomly generated attachments as the Featured Images for your WordPress dummy content.
 
-= Create random Meta Information =
-WordPress has Meta for Users, Posts, Terms and Comments, FakerPress will allow you to generate custom dummy meta for all four, with *20 types of Data*
+FakerPress creates randomly generated attachments as Featured Images for your WordPress test content.
 
-= Delete the Content Generated =
-After you are done with your testing it should be easy to delete all the content created using FakerPress, now you will be able to do it.
+= Random Meta Information =
 
-= Generate Random HTML =
-When creating dummy posts what you really want is that the HTML is really random so that you might see bugs that an XML import wouldn't.
+FakerPress enables you to generate custom placeholder meta information for Users, Posts, Terms, and Comments with 20 types of data.
 
-= Generate Images in your HTML =
-When you are testing your website images are important, so FakerPress will allow you to output Images to your HTML tests.
+= Delete Generated Content =
 
-= Real Browser data on User Comments =
-For comments our plugin is prepared to generate a real Browser data instead of leaving the field empty.
+After testing is complete, you can delete any FakerPress-generated dummy content all at once.
 
-= Random Terms generation =
-For creating and assigning the terms you will have a much better tool that will allow you to select which kind of taxonomy you want to assign to your posts, and leaving the randomization to the plugin's code.
+= Randomized HTML =
 
-= Real random User profiles =
-If you fill up your WordPress with any data for the user profiles you might not catch an edge case, this plugin will fill up the fields with data that will really matter in the tests.
+When creating placeholder posts, FakerPress creates randomized HTML to allow you to catch bugs that an XML import may not.
+
+= Include Images in HTML =
+
+FakerPress also allows you to output images to your HTML tests, enabling testing for placeholder media.
+
+= Comments with Real Browser Data =
+
+FakerPress includes examples of real browser data with generated comments, allowing for more robust testing.
+
+= Generate Random Terms =
+
+FakerPress includes custom settings to determine the quantity and type of terms generated for test content. The plugin then handles randomization to generate terms within those parameters for tailored test data.
+
+= Random User Profiles =
+
+Manually generated data for test profiles might not catch edge cases. With FakerPress, randomized data fills up relevant fields with randomized information for more robust testing.
 
 = Modern REST API =
+
 FakerPress now includes a comprehensive REST API for programmatic content generation. All modules support REST endpoints with batching capabilities for large-scale generation. Full OpenAPI documentation is available at `/wp-json/fakerpress/v1/docs`.
 
 = Generate Attachments =
+
 Create realistic image attachments with customizable dimensions, multiple image providers (Placehold.co, Lorem Picsum), and automatic generation of alt text, captions, and descriptions. All images include proper attribution - Lorem Picsum images credit the original Unsplash photographers.
 
 = Types of Meta Included =
+
 * Attachment
 * WP_Query
 * Number
@@ -92,19 +104,77 @@ Create realistic image attachments with customizable dimensions, multiple image 
 * Browser User Agent
 
 = Languages =
-We moved away from _Transifex_ due to the new GlotPress on WordPress.org, so if you want to translate FakerPress to your language please [follow this guidelines](https://make.wordpress.org/polyglots/handbook/rosetta/theme-plugin-directories/#translating-themes-plugins).
+
+To translate FakerPress into your language, please visit the project in [GlotPress](https://translate.wordpress.org/projects/wp-plugins/fakerpress/). You can find additional support and best practices through your [locale's Translation Team](https://make.wordpress.org/polyglots/teams/).
 
 = See room for improvement? =
 
 Great! There are several ways you can get involved to help make FakerPress better:
 
-1. **Report Bugs:** If you find a bug, error or other problem, please report it! You can do this by [creating a new topic](http://wordpress.org/support/plugin/fakerpress) in the plugin forum. Once a developer can verify the bug by reproducing it, they will create an official bug report in GitHub where the bug will be worked on.
-2. **Suggest New Features:** Have an awesome idea? Please share it! Simply [create a new topic](http://wordpress.org/support/plugin/fakerpress) in the plugin forum to express your thoughts on why the feature should be included and get a discussion going around your idea.
+1. **Report Bugs:** If you find a bug, error, or other problem, please report it! You can do this by [creating a new topic](https://wordpress.org/support/plugin/fakerpress) in the plugin forum. Once a developer can verify the bug by reproducing it, they will create an official bug report in GitHub where the bug will be worked on.
+2. **Suggest New Features:** Have an awesome idea? Please share it! Simply [create a new topic](https://wordpress.org/support/plugin/fakerpress) in the plugin forum to express your thoughts on why the feature should be included and get a discussion going around your idea.
 3. **Issue Pull Requests:** If you're a developer, the easiest way to get involved is to help out on [issues already reported](https://github.com/bordoni/fakerpress/issues) in GitHub. Be sure to check out the [contributing guide](https://github.com/bordoni/fakerpress/blob/master/contributing.md) for developers.
 
 Thank you for wanting to make FakerPress better for everyone! [We salute you](https://www.youtube.com/watch?v=8fPf6L0XNvM).
 
+== Frequently Asked Questions ==
+
+= What is FakerPress? =
+
+FakerPress is a plugin that creates placeholder content on WordPress sites. Geared towards developers, FakerPress is designed to help anyone use dummy content to test their WordPress website via randomly generated data such as posts, pages, images, and comments.
+
+= What kind of content can FakerPress create? =
+
+FakerPress can generate the following types of content:
+
+* Posts, including pages
+* Attachments (images)
+* Comments
+* Terms, including tags and categories
+* Users
+
+= Can I customize the placeholder content from FakerPress? =
+
+Yes. There are a number of settings you can customize and change when generating placeholder content with FakerPress.
+
+With FakerPress, each type of content is generated individually via the related administration page in your WordPress Dashboard under the FakerPress Settings. Each type of content includes options for how many items you would like to generate, as well as related customizations, such as:
+
+* Attachments: When generating attachment data, you can select the date range, image provider ([Placehold.co](https://placehold.co/) and [Lorem Picsum](https://picsum.photos/)), as well as the height and width or aspect ratio of the image. You can also assign images to parent posts and ask FakerPress to generate captions, alt text, and image descriptions.
+* Comments: FakerPress-generated comments can include different comment and/or post types. You can choose the number of comments generated, length, and whether HTML should be included in the sample comments, including specific HTML tags.
+* Posts: Posts generated by FakerPress include options for the quantity of posts, the desired date range, and post type. FakerPress allows you to choose the post size (in paragraphs), HTML tags, image provider, and the post excerpt size. You can also toggle comments and HTML.
+* Terms: Terms allow you to generate tags, categories, and other relevant post terms by quantity, size, and taxonomy.
+* Users: FakerPress will generate randomized users on your site, based on quantity and user roles. You can also add user descriptions, which includes settings for the length of the description, as well as HTML.
+
+= Where does the dummy data come from? =
+
+FakerPress pulls from a handful of sources, primarily leveraging data from the PHP Library called [Faker](https://fakerphp.org/). Faker uses a random number generator to select the data used for posts, terms, and all text-based data. For attachments, FakerPress pulls images from two sources: [Lorem Picsum](https://picsum.photos/) and [Placehold.co](https://placehold.co/).
+
+= Does FakerPress use AI to generate faked data? =
+
+No, though there are plans to add as an optional feature in the future.
+
+= How can I remove FakerPress-generated content? =
+
+When finished with testing, you can remove all content generated by FakerPress via the **FakerPress > Settings** page in your WordPress Dashboard. Here, follow the instructions on the page to confirm and then delete the relevant content.
+
+= Where can I report a bug or request a feature? =
+
+You can report any issues or feature requests via the [WordPress Plugin Forums](https://wordpress.org/support/plugin/fakerpress/) or via [GitHub](https://github.com/bordoni/fakerpress).
+
+= How can I get support? =
+
+For help with or questions about FakerPress, visit the [WordPress Plugin Forums](https://wordpress.org/support/plugin/fakerpress/).
+
 == Changelog ==
+
+= 0.9.2 &mdash; 20 of July 2026 =
+
+* Fix - Silence the `Using null as an array offset is deprecated` PHP 8.1+ notices logged from WordPress core's `Requests/Iri.php` when fetching external images; the Attachment module now routes `download_url()` and the Lorem Picsum metadata request through helpers that suppress the core deprecation and restore the previous error-reporting level. [[#230](https://github.com/bordoni/fakerpress/pull/230)]
+* Fix - Bulk user generation now honours the selected role instead of always assigning Subscriber; the Users endpoint prefers the admin form's plural `roles` value over the singular `role` alias's default, and the User module falls back to the site's configured default role when none is requested. [[#229](https://github.com/bordoni/fakerpress/pull/229)]
+* Fix - "Erase faked data" now deletes generated categories and other terms; `Term::fetch()`/`delete()` were reading the singular `fakerpress.module_flag.term` option while generation wrote the plural `fakerpress.module_flag.terms`, so no terms were ever collected for deletion. [[#228](https://github.com/bordoni/fakerpress/pull/228)]
+* Fix - Generate terms in the selected taxonomy again; the Terms endpoint no longer lets the singular `taxonomy` alias's `category` default overwrite the admin form's plural `taxonomies` value, so choosing Tags now creates tags instead of categories. [[#227](https://github.com/bordoni/fakerpress/pull/227)]
+* Fix - Stop the `explode(): Passing null to parameter #2` PHP 8.1+ deprecation when generating posts with a sparse payload; the `Post` module now defaults every splittable request value (comment status, author, post types, HTML tags, post parent, image origins) to an empty string before splitting. [[#224](https://github.com/bordoni/fakerpress/pull/224)]
+* Fix - Resolve the fatal error on WordPress 7.0 when generating attachments (`Call to undefined function FakerPress\Module\media_handle_sideload()`); WordPress 7.0 preloads `wp-admin/includes/file.php`, so the single `download_url()` guard skipped `media.php`. Each admin include is now guarded by the function it actually provides. [[#221](https://github.com/bordoni/fakerpress/pull/221)]
 
 = 0.9.1 &mdash; 22 of May 2026 =
 

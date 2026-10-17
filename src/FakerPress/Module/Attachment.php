@@ -79,6 +79,78 @@ class Attachment extends Abstract_Module {
 	}
 
 	/**
+	 * Loads the WordPress admin includes required to sideload attachments.
+	 *
+	 * Each include is guarded by a function it actually provides. WordPress 7.0 loads
+	 * `wp-admin/includes/file.php` (which defines `download_url()`) earlier during bootstrap,
+	 * so a single `download_url()` guard would skip `media.php` and `image.php` and fatal on
+	 * `media_handle_sideload()`. See https://github.com/bordoni/fakerpress/issues/221.
+	 *
+	 * @since 0.9.2
+	 *
+	 * @return void
+	 */
+	protected function load_media_dependencies() {
+		if ( ! function_exists( 'download_url' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+		if ( ! function_exists( 'wp_read_image_metadata' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+		}
+		if ( ! function_exists( 'media_handle_sideload' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/media.php';
+		}
+	}
+
+	/**
+	 * Runs a callback with the PHP 8.1+ `E_DEPRECATED` level temporarily disabled.
+	 *
+	 * Works around a WordPress core bug in `Requests/src/Iri.php::scheme_normalization()`, which
+	 * uses a null scheme as an array offset ("Using null as an array offset is deprecated") while
+	 * parsing the URLs FakerPress fetches from external image services. See
+	 * https://github.com/bordoni/fakerpress/issues/188.
+	 *
+	 * @since 0.9.2
+	 *
+	 * @param callable $callback The work to run with deprecation notices suppressed.
+	 *
+	 * @return mixed The callback's return value.
+	 */
+	protected function without_iri_deprecations( callable $callback ) {
+		// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_error_reporting -- Deliberate, bounded suppression of the WP core IRI E_DEPRECATED notice, always restored in finally. See #188.
+		$level = error_reporting();
+		error_reporting( $level & ~E_DEPRECATED );
+
+		try {
+			return $callback();
+		} finally {
+			error_reporting( $level );
+		}
+		// phpcs:enable WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_error_reporting
+	}
+
+	/**
+	 * Performs an HTTP GET request without leaking the PHP 8.1+ core IRI deprecation.
+	 *
+	 * @since 0.9.2
+	 *
+	 * @param string $url  The URL to request.
+	 * @param array  $args Optional. Request arguments passed to `wp_remote_get()`. Default empty array.
+	 *
+	 * @return array|WP_Error The response array, or a WP_Error on failure.
+	 */
+	protected function safe_remote_get( $url, $args = [] ) {
+		$url = esc_url_raw( $url );
+
+		return $this->without_iri_deprecations(
+			static function () use ( $url, $args ) {
+				// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get -- vip_safe_wp_remote_get() is unavailable outside VIP; the caller bounds the timeout.
+				return wp_remote_get( $url, $args );
+			}
+		);
+	}
+
+	/**
 	 * Handle the downloads of Attachments given a URL and Post Parent ID, which will default to 0.
 	 * Currently only support images.
 	 *
@@ -90,12 +162,8 @@ class Attachment extends Abstract_Module {
 	 * @return int|WP_Error            Attachment ID or WP_Error.
 	 */
 	protected function handle_download( $url, $post_parent_id = 0 ) {
-		// Include WordPress core functions, this was not present on the REST API.
-		if ( ! function_exists( 'download_url' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/file.php';
-			require_once ABSPATH . 'wp-admin/includes/image.php';
-			require_once ABSPATH . 'wp-admin/includes/media.php';
-		}
+		// Include WordPress core functions, these are not present on the REST API context.
+		$this->load_media_dependencies();
 
 		/**
 		 * Allows filtering of the attachment download_url timeout, which is here just to
@@ -109,8 +177,12 @@ class Attachment extends Abstract_Module {
 		 */
 		$timeout = apply_filters( 'fakerpress.module.attachment.download_url_timeout', 10, $url, $post_parent_id );
 
-		// Download temp file
-		$temporary_file = download_url( $url, $timeout );
+		// Download temp file (suppressing the PHP 8.1+ core IRI deprecation while the URL is parsed).
+		$temporary_file = $this->without_iri_deprecations(
+			static function () use ( $url, $timeout ) {
+				return download_url( $url, $timeout );
+			}
+		);
 
 		// Check for download errors if there are error unlink the temp file name
 		if ( is_wp_error( $temporary_file ) ) {
@@ -387,7 +459,7 @@ class Attachment extends Abstract_Module {
 				
 				// Fetch image metadata to get author info
 				$metadata_url = sprintf( 'https://picsum.photos/id/%d/info', $image_id );
-				$response     = wp_remote_get( $metadata_url, [ 'timeout' => 5 ] );
+				$response     = $this->safe_remote_get( $metadata_url, [ 'timeout' => 5 ] );
 				
 				if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
 					$body     = wp_remote_retrieve_body( $response );

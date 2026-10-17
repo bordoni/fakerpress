@@ -38,7 +38,7 @@ class Term extends Abstract_Module {
 	 * @inheritDoc
 	 */
 	public static function fetch( array $args = [] ): array {
-		return get_option( 'fakerpress.module_flag.term', [] );
+		return get_option( 'fakerpress.module_flag.' . static::get_slug(), [] );
 	}
 
 	/**
@@ -54,7 +54,7 @@ class Term extends Abstract_Module {
 			}
 		}
 
-		delete_option( 'fakerpress.module_flag.term' );
+		delete_option( 'fakerpress.module_flag.' . static::get_slug() );
 
 		return $deleted;
 	}
