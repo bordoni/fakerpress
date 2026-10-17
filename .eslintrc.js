@@ -8,6 +8,8 @@
 module.exports = {
 	root: true,
 	extends: [ 'plugin:@wordpress/eslint-plugin/recommended' ],
+	// Vendored third-party builds (qs, Select2 3.5); not ours to lint.
+	ignorePatterns: [ 'src/resources/js/qs.js', 'src/resources/js/select2.js' ],
 	settings: {
 		'import/resolver': {
 			typescript: {
