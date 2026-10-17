@@ -115,7 +115,12 @@ describe( 'useGenerateModule', () => {
 	it( 'reads the batch from the { success, data, message } envelope the endpoints return', async () => {
 		mockApiFetch.mockResolvedValueOnce( {
 			success: true,
-			data: { generated: 2, ids: [ 7, 8 ], links: { 7: 'a', 8: 'b' }, time: 0.2 },
+			data: {
+				generated: 2,
+				ids: [ 7, 8 ],
+				links: { 7: 'a', 8: 'b' },
+				time: 0.2,
+			},
 			message: 'Successfully generated 2 terms.',
 		} );
 
@@ -127,7 +132,11 @@ describe( 'useGenerateModule', () => {
 
 		expect( result.current.error ).toBeNull();
 		expect( result.current.results ).toEqual(
-			expect.objectContaining( { generated: 2, ids: [ 7, 8 ], time: 0.2 } )
+			expect.objectContaining( {
+				generated: 2,
+				ids: [ 7, 8 ],
+				time: 0.2,
+			} )
 		);
 	} );
 
@@ -135,11 +144,27 @@ describe( 'useGenerateModule', () => {
 		mockApiFetch
 			.mockResolvedValueOnce( {
 				success: true,
-				data: { generated: 25, ids: [ 1 ], links: {}, time: 1, is_capped: true, offset: 25, total: 40 },
+				data: {
+					generated: 25,
+					ids: [ 1 ],
+					links: {},
+					time: 1,
+					is_capped: true,
+					offset: 25,
+					total: 40,
+				},
 			} )
 			.mockResolvedValueOnce( {
 				success: true,
-				data: { generated: 15, ids: [ 2 ], links: {}, time: 1, is_capped: false, offset: 40, total: 40 },
+				data: {
+					generated: 15,
+					ids: [ 2 ],
+					links: {},
+					time: 1,
+					is_capped: false,
+					offset: 40,
+					total: 40,
+				},
 			} );
 
 		const { result } = renderHook( () => useGenerateModule( 'posts' ) );
@@ -149,10 +174,14 @@ describe( 'useGenerateModule', () => {
 		} );
 
 		expect( mockApiFetch ).toHaveBeenCalledTimes( 2 );
-		expect( mockApiFetch.mock.calls[ 0 ][ 0 ].data ).not.toHaveProperty( 'total' );
+		expect( mockApiFetch.mock.calls[ 0 ][ 0 ].data ).not.toHaveProperty(
+			'total'
+		);
 		expect( mockApiFetch.mock.calls[ 1 ][ 0 ].data ).toEqual(
 			expect.objectContaining( { offset: 25, total: 40 } )
 		);
-		expect( result.current.results ).toEqual( expect.objectContaining( { generated: 40 } ) );
+		expect( result.current.results ).toEqual(
+			expect.objectContaining( { generated: 40 } )
+		);
 	} );
 } );

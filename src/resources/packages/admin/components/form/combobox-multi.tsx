@@ -1,5 +1,12 @@
 import { useState, useCallback } from 'react';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../ui/command';
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from '../ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
@@ -110,7 +117,9 @@ export function ComboboxMulti( {
 				>
 					<div className="fp:flex fp:flex-wrap fp:gap-1 fp:flex-1">
 						{ value.length === 0 && (
-							<span className="fp:text-muted-foreground fp:font-normal">{ placeholder }</span>
+							<span className="fp:text-muted-foreground fp:font-normal">
+								{ placeholder }
+							</span>
 						) }
 						{ value.map( ( val ) => (
 							<Badge
@@ -129,7 +138,10 @@ export function ComboboxMulti( {
 										handleRemove( val );
 									} }
 									onKeyDown={ ( e ) => {
-										if ( e.key === 'Enter' || e.key === ' ' ) {
+										if (
+											e.key === 'Enter' ||
+											e.key === ' '
+										) {
 											e.preventDefault();
 											e.stopPropagation();
 											handleRemove( val );
@@ -144,10 +156,15 @@ export function ComboboxMulti( {
 					<ChevronsUpDown className="fp:h-4 fp:w-4 fp:shrink-0 fp:opacity-50" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="fp:w-[var(--radix-popover-trigger-width)] fp:p-0" align="start">
+			<PopoverContent
+				className="fp:w-[var(--radix-popover-trigger-width)] fp:p-0"
+				align="start"
+			>
 				<Command shouldFilter={ ! onSearch }>
 					<CommandInput
-						placeholder={ `Search${ allowCreate ? ' or type to add' : '' }...` }
+						placeholder={ `Search${
+							allowCreate ? ' or type to add' : ''
+						}...` }
 						value={ inputValue }
 						onValueChange={ handleInputChange }
 						onKeyDown={ handleKeyDown }
@@ -157,19 +174,22 @@ export function ComboboxMulti( {
 							{ isSearching
 								? 'Searching...'
 								: allowCreate && inputValue.trim()
-									? `Press Enter to add "${ inputValue.trim() }"`
-									: 'No results found.' }
+								? `Press Enter to add "${ inputValue.trim() }"`
+								: 'No results found.' }
 						</CommandEmpty>
 						<CommandGroup>
 							{ displayOptions.map( ( option ) => (
 								<CommandItem
 									key={ option.value }
 									value={ option.value }
-									onSelect={ () => handleSelect( option.value ) }
+									onSelect={ () =>
+										handleSelect( option.value )
+									}
 									className={ cn(
 										// Transparent base border avoids layout shift; highlight/hover adds a visible border and background.
 										'fp:border fp:border-transparent fp:hover:border-border fp:hover:bg-accent fp:data-[selected=true]:border-border fp:data-[selected=true]:bg-accent',
-										value.includes( option.value ) && 'fp:bg-accent'
+										value.includes( option.value ) &&
+											'fp:bg-accent'
 									) }
 								>
 									{ option.label }

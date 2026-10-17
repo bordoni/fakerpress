@@ -73,7 +73,10 @@ export function useAsyncSearch(
 						setResults( [] );
 					}
 				} catch ( err: unknown ) {
-					if ( err instanceof DOMException && err.name === 'AbortError' ) {
+					if (
+						err instanceof DOMException &&
+						err.name === 'AbortError'
+					) {
 						return;
 					}
 					setResults( [] );

@@ -1,7 +1,12 @@
 import type { ReactNode } from 'react';
 import { Info } from 'lucide-react';
 import { Label } from '../ui/label';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '../ui/tooltip';
 
 interface FormFieldProps {
 	label: string;
@@ -11,11 +16,20 @@ interface FormFieldProps {
 	children: ReactNode;
 }
 
-export function FormField( { label, htmlFor, description, tooltip, children }: FormFieldProps ) {
+export function FormField( {
+	label,
+	htmlFor,
+	description,
+	tooltip,
+	children,
+}: FormFieldProps ) {
 	return (
 		<div className="fp:grid fp:grid-cols-[200px_1fr] fp:gap-4 fp:items-start fp:py-3">
 			<div className="fp:flex fp:items-center fp:gap-1 fp:pt-2">
-				<Label htmlFor={ htmlFor } className="fp:text-sm fp:font-medium">
+				<Label
+					htmlFor={ htmlFor }
+					className="fp:text-sm fp:font-medium"
+				>
 					{ label }
 				</Label>
 				{ tooltip && (
@@ -26,7 +40,12 @@ export function FormField( { label, htmlFor, description, tooltip, children }: F
 									<Info className="fp:size-3.5" />
 								</span>
 							</TooltipTrigger>
-							<TooltipContent side="right" className="fp:max-w-[300px]">{ tooltip }</TooltipContent>
+							<TooltipContent
+								side="right"
+								className="fp:max-w-[300px]"
+							>
+								{ tooltip }
+							</TooltipContent>
 						</Tooltip>
 					</TooltipProvider>
 				) }
@@ -34,7 +53,9 @@ export function FormField( { label, htmlFor, description, tooltip, children }: F
 			<div className="fp:space-y-1">
 				{ children }
 				{ description && (
-					<p className="fp:text-xs fp:italic fp:text-muted-foreground">{ description }</p>
+					<p className="fp:text-xs fp:italic fp:text-muted-foreground">
+						{ description }
+					</p>
 				) }
 			</div>
 		</div>

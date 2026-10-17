@@ -2,7 +2,10 @@ import { StrictMode, Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/globals.css';
 
-const PAGE_COMPONENTS: Record< string, React.LazyExoticComponent< React.ComponentType > > = {
+const PAGE_COMPONENTS: Record<
+	string,
+	React.LazyExoticComponent< React.ComponentType >
+> = {
 	settings: lazy( () => import( './pages/settings' ) ),
 	terms: lazy( () => import( './pages/terms' ) ),
 	users: lazy( () => import( './pages/users' ) ),
@@ -19,7 +22,13 @@ function App( { page }: { page: string } ) {
 	}
 
 	return (
-		<Suspense fallback={ <div className="fp:p-4 fp:text-muted-foreground">Loading...</div> }>
+		<Suspense
+			fallback={
+				<div className="fp:p-4 fp:text-muted-foreground">
+					Loading...
+				</div>
+			}
+		>
 			<PageComponent />
 		</Suspense>
 	);

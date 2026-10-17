@@ -8,7 +8,10 @@ import { PageLayout } from '../components/layout/page-layout';
 import { AdminNotice } from '../components/layout/admin-notice';
 import { FormField } from '../components/form/form-field';
 import { RangeInput } from '../components/form/range-input';
-import { ComboboxMulti, type ComboboxOption } from '../components/form/combobox-multi';
+import {
+	ComboboxMulti,
+	type ComboboxOption,
+} from '../components/form/combobox-multi';
 import { MetaFieldRules } from '../components/form/meta-field-rules';
 import { GenerateButton } from '../components/form/generate-button';
 import { Switch } from '../components/ui/switch';
@@ -26,10 +29,14 @@ interface UsersFormData {
 
 export default function UsersPage() {
 	const { data } = usePageConfig();
-	const { generate, isGenerating, progress, results, error, reset } = useGenerateModule( 'users' );
+	const { generate, isGenerating, progress, results, error, reset } =
+		useGenerateModule( 'users' );
 
 	const roleOptions: ComboboxOption[] = useMemo( () => {
-		const roles = ( data.roles || [] ) as { value: string; label: string }[];
+		const roles = ( data.roles || [] ) as {
+			value: string;
+			label: string;
+		}[];
 		return roles.map( ( r ) => ( { value: r.value, label: r.label } ) );
 	}, [ data.roles ] );
 
@@ -62,11 +69,17 @@ export default function UsersPage() {
 				<AdminNotice
 					type="success"
 					title={ __( 'Success', 'fakerpress' ) }
-					message={ `Generated ${ results.generated } users in ${ results.time.toFixed( 2 ) }s.` }
+					message={ `Generated ${
+						results.generated
+					} users in ${ results.time.toFixed( 2 ) }s.` }
 				/>
 			) }
 			{ error && (
-				<AdminNotice type="error" title={ __( 'Error', 'fakerpress' ) } message={ error } />
+				<AdminNotice
+					type="error"
+					title={ __( 'Error', 'fakerpress' ) }
+					message={ error }
+				/>
 			) }
 
 			<form onSubmit={ handleSubmit( onSubmit ) }>
@@ -76,13 +89,20 @@ export default function UsersPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Quantity', 'fakerpress' ) }
-							description={ __( 'How many users to generate. Use both fields to randomize within the given range.', 'fakerpress' ) }
+							description={ __(
+								'How many users to generate. Use both fields to randomize within the given range.',
+								'fakerpress'
+							) }
 						>
 							<RangeInput
 								minValue={ field.value.min }
 								maxValue={ field.value.max }
-								onMinChange={ ( min ) => field.onChange( { ...field.value, min } ) }
-								onMaxChange={ ( max ) => field.onChange( { ...field.value, max } ) }
+								onMinChange={ ( min ) =>
+									field.onChange( { ...field.value, min } )
+								}
+								onMaxChange={ ( max ) =>
+									field.onChange( { ...field.value, max } )
+								}
 								min={ 1 }
 							/>
 						</FormField>
@@ -95,13 +115,19 @@ export default function UsersPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Roles', 'fakerpress' ) }
-							description={ __( 'Select which roles to assign to generated users. Leave empty for random roles.', 'fakerpress' ) }
+							description={ __(
+								'Select which roles to assign to generated users. Leave empty for random roles.',
+								'fakerpress'
+							) }
 						>
 							<ComboboxMulti
 								value={ field.value }
 								onChange={ field.onChange }
 								options={ roleOptions }
-								placeholder={ __( 'Select roles...', 'fakerpress' ) }
+								placeholder={ __(
+									'Select roles...',
+									'fakerpress'
+								) }
 							/>
 						</FormField>
 					) }
@@ -113,13 +139,20 @@ export default function UsersPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Description Size', 'fakerpress' ) }
-							description={ __( 'Number of sentences in the user biographical description.', 'fakerpress' ) }
+							description={ __(
+								'Number of sentences in the user biographical description.',
+								'fakerpress'
+							) }
 						>
 							<RangeInput
 								minValue={ field.value.min }
 								maxValue={ field.value.max }
-								onMinChange={ ( min ) => field.onChange( { ...field.value, min } ) }
-								onMaxChange={ ( max ) => field.onChange( { ...field.value, max } ) }
+								onMinChange={ ( min ) =>
+									field.onChange( { ...field.value, min } )
+								}
+								onMaxChange={ ( max ) =>
+									field.onChange( { ...field.value, max } )
+								}
 								min={ 0 }
 							/>
 						</FormField>
@@ -132,7 +165,10 @@ export default function UsersPage() {
 					render={ ( { field } ) => (
 						<FormField
 							label={ __( 'Use HTML', 'fakerpress' ) }
-							description={ __( 'When enabled, user descriptions will include HTML markup.', 'fakerpress' ) }
+							description={ __(
+								'When enabled, user descriptions will include HTML markup.',
+								'fakerpress'
+							) }
 						>
 							<div className="fp:flex fp:items-center fp:gap-2">
 								<Switch
@@ -140,8 +176,14 @@ export default function UsersPage() {
 									checked={ field.value }
 									onCheckedChange={ field.onChange }
 								/>
-								<Label htmlFor="use_html" className="fp:text-sm">
-									{ __( 'Enable HTML in descriptions', 'fakerpress' ) }
+								<Label
+									htmlFor="use_html"
+									className="fp:text-sm"
+								>
+									{ __(
+										'Enable HTML in descriptions',
+										'fakerpress'
+									) }
 								</Label>
 							</div>
 						</FormField>
@@ -155,13 +197,19 @@ export default function UsersPage() {
 						render={ ( { field } ) => (
 							<FormField
 								label={ __( 'HTML Tags', 'fakerpress' ) }
-								description={ __( 'HTML elements that can appear in generated user descriptions.', 'fakerpress' ) }
+								description={ __(
+									'HTML elements that can appear in generated user descriptions.',
+									'fakerpress'
+								) }
 							>
 								<ComboboxMulti
 									value={ field.value }
 									onChange={ field.onChange }
 									options={ htmlTagOptions }
-									placeholder={ __( 'Select HTML tags...', 'fakerpress' ) }
+									placeholder={ __(
+										'Select HTML tags...',
+										'fakerpress'
+									) }
 									allowCreate
 								/>
 							</FormField>
@@ -176,7 +224,10 @@ export default function UsersPage() {
 						<MetaFieldRules
 							value={ field.value }
 							onChange={ field.onChange }
-							description={ __( 'Use the fields below to configure a set of rules for your generated users', 'fakerpress' ) }
+							description={ __(
+								'Use the fields below to configure a set of rules for your generated users',
+								'fakerpress'
+							) }
 						/>
 					) }
 				/>

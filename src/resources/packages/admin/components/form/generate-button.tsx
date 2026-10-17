@@ -44,7 +44,8 @@ export function GenerateButton( {
 
 			{ results && (
 				<p className="fp:text-sm fp:text-green-600">
-					Successfully generated { results.generated } items in { results.time.toFixed( 2 ) }s.
+					Successfully generated { results.generated } items in{ ' ' }
+					{ results.time.toFixed( 2 ) }s.
 				</p>
 			) }
 

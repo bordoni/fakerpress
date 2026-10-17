@@ -22,7 +22,10 @@ interface UseGenerateModuleReturn {
  */
 export function useGenerateModule( endpoint: string ): UseGenerateModuleReturn {
 	const [ isGenerating, setIsGenerating ] = useState( false );
-	const [ progress, setProgress ] = useState< { current: number; total: number } | null >( null );
+	const [ progress, setProgress ] = useState< {
+		current: number;
+		total: number;
+	} | null >( null );
 	const [ results, setResults ] = useState< GenerateResult | null >( null );
 	const [ error, setError ] = useState< string | null >( null );
 
@@ -74,7 +77,10 @@ export function useGenerateModule( endpoint: string ): UseGenerateModuleReturn {
 					allIds.push( ...( response.ids ?? [] ) );
 					Object.assign( allLinks, response.links ?? {} );
 
-					if ( response.is_capped && response.total > totalGenerated ) {
+					if (
+						response.is_capped &&
+						response.total > totalGenerated
+					) {
 						total = response.total;
 						offset = totalGenerated;
 						setProgress( {
@@ -94,7 +100,9 @@ export function useGenerateModule( endpoint: string ): UseGenerateModuleReturn {
 				} );
 			} catch ( err: unknown ) {
 				const message =
-					err instanceof Error ? err.message : 'An unknown error occurred.';
+					err instanceof Error
+						? err.message
+						: 'An unknown error occurred.';
 				setError( message );
 			} finally {
 				setIsGenerating( false );

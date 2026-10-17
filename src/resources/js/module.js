@@ -15,8 +15,12 @@
 	 */
 	fp.getRestUrl = () => {
 		// Use localized data first, fallback to wpApiSettings
-		const restUrl = window.fakerpressRestApi?.root || window.wpApiSettings?.root || window.wp?.api?.settings?.root || '/wp-json/';
-		return `${restUrl}fakerpress/v1/`;
+		const restUrl =
+			window.fakerpressRestApi?.root ||
+			window.wpApiSettings?.root ||
+			window.wp?.api?.settings?.root ||
+			'/wp-json/';
+		return `${ restUrl }fakerpress/v1/`;
 	};
 
 	/**
@@ -27,7 +31,7 @@
 	 */
 	fp.getEndpointUrl = ( module ) => {
 		const baseUrl = fp.getRestUrl();
-		return `${baseUrl}${module}/generate`;
+		return `${ baseUrl }${ module }/generate`;
 	};
 
 	/**
@@ -37,7 +41,12 @@
 	 */
 	fp.getRestNonce = () => {
 		// Use localized data first, fallback to wpApiSettings
-		return window.fakerpressRestApi?.nonce || window.wpApiSettings?.nonce || window.wp?.api?.settings?.nonce || '';
+		return (
+			window.fakerpressRestApi?.nonce ||
+			window.wpApiSettings?.nonce ||
+			window.wp?.api?.settings?.nonce ||
+			''
+		);
 	};
 
 	/**
@@ -50,8 +59,12 @@
 	 * @return {jQuery} The element with the appended notice.
 	 */
 	fp.log = ( $element, html, data, attrClass = 'notice is-dismissible' ) => {
-		const finalAttrClass = [ 'notice', 'is-dismissible', attrClass ].join( ' ' ).split( ' ' ).filter( ( value, index, self ) => self.indexOf( value ) === index ).join( ' ' );
-		
+		const finalAttrClass = [ 'notice', 'is-dismissible', attrClass ]
+			.join( ' ' )
+			.split( ' ' )
+			.filter( ( value, index, self ) => self.indexOf( value ) === index )
+			.join( ' ' );
+
 		// Handle both simple messages and complex HTML with links
 		let noticeContent;
 		if ( typeof html === 'string' && html.includes( '<%= ' ) ) {
@@ -61,20 +74,21 @@
 			// Simple string or already processed HTML
 			noticeContent = html;
 		}
-		
+
 		const templateVars = {
 			attrClass: finalAttrClass,
 			html: noticeContent,
 		};
-		
-		const noticeTemplate = '<div class="<%= attrClass %>"><p><%= html %></p><button type="button" class="notice-dismiss"></button></div>';
+
+		const noticeTemplate =
+			'<div class="<%= attrClass %>"><p><%= html %></p><button type="button" class="notice-dismiss"></button></div>';
 		const noticeHtml = _.template( noticeTemplate )( templateVars );
 		const $notice = $( noticeHtml );
 
 		$notice.on( 'click.wp-dismiss-notice', '.notice-dismiss', ( event ) => {
 			event.preventDefault();
-			$notice.fadeTo( 100, 0, function() {
-				$( this ).slideUp( 100, function() {
+			$notice.fadeTo( 100, 0, function () {
+				$( this ).slideUp( 100, function () {
 					$( this ).remove();
 				} );
 			} );
@@ -92,20 +106,30 @@
 	 */
 	fp.formatSuccessMessage = ( responseData, baseMessage ) => {
 		let message = baseMessage;
-		
+
 		// Add links if available
 		if ( responseData.links && responseData.links.length > 0 ) {
 			// The links array contains HTML strings (e.g., '<a href="...">123</a>')
 			// not objects, so we can join them directly
 			const linksList = responseData.links.join( ', ' );
-			message += '<br><strong>' + __( 'Generated items:', 'fakerpress' ) + '</strong> ' + linksList;
+			message +=
+				'<br><strong>' +
+				__( 'Generated items:', 'fakerpress' ) +
+				'</strong> ' +
+				linksList;
 		}
-		
+
 		// Add timing information if available
 		if ( responseData.time ) {
-			message += '<br><em>' + __( 'Generation time: %s seconds', 'fakerpress' ).replace( '%s', responseData.time ) + '</em>';
+			message +=
+				'<br><em>' +
+				__( 'Generation time: %s seconds', 'fakerpress' ).replace(
+					'%s',
+					responseData.time
+				) +
+				'</em>';
 		}
-		
+
 		return message;
 	};
 
@@ -119,7 +143,9 @@
 		// Get the module endpoint from form data attribute
 		const moduleEndpoint = $form.data( 'endpoint' );
 		if ( ! moduleEndpoint ) {
-			console.error( 'No endpoint specified in form data-endpoint attribute' );
+			console.error(
+				'No endpoint specified in form data-endpoint attribute'
+			);
 			return;
 		}
 
@@ -134,7 +160,10 @@
 		const $response = $submitContainer.find( '.fp-response' );
 
 		// Check if this is a batched request (has offset/total parameters)
-		const isBatchedRequest = requestData && ( requestData.offset !== undefined || requestData.total !== undefined );
+		const isBatchedRequest =
+			requestData &&
+			( requestData.offset !== undefined ||
+				requestData.total !== undefined );
 
 		// Only check spinner for initial requests, not batched continuations
 		if ( ! isBatchedRequest && $spinner.hasClass( 'is-active' ) ) {
@@ -156,7 +185,7 @@
 
 		// Prepare the data for the request
 		let postData = requestData.fakerpress || {};
-		
+
 		// Add batching parameters if they exist
 		if ( requestData.offset !== undefined ) {
 			postData.offset = requestData.offset;
@@ -178,7 +207,7 @@
 			complete: ( jqXHR, status ) => {
 				// Don't remove spinner here - let the success/error callbacks handle it
 				// This ensures spinner stays active during batching
-				
+
 				// Only handle errors in complete if they haven't been handled in the error callback
 				if ( status !== 'success' && ! errorHandled ) {
 					// Always remove spinner and enable button on errors
@@ -186,12 +215,15 @@
 					$button.prop( 'disabled', false );
 
 					let errorMessage = __( 'An error occurred', 'fakerpress' );
-					
+
 					// Try to extract error message from response
 					if ( jqXHR.responseJSON ) {
 						if ( jqXHR.responseJSON.message ) {
 							errorMessage = jqXHR.responseJSON.message;
-						} else if ( jqXHR.responseJSON.data && jqXHR.responseJSON.data.message ) {
+						} else if (
+							jqXHR.responseJSON.data &&
+							jqXHR.responseJSON.data.message
+						) {
 							errorMessage = jqXHR.responseJSON.data.message;
 						}
 					} else if ( jqXHR.responseText ) {
@@ -208,22 +240,45 @@
 						}
 					}
 
-					fp.log( $response, '<%= message %>', { message: errorMessage }, 'notice-error' );
+					fp.log(
+						$response,
+						'<%= message %>',
+						{ message: errorMessage },
+						'notice-error'
+					);
 				}
 			},
 			success: ( data, textStatus, jqXHR ) => {
 				if ( data === null ) {
 					$spinner.removeClass( 'is-active' );
 					$button.prop( 'disabled', false );
-					fp.log( $response, '<%= message %>', { message: __( 'No data received from server', 'fakerpress' ) }, 'notice-error' );
+					fp.log(
+						$response,
+						'<%= message %>',
+						{
+							message: __(
+								'No data received from server',
+								'fakerpress'
+							),
+						},
+						'notice-error'
+					);
 				} else if ( data.success ) {
 					// Handle successful response
 					const responseData = data.data || {};
 					const generated = responseData.generated || 0;
-					const baseMessage = data.message || __( 'Generated %d items', 'fakerpress' ).replace( '%d', generated );
+					const baseMessage =
+						data.message ||
+						__( 'Generated %d items', 'fakerpress' ).replace(
+							'%d',
+							generated
+						);
 
 					// Check if we need to continue with pagination/batching
-					if ( responseData.is_capped && responseData.offset < responseData.total ) {
+					if (
+						responseData.is_capped &&
+						responseData.offset < responseData.total
+					) {
 						requestData.offset = responseData.offset;
 						requestData.total = responseData.total;
 
@@ -236,20 +291,18 @@
 					}
 
 					// Format the success message with links
-					const formattedMessage = fp.formatSuccessMessage( responseData, baseMessage );
-
-					fp.log( 
-						$response, 
-						formattedMessage,
-						{}, 
-						'notice-success' 
+					const formattedMessage = fp.formatSuccessMessage(
+						responseData,
+						baseMessage
 					);
+
+					fp.log( $response, formattedMessage, {}, 'notice-success' );
 				} else {
 					$spinner.removeClass( 'is-active' );
 					$button.prop( 'disabled', false );
-					
+
 					let errorMessage = __( 'Generation failed', 'fakerpress' );
-					
+
 					// Extract error message from failed response
 					if ( data.message ) {
 						errorMessage = data.message;
@@ -257,23 +310,31 @@
 						errorMessage = data.data.message;
 					}
 
-					fp.log( $response, '<%= message %>', { message: errorMessage }, 'notice-error' );
+					fp.log(
+						$response,
+						'<%= message %>',
+						{ message: errorMessage },
+						'notice-error'
+					);
 				}
 			},
 			error: ( jqXHR, textStatus, errorThrown ) => {
 				// Mark error as handled to prevent duplicate messages in complete callback
 				errorHandled = true;
-				
+
 				$spinner.removeClass( 'is-active' );
 				$button.prop( 'disabled', false );
 
 				let errorMessage = __( 'An error occurred', 'fakerpress' );
-				
+
 				// Try to extract meaningful error message
 				if ( jqXHR.responseJSON ) {
 					if ( jqXHR.responseJSON.message ) {
 						errorMessage = jqXHR.responseJSON.message;
-					} else if ( jqXHR.responseJSON.data && jqXHR.responseJSON.data.message ) {
+					} else if (
+						jqXHR.responseJSON.data &&
+						jqXHR.responseJSON.data.message
+					) {
 						errorMessage = jqXHR.responseJSON.data.message;
 					}
 				} else if ( jqXHR.responseText ) {
@@ -287,24 +348,50 @@
 					} catch ( e ) {
 						// If parsing fails, check for common HTTP errors
 						if ( jqXHR.status === 403 ) {
-							errorMessage = __( 'Permission denied. You do not have sufficient permissions to perform this action.', 'fakerpress' );
+							errorMessage = __(
+								'Permission denied. You do not have sufficient permissions to perform this action.',
+								'fakerpress'
+							);
 						} else if ( jqXHR.status === 404 ) {
-							errorMessage = __( 'REST API endpoint not found. Please check if the FakerPress REST API is properly configured.', 'fakerpress' );
+							errorMessage = __(
+								'REST API endpoint not found. Please check if the FakerPress REST API is properly configured.',
+								'fakerpress'
+							);
 						} else if ( jqXHR.status === 500 ) {
-							errorMessage = __( 'Internal server error occurred. Please check the server logs for more details.', 'fakerpress' );
+							errorMessage = __(
+								'Internal server error occurred. Please check the server logs for more details.',
+								'fakerpress'
+							);
 						} else if ( jqXHR.status === 0 ) {
-							errorMessage = __( 'Network error. Please check your internet connection.', 'fakerpress' );
+							errorMessage = __(
+								'Network error. Please check your internet connection.',
+								'fakerpress'
+							);
 						} else if ( errorThrown ) {
-							errorMessage = __( 'Error: %s', 'fakerpress' ).replace( '%s', errorThrown );
+							errorMessage = __(
+								'Error: %s',
+								'fakerpress'
+							).replace( '%s', errorThrown );
 						} else {
-							errorMessage = __( 'HTTP Error %d', 'fakerpress' ).replace( '%d', jqXHR.status );
+							errorMessage = __(
+								'HTTP Error %d',
+								'fakerpress'
+							).replace( '%d', jqXHR.status );
 						}
 					}
 				} else if ( errorThrown ) {
-					errorMessage = __( 'Error: %s', 'fakerpress' ).replace( '%s', errorThrown );
+					errorMessage = __( 'Error: %s', 'fakerpress' ).replace(
+						'%s',
+						errorThrown
+					);
 				}
 
-				fp.log( $response, '<%= message %>', { message: errorMessage }, 'notice-error' );
+				fp.log(
+					$response,
+					'<%= message %>',
+					{ message: errorMessage },
+					'notice-error'
+				);
 			},
 		} );
 	};
@@ -321,12 +408,16 @@
 		// Convert serialized array to object
 		serializedData.forEach( ( field ) => {
 			const { name, value } = field;
-			
+
 			// Skip WordPress nonce fields since we use REST API authentication
-			if ( name === '_wpnonce' || name === '_wp_http_referer' || name.includes( 'nonce' ) ) {
+			if (
+				name === '_wpnonce' ||
+				name === '_wp_http_referer' ||
+				name.includes( 'nonce' )
+			) {
 				return;
 			}
-			
+
 			// Parse nested array notation (e.g., fakerpress[qty][min], fakerpress[taxonomy][0][qty][max])
 			if ( name.includes( '[' ) && name.includes( ']' ) ) {
 				fp.setNestedValue( formData, name, value );
@@ -355,16 +446,16 @@
 		if ( value === '' || value === null || value === undefined ) {
 			return;
 		}
-		
+
 		// Parse the path: fakerpress[qty][min] -> ['fakerpress', 'qty', 'min']
-		const keys = path.split( /[\[\]]/ ).filter( key => key !== '' );
-		
+		const keys = path.split( /[\[\]]/ ).filter( ( key ) => key !== '' );
+
 		let current = obj;
-		
+
 		// Navigate/create the nested structure
 		for ( let i = 0; i < keys.length - 1; i++ ) {
 			const key = keys[ i ];
-			
+
 			// If the key is numeric, we're dealing with an array
 			if ( /^\d+$/.test( key ) ) {
 				const numKey = parseInt( key, 10 );
@@ -386,7 +477,7 @@
 				current = current[ key ];
 			}
 		}
-		
+
 		// Set the final value
 		const finalKey = keys[ keys.length - 1 ];
 		if ( /^\d+$/.test( finalKey ) ) {
@@ -410,15 +501,20 @@
 		if ( typeof str !== 'string' || str.trim() === '' ) {
 			return false;
 		}
-		
+
 		// Check for date patterns (YYYY-MM-DD, MM/DD/YYYY, etc.)
-		if ( /^\d{4}-\d{2}-\d{2}$/.test( str ) || /^\d{2}\/\d{2}\/\d{4}$/.test( str ) ) {
+		if (
+			/^\d{4}-\d{2}-\d{2}$/.test( str ) ||
+			/^\d{2}\/\d{2}\/\d{4}$/.test( str )
+		) {
 			return false;
 		}
-		
+
 		// Use parseFloat and check if it's a valid number
 		const num = parseFloat( str );
-		return ! isNaN( num ) && isFinite( num ) && str.trim() === num.toString();
+		return (
+			! isNaN( num ) && isFinite( num ) && str.trim() === num.toString()
+		);
 	};
 
 	/**
@@ -428,20 +524,22 @@
 	 */
 	fp.convertNumericValues = ( obj ) => {
 		if ( Array.isArray( obj ) ) {
-			obj.forEach( item => {
+			obj.forEach( ( item ) => {
 				if ( typeof item === 'object' && item !== null ) {
 					fp.convertNumericValues( item );
 				}
 			} );
 		} else if ( typeof obj === 'object' && obj !== null ) {
-			Object.keys( obj ).forEach( key => {
+			Object.keys( obj ).forEach( ( key ) => {
 				const value = obj[ key ];
-				
+
 				if ( typeof value === 'string' && fp.isNumeric( value ) ) {
 					// Convert to number (parseFloat handles both integers and floats)
 					const numValue = parseFloat( value );
 					// If it's a whole number, convert to integer
-					obj[ key ] = Number.isInteger( numValue ) ? parseInt( value, 10 ) : numValue;
+					obj[ key ] = Number.isInteger( numValue )
+						? parseInt( value, 10 )
+						: numValue;
 				} else if ( typeof value === 'object' && value !== null ) {
 					fp.convertNumericValues( value );
 				}
@@ -452,8 +550,8 @@
 	// Document Ready Actions
 	$( () => {
 		const $forms = $( fp.selectors.moduleGenerator );
-		
-		$forms.each( function() {
+
+		$forms.each( function () {
 			const $form = $( this );
 
 			$form.on( 'submit', ( event ) => {

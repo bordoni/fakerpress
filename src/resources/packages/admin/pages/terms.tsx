@@ -8,7 +8,10 @@ import { PageLayout } from '../components/layout/page-layout';
 import { AdminNotice } from '../components/layout/admin-notice';
 import { FormField } from '../components/form/form-field';
 import { RangeInput } from '../components/form/range-input';
-import { ComboboxMulti, type ComboboxOption } from '../components/form/combobox-multi';
+import {
+	ComboboxMulti,
+	type ComboboxOption,
+} from '../components/form/combobox-multi';
 import { MetaFieldRules } from '../components/form/meta-field-rules';
 import { GenerateButton } from '../components/form/generate-button';
 import type { MetaRule } from '../lib/types';
@@ -22,10 +25,14 @@ interface TermsFormData {
 
 export default function TermsPage() {
 	const { data } = usePageConfig();
-	const { generate, isGenerating, progress, results, error, reset } = useGenerateModule( 'terms' );
+	const { generate, isGenerating, progress, results, error, reset } =
+		useGenerateModule( 'terms' );
 
 	const taxonomyOptions: ComboboxOption[] = useMemo( () => {
-		const taxonomies = ( data.taxonomies || {} ) as Record< string, { name: string; label: string } >;
+		const taxonomies = ( data.taxonomies || {} ) as Record<
+			string,
+			{ name: string; label: string }
+		>;
 		return Object.values( taxonomies ).map( ( tax ) => ( {
 			value: tax.name,
 			label: tax.label,
@@ -58,11 +65,17 @@ export default function TermsPage() {
 				<AdminNotice
 					type="success"
 					title={ __( 'Success', 'fakerpress' ) }
-					message={ `Generated ${ results.generated } terms in ${ results.time.toFixed( 2 ) }s.` }
+					message={ `Generated ${
+						results.generated
+					} terms in ${ results.time.toFixed( 2 ) }s.` }
 				/>
 			) }
 			{ error && (
-				<AdminNotice type="error" title={ __( 'Error', 'fakerpress' ) } message={ error } />
+				<AdminNotice
+					type="error"
+					title={ __( 'Error', 'fakerpress' ) }
+					message={ error }
+				/>
 			) }
 
 			<form onSubmit={ handleSubmit( onSubmit ) }>
@@ -70,12 +83,22 @@ export default function TermsPage() {
 					name="qty"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Quantity', 'fakerpress' ) } description={ __( 'How many terms to generate.', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Quantity', 'fakerpress' ) }
+							description={ __(
+								'How many terms to generate.',
+								'fakerpress'
+							) }
+						>
 							<RangeInput
 								minValue={ field.value.min }
 								maxValue={ field.value.max }
-								onMinChange={ ( min ) => field.onChange( { ...field.value, min } ) }
-								onMaxChange={ ( max ) => field.onChange( { ...field.value, max } ) }
+								onMinChange={ ( min ) =>
+									field.onChange( { ...field.value, min } )
+								}
+								onMaxChange={ ( max ) =>
+									field.onChange( { ...field.value, max } )
+								}
 								min={ 1 }
 								minPlaceholder="e.g.: 3"
 								maxPlaceholder="e.g.: 12"
@@ -88,12 +111,22 @@ export default function TermsPage() {
 					name="size"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Name Size', 'fakerpress' ) } description={ __( 'Number of words in the term name.', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Name Size', 'fakerpress' ) }
+							description={ __(
+								'Number of words in the term name.',
+								'fakerpress'
+							) }
+						>
 							<RangeInput
 								minValue={ field.value.min }
 								maxValue={ field.value.max }
-								onMinChange={ ( min ) => field.onChange( { ...field.value, min } ) }
-								onMaxChange={ ( max ) => field.onChange( { ...field.value, max } ) }
+								onMinChange={ ( min ) =>
+									field.onChange( { ...field.value, min } )
+								}
+								onMaxChange={ ( max ) =>
+									field.onChange( { ...field.value, max } )
+								}
 								min={ 1 }
 							/>
 						</FormField>
@@ -104,12 +137,21 @@ export default function TermsPage() {
 					name="taxonomies"
 					control={ control }
 					render={ ( { field } ) => (
-						<FormField label={ __( 'Taxonomies', 'fakerpress' ) } description={ __( 'Select which taxonomies to create terms for.', 'fakerpress' ) }>
+						<FormField
+							label={ __( 'Taxonomies', 'fakerpress' ) }
+							description={ __(
+								'Select which taxonomies to create terms for.',
+								'fakerpress'
+							) }
+						>
 							<ComboboxMulti
 								value={ field.value }
 								onChange={ field.onChange }
 								options={ taxonomyOptions }
-								placeholder={ __( 'Select taxonomies...', 'fakerpress' ) }
+								placeholder={ __(
+									'Select taxonomies...',
+									'fakerpress'
+								) }
 							/>
 						</FormField>
 					) }
@@ -122,7 +164,10 @@ export default function TermsPage() {
 						<MetaFieldRules
 							value={ field.value }
 							onChange={ field.onChange }
-							description={ __( 'Use the fields below to configure a set of rules for your generated Terms', 'fakerpress' ) }
+							description={ __(
+								'Use the fields below to configure a set of rules for your generated Terms',
+								'fakerpress'
+							) }
 						/>
 					) }
 				/>

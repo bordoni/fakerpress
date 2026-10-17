@@ -1,7 +1,20 @@
-import { format, subDays, startOfWeek, startOfMonth, startOfYear } from 'date-fns';
+import {
+	format,
+	subDays,
+	startOfWeek,
+	startOfMonth,
+	startOfYear,
+} from 'date-fns';
 import { ArrowRight } from 'lucide-react';
 import { Input } from '../ui/input';
-import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from '../ui/select';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectSeparator,
+	SelectTrigger,
+	SelectValue,
+} from '../ui/select';
 
 const DATE_FORMAT = 'yyyy-MM-dd';
 const CUSTOM_VALUE = 'custom';
@@ -18,7 +31,11 @@ interface DateRangeFieldProps {
 	onChange: ( value: DateRangeValue ) => void;
 }
 
-const PRESETS: { value: string; label: string; getRange: () => [ Date, Date ] }[] = [
+const PRESETS: {
+	value: string;
+	label: string;
+	getRange: () => [ Date, Date ];
+}[] = [
 	{
 		value: 'yesterday',
 		label: 'Yesterday',
@@ -32,7 +49,10 @@ const PRESETS: { value: string; label: string; getRange: () => [ Date, Date ] }[
 	{
 		value: 'this_week',
 		label: 'This week',
-		getRange: () => [ startOfWeek( new Date(), { weekStartsOn: 1 } ), new Date() ],
+		getRange: () => [
+			startOfWeek( new Date(), { weekStartsOn: 1 } ),
+			new Date(),
+		],
 	},
 	{
 		value: 'this_month',
@@ -56,7 +76,9 @@ const PRESETS: { value: string; label: string; getRange: () => [ Date, Date ] }[
 	},
 ];
 
-export function getPresetRange( presetValue: string ): [ string, string ] | null {
+export function getPresetRange(
+	presetValue: string
+): [ string, string ] | null {
 	const presetConfig = PRESETS.find( ( p ) => p.value === presetValue );
 	if ( ! presetConfig ) return null;
 	const [ start, end ] = presetConfig.getRange();
@@ -72,7 +94,11 @@ export function DateRangeField( { value, onChange }: DateRangeFieldProps ) {
 		const presetConfig = PRESETS.find( ( p ) => p.value === preset );
 		if ( presetConfig ) {
 			const [ start, end ] = presetConfig.getRange();
-			onChange( { preset, start: format( start, DATE_FORMAT ), end: format( end, DATE_FORMAT ) } );
+			onChange( {
+				preset,
+				start: format( start, DATE_FORMAT ),
+				end: format( end, DATE_FORMAT ),
+			} );
 		}
 	};
 
@@ -83,7 +109,9 @@ export function DateRangeField( { value, onChange }: DateRangeFieldProps ) {
 					<SelectValue placeholder="Select an Interval" />
 				</SelectTrigger>
 				<SelectContent>
-					<SelectItem value={ CUSTOM_VALUE }>{ CUSTOM_LABEL }</SelectItem>
+					<SelectItem value={ CUSTOM_VALUE }>
+						{ CUSTOM_LABEL }
+					</SelectItem>
 					<SelectSeparator />
 					{ PRESETS.map( ( p ) => (
 						<SelectItem key={ p.value } value={ p.value }>
@@ -97,7 +125,13 @@ export function DateRangeField( { value, onChange }: DateRangeFieldProps ) {
 				<Input
 					type="date"
 					value={ value.start }
-					onChange={ ( e ) => onChange( { ...value, preset: CUSTOM_VALUE, start: e.target.value } ) }
+					onChange={ ( e ) =>
+						onChange( {
+							...value,
+							preset: CUSTOM_VALUE,
+							start: e.target.value,
+						} )
+					}
 					className="fp:w-36 fp:border-0 fp:rounded-none fp:shadow-none fp:focus-visible:ring-0"
 				/>
 				<span className="fp:flex fp:items-center fp:self-stretch fp:border-x fp:border-input fp:px-2 fp:text-muted-foreground fp:select-none">
@@ -106,7 +140,13 @@ export function DateRangeField( { value, onChange }: DateRangeFieldProps ) {
 				<Input
 					type="date"
 					value={ value.end }
-					onChange={ ( e ) => onChange( { ...value, preset: CUSTOM_VALUE, end: e.target.value } ) }
+					onChange={ ( e ) =>
+						onChange( {
+							...value,
+							preset: CUSTOM_VALUE,
+							end: e.target.value,
+						} )
+					}
 					className="fp:w-36 fp:border-0 fp:rounded-none fp:shadow-none fp:focus-visible:ring-0"
 				/>
 			</div>

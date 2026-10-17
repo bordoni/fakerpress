@@ -32,7 +32,13 @@ export function RangeInput( {
 			<Input
 				type="number"
 				value={ minValue ?? '' }
-				onChange={ ( e ) => onMinChange( e.target.value === '' ? undefined : Number( e.target.value ) ) }
+				onChange={ ( e ) =>
+					onMinChange(
+						e.target.value === ''
+							? undefined
+							: Number( e.target.value )
+					)
+				}
 				placeholder={ minPlaceholder }
 				min={ min }
 				max={ max }
@@ -47,7 +53,13 @@ export function RangeInput( {
 					<Input
 						type="number"
 						value={ maxValue ?? '' }
-						onChange={ ( e ) => onMaxChange( e.target.value === '' ? undefined : Number( e.target.value ) ) }
+						onChange={ ( e ) =>
+							onMaxChange(
+								e.target.value === ''
+									? undefined
+									: Number( e.target.value )
+							)
+						}
 						placeholder={ maxPlaceholder }
 						min={ min }
 						max={ max }

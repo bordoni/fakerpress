@@ -18,7 +18,9 @@ describe( 'GenerateButton', () => {
 	it( 'renders Generate button', () => {
 		render( <GenerateButton { ...defaultProps } /> );
 
-		expect( screen.getByRole( 'button', { name: /generate/i } ) ).toBeInTheDocument();
+		expect(
+			screen.getByRole( 'button', { name: /generate/i } )
+		).toBeInTheDocument();
 		expect( screen.getByRole( 'button' ) ).toHaveTextContent( 'Generate' );
 	} );
 
@@ -31,7 +33,9 @@ describe( 'GenerateButton', () => {
 			/>
 		);
 
-		expect( screen.getByRole( 'button' ) ).toHaveTextContent( 'Generating...' );
+		expect( screen.getByRole( 'button' ) ).toHaveTextContent(
+			'Generating...'
+		);
 		expect( screen.getByText( /5 \/ 10 generated/ ) ).toBeInTheDocument();
 	} );
 
