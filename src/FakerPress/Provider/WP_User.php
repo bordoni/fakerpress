@@ -70,13 +70,26 @@ class WP_User extends Base {
 	 *
 	 * @since 0.1.0
 	 * @since 0.6.2 Introduced type safety.
+	 * @since TBD   Keeps generated URLs within WordPress's 100-character limit.
 	 *
 	 * @param string|null $url
 	 *
 	 * @return string|null
 	 */
 	public function user_url( ?string $url = null ): ?string {
-		return $url ?? $this->generator->url();
+		if ( null !== $url ) {
+			return $url;
+		}
+
+		// WordPress rejects user URLs over 100 characters (user_url_too_long), which silently drops the user.
+		for ( $attempt = 0; $attempt < 5; $attempt++ ) {
+			$url = $this->generator->url();
+			if ( mb_strlen( $url ) <= 100 ) {
+				return $url;
+			}
+		}
+
+		return 'https://' . $this->generator->domainName() . '/';
 	}
 
 	/**
