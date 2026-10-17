@@ -106,6 +106,13 @@ export function ComboboxMulti( {
 		return val;
 	};
 
+	let emptyMessage = 'No results found.';
+	if ( isSearching ) {
+		emptyMessage = 'Searching...';
+	} else if ( allowCreate && inputValue.trim() ) {
+		emptyMessage = `Press Enter to add "${ inputValue.trim() }"`;
+	}
+
 	return (
 		<Popover open={ open } onOpenChange={ setOpen }>
 			<PopoverTrigger asChild>
@@ -170,13 +177,7 @@ export function ComboboxMulti( {
 						onKeyDown={ handleKeyDown }
 					/>
 					<CommandList>
-						<CommandEmpty>
-							{ isSearching
-								? 'Searching...'
-								: allowCreate && inputValue.trim()
-								? `Press Enter to add "${ inputValue.trim() }"`
-								: 'No results found.' }
-						</CommandEmpty>
+						<CommandEmpty>{ emptyMessage }</CommandEmpty>
 						<CommandGroup>
 							{ displayOptions.map( ( option ) => (
 								<CommandItem

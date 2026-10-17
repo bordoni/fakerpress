@@ -125,7 +125,7 @@ export default function UsersPage() {
 								onChange={ field.onChange }
 								options={ roleOptions }
 								placeholder={ __(
-									'Select roles...',
+									'Select roles…',
 									'fakerpress'
 								) }
 							/>
@@ -207,7 +207,7 @@ export default function UsersPage() {
 									onChange={ field.onChange }
 									options={ htmlTagOptions }
 									placeholder={ __(
-										'Select HTML tags...',
+										'Select HTML tags…',
 										'fakerpress'
 									) }
 									allowCreate

@@ -332,7 +332,7 @@ export default function AttachmentsPage() {
 									field.onChange( vals.map( Number ) )
 								}
 								placeholder={ __(
-									'Search for posts...',
+									'Search for posts…',
 									'fakerpress'
 								) }
 								onSearch={ postSearch.search }
@@ -448,7 +448,7 @@ export default function AttachmentsPage() {
 									field.onChange( vals.map( Number ) )
 								}
 								placeholder={ __(
-									'Search for authors...',
+									'Search for authors…',
 									'fakerpress'
 								) }
 								onSearch={ authorSearch.search }

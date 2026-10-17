@@ -15,6 +15,8 @@ const twMerge = extendTailwindMerge( { prefix: 'fp' } );
  *
  * Uses clsx for conditional class joining and tailwind-merge
  * for resolving Tailwind class conflicts.
+ *
+ * @param inputs Class values: strings, arrays or conditional objects.
  */
 export function cn( ...inputs: ClassValue[] ) {
 	return twMerge( clsx( inputs ) );

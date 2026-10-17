@@ -1,21 +1,14 @@
-( function ( $, _ ) {
+( function ( $ ) {
 	'use strict';
-	$.fn.conditional = function ( _opt ) {
-		var $elements = this,
-			defaults = {
-				conditional: function () {
-					return false;
-				},
-			},
-			opt = $.extend( defaults, _opt );
-
-		$elements.each( function ( index, element ) {
-			var $element = $( element ),
-				$condition = $element.data( 'condition' );
+	// Stub: conditional field logic was never implemented. It only reads
+	// each element's `data-condition` and does nothing with it yet.
+	$.fn.conditional = function () {
+		this.each( function ( index, element ) {
+			$( element ).data( 'condition' );
 		} );
 	};
 
 	$( document ).ready( function () {
 		$( '.fp-conditional' ).conditional();
 	} );
-} )( window.jQuery, window._ );
+} )( window.jQuery );

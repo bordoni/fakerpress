@@ -80,7 +80,9 @@ export function getPresetRange(
 	presetValue: string
 ): [ string, string ] | null {
 	const presetConfig = PRESETS.find( ( p ) => p.value === presetValue );
-	if ( ! presetConfig ) return null;
+	if ( ! presetConfig ) {
+		return null;
+	}
 	const [ start, end ] = presetConfig.getRange();
 	return [ format( start, DATE_FORMAT ), format( end, DATE_FORMAT ) ];
 }

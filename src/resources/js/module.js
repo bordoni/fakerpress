@@ -1,3 +1,4 @@
+/* global jQuery, _ */
 ( ( $, _ ) => {
 	'use strict';
 
@@ -52,9 +53,9 @@
 	/**
 	 * Log a message to the UI with proper styling.
 	 *
-	 * @param {jQuery} $element - The element to append the notice to.
-	 * @param {string} html - The HTML template string.
-	 * @param {Object} data - The data to interpolate into the template.
+	 * @param {jQuery} $element  - The element to append the notice to.
+	 * @param {string} html      - The HTML template string.
+	 * @param {Object} data      - The data to interpolate into the template.
 	 * @param {string} attrClass - Additional CSS classes for the notice.
 	 * @return {jQuery} The element with the appended notice.
 	 */
@@ -101,7 +102,7 @@
 	 * Format the success message with links to generated items.
 	 *
 	 * @param {Object} responseData - The response data from the REST API.
-	 * @param {string} baseMessage - The base success message.
+	 * @param {string} baseMessage  - The base success message.
 	 * @return {string} The formatted HTML message with links.
 	 */
 	fp.formatSuccessMessage = ( responseData, baseMessage ) => {
@@ -123,6 +124,7 @@
 		if ( responseData.time ) {
 			message +=
 				'<br><em>' +
+				/* translators: %s: Generation time in seconds. */
 				__( 'Generation time: %s seconds', 'fakerpress' ).replace(
 					'%s',
 					responseData.time
@@ -136,13 +138,14 @@
 	/**
 	 * Generate fake data using the REST API.
 	 *
-	 * @param {jQuery} $form - The form element.
+	 * @param {jQuery} $form       - The form element.
 	 * @param {Object} requestData - Optional request data override.
 	 */
 	fp.moduleGenerate = ( $form, requestData ) => {
 		// Get the module endpoint from form data attribute
 		const moduleEndpoint = $form.data( 'endpoint' );
 		if ( ! moduleEndpoint ) {
+			// eslint-disable-next-line no-console -- Developer-facing error for a form missing data-endpoint; there is no UI to report it in.
 			console.error(
 				'No endpoint specified in form data-endpoint attribute'
 			);
@@ -156,8 +159,6 @@
 
 		const $submitContainer = $form.find( '.fp-submit' );
 		const $spinner = $submitContainer.find( '.spinner' );
-		const $button = $submitContainer.find( '.button-primary' );
-		const $response = $submitContainer.find( '.fp-response' );
 
 		// Check if this is a batched request (has offset/total parameters)
 		const isBatchedRequest =
@@ -169,6 +170,9 @@
 		if ( ! isBatchedRequest && $spinner.hasClass( 'is-active' ) ) {
 			return;
 		}
+
+		const $button = $submitContainer.find( '.button-primary' );
+		const $response = $submitContainer.find( '.fp-response' );
 
 		// Only set spinner and disable button for initial requests
 		if ( ! isBatchedRequest ) {
@@ -184,7 +188,7 @@
 		let errorHandled = false;
 
 		// Prepare the data for the request
-		let postData = requestData.fakerpress || {};
+		const postData = requestData.fakerpress || {};
 
 		// Add batching parameters if they exist
 		if ( requestData.offset !== undefined ) {
@@ -248,7 +252,7 @@
 					);
 				}
 			},
-			success: ( data, textStatus, jqXHR ) => {
+			success: ( data ) => {
 				if ( data === null ) {
 					$spinner.removeClass( 'is-active' );
 					$button.prop( 'disabled', false );
@@ -269,6 +273,7 @@
 					const generated = responseData.generated || 0;
 					const baseMessage =
 						data.message ||
+						/* translators: %d: Number of generated items. */
 						__( 'Generated %d items', 'fakerpress' ).replace(
 							'%d',
 							generated
@@ -368,11 +373,13 @@
 								'fakerpress'
 							);
 						} else if ( errorThrown ) {
+							/* translators: %s: Error message returned by the request. */
 							errorMessage = __(
 								'Error: %s',
 								'fakerpress'
 							).replace( '%s', errorThrown );
 						} else {
+							/* translators: %d: HTTP status code. */
 							errorMessage = __(
 								'HTTP Error %d',
 								'fakerpress'
@@ -380,6 +387,7 @@
 						}
 					}
 				} else if ( errorThrown ) {
+					/* translators: %s: Error message returned by the request. */
 					errorMessage = __( 'Error: %s', 'fakerpress' ).replace(
 						'%s',
 						errorThrown
@@ -429,16 +437,14 @@
 		// Convert numeric strings to numbers where appropriate
 		fp.convertNumericValues( formData );
 
-		console.log( 'Form Data', formData );
-
 		return formData;
 	};
 
 	/**
 	 * Set a nested value in an object using array notation.
 	 *
-	 * @param {Object} obj - The target object.
-	 * @param {string} path - The path in array notation (e.g., 'fakerpress[qty][min]').
+	 * @param {Object} obj   - The target object.
+	 * @param {string} path  - The path in array notation (e.g., 'fakerpress[qty][min]').
 	 * @param {string} value - The value to set.
 	 */
 	fp.setNestedValue = ( obj, path, value ) => {
@@ -557,7 +563,6 @@
 			$form.on( 'submit', ( event ) => {
 				fp.moduleGenerate( $form );
 
-				console.log( 'Form', $form );
 				event.preventDefault();
 			} );
 		} );

@@ -112,7 +112,7 @@ export default function CommentsPage() {
 								onChange={ field.onChange }
 								options={ commentTypeOptions }
 								placeholder={ __(
-									'Select types...',
+									'Select types…',
 									'fakerpress'
 								) }
 							/>
@@ -136,7 +136,7 @@ export default function CommentsPage() {
 								onChange={ field.onChange }
 								options={ postTypeOptions }
 								placeholder={ __(
-									'Select post types...',
+									'Select post types…',
 									'fakerpress'
 								) }
 							/>
@@ -263,7 +263,7 @@ export default function CommentsPage() {
 									onChange={ field.onChange }
 									options={ htmlTagOptions }
 									placeholder={ __(
-										'Select HTML tags...',
+										'Select HTML tags…',
 										'fakerpress'
 									) }
 									allowCreate
