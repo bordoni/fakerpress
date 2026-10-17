@@ -53,7 +53,7 @@ class Utils {
 					$value = array_map( 'sanitize_html_class', $value );
 					$value = implode( ' ', $value );
 				} else {
-					$value = htmlspecialchars( json_encode( $value ), ENT_QUOTES, 'UTF-8' );
+					$value = htmlspecialchars( wp_json_encode( $value ), ENT_QUOTES, 'UTF-8' );
 				}
 			}
 			if ( ! is_bool( $value ) || true !== $value ) {

@@ -188,7 +188,7 @@ class Template {
 	 *
 	 * @return mixed The value of the specified index or the default if not found.
 	 */
-	final public function get( $index, $default = null, $is_local = true ) {
+	final public function get( $index, $default = null, $is_local = true ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 		$context = $this->get_global_values();
 
 		if ( true === $is_local ) {
@@ -374,12 +374,12 @@ class Template {
 			$folders[] = [
 				'id'       => 'child-theme',
 				'priority' => 10,
-				'path'     => $this->get_template_public_path( STYLESHEETPATH ),
+				'path'     => $this->get_template_public_path( get_stylesheet_directory() ),
 			];
 			$folders[] = [
 				'id'       => 'parent-theme',
 				'priority' => 15,
-				'path'     => $this->get_template_public_path( TEMPLATEPATH ),
+				'path'     => $this->get_template_public_path( get_template_directory() ),
 			];
 		}
 
@@ -466,7 +466,7 @@ class Template {
 	 *
 	 * @return string|false Either the final content HTML or `false` if no template could be found.
 	 */
-	public function render( $name, $context = [], $echo = true ) {
+	public function render( $name, $context = [], $echo = true ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.echoFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 		// If name is String make it an Array
 		if ( is_string( $name ) ) {
 			$name = (array) explode( '/', $name );
@@ -607,7 +607,7 @@ class Template {
 		$html = apply_filters( "fakerpress_template_html:$hook_name", $html, $file, $name, $this );
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, StellarWP.XSS.EscapeOutput.OutputNotEscaped -- Rendered template markup, each template escapes its own output.
 		}
 
 		return $html;
