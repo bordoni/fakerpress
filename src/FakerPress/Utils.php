@@ -1,9 +1,17 @@
 <?php
+/**
+ * Small shared helpers: HTML attributes, class prefixes, quantity ranges and country codes.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress;
 
 use FakerPress\ThirdParty\Faker\Provider\Base;
 
+/**
+ * Shared helpers used by the fields, modules and providers.
+ */
 class Utils {
 	/**
 	 * Formats an array of HTML attributes into a string.
@@ -92,17 +100,17 @@ class Utils {
 	}
 
 	/**
-	 * From range return a random Integer
-	 * Providing the $total param will limit the returning integer to the total number of elements
+	 * From range return a random Integer.
 	 *
-	 * @param array|int      $range The range or integer
-	 * @param null|int|array $total {
+	 * Empty values are dropped from an array range; a single remaining value is used as is,
+	 * otherwise a random number between the first and last value is picked. Providing the
+	 * $total param will limit the returning integer to the total number of elements.
 	 *
-	 * @return int
-	 * @example int   Limits the range to this maximum
-	 * @example array Counts the elements in array and limit to that
-	 *          }
-	 * @example null  Will not limit the Range to a maximum int
+	 * @param array|int      $range The range as `[ min, max ]`, a single-value array, or an integer.
+	 * @param null|int|array $total Maximum to cap the result at: an int is used as is, an array
+	 *                              is capped at its element count, null applies no cap.
+	 *
+	 * @return int The absolute quantity, 0 when the range is neither an array nor numeric.
 	 */
 	public function get_qty_from_range( $range, $total = null ) {
 		if ( is_array( $range ) ) {
@@ -147,12 +155,14 @@ class Utils {
 	}
 
 	/**
-	 * Based on the English version of a country gets it's 2 or 3 alpha code
+	 * Based on the English version of a country gets it's 2 or 3 alpha code.
 	 *
-	 * @param string|null $country_name If you want to get all the codes, pass null
-	 * @param int         $type         How many characters is the code, 2 or 3
+	 * The name is compared against the translated country names.
 	 *
-	 * @return string                It will be Uppercase
+	 * @param string|null $country_name Country name to look up.
+	 * @param int         $type         How many characters is the code, 2 or 3.
+	 *
+	 * @return string The uppercase alpha code of the matching country.
 	 */
 	public static function get_country_alpha_code( $country_name = null, int $type = 2 ) {
 		$countries = [

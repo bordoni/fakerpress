@@ -1,4 +1,9 @@
 <?php
+/**
+ * AJAX handlers that back the Select2 search fields.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress;
 

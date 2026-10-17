@@ -278,10 +278,10 @@ class Plugin {
 	 * @uses wp_parse_args
 	 * @uses add_query_arg
 	 *
-	 * @param string|array $args Arguments for the admin URL
-	 * @param string       $hash Hash for the admin URL
+	 * @param string|array $args Query arguments for the admin URL, merged over `page=fakerpress`.
+	 * @param string|false $hash Fragment to append after `#`, or false for none.
 	 *
-	 * @return string       The url to the file
+	 * @return string The FakerPress admin page URL.
 	 */
 	public static function admin_url( $args = '', $hash = false ): string {
 		/**
@@ -305,19 +305,35 @@ class Plugin {
 	 * @since 0.3.2
 	 * @uses esc_url_raw
 	 *
-	 * @param string $path Hash for the admin URL
+	 * @param string $path Path to append to the project website domain.
 	 *
-	 * @return string         The url the external website with the appended $path
+	 * @return string The url the external website with the appended $path.
 	 */
 	public static function ext_site_url( string $path = '/' ): string {
 		return esc_url_raw( static::$_ext_domain . ( ! empty( $path ) ? $path : '/' ), [ 'http', 'https' ] );
 	}
 
+	/**
+	 * Gets a plugin option, including one nested inside the stored options array.
+	 *
+	 * @param string|array $name    Option index, or a list of nested indexes in order.
+	 * @param mixed        $default Value returned when the option is not set.
+	 *
+	 * @return mixed The option value or the default.
+	 */
 	public static function get( $name, $default = false ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 		$options = static::all();
 		return get( $options, $name, $default );
 	}
 
+	/**
+	 * Sets a plugin option, creating the nested arrays along the way, and saves the options.
+	 *
+	 * @param string|array $name  Option index, or a list of nested indexes in order.
+	 * @param mixed        $value Value to store.
+	 *
+	 * @return bool Whether `update_option()` changed the stored options.
+	 */
 	public static function update( $name = null, $value = false ) {
 		$options = static::all();
 		$opts    = [];
@@ -342,10 +358,22 @@ class Plugin {
 		return update_option( static::$slug . '-plugin-options', $options );
 	}
 
+	/**
+	 * Placeholder for removing a plugin option; not implemented yet and does nothing.
+	 *
+	 * @param string|array|null $name Option index, or a list of nested indexes in order.
+	 *
+	 * @return void
+	 */
 	public static function remove( $name = null ) {
 		// @TODO
 	}
 
+	/**
+	 * Gets every stored plugin option.
+	 *
+	 * @return array The `fakerpress-plugin-options` option, an empty array when it is not set.
+	 */
 	public static function all() {
 		$defaults = [];
 

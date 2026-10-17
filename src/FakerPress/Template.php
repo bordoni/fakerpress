@@ -1,10 +1,19 @@
 <?php
+/**
+ * Template loader that finds and renders PHP templates with a local and global context.
+ *
+ * @package FakerPress
+ */
+
 namespace FakerPress;
 
 use function FakerPress\is_truthy;
 use function FakerPress\set;
 use function FakerPress\get;
 
+/**
+ * Finds PHP template files in the plugin (and optionally the theme) and renders them with context data.
+ */
 class Template {
 	/**
 	 * The folders into which we will look for the template.
@@ -74,7 +83,8 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param object|string $origin   The base origin for the templates
+	 * @param object|string $origin The base origin for the templates: an object with a `path()` method,
+	 *                              or a class name with an `instance()` method. Defaults to the current origin.
 	 *
 	 * @return self
 	 */
@@ -105,7 +115,7 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param array|string $folder  Which folder we are going to look for templates
+	 * @param array|string $folder Which folder we are going to look for templates, as a path or a list of path parts.
 	 *
 	 * @return self
 	 */
@@ -127,11 +137,11 @@ class Template {
 	}
 
 	/**
-	 * Configures the class with the base folder in relation to the Origin
+	 * Configures whether templates are also looked up in the child and parent theme folders.
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param mixed $use  Should we look for template files in the list of folders
+	 * @param mixed $value Should we look for template files in the list of folders, any truthy value enables it.
 	 *
 	 * @return self
 	 */
@@ -146,7 +156,7 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param array $context  Default global Context
+	 * @param array $context Default global Context, merged over the existing globals.
 	 *
 	 * @return self
 	 */
@@ -162,7 +172,7 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param bool $value  Should we extract context for templates
+	 * @param bool $value Should we extract context for templates.
 	 *
 	 * @return self
 	 */
@@ -174,17 +184,18 @@ class Template {
 	}
 
 	/**
-	 * Sets a Index inside of the global or local context
-	 * Final to prevent extending the class when the `get` already exists on the child class
+	 * Gets an Index from the global or local context.
+	 *
+	 * Final to prevent extending the class when the `get` already exists on the child class.
 	 *
 	 * @since 0.5.1
 	 *
 	 * @see \FakerPress\get
 	 *
-	 * @param array   $index     Specify each nested index in order.
-	 *                            Example: array( 'lvl1', 'lvl2' );
-	 * @param mixed   $default   Default value if the search finds nothing.
-	 * @param boolean $is_local  Use the Local or Global context
+	 * @param array|string $index    Specify each nested index in order.
+	 *                               Example: array( 'lvl1', 'lvl2' ).
+	 * @param mixed        $default  Default value if the search finds nothing.
+	 * @param boolean      $is_local Use the Local or Global context.
 	 *
 	 * @return mixed The value of the specified index or the default if not found.
 	 */
@@ -217,20 +228,21 @@ class Template {
 	}
 
 	/**
-	 * Sets a Index inside of the global or local context
-	 * Final to prevent extending the class when the `set` already exists on the child class
+	 * Sets a Index inside of the global or local context.
+	 *
+	 * Final to prevent extending the class when the `set` already exists on the child class.
 	 *
 	 * @since 0.5.1
 	 *
-	 * @see fp_array_set
+	 * @see \FakerPress\set
 	 *
-	 * @param string|array $index     To set a key nested multiple levels deep pass an array
-	 *                                 specifying each key in order as a value.
-	 *                                 Example: array( 'lvl1', 'lvl2', 'lvl3' );
-	 * @param mixed        $value     The value.
-	 * @param boolean      $is_local  Use the Local or Global context
+	 * @param string|array $index    To set a key nested multiple levels deep pass an array
+	 *                               specifying each key in order as a value.
+	 *                               Example: array( 'lvl1', 'lvl2', 'lvl3' ).
+	 * @param mixed        $value    The value.
+	 * @param boolean      $is_local Use the Local or Global context.
 	 *
-	 * @return array Full array with the key set to the specified value.
+	 * @return array The full local or global context with the key set to the specified value.
 	 */
 	final public function set( $index, $value = null, $is_local = true ) {
 		if ( true === $is_local ) {
@@ -245,15 +257,15 @@ class Template {
 	}
 
 	/**
-	 * Merges local and global context, and saves it locally
+	 * Merges local and global context, and saves it locally.
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param array  $context  Local Context array of data
-	 * @param string $file     Complete path to include the PHP File
-	 * @param array  $name     Template name
+	 * @param array  $context Local Context array of data.
+	 * @param string $file    Complete path to include the PHP File.
+	 * @param array  $name    Template name.
 	 *
-	 * @return array
+	 * @return array The merged context, after the `fakerpress_template_context` filter.
 	 */
 	public function merge_context( $context = [], $file = null, $name = null ) {
 		// Allow for simple null usage as well as array() for nothing.
@@ -337,7 +349,7 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param mixed $base  Base path to look into
+	 * @param mixed $base Base path to look into, normally a theme directory.
 	 *
 	 * @return string
 	 */
@@ -411,9 +423,9 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param mixed $name  File name we are looking for
+	 * @param string|array $name File name we are looking for, without the `.php` extension, as a path or list of path parts.
 	 *
-	 * @return string
+	 * @return string|false The full path of the first matching file, or false when none exists.
 	 */
 	public function get_template_file( $name ) {
 		// If name is String make it an Array.
@@ -460,9 +472,9 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param string  $name    Which file we are talking about including
-	 * @param array   $context Any context data you need to expose to this file
-	 * @param boolean $echo    If we should also print the Template
+	 * @param string|array $name    Which file we are talking about including, as a path or list of path parts.
+	 * @param array        $context Any context data you need to expose to this file.
+	 * @param boolean      $echo    If we should also print the Template.
 	 *
 	 * @return string|false Either the final content HTML or `false` if no template could be found.
 	 */

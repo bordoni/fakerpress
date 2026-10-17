@@ -137,7 +137,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 0.6.4
 	 *
-	 * @param \WP_Screen $screen
+	 * @param \WP_Screen $screen The screen WordPress just set as current.
 	 */
 	public function modify_current_screen( $screen ) {
 		// Removes itself since it's required to avoid infinitte loop.
