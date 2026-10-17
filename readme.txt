@@ -177,6 +177,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 * Tests - Add Jest coverage for the admin, REST payload tests for every generate endpoint, and build the JS before WPUnit in CI. [[#187](https://github.com/bordoni/fakerpress/pull/187)]
 * Tweak - Format the JavaScript and TypeScript sources with Prettier; no behaviour change. [[#235](https://github.com/bordoni/fakerpress/pull/235)]
 * Tweak - Clear every JavaScript lint and TypeScript error: WordPress package types, the `@fp` import alias in ESLint, the zod v4 meta-rule schema, `…` in translated strings, and `let`/`const` in the legacy jQuery scripts. [[#236](https://github.com/bordoni/fakerpress/pull/236)]
+* Tweak - Clear every stylelint error in the admin styles with a Tailwind v4 aware config; the compiled CSS is unchanged apart from dropping obsolete `-moz-` gradients and empty rules. [[#237](https://github.com/bordoni/fakerpress/pull/237)]
 
 = 0.9.2 &mdash; 20 of July 2026 =
 

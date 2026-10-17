@@ -29,6 +29,7 @@ CLAUDE.md
 webpack.config.js
 tailwind.config.js
 postcss.config.js
+.stylelintrc.js
 
 # Composer and Package files.
 composer.json
