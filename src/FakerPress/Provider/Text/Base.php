@@ -1,9 +1,23 @@
 <?php
+/**
+ * Faker provider for lorem ipsum text.
+ *
+ * @package FakerPress
+ */
+
 namespace FakerPress\Provider\Text;
 
 use FakerPress\ThirdParty\Faker\Provider\Base as Faker_Base;
 
+/**
+ * Generates lorem ipsum words, sentences, paragraphs and text, following Faker's Lorem provider API.
+ */
 class Base extends Faker_Base {
+	/**
+	 * Latin words the generated text is built from.
+	 *
+	 * @var string[]
+	 */
 	public static $wordList = [ // phpcs:ignore WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase -- Faker-compatible public property, subclasses and callers use this name.
 		'alias',
 		'consequatur',
@@ -259,7 +273,11 @@ class Base extends Faker_Base {
 	// phpcs:disable WordPress.NamingConventions.ValidVariableName -- Faker-compatible public API: $wordList and the camelCase parameters mirror Faker's Lorem provider, renaming them breaks overrides and named arguments.
 
 	/**
+	 * Picks a random word from the word list.
+	 *
 	 * @example 'Lorem'
+	 *
+	 * @return string The word.
 	 */
 	public static function word() {
 		return static::randomElement( static::$wordList );
@@ -269,8 +287,8 @@ class Base extends Faker_Base {
 	 * Generate an array of random words
 	 *
 	 * @example [ 'Lorem', 'ipsum', 'dolor' ]
-	 * @param integer $nb     how many words to return
-	 * @param bool    $asText if true the sentences are returned as one string
+	 * @param integer $nb     How many words to return.
+	 * @param bool    $asText If true the words are returned as one space-separated string.
 	 * @return array|string
 	 */
 	public static function words( $nb = 3, $asText = false ) {
@@ -286,9 +304,9 @@ class Base extends Faker_Base {
 	 * Generate a random sentence
 	 *
 	 * @example 'Lorem ipsum dolor sit amet.'
-	 * @param integer $nbWords         around how many words the sentence should contain
-	 * @param boolean $variableNbWords set to false if you want exactly $nbWords returned,
-	 *                                  otherwise $nbWords may vary by +/-40% with a minimum of 1
+	 * @param integer $nbWords         Around how many words the sentence should contain.
+	 * @param boolean $variableNbWords Set to false if you want exactly $nbWords returned,
+	 *                                 otherwise $nbWords may vary by +/-40% with a minimum of 1.
 	 * @return string
 	 */
 	public static function sentence( $nbWords = 6, $variableNbWords = true ) {
@@ -309,8 +327,8 @@ class Base extends Faker_Base {
 	 * Generate an array of sentences
 	 *
 	 * @example [ 'Lorem ipsum dolor sit amet.', 'Consectetur adipisicing eli.' ]
-	 * @param integer $nb     how many sentences to return
-	 * @param bool    $asText if true the sentences are returned as one string
+	 * @param integer $nb     How many sentences to return.
+	 * @param bool    $asText If true the sentences are returned as one string.
 	 * @return array|string
 	 */
 	public static function sentences( $nb = 3, $asText = false ) {
@@ -326,9 +344,9 @@ class Base extends Faker_Base {
 	 * Generate a single paragraph
 	 *
 	 * @example 'Sapiente sunt omnis. Ut pariatur ad autem ducimus et. Voluptas rem voluptas sint modi dolorem amet.'
-	 * @param integer $nbSentences         around how many sentences the paragraph should contain
-	 * @param boolean $variableNbSentences set to false if you want exactly $nbSentences returned,
-	 *                                      otherwise $nbSentences may vary by +/-40% with a minimum of 1
+	 * @param integer $nbSentences         Around how many sentences the paragraph should contain.
+	 * @param boolean $variableNbSentences Set to false if you want exactly $nbSentences returned,
+	 *                                     otherwise $nbSentences may vary by +/-40% with a minimum of 1.
 	 * @return string
 	 */
 	public static function paragraph( $nbSentences = 3, $variableNbSentences = true ) {
@@ -346,8 +364,8 @@ class Base extends Faker_Base {
 	 * Generate an array of paragraphs
 	 *
 	 * @example [ $paragraph1, $paragraph2, $paragraph3 ]
-	 * @param integer $nb     how many paragraphs to return
-	 * @param bool    $asText if true the paragraphs are returned as one string, separated by two newlines
+	 * @param integer $nb     How many paragraphs to return.
+	 * @param bool    $asText If true the paragraphs are returned as one string, separated by two newlines.
 	 * @return array|string
 	 */
 	public static function paragraphs( $nb = 3, $asText = false ) {
@@ -364,8 +382,10 @@ class Base extends Faker_Base {
 	 * Depending on the $maxNbChars, returns a string made of words, sentences, or paragraphs.
 	 *
 	 * @example 'Sapiente sunt omnis. Ut pariatur ad autem ducimus et. Voluptas rem voluptas sint modi dolorem amet.'
-	 * @param integer $maxNbChars Maximum number of characters the text should contain (minimum 5)
+	 * @param integer $maxNbChars Maximum number of characters the text should contain (minimum 5).
 	 * @return string
+	 *
+	 * @throws \InvalidArgumentException When `$maxNbChars` is lower than 5.
 	 */
 	public static function text( $maxNbChars = 200 ) {
 		$text = [];
@@ -416,6 +436,13 @@ class Base extends Faker_Base {
 
 	// phpcs:enable WordPress.NamingConventions.ValidVariableName
 
+	/**
+	 * Varies a count by -40% to +40% and adds one, so the result is never below 1.
+	 *
+	 * @param int $nb_elements The count to vary.
+	 *
+	 * @return int The varied count.
+	 */
 	protected static function randomize_nb_elements( $nb_elements ) {
 		return (int) ( $nb_elements * mt_rand( 60, 140 ) / 100 ) + 1; // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand -- Faker seeds mt_rand(), wp_rand() would make seeded output unpredictable.
 	}

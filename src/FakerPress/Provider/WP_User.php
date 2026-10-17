@@ -1,4 +1,10 @@
 <?php
+/**
+ * Faker provider for WordPress user fields.
+ *
+ * @package FakerPress
+ */
+
 namespace FakerPress\Provider;
 
 use FakerPress\ThirdParty\Faker\Provider\Base;
@@ -6,6 +12,9 @@ use FakerPress\ThirdParty\Cake\Chronos\Chronos;
 use FakerPress\Utils;
 use function FakerPress\make;
 
+/**
+ * Generates the fields of a fake user: names, login, email, URL, password, role and dates.
+ */
 class WP_User extends Base {
 
 	/**
@@ -14,8 +23,8 @@ class WP_User extends Base {
 	 * @since 0.1.0
 	 * @since 0.6.2 Introduced type safety.
 	 *
-	 * @param string|null $first_name
-	 * @param string[]    $gender
+	 * @param string|null $first_name First name to use as is; null generates one.
+	 * @param string[]    $gender     Genders to pick from when generating the name.
 	 *
 	 * @return string|null
 	 */
@@ -29,7 +38,7 @@ class WP_User extends Base {
 	 * @since 0.1.0
 	 * @since 0.6.2 Introduced type safety.
 	 *
-	 * @param string|null $last_name
+	 * @param string|null $last_name Last name to use as is; null generates one.
 	 *
 	 * @return string|null
 	 */
@@ -43,7 +52,7 @@ class WP_User extends Base {
 	 * @since 0.1.0
 	 * @since 0.6.2 Introduced type safety.
 	 *
-	 * @param string|null $login
+	 * @param string|null $login Login to use as is; null generates one.
 	 *
 	 * @return string|null
 	 */
@@ -57,7 +66,7 @@ class WP_User extends Base {
 	 * @since 0.1.0
 	 * @since 0.6.2 Introduced type safety.
 	 *
-	 * @param string|null $nicename
+	 * @param string|null $nicename Nicename to use as is; null generates a username.
 	 *
 	 * @return string|null
 	 */
@@ -72,7 +81,7 @@ class WP_User extends Base {
 	 * @since 0.6.2 Introduced type safety.
 	 * @since TBD   Keeps generated URLs within WordPress's 100-character limit.
 	 *
-	 * @param string|null $url
+	 * @param string|null $url URL to use as is; null generates one of at most 100 characters.
 	 *
 	 * @return string|null
 	 */
@@ -98,7 +107,7 @@ class WP_User extends Base {
 	 * @since 0.1.0
 	 * @since 0.6.2 Introduced type safety.
 	 *
-	 * @param string|null $email
+	 * @param string|null $email Email to use as is; null generates a safe example.* address.
 	 *
 	 * @return string|null
 	 */
@@ -112,8 +121,8 @@ class WP_User extends Base {
 	 * @since 0.1.0
 	 * @since 0.6.2 Introduced type safety.
 	 *
-	 * @param string|null $display_name
-	 * @param string[]    $gender
+	 * @param string|null $display_name Display name to use as is; null generates a first name.
+	 * @param string[]    $gender       Genders to pick from when generating the name.
 	 *
 	 * @return string|null
 	 */
@@ -127,7 +136,7 @@ class WP_User extends Base {
 	 * @since 0.1.0
 	 * @since 0.6.2 Introduced type safety.
 	 *
-	 * @param string|null $nickname
+	 * @param string|null $nickname Nickname to use as is; null generates a username.
 	 *
 	 * @return string|null
 	 */
@@ -141,8 +150,8 @@ class WP_User extends Base {
 	 * @since 0.1.0
 	 * @since 0.6.2 Introduced type safety.
 	 *
-	 * @param string|null $pass
-	 * @param int         $qty
+	 * @param string|null $pass Password to use as is; null generates one.
+	 * @param int         $qty  Length of the generated password.
 	 *
 	 * @return string|null
 	 */
@@ -164,7 +173,7 @@ class WP_User extends Base {
 	 * @since 0.6.2 Introduced type safety.
 	 *
 	 * @param bool  $html Whether to return HTML or plain text.
-	 * @param array $args
+	 * @param array $args Generation arguments; `qty` is the number of elements or paragraphs, or a [ min, max ] range.
 	 *
 	 * @return string|null
 	 */
@@ -189,14 +198,22 @@ class WP_User extends Base {
 	 * @since 0.1.0
 	 * @since 0.6.2 Introduced type safety.
 	 *
-	 * @param string[] $role
+	 * @param string[]|null $role Roles to pick from; null picks from the editable roles.
 	 *
-	 * @return string
+	 * @return string|null The role, or null when the list is empty.
 	 */
 	public function role( ?array $role = [] ): ?string {
 		return $this->generator->randomElement( $role ?? array_keys( get_editable_roles() ) );
 	}
 
+	/**
+	 * Generates a registration date.
+	 *
+	 * @param string      $min Date string for the start of the range, or the exact date when `$max` is null.
+	 * @param string|null $max Date string for the end of the range; null returns `$min` as is.
+	 *
+	 * @return string|null The date as `Y-m-d H:i:s` (or `$min` cast to string), or null when a date string is invalid.
+	 */
 	public function user_registered( $min = 'now', $max = null ) {
 		try {
 			$min = new Chronos( $min );
