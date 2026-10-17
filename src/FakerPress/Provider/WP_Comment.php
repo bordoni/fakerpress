@@ -91,6 +91,8 @@ class WP_Comment extends Base {
 		return $comment_approved;
 	}
 
+	// phpcs:disable WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase -- $comment_post_ID mirrors the WordPress comment field and is a public parameter name.
+
 	/**
 	 * Generates a Post ID for the Comment
 	 *
@@ -110,7 +112,7 @@ class WP_Comment extends Base {
 				'posts_per_page'   => -1,
 				'post_type'        => 'post',
 				'post_status'      => 'publish',
-				'suppress_filters' => true,
+				'suppress_filters' => true, // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.SuppressFilters_suppress_filters -- Existing behaviour, the random post pool ignores third-party query filters.
 			];
 
 			// Apply the defaults
@@ -130,6 +132,8 @@ class WP_Comment extends Base {
 
 		return $comment_post_ID;
 	}
+
+	// phpcs:enable WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase
 
 	public function comment_author_email( $author_email = null ) {
 		if ( is_null( $author_email ) ) {

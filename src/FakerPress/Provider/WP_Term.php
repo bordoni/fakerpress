@@ -51,18 +51,11 @@ class WP_Term extends Base {
 			$args['fields'] = 'ids';
 
 			// Merge the returned terms to the one provided
-			$terms = array_merge( (array) $terms, get_terms( $taxonomies, $args ) );
+			$terms = array_merge( (array) $terms, get_terms( array_merge( $args, [ 'taxonomy' => $taxonomies ] ) ) );
 		}
 
 		return $this->generator->randomElement( (array) $terms );
 	}
 
-
-	// For now I think we should omit the slug, since it's auto-gen, but we need to figure a way to do it later
-	/*
-	public function slug(){
-
-		return $slug;
-	}
-	*/
+	// There is no slug() formatter on purpose: WordPress generates the slug from the name.
 }

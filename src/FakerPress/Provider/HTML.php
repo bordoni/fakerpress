@@ -107,7 +107,7 @@ class HTML extends Base {
 			'qty'                 => [ 5, 25 ],
 			'elements'            => array_merge( self::$sets['header'], self::$sets['list'], self::$sets['block'] ),
 			'attr'                => [],
-			'exclude'             => [ 'div' ],
+			'exclude'             => [ 'div' ], // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- HTML element names to skip, not a query argument.
 			'allow_html_comments' => false,
 		];
 
@@ -138,7 +138,8 @@ class HTML extends Base {
 				$elements = array_filter( $elements, [ $this, 'filter_html_comments' ] );
 			}
 
-			$els[] = $element = Base::randomElement( $elements );
+			$element = Base::randomElement( $elements );
+			$els[]   = $element;
 
 			$html[] = $this->element( $element, $args->attr, null, $args );
 
@@ -348,7 +349,7 @@ class HTML extends Base {
 				$text   = Lorem::text( Base::numberBetween( 10, 60 ) );
 				$html[] = substr( $text, 0, strlen( $text ) - 1 );
 			} elseif ( in_array( $element->name, self::$sets['list'] ) ) {
-				for ( $i = 0; $i < Base::numberBetween( 1, 15 ); $i++ ) {
+				for ( $i = 0; $i < Base::numberBetween( 1, 15 ); $i++ ) { // phpcs:ignore Generic.CodeAnalysis.ForLoopWithTestFunctionCall.NotAllowed -- Kept as is, hoisting the random bound would change the generated list-length distribution.
 					$html[] = $this->element( 'li' );
 				}
 			} elseif ( in_array( $element->name, self::$sets['header'] ) ) {

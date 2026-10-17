@@ -77,7 +77,8 @@ class WP_Post extends Base {
 			try {
 				$max = new Chronos( array_shift( $interval ) );
 			} catch ( \Exception $e ) {
-
+				// Invalid end date, fall back to "now" below.
+				$max = null;
 			}
 		}
 
@@ -228,11 +229,11 @@ class WP_Post extends Base {
 			foreach ( $settings->taxonomies as $taxonomy ) {
 				if ( empty( $settings->terms ) ) {
 					$terms = get_terms(
-						$taxonomy,
 						[
+							'taxonomy'   => $taxonomy,
 							'fields'     => 'ids',
 							'hide_empty' => false,
-						] 
+						]
 					);
 				} else {
 					$terms = $settings->terms;

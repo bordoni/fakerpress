@@ -4,7 +4,7 @@ namespace FakerPress\Provider\Text;
 use FakerPress\ThirdParty\Faker\Provider\Base as Faker_Base;
 
 class Base extends Faker_Base {
-	public static $wordList = [
+	public static $wordList = [ // phpcs:ignore WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase -- Faker-compatible public property, subclasses and callers use this name.
 		'alias',
 		'consequatur',
 		'aut',
@@ -256,6 +256,8 @@ class Base extends Faker_Base {
 		'repellat',
 	];
 
+	// phpcs:disable WordPress.NamingConventions.ValidVariableName -- Faker-compatible public API: $wordList and the camelCase parameters mirror Faker's Lorem provider, renaming them breaks overrides and named arguments.
+
 	/**
 	 * @example 'Lorem'
 	 */
@@ -412,7 +414,9 @@ class Base extends Faker_Base {
 		return join( '', $text );
 	}
 
-	protected static function randomize_nb_elements( $nbElements ) {
-		return (int) ( $nbElements * mt_rand( 60, 140 ) / 100 ) + 1;
+	// phpcs:enable WordPress.NamingConventions.ValidVariableName
+
+	protected static function randomize_nb_elements( $nb_elements ) {
+		return (int) ( $nb_elements * mt_rand( 60, 140 ) / 100 ) + 1; // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand -- Faker seeds mt_rand(), wp_rand() would make seeded output unpredictable.
 	}
 }
