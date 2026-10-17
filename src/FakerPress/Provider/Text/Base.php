@@ -300,7 +300,7 @@ class Base extends Faker_Base {
 		$words    = static::words( $nbWords );
 		$words[0] = ucwords( $words[0] );
 
-		return join( $words, ' ' ) . '.';
+		return join( ' ', $words ) . '.';
 	}
 
 	/**
@@ -337,7 +337,7 @@ class Base extends Faker_Base {
 			$nbSentences = self::randomize_nb_elements( $nbSentences );
 		}
 
-		return join( static::sentences( $nbSentences ), ' ' );
+		return join( ' ', static::sentences( $nbSentences ) );
 	}
 
 	/**
@@ -351,7 +351,7 @@ class Base extends Faker_Base {
 	public static function paragraphs( $nb = 3, $asText = false ) {
 		$paragraphs = [];
 		for ( $i = 0; $i < $nb; $i++ ) {
-			$paragraphs [] = static::paragraph();
+			$paragraphs[] = static::paragraph();
 		}
 
 		return $asText ? join( "\n\n", $paragraphs ) : $paragraphs;
@@ -409,7 +409,7 @@ class Base extends Faker_Base {
 			}
 		}
 
-		return join( $text, '' );
+		return join( '', $text );
 	}
 
 	protected static function randomize_nb_elements( $nbElements ) {

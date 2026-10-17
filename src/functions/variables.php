@@ -33,7 +33,7 @@ function set( array $array, $key, $value ) { // phpcs:ignore Universal.NamingCon
 			// would likely lead to unexpected problems for whatever first set it.
 			$error = sprintf(
 				'Attempted to set $array[%1$s] but %2$s is already set and is not an array.',
-				implode( $key, '][' ),
+				implode( '][', $key ),
 				$i
 			);
 
