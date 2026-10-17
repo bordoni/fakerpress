@@ -3,9 +3,10 @@
 namespace FakerPress\Module;
 
 use FakerPress;
+use WP_Error;
+
 use function FakerPress\make;
 use function FakerPress\get;
-use WP_Error;
 
 class Post extends Abstract_Module {
 	/**
@@ -42,10 +43,10 @@ class Post extends Abstract_Module {
 		$defaults = [
 			'post_type'      => 'any',
 			'post_status'    => 'any',
-			'nopaging'       => true,
+			'nopaging'       => true, // phpcs:ignore WordPressVIPMinimum.Performance.NoPaging.nopaging_nopaging -- Callers need every generated item, not one page (bulk delete, reuse of generated images).
 			'posts_per_page' => - 1,
 			'fields'         => 'ids',
-			'meta_query'     => [
+			'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Lists every item FakerPress generated, found by its flag meta (bulk delete, reuse of generated images).
 				[
 					'key'   => static::get_flag(),
 					'value' => true,

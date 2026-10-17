@@ -121,6 +121,7 @@ class Users extends Abstract_Endpoint {
 		if ( ! current_user_can( $permission_required ) ) {
 			return $this->error_response(
 				sprintf(
+					/* translators: %s: Name of the WordPress capability the current user is missing. */
 					__( 'Your user needs the "%s" permission to generate users.', 'fakerpress' ),
 					$permission_required
 				),

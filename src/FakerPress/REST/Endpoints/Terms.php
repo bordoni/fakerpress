@@ -82,7 +82,7 @@ class Terms extends Abstract_Endpoint {
 						'items'       => [ 'type' => 'string' ],
 						'default'     => [],
 					],
-					'exclude'    => [
+					'exclude'    => [ // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- REST argument schema key, not a query argument.
 						'description' => __( 'Term IDs to exclude from the results.', 'fakerpress' ),
 						'type'        => 'array',
 						'items'       => [ 'type' => 'integer' ],
@@ -139,7 +139,7 @@ class Terms extends Abstract_Endpoint {
 		];
 
 		if ( ! empty( $exclude ) ) {
-			$args['exclude'] = $exclude;
+			$args['exclude'] = $exclude; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Paginated get_terms() search, the caller passes the term IDs to leave out.
 		}
 
 		$terms = get_terms( $args );
@@ -238,6 +238,7 @@ class Terms extends Abstract_Endpoint {
 		if ( ! current_user_can( $permission_required ) ) {
 			return $this->error_response(
 				sprintf(
+					/* translators: %s: Name of the WordPress capability the current user is missing. */
 					__( 'Your user needs the "%s" permission to generate terms.', 'fakerpress' ),
 					$permission_required
 				),
@@ -304,7 +305,7 @@ class Terms extends Abstract_Endpoint {
 	protected function get_endpoint_args(): array {
 		return array_merge(
 			[
-				'quantity' => [
+				'quantity'   => [
 					'description'       => __( 'Number of terms to generate.', 'fakerpress' ),
 					'type'              => 'integer',
 					'minimum'           => 1,
@@ -314,7 +315,7 @@ class Terms extends Abstract_Endpoint {
 						return null === $value ? null : absint( $value );
 					},
 				],
-				'qty'      => [
+				'qty'        => [
 					'description' => __( 'Quantity range with min/max values.', 'fakerpress' ),
 					'type'        => 'object',
 					'properties'  => [
@@ -339,7 +340,7 @@ class Terms extends Abstract_Endpoint {
 					'description' => __( 'Deprecated singular alias for taxonomies — accepts a single taxonomy slug.', 'fakerpress' ),
 					'type'        => 'string',
 				],
-				'meta'     => [
+				'meta'       => [
 					'description' => __( 'Meta data to assign to generated terms.', 'fakerpress' ),
 					'type'        => 'object',
 				],

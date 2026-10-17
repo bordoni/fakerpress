@@ -3,11 +3,13 @@ namespace FakerPress\Provider\Image;
 
 use FakerPress\ThirdParty\Faker\Provider\Base;
 
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase -- Public class name, renaming it breaks code that references the class.
 /**
  * @since 0.4.2
  * @since 0.5.0 Unsplash.it turned into Lorem Picsum
  */
 class LoremPicsum extends Base {
+	// phpcs:enable StellarWP.Classes.ValidClassName.NotSnakeCase
 	const ID = 'lorempicsum';
 
 	/**

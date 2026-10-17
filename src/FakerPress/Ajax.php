@@ -51,7 +51,7 @@ class Ajax {
 				'search'     => get_request_var( 'search', '' ),
 				'post_type'  => get_request_var( 'post_type' ),
 				'taxonomies' => get_request_var( 'taxonomies', [] ),
-				'exclude'    => get_request_var( 'exclude', [] ),
+				'exclude'    => get_request_var( 'exclude', [] ), // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Request field read into the search object, not a query argument.
 				'page'       => absint( get_request_var( 'page', 0 ) ),
 				'page_limit' => absint( get_request_var( 'page_limit', 10 ) ),
 				'nonce'      => get_request_var( 'nonce' ),
@@ -92,12 +92,12 @@ class Ajax {
 		}
 
 		if ( ! empty( $request->exclude ) ) {
-			$args['exclude'] = $request->exclude;
+			$args['exclude'] = $request->exclude; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Paginated Select2 term search, the caller passes the term IDs to leave out.
 		}
 
 		$response->args = $args;
 
-		$terms = get_terms( (array) $request->taxonomies, $args );
+		$terms = get_terms( array_merge( $args, [ 'taxonomy' => (array) $request->taxonomies ] ) );
 
 		// Setting up Select2
 		foreach ( $terms as $term ) {
@@ -137,13 +137,14 @@ class Ajax {
 			return ( is_ajax() ? wp_send_json( $response ) : $response );
 		}
 
-		$request = (object) $_POST;
-
-		if ( empty( $request->nonce ) || ! wp_verify_nonce( $request->nonce, Plugin::$slug . '-select2-WP_Query' ) ) {
+		// Verify the nonce before reading anything else from the request.
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), Plugin::$slug . '-select2-WP_Query' ) ) {
 			$response->message = esc_attr__( 'Invalid nonce verification', 'fakerpress' );
 
 			return ( is_ajax() ? wp_send_json( $response ) : $response );
 		}
+
+		$request = (object) $_POST;
 
 		if ( ! current_user_can( 'publish_posts' ) ) {
 			$response->message = esc_attr__( 'Your user needs the "publish_posts" permissions to use WP_Query.', 'fakerpress' );

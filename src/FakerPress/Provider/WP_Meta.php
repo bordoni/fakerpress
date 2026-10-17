@@ -404,6 +404,8 @@ class WP_Meta extends Base {
 			try {
 				$max = new Chronos( $interval['max'] );
 			} catch ( \Exception $e ) {
+				// Invalid end date, fall back to "now" below.
+				$max = null;
 			}
 		}
 
@@ -439,7 +441,7 @@ class WP_Meta extends Base {
 		return $this->generator->optional( $weight / 100, null )->userAgent();
 	}
 
-	public function meta_type_raw( $weight = 100, $value = null, $default = null ) {
+	public function meta_type_raw( $weight = 100, $value = null, $default = null ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 		if ( (int) $weight >= $this->generator->numberBetween( 0, 100 ) ) {
 			return $value;
 		} else {

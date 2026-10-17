@@ -11,7 +11,7 @@ namespace FakerPress;
  *
  * @return bool
  */
-function is_truthy( $var ): bool {
+function is_truthy( $var ): bool { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.varFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 	if ( is_bool( $var ) ) {
 		return $var;
 	}

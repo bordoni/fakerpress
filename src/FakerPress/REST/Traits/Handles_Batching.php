@@ -117,15 +117,17 @@ trait Handles_Batching {
 	 */
 	protected function format_batched_success_message( $generated_count, $item_type, $batch_info ) {
 		$message = sprintf(
+			/* translators: 1: Number of items generated, 2: Item type label (singular or plural). */
 			__( 'Successfully generated %1$d %2$s.', 'fakerpress' ),
 			$generated_count,
-			_n( $item_type, $item_type . 's', $generated_count, 'fakerpress' )
+			$this->get_batched_item_label( $item_type, $generated_count )
 		);
 
 		// Add batching information if this is part of a larger batch.
 		if ( $batch_info['is_capped'] || $batch_info['offset'] > 0 ) {
 			$current_total = $batch_info['offset'] + $batch_info['quantity'];
 			$message      .= ' ' . sprintf(
+				/* translators: 1: Number of items generated so far, 2: Total number of items requested. */
 				__( '(Batch %1$d of %2$d total)', 'fakerpress' ),
 				$current_total,
 				$batch_info['total']
@@ -133,5 +135,35 @@ trait Handles_Batching {
 		}
 
 		return $message;
+	}
+
+	/**
+	 * Gets the translated singular or plural label for a generated item type.
+	 *
+	 * Each known type uses a literal `_n()` call so the strings can be extracted for translation.
+	 *
+	 * @since 0.10.0
+	 *
+	 * @param string $item_type Type of item: post, user, term, comment or attachment.
+	 * @param int    $count     Number of items, used to pick the singular or plural form.
+	 *
+	 * @return string The label for the item type.
+	 */
+	protected function get_batched_item_label( $item_type, $count ) {
+		switch ( $item_type ) {
+			case 'post':
+				return _n( 'post', 'posts', $count, 'fakerpress' );
+			case 'user':
+				return _n( 'user', 'users', $count, 'fakerpress' );
+			case 'term':
+				return _n( 'term', 'terms', $count, 'fakerpress' );
+			case 'comment':
+				return _n( 'comment', 'comments', $count, 'fakerpress' );
+			case 'attachment':
+				return _n( 'attachment', 'attachments', $count, 'fakerpress' );
+			default:
+				// Unknown types keep the untranslated label with a plural "s", as _n() did without a translation.
+				return 1 === (int) $count ? $item_type : $item_type . 's';
+		}
 	}
 } 

@@ -12,6 +12,7 @@ namespace FakerPress\REST;
 
 use FakerPress\Plugin;
 
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase -- Public class name, renaming it breaks code that references the class.
 /**
  * Class OpenAPI
  *
@@ -20,6 +21,7 @@ use FakerPress\Plugin;
  * @since 0.9.0
  */
 class OpenAPI {
+	// phpcs:enable StellarWP.Classes.ValidClassName.NotSnakeCase
 
 	/**
 	 * Get the base OpenAPI specification structure.

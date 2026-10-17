@@ -76,7 +76,7 @@ class Plugin {
 	 *
 	 * @var string
 	 */
-	public static $_file = __FP_FILE__;
+	public static $_file = __FP_FILE__; // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore -- Public static property, renaming it breaks Plugin::$_file references.
 
 	/**
 	 * The Plugin external website base domain
@@ -85,7 +85,7 @@ class Plugin {
 	 *
 	 * @var string
 	 */
-	public static $_ext_domain = 'https://fakerpress.com';
+	public static $_ext_domain = 'https://fakerpress.com'; // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore -- Public static property, renaming it breaks Plugin::$_ext_domain references.
 
 	/**
 	 * Store if the plugin has been booted or not.
@@ -313,7 +313,7 @@ class Plugin {
 		return esc_url_raw( static::$_ext_domain . ( ! empty( $path ) ? $path : '/' ), [ 'http', 'https' ] );
 	}
 
-	public static function get( $name, $default = false ) {
+	public static function get( $name, $default = false ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 		$options = static::all();
 		return get( $options, $name, $default );
 	}

@@ -1,10 +1,11 @@
 <?php
 namespace FakerPress\Module;
 
-use function FakerPress\make;
-use function FakerPress\get;
 use FakerPress;
 use WP_Error;
+
+use function FakerPress\make;
+use function FakerPress\get;
 
 class Term extends Abstract_Module {
 	/**

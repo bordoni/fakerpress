@@ -4,7 +4,7 @@ namespace FakerPress\Provider\Text;
 use FakerPress\ThirdParty\Faker\Provider\Base as Faker_Base;
 
 class Base extends Faker_Base {
-	public static $wordList = [
+	public static $wordList = [ // phpcs:ignore WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase -- Faker-compatible public property, subclasses and callers use this name.
 		'alias',
 		'consequatur',
 		'aut',
@@ -256,6 +256,8 @@ class Base extends Faker_Base {
 		'repellat',
 	];
 
+	// phpcs:disable WordPress.NamingConventions.ValidVariableName -- Faker-compatible public API: $wordList and the camelCase parameters mirror Faker's Lorem provider, renaming them breaks overrides and named arguments.
+
 	/**
 	 * @example 'Lorem'
 	 */
@@ -300,7 +302,7 @@ class Base extends Faker_Base {
 		$words    = static::words( $nbWords );
 		$words[0] = ucwords( $words[0] );
 
-		return join( $words, ' ' ) . '.';
+		return join( ' ', $words ) . '.';
 	}
 
 	/**
@@ -337,7 +339,7 @@ class Base extends Faker_Base {
 			$nbSentences = self::randomize_nb_elements( $nbSentences );
 		}
 
-		return join( static::sentences( $nbSentences ), ' ' );
+		return join( ' ', static::sentences( $nbSentences ) );
 	}
 
 	/**
@@ -351,7 +353,7 @@ class Base extends Faker_Base {
 	public static function paragraphs( $nb = 3, $asText = false ) {
 		$paragraphs = [];
 		for ( $i = 0; $i < $nb; $i++ ) {
-			$paragraphs [] = static::paragraph();
+			$paragraphs[] = static::paragraph();
 		}
 
 		return $asText ? join( "\n\n", $paragraphs ) : $paragraphs;
@@ -409,10 +411,12 @@ class Base extends Faker_Base {
 			}
 		}
 
-		return join( $text, '' );
+		return join( '', $text );
 	}
 
-	protected static function randomize_nb_elements( $nbElements ) {
-		return (int) ( $nbElements * mt_rand( 60, 140 ) / 100 ) + 1;
+	// phpcs:enable WordPress.NamingConventions.ValidVariableName
+
+	protected static function randomize_nb_elements( $nb_elements ) {
+		return (int) ( $nb_elements * mt_rand( 60, 140 ) / 100 ) + 1; // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand -- Faker seeds mt_rand(), wp_rand() would make seeded output unpredictable.
 	}
 }

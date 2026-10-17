@@ -3,10 +3,11 @@
 namespace FakerPress\Module;
 
 use FakerPress;
+use WP_Error;
+
 use function FakerPress\make;
 use function FakerPress\get;
 use function FakerPress\is_truthy;
-use WP_Error;
 
 class Comment extends Abstract_Module {
 	/**
@@ -41,7 +42,7 @@ class Comment extends Abstract_Module {
 	 */
 	public static function fetch( array $args = [] ): array {
 		$defaults = [
-			'meta_query' => [
+			'meta_query' => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Lists every item FakerPress generated, found by its flag meta (bulk delete, reuse of generated images).
 				[
 					'key'   => static::get_flag(),
 					'value' => true,

@@ -53,10 +53,10 @@ class Attachment extends Abstract_Module {
 		$defaults = [
 			'post_type'      => 'attachment',
 			'post_status'    => 'any',
-			'nopaging'       => true,
+			'nopaging'       => true, // phpcs:ignore WordPressVIPMinimum.Performance.NoPaging.nopaging_nopaging -- Callers need every generated item, not one page (bulk delete, reuse of generated images).
 			'posts_per_page' => -1,
 			'fields'         => 'ids',
-			'meta_query'     => [
+			'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Lists every item FakerPress generated, found by its flag meta (bulk delete, reuse of generated images).
 				[
 					'key'   => static::get_flag(),
 					'value' => true,
@@ -201,7 +201,7 @@ class Attachment extends Abstract_Module {
 			// If it's SVG, we need to handle it differently
 			if ( $mime_type === 'image/svg+xml' || $mime_type === 'text/xml' ) {
 				// Delete the SVG file as we don't want to process it
-				unlink( $temporary_file );
+				wp_delete_file( $temporary_file );
 				return new WP_Error( 'svg-not-supported', __( 'SVG images are not supported. Please use a different image provider or format.', 'fakerpress' ) );
 			}
 		}
@@ -218,7 +218,14 @@ class Attachment extends Abstract_Module {
 		}
 
 		if ( ! $extension ) {
-			return new WP_Error( 'invalid-image-mimetype', sprintf( __( 'Invalid image MimeType (%s)', 'fakerpress' ), $mime_type ) );
+			return new WP_Error(
+				'invalid-image-mimetype',
+				sprintf(
+					/* translators: %s: MIME type of the downloaded file. */
+					__( 'Invalid image MimeType (%s)', 'fakerpress' ),
+					$mime_type
+				)
+			);
 		}
 
 		// Build file name with Extension.
@@ -234,7 +241,7 @@ class Attachment extends Abstract_Module {
 
 		// download_url requires deleting the file
 		if ( file_exists( $temporary_file ) ) {
-			unlink( $temporary_file );
+			wp_delete_file( $temporary_file );
 		}
 
 		/**
@@ -244,7 +251,7 @@ class Attachment extends Abstract_Module {
 		*/
 		if ( is_wp_error( $attachment_id ) ) {
 			if ( file_exists( $temporary_file ) ) {
-				unlink( $temporary_file );
+				wp_delete_file( $temporary_file );
 			}
 			return $attachment_id;
 		}
@@ -387,7 +394,7 @@ class Attachment extends Abstract_Module {
 		
 		// Debug logging
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'FakerPress Attachment: Generating ' . $quantity . ' attachments' );
+			error_log( 'FakerPress Attachment: Generating ' . $quantity . ' attachments' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug trace, only runs when WP_DEBUG is on.
 		}
 
 		// Generate attachments.
@@ -401,7 +408,7 @@ class Attachment extends Abstract_Module {
 				if ( is_wp_error( $attachment_id ) ) {
 					// Log the error for debugging
 					if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-						error_log( 'FakerPress Attachment Error: ' . $attachment_id->get_error_message() . ' for URL: ' . $attachment_data['attachment_url'] );
+						error_log( 'FakerPress Attachment Error: ' . $attachment_id->get_error_message() . ' for URL: ' . $attachment_data['attachment_url'] ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Logs skipped downloads, only when WP_DEBUG is on.
 					}
 					continue;
 				}
@@ -459,7 +466,7 @@ class Attachment extends Abstract_Module {
 				
 				// Fetch image metadata to get author info
 				$metadata_url = sprintf( 'https://picsum.photos/id/%d/info', $image_id );
-				$response     = $this->safe_remote_get( $metadata_url, [ 'timeout' => 5 ] );
+				$response     = $this->safe_remote_get( $metadata_url, [ 'timeout' => 5 ] ); // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- Existing 5 second bound on the admin-only attribution lookup.
 				
 				if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
 					$body     = wp_remote_retrieve_body( $response );
@@ -500,6 +507,7 @@ class Attachment extends Abstract_Module {
 		// Always add attribution based on provider
 		if ( ! empty( $image_author ) ) {
 			// Lorem Picsum with known author
+			/* translators: %s: Name of the photographer. */
 			$attribution = sprintf( __( 'Photo by %s on Unsplash', 'fakerpress' ), $image_author );
 		} elseif ( $provider === 'lorempicsum' ) {
 			// Lorem Picsum without author info (fallback)
@@ -562,6 +570,7 @@ class Attachment extends Abstract_Module {
 			// If we have an image author from Lorem Picsum, include attribution
 			if ( ! empty( $attachment_data['image_author'] ) ) {
 				$alt_text = sprintf( 
+					/* translators: 1: Generated alt text sentence, 2: Name of the photographer. */
 					__( '%1$s - Photo by %2$s on Unsplash', 'fakerpress' ),
 					$faker->sentence( $faker->numberBetween( 3, 8 ) ),
 					$attachment_data['image_author']
@@ -597,23 +606,23 @@ class Attachment extends Abstract_Module {
 	 * @since TBD
 	 *
 	 * @param mixed $dimension Dimension value or range.
-	 * @param int   $default Default value.
+	 * @param int   $fallback Value used when no dimension was given.
 	 *
 	 * @return int
 	 */
-	protected function get_random_dimension( $dimension, $default = 800 ) {
+	protected function get_random_dimension( $dimension, $fallback = 800 ) {
 		if ( is_numeric( $dimension ) ) {
 			return absint( $dimension );
 		}
 
 		if ( is_array( $dimension ) || is_object( $dimension ) ) {
 			$dimension = (array) $dimension;
-			$min       = isset( $dimension['min'] ) ? absint( $dimension['min'] ) : $default;
+			$min       = isset( $dimension['min'] ) ? absint( $dimension['min'] ) : $fallback;
 			$max       = isset( $dimension['max'] ) ? absint( $dimension['max'] ) : $min;
 			
 			return $this->get_faker()->numberBetween( $min, $max );
 		}
 
-		return $default;
+		return $fallback;
 	}
 }

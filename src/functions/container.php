@@ -61,7 +61,7 @@ use FakerPress\Contracts\Container;
  *                                                    will be called only once after the singleton instance
  *                                                    construction.
  */
-function singleton( $slug, $class, ?array $after_build_methods = null ) {
+function singleton( $slug, $class, ?array $after_build_methods = null ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 	Container::init()->singleton( $slug, $class, $after_build_methods );
 }
 
@@ -125,7 +125,7 @@ function singleton( $slug, $class, ?array $after_build_methods = null ) {
  *                                                    the built object after the `__construct` method; the methods
  *                                                    will be called each time after the instance construction.
  */
-function bind( $slug, $class, ?array $after_build_methods = null ) {
+function bind( $slug, $class, ?array $after_build_methods = null ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 	Container::init()->bind( $slug, $class, $after_build_methods );
 }
 
@@ -189,7 +189,7 @@ function set_var( $slug, $value ) {
  * @return mixed Either the registered value or the default value if the variable
  *               is not registered.
  */
-function get_var( $slug, $default = null ) {
+function get_var( $slug, $default = null ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 	try {
 		$var = Container::init()->getVar( $slug );
 	} catch ( \InvalidArgumentException $e ) {
@@ -218,6 +218,8 @@ function unset_var( $slug ) {
 	try {
 		Container::init()->offsetUnset( $slug );
 	} catch ( \Exception $e ) {
+		// Unsetting a variable that was never registered is not an error.
+		return;
 	}
 }
 

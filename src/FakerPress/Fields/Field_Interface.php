@@ -87,7 +87,7 @@ interface Field_Interface {
 	 *
 	 * @return mixed Setting you are looking for.
 	 */
-	public function get_setting( $index, $default = null );
+	public function get_setting( $index, $default = null ); // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- Interface signature, renaming the parameter breaks implementations and named-argument callers.
 
 	/**
 	 * Configure this field and it's children.
@@ -190,5 +190,5 @@ interface Field_Interface {
 	 *
 	 * @return Field_Interface  Returns an instance of itself be able to chain calls.
 	 */
-	public function set_parent( Field_Interface $parent );
+	public function set_parent( Field_Interface $parent ); // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.parentFound -- Interface signature, renaming the parameter breaks implementations and named-argument callers.
 }

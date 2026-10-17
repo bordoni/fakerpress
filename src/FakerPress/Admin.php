@@ -73,11 +73,13 @@ class Admin extends Template {
 		 * @filter fakerpress.messages.allowed_html
 		 * @since 0.1.2
 		 */
-		self::$messages[] = $message = (object) [
+		$message = (object) [
 			'html'     => wp_kses( wpautop( $html ), apply_filters( 'fakerpress.messages.allowed_html', [] ), [ 'http', 'https' ] ),
 			'type'     => esc_attr( $type ),
 			'priority' => $priority === 0 ? $priority + 1 : $priority,
 		];
+
+		self::$messages[] = $message;
 
 		usort( self::$messages, 'FakerPress\sort_by_priority' );
 
@@ -92,7 +94,7 @@ class Admin extends Template {
 	 * @since 0.1.2
 	 * @return null Actions do not return
 	 */
-	public function _action_admin_notices() {
+	public function _action_admin_notices() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		foreach ( self::$messages as $k => $message ) {
 			$classes = [
 				// Plugin class to give the styling
@@ -156,13 +158,17 @@ class Admin extends Template {
 		 *
 		 * @param string $title Which base title will be used.
 		 */
-		return apply_filters( 'fakerpress.admin.title_base', __( '%s on FakerPress', 'fakerpress' ) );
+		return apply_filters(
+			'fakerpress.admin.title_base',
+			/* translators: %s: Title of the current FakerPress admin page. */
+			__( '%s on FakerPress', 'fakerpress' )
+		);
 	}
 
 	/**
 	 * @todo refactor
 	 */
-	public function _filter_set_admin_page_title( $admin_title, $title ) {
+	public function _filter_set_admin_page_title( $admin_title, $title ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		if ( ! $this->is_active() ) {
 			return $admin_title;
 		}
@@ -176,7 +182,7 @@ class Admin extends Template {
 		return $admin_title;
 	}
 
-	public function _filter_messages_allowed_html() {
+	public function _filter_messages_allowed_html() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		return [
 			'a'      => [
 				'class' => [],
@@ -222,12 +228,12 @@ class Admin extends Template {
 	 * @uses \FakerPress\Plugin::$slug
 	 * @return string
 	 */
-	public function _filter_admin_footer_text( $text ) {
+	public function _filter_admin_footer_text( $text ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		if ( ! $this->is_active() ) {
 			return $text;
 		}
 
-		return '<a target="_blank" href="http://wordpress.org/support/plugin/fakerpress#postform">' . esc_attr__( 'Contact Support', 'fakerpress' ) . '</a> | ' .
+		return '<a target="_blank" href="http://wordpress.org/support/plugin/fakerpress#postform">' . esc_html__( 'Contact Support', 'fakerpress' ) . '</a> | ' .
 			str_replace(
 				[ '[stars]', '[wp.org]' ],
 				[
@@ -249,7 +255,7 @@ class Admin extends Template {
 	 * @uses \FakerPress\Plugin::$slug
 	 * @return string
 	 */
-	public function _filter_update_footer( $text ) {
+	public function _filter_update_footer( $text ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		if ( ! $this->is_active() ) {
 			return $text;
 		}
@@ -276,7 +282,7 @@ class Admin extends Template {
 		return $sponsor . $translate . $version;
 	}
 
-	public function _filter_body_class( $classes ) {
+	public function _filter_body_class( $classes ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		$more = [
 			$classes,
 			'__fakerpress',

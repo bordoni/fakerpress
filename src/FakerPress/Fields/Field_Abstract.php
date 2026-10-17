@@ -128,7 +128,7 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function get_setting( $index, $default = null ) {
+	public function get_setting( $index, $default = null ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 		return get( $this->get_settings(), $index, $default );
 	}
 
@@ -171,7 +171,7 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function get_html( $format = 'string', $echo = true ) {
+	public function get_html( $format = 'string', $echo = true ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.echoFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 		// Globally set in the template vars this instance of field.
 		$this->get_template()->set( 'field', $this, false );
 
@@ -320,7 +320,7 @@ abstract class Field_Abstract implements Field_Interface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function set_parent( Field_Interface $parent ) {
+	public function set_parent( Field_Interface $parent ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.parentFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 		$this->parent = $parent;
 
 		return $this;
