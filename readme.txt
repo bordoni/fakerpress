@@ -4,7 +4,7 @@ Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 6.6
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        0.9.2
+Stable tag:        0.10.0
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor

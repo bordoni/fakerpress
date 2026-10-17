@@ -2,7 +2,7 @@
 /**
  * Tests for the WP_User provider.
  *
- * @since TBD
+ * @since 0.10.0
  *
  * @package FakerPress\Tests\Provider
  */
@@ -15,7 +15,7 @@ use FakerPress\ThirdParty\Faker\Factory;
 /**
  * Class WP_UserTest
  *
- * @since TBD
+ * @since 0.10.0
  */
 class WP_UserTest extends \Codeception\TestCase\WPTestCase {
 

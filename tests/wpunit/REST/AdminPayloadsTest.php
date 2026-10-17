@@ -2,7 +2,7 @@
 /**
  * Tests that each generate endpoint accepts the payload the React admin sends.
  *
- * @since TBD
+ * @since 0.10.0
  *
  * @package FakerPress\Tests\REST
  */
@@ -22,7 +22,7 @@ use WP_REST_Response;
  * The payloads below mirror what `src/resources/packages/admin/lib/transform.ts` builds, sent as JSON
  * the way `@wordpress/api-fetch` sends them. HTTP is mocked, so attachments get a local JPEG.
  *
- * @since TBD
+ * @since 0.10.0
  */
 class AdminPayloadsTest extends \Codeception\TestCase\WPTestCase {
 	use REST_Test_Case;
@@ -30,7 +30,7 @@ class AdminPayloadsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * Body served for every mocked HTTP request.
 	 *
-	 * @since TBD
+	 * @since 0.10.0
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class AdminPayloadsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * Content type served for every mocked HTTP request.
 	 *
-	 * @since TBD
+	 * @since 0.10.0
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ class AdminPayloadsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * A meta rule as the React rules UI sends it.
 	 *
-	 * @since TBD
+	 * @since 0.10.0
 	 *
 	 * @var array
 	 */
@@ -61,7 +61,7 @@ class AdminPayloadsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * Set up each test.
 	 *
-	 * @since TBD
+	 * @since 0.10.0
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -85,7 +85,7 @@ class AdminPayloadsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * Tear down each test.
 	 *
-	 * @since TBD
+	 * @since 0.10.0
 	 */
 	public function tear_down(): void {
 		remove_filter( 'pre_http_request', [ $this, 'mock_http_request' ], 10 );
@@ -95,7 +95,7 @@ class AdminPayloadsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * Serve the configured image for every HTTP request.
 	 *
-	 * @since TBD
+	 * @since 0.10.0
 	 *
 	 * @param false|array $preempt Whether to preempt the request.
 	 * @param array       $args    HTTP request arguments.
@@ -126,7 +126,7 @@ class AdminPayloadsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * Dispatch a JSON request, as api-fetch does.
 	 *
-	 * @since TBD
+	 * @since 0.10.0
 	 *
 	 * @param string $module Endpoint name, e.g. 'posts'.
 	 * @param array  $body   Request body.
@@ -144,7 +144,7 @@ class AdminPayloadsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * Assert a successful generation and return the generated IDs.
 	 *
-	 * @since TBD
+	 * @since 0.10.0
 	 *
 	 * @param WP_REST_Response $response The response.
 	 * @param int              $min      Fewest items expected.
