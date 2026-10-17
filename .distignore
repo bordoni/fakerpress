@@ -9,6 +9,7 @@ bun.lock
 # Configuration files.
 .editorconfig
 .babelrc
+.eslintrc.js
 .gitattributes
 .gitignore
 .nvmrc
