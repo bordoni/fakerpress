@@ -180,6 +180,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 * Tweak - Clear every stylelint error in the admin styles with a Tailwind v4 aware config; the compiled CSS is unchanged apart from dropping obsolete `-moz-` gradients and empty rules. [[#237](https://github.com/bordoni/fakerpress/pull/237)]
 * Tweak - PHPCS skips the public hook names, the namespaced Faker formatter names and the generated readme data, each with a documented reason. [[#238](https://github.com/bordoni/fakerpress/pull/238)]
 * Fix - The text provider's sentences, paragraphs and text no longer fatal on PHP 8 (`join()` argument order); the post search verifies its nonce before reading the request; template output is escaped, and batch success messages are translatable. [[#239](https://github.com/bordoni/fakerpress/pull/239)]
+* Tweak - Document every class, method and template to the WordPress coding standards, and correct docblocks that contradicted the code. [[#240](https://github.com/bordoni/fakerpress/pull/240)]
 
 = 0.9.2 &mdash; 20 of July 2026 =
 
