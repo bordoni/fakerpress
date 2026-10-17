@@ -137,8 +137,8 @@ class User extends Abstract_Module {
 			return new WP_Error( 'fakerpress_zero_users', __( 'Zero is not a good number of users to fake...', 'fakerpress' ) );
 		}
 
+		// use_html: the legacy form posts 'on'; the REST API and the React admin send a boolean.
 		$description_size      = get( $request, 'description_size', [ 1, 5 ] );
-		// The legacy form posts 'on'; the REST API and the React admin send a boolean.
 		$description_use_html  = is_truthy( get( $request, 'use_html', 'off' ) );
 		$description_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags', '' ) ) );
 
