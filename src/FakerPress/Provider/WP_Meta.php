@@ -196,7 +196,7 @@ class WP_Meta extends Base {
 		$value = $attachment->generate()->save();
 
 		// If there was an error, just bail now
-		if ( ! $value ) {
+		if ( ! $value || is_wp_error( $value ) ) {
 			return null;
 		}
 
