@@ -182,6 +182,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 * Fix - The text provider's sentences, paragraphs and text no longer fatal on PHP 8 (`join()` argument order); the post search verifies its nonce before reading the request; template output is escaped, and batch success messages are translatable. [[#239](https://github.com/bordoni/fakerpress/pull/239)]
 * Tweak - Document every class, method and template to the WordPress coding standards, and correct docblocks that contradicted the code. [[#240](https://github.com/bordoni/fakerpress/pull/240)]
 * Tests - CI runs the Jest suite and a TypeScript check, and lints JS and CSS in separate steps, so one failure never hides another. [[#241](https://github.com/bordoni/fakerpress/pull/241)]
+* Tweak - Update the Composer dev dependencies with open security advisories (Composer, Guzzle, PSR-7, Symfony, Flysystem, PHP_CodeSniffer, PHPCSUtils and WPCS). [[#242](https://github.com/bordoni/fakerpress/pull/242)]
 
 = 0.9.2 &mdash; 20 of July 2026 =
 
