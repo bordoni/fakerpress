@@ -145,6 +145,14 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 
 ## Changelog ##
 
+### 0.10.0 &mdash; TBD ###
+* Feature - Rebuild every FakerPress admin page (Posts, Users, Terms, Comments, Attachments and Settings) in React with Tailwind CSS v4 and shadcn/ui, on top of the REST API; the Taxonomy and Meta Field Rules keep the familiar numbered, label-left layout and every meta type, including Date. [[#187](https://github.com/bordoni/fakerpress/pull/187)]
+* Fix - Meta Field Rules on generated attachments are now generated like on every other module, instead of each rule being stored raw under a numeric meta key. [[#187](https://github.com/bordoni/fakerpress/pull/187)]
+* Fix - Attachment meta rules that pick Placehold.co (half of the default featured-image rule on Posts) no longer store an error; Placehold.co images are requested as PNG, and a failed image leaves the meta empty. [[#187](https://github.com/bordoni/fakerpress/pull/187)]
+* Fix - User generation no longer comes up one short when a generated website URL is longer than the 100 characters WordPress allows. [[#187](https://github.com/bordoni/fakerpress/pull/187)]
+* Fix - The Users generator accepts a boolean `use_html` from the REST API (the `on` value still works). [[#187](https://github.com/bordoni/fakerpress/pull/187)]
+* Tests - Add Jest coverage for the admin, REST payload tests for every generate endpoint, and build the JS before WPUnit in CI. [[#187](https://github.com/bordoni/fakerpress/pull/187)]
+
 ### 0.9.2 &mdash; 20 of July 2026 ###
 * Fix - Silence the `Using null as an array offset is deprecated` PHP 8.1+ notices logged from WordPress core's `Requests/Iri.php` when fetching external images; the Attachment module now routes `download_url()` and the Lorem Picsum metadata request through helpers that suppress the core deprecation and restore the previous error-reporting level. [[#230](https://github.com/bordoni/fakerpress/pull/230)]
 * Fix - Bulk user generation now honours the selected role instead of always assigning Subscriber; the Users endpoint prefers the admin form's plural `roles` value over the singular `role` alias's default, and the User module falls back to the site's configured default role when none is requested. [[#229](https://github.com/bordoni/fakerpress/pull/229)]
