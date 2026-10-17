@@ -1,5 +1,11 @@
 <?php
 /**
+ * Bootstrap function that loads and boots the FakerPress plugin.
+ *
+ * @package FakerPress
+ */
+
+/**
  * Loads the whole FakerPress plugin.
  *
  * Please keep in mind that this is the only function that should be called from the main plugin file.

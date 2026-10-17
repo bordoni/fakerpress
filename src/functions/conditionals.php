@@ -1,4 +1,9 @@
 <?php
+/**
+ * Conditional helpers for values and the current request.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress;
 

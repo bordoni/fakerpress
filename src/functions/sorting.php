@@ -1,4 +1,9 @@
 <?php
+/**
+ * Sorting helpers used with usort() and uasort().
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress;
 

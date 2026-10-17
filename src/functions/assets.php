@@ -1,4 +1,10 @@
 <?php
+/**
+ * Shortcut functions for registering and enqueueing plugin assets.
+ *
+ * @package FakerPress
+ */
+
 namespace FakerPress;
 
 /**
@@ -27,7 +33,7 @@ function register_asset( $slug, $file, $deps = [], $action = null, $arguments = 
  *
  * @since 0.5.1
  *
- * @param string|array $slug Slug to enqueue
+ * @param string|array $slug Slug, or list of slugs, of the registered assets to enqueue.
  */
 function enqueue_asset( $slug ) {
 	$assets = make( Utils\Assets::class );
