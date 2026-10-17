@@ -124,8 +124,8 @@ class Controller extends Service_Provider {
 		);
 
 		$endpoints = array_map(
-			static function ( $class ) {
-				return class_exists( $class ) ? make( $class ) : null;
+			static function ( $endpoint_class ) {
+				return class_exists( $endpoint_class ) ? make( $endpoint_class ) : null;
 			},
 			$endpoint_classes
 		);
