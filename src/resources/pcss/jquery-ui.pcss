@@ -1,6 +1,10 @@
 /*! jQuery UI - v1.10.1 - 2013-02-15
 * http://jqueryui.com
-* Includes: jquery.ui.core.css, jquery.ui.accordion.css, jquery.ui.autocomplete.css, jquery.ui.button.css, jquery.ui.datepicker.css, jquery.ui.dialog.css, jquery.ui.menu.css, jquery.ui.progressbar.css, jquery.ui.resizable.css, jquery.ui.selectable.css, jquery.ui.slider.css, jquery.ui.spinner.css, jquery.ui.tabs.css, jquery.ui.tooltip.css
+* Includes: jquery.ui.core.css, jquery.ui.accordion.css,
+* jquery.ui.autocomplete.css, jquery.ui.button.css, jquery.ui.datepicker.css,
+* jquery.ui.dialog.css, jquery.ui.menu.css, jquery.ui.progressbar.css,
+* jquery.ui.resizable.css, jquery.ui.selectable.css, jquery.ui.slider.css,
+* jquery.ui.spinner.css, jquery.ui.tabs.css, jquery.ui.tooltip.css
 * Copyright (c) 2013 jQuery Foundation and other contributors Licensed MIT */
 
 /* Layout helpers
@@ -306,6 +310,9 @@ button.ui-button::-moz-focus-inner {
 
 .ui-datepicker .ui-datepicker-title {
 	margin: 0 2.3em;
+
+	/* em, not unitless: children inherit the computed height, not the factor. */
+	/* stylelint-disable-next-line declaration-property-unit-allowed-list */
 	line-height: 1.8em;
 	text-align: center;
 }
@@ -705,7 +712,7 @@ button.ui-button::-moz-focus-inner {
 .ui-selectable-helper {
 	position: absolute;
 	z-index: 100;
-	border: 1px dotted black;
+	border: 1px dotted #000;
 }
 
 .ui-slider {
@@ -1068,34 +1075,16 @@ body .ui-tooltip {
 ----------------------------------*/
 
 /* states and images */
+
+/*
+ * The theme section re-declares selectors from the structure section above;
+ * merging them would reorder the cascade.
+ */
+/* stylelint-disable-next-line no-duplicate-selectors */
 .ui-icon {
 	width: 16px;
 	height: 16px;
 	background-position: 16px 16px;
-}
-
-.ui-icon,
-.ui-widget-content .ui-icon {
-}
-
-.ui-widget-header .ui-icon {
-}
-
-.ui-state-default .ui-icon {
-}
-
-.ui-state-hover .ui-icon,
-.ui-state-focus .ui-icon {
-}
-
-.ui-state-active .ui-icon {
-}
-
-.ui-state-highlight .ui-icon {
-}
-
-.ui-state-error .ui-icon,
-.ui-state-error-text .ui-icon {
 }
 
 /* positioning */
@@ -1829,7 +1818,8 @@ body .ui-tooltip {
 	border-bottom-right-radius: 4px/*{cornerRadius}*/;
 }
 
-/* Overlays */
+/* Overlays (theme re-declaration, see the note at .ui-icon) */
+/* stylelint-disable-next-line no-duplicate-selectors */
 .ui-widget-overlay {
 	background: #aaa/*{bgColorOverlay}*/;
 	opacity: 0.3;
