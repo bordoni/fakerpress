@@ -1,3 +1,4 @@
+/* global jQuery */
 ( function ( $, _ ) {
 	'use strict';
 
@@ -25,7 +26,7 @@
 	};
 
 	fp.searchId = function ( e ) {
-		var id = null;
+		let id = null;
 
 		if ( 'undefined' !== typeof e.id ) {
 			id = e.id;
@@ -34,13 +35,13 @@
 		} else if ( 'undefined' !== typeof e.value ) {
 			id = e.value;
 		}
-		return e == undefined ? null : id;
+		return e === undefined || e === null ? null : id;
 	};
 
 	// Date Fields
-	fp.fields.dates = function ( $, _ ) {
+	fp.fields.dates = function () {
 		'use strict';
-		var datepicker_args = {
+		const datepickerArgs = {
 			after: [ 'attr' ],
 			constrainInput: false,
 			dateFormat: 'yy-mm-dd',
@@ -48,20 +49,21 @@
 
 		$( '.fp-type-date' )
 			.not( '.hasDatepicker' )
-			.datepicker( datepicker_args );
+			.datepicker( datepickerArgs );
 		$( '.fp-type-interval-wrap' ).each( function () {
-			var $container = $( this ),
-				$interval = $container.find( '.fp-type-dropdown' ),
-				$min = $container.find( '[data-type="min"]' ),
-				$max = $container.find( '[data-type="max"]' );
+			const $container = $( this );
 
 			if ( $container.hasClass( fp.ready_class ) ) {
 				return;
 			}
 			$container.addClass( fp.ready_class );
 
+			const $interval = $container.find( '.fp-type-dropdown' );
+			const $min = $container.find( '[data-type="min"]' );
+			const $max = $container.find( '[data-type="max"]' );
+
 			$min.on( {
-				change: function ( e ) {
+				change() {
 					$min.parents( '.fp-field-wrap' )
 						.find( '[data-type="max"]' )
 						.datepicker( 'option', 'minDate', $( this ).val() )
@@ -71,7 +73,7 @@
 			} );
 
 			$max.on( {
-				change: function ( e ) {
+				change() {
 					$max.parents( '.fp-field-wrap' )
 						.find( '[data-type="min"]' )
 						.datepicker( 'option', 'maxDate', $( this ).val() )
@@ -82,10 +84,10 @@
 
 			$interval
 				.on( {
-					change: function ( e ) {
-						var $selected = $interval.find( ':selected' ),
-							min = $selected.attr( 'min' ),
-							max = $selected.attr( 'max' );
+					change() {
+						const $selected = $interval.find( ':selected' );
+						const min = $selected.attr( 'min' );
+						const max = $selected.attr( 'max' );
 
 						$min.datepicker( 'setDate', min );
 						$max.datepicker( 'setDate', max );
@@ -96,14 +98,14 @@
 	};
 
 	// Select2 Fields
-	fp.fields.dropdown = function ( $, _ ) {
+	fp.fields.dropdown = function () {
 		'use strict';
-		var $elements = $( '.fp-type-dropdown' ).not(
-				'.select2-offscreen, .select2-container'
-			),
-			config = {
-				wp_query_title: [],
-			};
+		const $elements = $( '.fp-type-dropdown' ).not(
+			'.select2-offscreen, .select2-container'
+		);
+		const config = {
+			wp_query_title: [],
+		};
 
 		config.wp_query_title.push( 'ID: &quot;<%= ID %>&quot;' );
 		config.wp_query_title.push( 'Title: &quot;<%= post_title %>&quot;' );
@@ -114,10 +116,10 @@
 
 		$elements
 			.each( function () {
-				var $select = $( this ),
-					args = {
-						width: 420,
-					};
+				const $select = $( this );
+				const args = {
+					width: 420,
+				};
 
 				if ( $select.is( '[multiple]' ) ) {
 					args.multiple = true;
@@ -161,17 +163,17 @@
 				}
 
 				args.matcher = function ( term, text ) {
-					var result =
-						text.toUpperCase().indexOf( term.toUpperCase() ) == 0;
+					let result =
+						text.toUpperCase().indexOf( term.toUpperCase() ) === 0;
 
 					if ( ! result && 'undefined' !== typeof args.tags ) {
-						var possible = _.where( args.tags, { text: text } );
+						const possible = _.where( args.tags, { text } );
 						if ( args.tags.length > 0 && _.isObject( possible ) ) {
-							var test_value = fp.searchId( possible[ 0 ] );
+							const testValue = fp.searchId( possible[ 0 ] );
 							result =
-								test_value
+								testValue
 									.toUpperCase()
-									.indexOf( term.toUpperCase() ) == 0;
+									.indexOf( term.toUpperCase() ) === 0;
 						}
 					}
 
@@ -182,15 +184,15 @@
 					args.tags = $select.data( 'options' );
 
 					args.initSelection = function ( element, callback ) {
-						var data = [];
+						const data = [];
 						$( element.val().split( args.regexSplit ) ).each(
 							function () {
-								var obj = { id: this, text: this };
+								let obj = { id: this, text: this };
 								if (
 									args.tags.length > 0 &&
 									_.isObject( args.tags[ 0 ] )
 								) {
-									var _obj = _.where( args.tags, {
+									const _obj = _.where( args.tags, {
 										value: this,
 									} );
 									if ( _obj.length > 0 ) {
@@ -208,7 +210,7 @@
 						callback( data );
 					};
 
-					args.createSearchChoice = function ( term, data ) {
+					args.createSearchChoice = function ( term ) {
 						if ( term.match( args.regexToken ) ) {
 							return { id: term, text: term };
 						}
@@ -222,8 +224,8 @@
 				}
 
 				if ( $select.is( '[data-source]' ) ) {
-					var source = $select.data( 'source' );
-					var nonce = $select.data( 'nonce' );
+					const source = $select.data( 'source' );
+					const nonce = $select.data( 'nonce' );
 
 					args.data = { results: [] };
 					args.allowClear = true;
@@ -237,7 +239,7 @@
 						dataType: 'json',
 						type: 'POST',
 						url: window.ajaxurl,
-						results: function ( data ) {
+						results( data ) {
 							// parse the results into the format expected by Select2.
 							$.each( data.results, function ( k, result ) {
 								result.id = result.ID;
@@ -264,26 +266,26 @@
 						};
 
 						args.ajax.data = function ( search, page ) {
-							var post_types = [];
-							var $post_types_field = $(
+							let postTypes = [];
+							const $postTypesField = $(
 								'#fakerpress-field-post_types'
 							);
 
 							// Check if post_types field exists on the page and has a value
 							if (
-								$post_types_field.length > 0 &&
-								$post_types_field.val()
+								$postTypesField.length > 0 &&
+								$postTypesField.val()
 							) {
 								// Use the selected post types from the field
-								var field_value = $post_types_field.val();
-								var field_options =
-									$post_types_field.data( 'options' );
+								const fieldValue = $postTypesField.val();
+								const fieldOptions =
+									$postTypesField.data( 'options' );
 
-								if ( field_value && field_options ) {
-									post_types = _.intersection(
-										field_value.split( ',' ),
+								if ( fieldValue && fieldOptions ) {
+									postTypes = _.intersection(
+										fieldValue.split( ',' ),
 										_.pluck(
-											_.where( field_options, {
+											_.where( fieldOptions, {
 												hierarchical: true,
 											} ),
 											'id'
@@ -293,30 +295,30 @@
 							} else {
 								// Default to all public post types when field doesn't exist or has no value (e.g., on attachments page)
 								// This will be handled server-side to get all public post types
-								post_types = [];
+								postTypes = [];
 							}
 
 							return {
 								action: 'fakerpress.select2-' + source,
-								nonce: nonce,
+								nonce,
 								query: {
 									s: search,
 									posts_per_page: 10,
 									paged: page,
-									post_type: post_types,
+									post_type: postTypes,
 								},
 							};
 						};
 					} else {
 						args.ajax.data = function ( search, page ) {
-							var $container = $select
+							const $container = $select
 								.parents( '.fp-table-taxonomy' )
 								.eq( 0 );
 							return {
 								action: 'fakerpress.select2-' + source,
-								search: search,
-								nonce: nonce,
-								page: page,
+								search,
+								nonce,
+								page,
 								page_limit: 25,
 								taxonomies: $container
 									.find( '.fp-taxonomies' )
@@ -341,8 +343,7 @@
 				$select.select2( args );
 			} )
 			.on( 'change', function ( event ) {
-				var $select = $( this ),
-					data = $( this ).data( 'value' );
+				const $select = $( this );
 
 				if ( ! $select.is( '[multiple]' ) ) {
 					return;
@@ -351,18 +352,18 @@
 					return;
 				}
 
+				let data = $select.data( 'value' );
+
 				if ( event.added ) {
 					if ( _.isArray( data ) ) {
 						data.push( event.added );
 					} else {
 						data = [ event.added ];
 					}
+				} else if ( _.isArray( data ) ) {
+					data = _.without( data, event.removed );
 				} else {
-					if ( _.isArray( data ) ) {
-						data = _.without( data, event.removed );
-					} else {
-						data = [];
-					}
+					data = [];
 				}
 				$select
 					.data( 'value', data )
@@ -380,28 +381,29 @@
 	};
 
 	// Quantity Range Fields
-	fp.fields.range = function ( $, _ ) {
+	fp.fields.range = function () {
 		'use strict';
 
 		$( '.fp-type-range-wrap' ).each( function () {
-			var $container = $( this );
-			var $minField = $container.find(
-				'.fp-type-number[data-type="min"]'
-			);
-			var $maxField = $container.find(
-				'.fp-type-number[data-type="max"]'
-			);
+			const $container = $( this );
 
 			if ( $container.hasClass( fp.ready_class ) ) {
 				return;
 			}
 			$container.addClass( fp.ready_class );
 
+			const $minField = $container.find(
+				'.fp-type-number[data-type="min"]'
+			);
+			const $maxField = $container.find(
+				'.fp-type-number[data-type="max"]'
+			);
+
 			$minField
 				.on( {
-					'change keyup': function ( e ) {
-						var minValue = parseInt( $minField.val(), 10 );
-						var maxValue = parseInt( $maxField.val(), 10 );
+					'change keyup'() {
+						const minValue = parseInt( $minField.val(), 10 );
+						const maxValue = parseInt( $maxField.val(), 10 );
 
 						if ( isNumeric( minValue ) ) {
 							$maxField.prop( 'disabled', false );
@@ -424,9 +426,9 @@
 
 			$maxField
 				.on( {
-					'change keyup': function ( e ) {
-						var minValue = parseInt( $minField.val(), 10 );
-						var maxValue = parseInt( $maxField.val(), 10 );
+					'change keyup'() {
+						const minValue = parseInt( $minField.val(), 10 );
+						const maxValue = parseInt( $maxField.val(), 10 );
 
 						if ( isNumeric( maxValue ) && minValue > maxValue ) {
 							$minField.val( maxValue );
@@ -457,32 +459,24 @@
 					conf_container: '.fp-meta_conf-container',
 				},
 
-				update: function ( $item ) {
+				update( $item ) {
 					// Render again the Configuration
 					this.render( $item );
 				},
 
-				render: function ( $item ) {
-					var fieldset = this,
-						$type = $item.find( fieldset.selector.type ),
-						type = $type.select2( 'val' ),
-						$name = $item.find( fieldset.selector.name ),
-						name = $name.val(),
-						$name_container = $item.find(
-							fieldset.selector.name_container
-						),
-						$type_container = $item.find(
-							fieldset.selector.type_container
-						),
-						$conf_container = $item.find(
-							fieldset.selector.conf_container
-						),
-						$place = $conf_container.find(
-							fp.fieldset.selector.wrap
-						),
-						config = $conf_container.data( 'config' ),
-						$template,
-						template;
+				render( $item ) {
+					const fieldset = this;
+					const $type = $item.find( fieldset.selector.type );
+					let type = $type.select2( 'val' );
+					const $nameContainer = $item.find(
+						fieldset.selector.name_container
+					);
+					const $confContainer = $item.find(
+						fieldset.selector.conf_container
+					);
+					const $place = $confContainer.find(
+						fp.fieldset.selector.wrap
+					);
 
 					// Before constructing the Type Object check if it's a jQuery element (Select2 bug)
 					if ( type instanceof jQuery ) {
@@ -490,72 +484,69 @@
 					}
 
 					// Find templates relevant to the current container
-					$template = $( '.fp-template-' + type )
+					const $template = $( '.fp-template-' + type )
 						.filter(
 							'[data-rel="' +
 								fieldset.$.container.attr( 'id' ) +
 								'"]'
 						)
 						.filter( '[data-callable]' );
-					template = $template.html();
+					const template = $template.html();
 
 					// Only place if there is a template
-					if ( template && type !== $conf_container.data( 'type' ) ) {
-						$conf_container.data( 'type', type );
+					if ( template && type !== $confContainer.data( 'type' ) ) {
+						$confContainer.data( 'type', type );
 						$place.empty().append( template );
 
-						this.configure( $conf_container );
+						this.configure( $confContainer );
 					}
 
 					// Make Styles Match the what needs to be done
 					if ( ! type ) {
-						$name_container.addClass( 'fp-last-child' );
-						$conf_container.hide();
+						$nameContainer.addClass( 'fp-last-child' );
+						$confContainer.hide();
 					} else {
-						$name_container.removeClass( 'fp-last-child' );
-						$conf_container.show();
+						$nameContainer.removeClass( 'fp-last-child' );
+						$confContainer.show();
 					}
 				},
 
 				/**
-				 * A way to setup the configuration fields for Meta
+				 * A way to setup the configuration fields for Meta.
 				 *
-				 * @param  jQuery   $conf  The configuration Container
-				 *
-				 * @return null
+				 * @param {jQuery} $conf The configuration Container.
 				 */
-				configure: function ( $conf ) {
-					var fieldset = this;
-					var config = $conf.data( 'config' );
-					var $fields = $conf.find( fp.fieldset.selector.field );
+				configure( $conf ) {
+					const fieldset = this;
+					const config = $conf.data( 'config' );
+					const $fields = $conf.find( fp.fieldset.selector.field );
 
 					// Reset the Configuration, only happens once!
 					// $conf.removeAttr( 'data-config', false ).data( 'config', {} );
 
 					// Loop fields
 					$fields.each( function () {
-						var $field = $( this );
-						var $fieldset = $field
+						const $field = $( this );
+						const $fieldset = $field
 							.parents( fieldset.selector.item )
 							.eq( 0 );
-						var $label = $field.next( fp.fieldset.selector.label );
-						var $internal_label = $field.next(
+						let $label = $field.next( fp.fieldset.selector.label );
+						const $internalLabel = $field.next(
 							fp.fieldset.selector.internal_label
 						);
 
-						var name = $field.data( 'name' );
-						var index =
+						const __name = $field.data( 'name' );
+						const index =
 							parseInt(
 								$fieldset
 									.find( fp.fieldset.selector.order )
 									.val(),
 								10
 							) - 1;
-						var key = name[ index ];
-						var __name = $field.data( 'name' );
-						var __id = $field.data( 'id' );
-						var id = [];
-						var name = [];
+						const key = __name[ index ];
+						const __id = $field.data( 'id' );
+						const id = [];
+						const name = [];
 
 						// If didn't find a label inside of the parent element
 						if ( 0 === $label.length ) {
@@ -565,14 +556,14 @@
 								.find( fp.fieldset.selector.label );
 						}
 
-						_.each( __id, function ( value, key, list ) {
+						_.each( __id, function ( value ) {
 							id.push( value );
 							if ( 'meta' === value || 'taxonomy' === value ) {
 								id.push( index );
 							}
 						} );
 
-						_.each( __name, function ( value, key, list ) {
+						_.each( __name, function ( value ) {
 							name.push( value );
 							if ( 'meta' === value || 'taxonomy' === value ) {
 								name.push( index );
@@ -582,7 +573,7 @@
 						if ( 0 !== id.length ) {
 							$field.attr( 'id', fp.fieldId( id ) );
 							$label.attr( 'for', fp.fieldId( id ) );
-							$internal_label.attr( 'for', fp.fieldId( id ) );
+							$internalLabel.attr( 'for', fp.fieldId( id ) );
 						}
 
 						if ( 0 !== name.length ) {
@@ -600,9 +591,9 @@
 					} );
 				},
 
-				is_removable: function () {
+				is_removable() {
 					if ( 1 === this.$.items.length ) {
-						var $item = this.$.items.eq( 0 );
+						const $item = this.$.items.eq( 0 );
 
 						if (
 							_.isEmpty(
@@ -612,23 +603,22 @@
 							)
 						) {
 							return true;
-						} else {
-							return false;
 						}
+						return false;
 					}
 
 					return false;
 				},
 
-				setup: function () {
-					var fieldset = this;
+				setup() {
+					const fieldset = this;
 
 					fieldset.$.container.on(
 						'change',
 						fieldset.selector.type,
 						[],
-						function ( event ) {
-							var $field = $( this );
+						function () {
+							const $field = $( this );
 
 							// Render again the Configuration
 							fieldset.render( $field );
@@ -639,7 +629,7 @@
 					);
 				},
 
-				reset: function ( $item ) {},
+				reset() {},
 			},
 			{
 				name: 'taxonomy',
@@ -660,11 +650,11 @@
 					weight: '.fp-weight',
 				},
 
-				update: function ( $item ) {},
+				update() {},
 
-				is_removable: function () {
+				is_removable() {
 					if ( 1 === this.$.items.length ) {
-						var $item = this.$.items.eq( 0 );
+						const $item = this.$.items.eq( 0 );
 
 						if (
 							_.isEmpty(
@@ -675,19 +665,16 @@
 							_.isEmpty( $item.find( this.selector.terms ).val() )
 						) {
 							return true;
-						} else {
-							return false;
 						}
+						return false;
 					}
 
 					return false;
 				},
 
-				setup: function () {
-					var fieldset = this;
-				},
+				setup() {},
 
-				reset: function ( $item ) {},
+				reset() {},
 			},
 		],
 
@@ -703,8 +690,8 @@
 			field_container: '.fp-field-container',
 		},
 
-		setup: function ( fieldset ) {
-			var $tbody = $( 'form' )
+		setup( fieldset ) {
+			const $tbody = $( 'form' )
 				.children( '.form-table' )
 				.children( 'tbody' );
 
@@ -726,10 +713,10 @@
 				'click',
 				this.selector.duplicate,
 				[],
-				function ( event ) {
-					var $button = $( this ),
-						$item = $button.parents( fieldset.selector.item ),
-						$clone = $item.clone();
+				function () {
+					const $button = $( this );
+					const $item = $button.parents( fieldset.selector.item );
+					const $clone = $item.clone();
 
 					$clone
 						.find( '.fp-type-date' )
@@ -755,9 +742,9 @@
 				'click',
 				this.selector.remove,
 				[],
-				function ( event ) {
-					var $button = $( this ),
-						$item = $button.parents( fieldset.selector.item );
+				function () {
+					const $button = $( this );
+					const $item = $button.parents( fieldset.selector.item );
 
 					// Prevent remove when there is just one meta
 					if ( 1 === fieldset.$.items.length ) {
@@ -778,13 +765,13 @@
 			this.update( fieldset, false );
 		},
 
-		reset: function ( fieldset, $item ) {
-			var $fields = $item
+		reset( fieldset, $item ) {
+			const $fields = $item
 				.find( 'tbody' )
 				.find( fp.fieldset.selector.field );
 
 			$fields.each( function () {
-				var $field = $( this );
+				const $field = $( this );
 
 				// Reset normal fields
 				$field.val( '' );
@@ -798,7 +785,7 @@
 			fieldset.reset( $item );
 		},
 
-		update: function ( fieldset ) {
+		update( fieldset ) {
 			// Setup a base list of items
 			fieldset.$.items = fieldset.$.wrap.children(
 				fieldset.selector.item
@@ -824,23 +811,23 @@
 
 			// Regenerate Order Index
 			fieldset.$.items.each( function ( index ) {
-				var $item = $( this ),
-					$index = $item.find( fp.fieldset.selector.order ),
-					$fields = $item.find( fp.fieldset.selector.field );
+				const $item = $( this );
+				const $index = $item.find( fp.fieldset.selector.order );
+				const $fields = $item.find( fp.fieldset.selector.field );
 
 				// Change the index first
 				$index.val( index + 1 );
 
 				$fields.filter( 'input, textarea, select' ).each( function () {
-					var $field = $( this ),
-						$label = $field.next( fp.fieldset.selector.label ),
-						$internal_label = $field.next(
-							fp.fieldset.selector.internal_label
-						),
-						__name = $field.data( 'name' ),
-						__id = $field.data( 'id' ),
-						id = [],
-						name = [];
+					const $field = $( this );
+					let $label = $field.next( fp.fieldset.selector.label );
+					const $internalLabel = $field.next(
+						fp.fieldset.selector.internal_label
+					);
+					const __name = $field.data( 'name' );
+					const __id = $field.data( 'id' );
+					const id = [];
+					const name = [];
 
 					// If didn't find a label inside of the parent element
 					if ( 0 === $label.length ) {
@@ -850,14 +837,14 @@
 							.find( fp.fieldset.selector.label );
 					}
 
-					_.each( __id, function ( value, key, list ) {
+					_.each( __id, function ( value ) {
 						id.push( value );
 						if ( 'meta' === value || 'taxonomy' === value ) {
 							id.push( index );
 						}
 					} );
 
-					_.each( __name, function ( value, key, list ) {
+					_.each( __name, function ( value ) {
 						name.push( value );
 						if ( 'meta' === value || 'taxonomy' === value ) {
 							name.push( index );
@@ -867,7 +854,7 @@
 					if ( 0 !== id.length ) {
 						$field.attr( 'id', fp.fieldId( id ) );
 						$label.attr( 'for', fp.fieldId( id ) );
-						$internal_label.attr( 'for', fp.fieldId( id ) );
+						$internalLabel.attr( 'for', fp.fieldId( id ) );
 					}
 
 					if ( 0 !== name.length ) {
@@ -879,7 +866,7 @@
 			} );
 
 			$.each( fp.fields, function ( key, callback ) {
-				callback( window.jQuery, window._ );
+				callback();
 			} );
 		},
 	};
@@ -887,14 +874,14 @@
 	$( () => {
 		$.each( fp.fieldset.items, function ( index, fieldset ) {
 			fp.fieldset.setup( fieldset );
-			fieldset.$.container.each( function ( _index, container ) {
+			fieldset.$.container.each( function () {
 				// We need this to avoid having a `this` variable been a HTML element
 				fp.fieldset.update( fieldset );
 			} );
 		} );
 
 		$.each( fp.fields, function ( key, callback ) {
-			callback( window.jQuery, window._ );
+			callback();
 		} );
 	} );
 } )( window.jQuery, window._ );
