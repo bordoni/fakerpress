@@ -98,7 +98,7 @@ class Meta extends Abstract_Module {
 
 	public function with( string $type, string $name, $args ): Interface_Module {
 		$this->data['meta_key']   = null;
-		$this->data['meta_value'] = null;
+		$this->data['meta_value'] = null; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Key in the module's own data array, not a query argument.
 
 		if ( empty( $type ) ) {
 			return $this;
@@ -141,13 +141,13 @@ class Meta extends Abstract_Module {
 
 		if ( is_callable( [ $faker, 'meta_type_' . $type ] ) ) {
 			try {
-				$this->data['meta_value'] = call_user_func_array( [ $faker, 'meta_type_' . $type ], $args );
+				$this->data['meta_value'] = call_user_func_array( [ $faker, 'meta_type_' . $type ], $args ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Key in the module's own data array, not a query argument.
 			} catch ( \Throwable $e ) {
 				// Not enough configuration to generate this meta value; skip it without halting generation.
 				return $this;
 			}
 		} elseif ( count( $args ) === 1 ) {
-			$this->data['meta_value'] = reset( $args );
+			$this->data['meta_value'] = reset( $args ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Key in the module's own data array, not a query argument.
 		}
 
 		/**
@@ -160,7 +160,7 @@ class Meta extends Abstract_Module {
 		 * @param string $meta_type  Which type of Meta we are dealing with
 		 * @param self   $module     An instance of the Meta Module
 		 */
-		$this->data['meta_value'] = apply_filters( 'fakerpress.module.meta.value', $this->data['meta_value'], $this->data['meta_key'], $type, $this );
+		$this->data['meta_value'] = apply_filters( 'fakerpress.module.meta.value', $this->data['meta_value'], $this->data['meta_key'], $type, $this ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Key in the module's own data array, not a query argument.
 
 		/**
 		 * Allow filtering for the Value of a specific meta value based on it's key
@@ -171,7 +171,7 @@ class Meta extends Abstract_Module {
 		 * @param string $meta_type  Which type of Meta we are dealing with
 		 * @param self   $module     An instance of the Meta Module
 		 */
-		$this->data['meta_value'] = apply_filters( "fakerpress.module.meta.{$this->data['meta_key']}.value", $this->data['meta_value'], $type, $this );
+		$this->data['meta_value'] = apply_filters( "fakerpress.module.meta.{$this->data['meta_key']}.value", $this->data['meta_value'], $type, $this ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Key in the module's own data array, not a query argument.
 
 		return $this;
 	}

@@ -2,12 +2,13 @@
 
 namespace FakerPress\Module;
 
-use function FakerPress\get;
-use function FakerPress\make;
-use function FakerPress\is_truthy;
 use FakerPress;
 use WP_Error;
 use WP_User;
+
+use function FakerPress\get;
+use function FakerPress\make;
+use function FakerPress\is_truthy;
 
 class User extends Abstract_Module {
 
@@ -44,7 +45,7 @@ class User extends Abstract_Module {
 	public static function fetch( array $args = [] ): array {
 		$defaults = [
 			'fields'     => 'ID',
-			'meta_query' => [
+			'meta_query' => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Lists every item FakerPress generated, found by its flag meta (bulk delete, reuse of generated images).
 				[
 					'key'   => static::get_flag(),
 					'value' => true,
