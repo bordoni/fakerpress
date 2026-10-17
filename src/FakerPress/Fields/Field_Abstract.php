@@ -1,4 +1,9 @@
 <?php
+/**
+ * Base class for fields in the FakerPress fields API.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Fields;
 
@@ -208,10 +213,22 @@ abstract class Field_Abstract implements Field_Interface {
 		return $this;
 	}
 
+	/**
+	 * Sets whether init() has run for this field.
+	 *
+	 * @param bool $value True once the field is initialized.
+	 *
+	 * @return void
+	 */
 	public function set_init_flag( bool $value ): void {
 		$this->is_init = $value;
 	}
 
+	/**
+	 * Checks whether init() has run for this field.
+	 *
+	 * @return bool True once the field is initialized.
+	 */
 	public function is_init(): bool {
 		return $this->is_init;
 	}

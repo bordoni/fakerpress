@@ -1,4 +1,9 @@
 <?php
+/**
+ * Generic FakerPress container exception.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Exceptions;
 

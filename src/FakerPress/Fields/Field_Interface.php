@@ -1,4 +1,9 @@
 <?php
+/**
+ * Contract for fields in the FakerPress fields API.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Fields;
 
@@ -140,9 +145,9 @@ interface Field_Interface {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param Field_Interface|array $children Which settings will be use
+	 * @param Field_Interface|array $children List of child fields or field definitions, each built through the fields Factory.
 	 *
-	 * @return Field_Interface      Returns an instance of itself be able to chain calls.
+	 * @return Field_Interface Returns an instance of itself be able to chain calls.
 	 */
 	public function add_children( $children );
 

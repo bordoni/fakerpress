@@ -104,9 +104,14 @@ abstract class Abstract_Endpoint implements Interface_Endpoint {
 	/**
 	 * Check if the current user has permission to access this endpoint.
 	 *
+	 * Endpoints without a required permission are open; otherwise the user must be logged in and
+	 * have the endpoint's capability.
+	 *
 	 * @since 0.9.0
 	 *
-	 * @return bool|WP_Error
+	 * @param WP_REST_Request $request The current request. Not used by the default check.
+	 *
+	 * @return bool|WP_Error True or false from the capability check, or a 401 error for logged-out users.
 	 */
 	public function check_permission( WP_REST_Request $request ) {
 		$permission = $this->get_permission_required();

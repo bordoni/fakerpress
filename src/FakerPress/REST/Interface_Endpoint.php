@@ -53,7 +53,9 @@ interface Interface_Endpoint {
 	 *
 	 * @since 0.9.0
 	 *
-	 * @return bool|\WP_Error
+	 * @param WP_REST_Request $request The current request.
+	 *
+	 * @return bool|\WP_Error Whether the user may call the endpoint, or an error explaining why not.
 	 */
 	public function check_permission( WP_REST_Request $request );
 
