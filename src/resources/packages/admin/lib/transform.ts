@@ -3,31 +3,52 @@
  *
  * Converts clean form objects (from React Hook Form) into REST API params
  * matching what each FakerPress endpoint expects.
+ *
+ * The endpoints hand these params to the generator modules (Module\Post,
+ * Module\User, …) as they are, so the keys and formats here are the ones the
+ * modules read: comma-separated strings for lists, `interval_date` for dates,
+ * and so on. The quantity goes out as `qty: { min, max }`, which the REST
+ * batching layer resolves to a random number in the range.
  */
 
 import type { RangeValue, DateRange, MetaRule, TaxonomyRule } from './types';
 
 /**
- * Convert a range to the API format.
+ * Convert a quantity range to the `qty` object the batching layer reads.
  */
-function rangeToParam( range: RangeValue ): string | number {
+function qtyToParam( range: RangeValue ): { min: number; max: number } {
 	const min = range.min ?? 1;
-	const max = range.max ?? min;
-	return min === max ? min : `${ min }-${ max }`;
+	return { min, max: Math.max( range.max ?? min, min ) };
 }
 
 /**
- * Convert a date range to API params.
+ * Convert a `{ min, max }` range to the `[ min, max ]` pair the modules read.
  */
-function dateToParams( date: DateRange ): Record< string, string > {
-	const params: Record< string, string > = {};
-	if ( date.start ) {
-		params.date_min = date.start;
+function rangeToPair( range: RangeValue, fallback = 1 ): [ number, number ] {
+	const min = range.min ?? fallback;
+	return [ min, range.max ?? min ];
+}
+
+/**
+ * Join a list into the comma-separated string the modules explode.
+ */
+function list( values: ( string | number )[] | undefined ): string {
+	return ( values ?? [] ).map( String ).join( ',' );
+}
+
+/**
+ * Convert a date range to the `interval_date` param the modules read.
+ */
+function dateToParams( date: DateRange ): { interval_date?: { min?: string; max?: string } } {
+	if ( ! date.start && ! date.end ) {
+		return {};
 	}
-	if ( date.end ) {
-		params.date_max = date.end;
-	}
-	return params;
+	return {
+		interval_date: {
+			...( date.start ? { min: date.start } : {} ),
+			...( date.end ? { max: date.end } : {} ),
+		},
+	};
 }
 
 /**
@@ -121,6 +142,8 @@ function metaToParam( meta: MetaRule[] ): Record< string, unknown >[] | undefine
 
 /**
  * Transform Terms form data for the REST API.
+ *
+ * @param data Terms form values.
  */
 export function transformTermsForm( data: {
 	qty: RangeValue;
@@ -129,15 +152,17 @@ export function transformTermsForm( data: {
 	meta: MetaRule[];
 } ): Record< string, unknown > {
 	return {
-		quantity: rangeToParam( data.qty ),
-		name_size: [ data.size.min ?? 1, data.size.max ?? data.size.min ?? 1 ],
-		taxonomies: data.taxonomies,
+		qty: qtyToParam( data.qty ),
+		size: rangeToPair( data.size ),
+		taxonomies: list( data.taxonomies ),
 		meta: metaToParam( data.meta ),
 	};
 }
 
 /**
  * Transform Users form data for the REST API.
+ *
+ * @param data Users form values.
  */
 export function transformUsersForm( data: {
 	qty: RangeValue;
@@ -148,17 +173,19 @@ export function transformUsersForm( data: {
 	meta: MetaRule[];
 } ): Record< string, unknown > {
 	return {
-		quantity: rangeToParam( data.qty ),
-		roles: data.roles,
-		description_size: [ data.description_size.min ?? 1, data.description_size.max ?? data.description_size.min ?? 1 ],
+		qty: qtyToParam( data.qty ),
+		roles: list( data.roles ),
+		description_size: rangeToPair( data.description_size ),
 		use_html: data.use_html,
-		html_tags: data.html_tags,
+		html_tags: list( data.html_tags ),
 		meta: metaToParam( data.meta ),
 	};
 }
 
 /**
  * Transform Comments form data for the REST API.
+ *
+ * @param data Comments form values.
  */
 export function transformCommentsForm( data: {
 	type: string[];
@@ -171,19 +198,21 @@ export function transformCommentsForm( data: {
 	meta: MetaRule[];
 } ): Record< string, unknown > {
 	return {
-		type: data.type,
-		post_type: data.post_type,
-		quantity: rangeToParam( data.qty ),
+		type: list( data.type ),
+		post_types: list( data.post_type ),
+		qty: qtyToParam( data.qty ),
 		...dateToParams( data.date ),
-		content_size: [ data.content_size.min ?? 1, data.content_size.max ?? data.content_size.min ?? 1 ],
+		content_size: rangeToPair( data.content_size ),
 		use_html: data.use_html,
-		html_tags: data.html_tags,
+		html_tags: list( data.html_tags ),
 		meta: metaToParam( data.meta ),
 	};
 }
 
 /**
  * Transform Attachments form data for the REST API.
+ *
+ * @param data Attachments form values.
  */
 export function transformAttachmentsForm( data: {
 	qty: RangeValue;
@@ -199,26 +228,29 @@ export function transformAttachmentsForm( data: {
 	description: boolean;
 	meta: MetaRule[];
 } ): Record< string, unknown > {
+	const [ widthMin, widthMax ] = rangeToPair( data.width, 200 );
+	const hasHeight = data.height.min !== undefined || data.height.max !== undefined;
+	const [ heightMin, heightMax ] = rangeToPair( data.height, 0 );
 	return {
-		quantity: rangeToParam( data.qty ),
+		qty: qtyToParam( data.qty ),
 		...dateToParams( data.date ),
 		provider: data.provider,
-		width: [ data.width.min ?? 200, data.width.max ?? data.width.min ?? 200 ],
-		height: ( data.height.min !== undefined || data.height.max !== undefined )
-			? [ data.height.min ?? 0, data.height.max ?? data.height.min ?? 0 ]
-			: undefined,
+		width: { min: widthMin, max: widthMax },
+		height: hasHeight ? { min: heightMin, max: heightMax } : undefined,
 		aspect_ratio: data.aspect_ratio || undefined,
-		parents: data.parents,
-		author: data.author,
-		alt_text: data.alt_text,
-		caption: data.caption,
-		description: data.description,
+		post_parent: data.parents,
+		author: list( data.author ),
+		generate_alt_text: data.alt_text,
+		generate_caption: data.caption,
+		generate_description: data.description,
 		meta: metaToParam( data.meta ),
 	};
 }
 
 /**
  * Transform Posts form data for the REST API.
+ *
+ * @param data Posts form values.
  */
 export function transformPostsForm( data: {
 	qty: RangeValue;
@@ -235,29 +267,33 @@ export function transformPostsForm( data: {
 	taxonomy_rules: TaxonomyRule[];
 	meta: MetaRule[];
 } ): Record< string, unknown > {
+	// Rules without taxonomies are the blank placeholder the rules UI keeps on screen.
+	const taxonomyRules = data.taxonomy_rules.filter(
+		( rule ) => rule.taxonomies.length > 0
+	);
 	return {
-		quantity: rangeToParam( data.qty ),
+		qty: qtyToParam( data.qty ),
 		...dateToParams( data.date ),
-		post_type: data.post_type,
-		parents: data.parents,
-		comment_status: data.comment_status,
-		author: data.authors,
+		post_types: list( data.post_type ),
+		post_parent: list( data.parents ),
+		comment_status: list( data.comment_status ),
+		author: list( data.authors ),
 		use_html: data.use_html,
-		content_size: [ data.content_size.min ?? 1, data.content_size.max ?? data.content_size.min ?? 1 ],
-		html_tags: data.html_tags,
-		image_providers: data.image_providers,
-		excerpt_size: [ data.excerpt_size.min ?? 1, data.excerpt_size.max ?? data.excerpt_size.min ?? 1 ],
+		content_size: rangeToPair( data.content_size ),
+		html_tags: list( data.html_tags ),
+		images_origin: list( data.image_providers ),
+		excerpt_size: rangeToPair( data.excerpt_size ),
 		// The Post module reads `taxonomy` (not `taxonomy_rules`) and tax_input()
 		// expects a `qty` range plus `rate`; there is no taxonomy weight.
-		// Rules without taxonomies are the blank placeholder the rules UI keeps on screen.
-		taxonomy: data.taxonomy_rules.some( ( rule ) => rule.taxonomies.length > 0 )
-			? data.taxonomy_rules.filter( ( rule ) => rule.taxonomies.length > 0 ).map( ( rule ) => ( {
-				taxonomies: rule.taxonomies,
-				terms: rule.terms,
-				rate: rule.rate,
-				qty: [ rule.qty.min ?? 1, rule.qty.max ?? rule.qty.min ?? 1 ],
-			} ) )
-			: undefined,
+		taxonomy:
+			taxonomyRules.length > 0
+				? taxonomyRules.map( ( rule ) => ( {
+						taxonomies: rule.taxonomies,
+						terms: rule.terms,
+						rate: rule.rate,
+						qty: rangeToPair( rule.qty ),
+				  } ) )
+				: undefined,
 		meta: metaToParam( data.meta ),
 	};
 }

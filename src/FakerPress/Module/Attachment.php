@@ -572,10 +572,21 @@ class Attachment extends Abstract_Module {
 			update_post_meta( $attachment_id, '_wp_attachment_image_alt', $alt_text );
 		}
 
-		// Add custom meta if provided.
+		// Generate the meta field rules ( type, name, config, weight ), like the other modules do.
 		if ( ! empty( $request['meta'] ) && is_array( $request['meta'] ) ) {
-			foreach ( $request['meta'] as $meta_key => $meta_value ) {
-				update_post_meta( $attachment_id, $meta_key, $meta_value );
+			foreach ( $request['meta'] as $meta ) {
+				if ( ! is_array( $meta ) || ! isset( $meta['type'], $meta['name'] ) ) {
+					continue;
+				}
+
+				$type = $meta['type'];
+				$name = $meta['name'];
+				unset( $meta['type'], $meta['name'] );
+
+				$weight         = absint( $meta['weight'] ?? 100 );
+				$meta['weight'] = $weight > 0 ? $weight : 100;
+
+				FakerPress\make( Meta::class )->object( $attachment_id )->with( $type, $name, $meta )->generate()->save();
 			}
 		}
 	}

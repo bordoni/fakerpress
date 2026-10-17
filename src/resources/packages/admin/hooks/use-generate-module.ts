@@ -45,26 +45,32 @@ export function useGenerateModule( endpoint: string ): UseGenerateModuleReturn {
 			let totalGenerated = 0;
 			let totalTime = 0;
 			let offset = 0;
+			// Set from the first capped batch, so later batches don't re-roll the quantity range.
+			let total: number | undefined;
 
 			try {
 				let hasMore = true;
 
 				while ( hasMore ) {
-					const response = await apiFetch< GenerateResponse >( {
+					const body = await apiFetch< GenerateResponse | { data: GenerateResponse } >( {
 						path: `/fakerpress/v1/${ endpoint }/generate`,
 						method: 'POST',
 						data: {
 							...data,
 							offset,
+							...( total !== undefined ? { total } : {} ),
 						},
 					} );
+					// The endpoints wrap the batch in `{ success, data, message }`.
+					const response = 'data' in body && body.data ? body.data : ( body as GenerateResponse );
 
-					totalGenerated += response.generated;
-					totalTime += response.time;
-					allIds.push( ...response.ids );
-					Object.assign( allLinks, response.links );
+					totalGenerated += response.generated ?? 0;
+					totalTime += response.time ?? 0;
+					allIds.push( ...( response.ids ?? [] ) );
+					Object.assign( allLinks, response.links ?? {} );
 
 					if ( response.is_capped && response.total > totalGenerated ) {
+						total = response.total;
 						offset = totalGenerated;
 						setProgress( {
 							current: totalGenerated,
