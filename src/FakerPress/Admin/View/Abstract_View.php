@@ -1,4 +1,9 @@
 <?php
+/**
+ * Base class for FakerPress admin views.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Admin\View;
 
@@ -10,7 +15,7 @@ use function FakerPress\is_post_request;
 use function FakerPress\make;
 
 /**
- * Class Abstract View.
+ * Base admin view: menu registration, page data for the React app and nonce-checked POST handling.
  *
  * @since 0.6.0
  *

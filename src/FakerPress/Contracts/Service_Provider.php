@@ -1,4 +1,9 @@
 <?php
+/**
+ * Base service provider for the FakerPress container.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Contracts;
 

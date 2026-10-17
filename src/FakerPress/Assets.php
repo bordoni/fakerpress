@@ -1,24 +1,35 @@
 <?php
+/**
+ * Service provider that registers the plugin's admin scripts and styles.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress;
 
 use FakerPress\Contracts\Service_Provider;
 
 /**
- * Class Assets.
+ * Registers the admin scripts and styles FakerPress loads on its own pages.
  *
  * @since 0.6.4
  *
- * @package StellarWP\Jobvite
+ * @package FakerPress
  */
 class Assets extends Service_Provider {
 
+	/**
+	 * Registers the legacy admin assets, which only load on FakerPress pages, and hooks the
+	 * React bundle and script translations into `admin_enqueue_scripts`.
+	 *
+	 * @return void
+	 */
 	public function register() {
 		singleton( static::class, $this );
 
 		$admin = make( Admin::class );
 
-		// Font icon CSS removed - now using SVG icon for admin menu
+		// Font icon CSS removed - now using SVG icon for admin menu.
 
 		// Register QS.js.
 		register_asset(

@@ -1,9 +1,14 @@
 <?php
+/**
+ * Admin view for the changelog page.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Admin\View;
 
 /**
- * Class Post_View
+ * Admin view for the changelog page.
  *
  * @since 0.6.4
  *

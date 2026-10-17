@@ -1,4 +1,9 @@
 <?php
+/**
+ * Admin view for the settings page, including the delete-all-generated-data action.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Admin\View;
 
@@ -12,7 +17,7 @@ use function FakerPress\get_request_var;
 use function FakerPress\make;
 
 /**
- * Class Post_View
+ * Admin view for the settings page.
  *
  * @since 0.6.4
  *
@@ -93,7 +98,7 @@ class Settings_View extends Abstract_View {
 			return;
 		}
 
-		// After this point we are safe to say that we have a good POST request
+		// After this point we are safe to say that we have a good POST request.
 		$erase_intention = is_string( get_request_var( [ 'fakerpress', 'actions', 'delete' ] ) );
 		$erase_check     = in_array(
 			strtolower( get_request_var( [ 'fakerpress', 'erase_phrase' ] ) ),

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Service provider that registers and lists the FakerPress generation modules.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Module;
 

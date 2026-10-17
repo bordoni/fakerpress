@@ -1,9 +1,14 @@
 <?php
+/**
+ * Contract every FakerPress admin view implements.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Admin\View;
 
 /**
- * Class View Interface.
+ * Contract every FakerPress admin view implements.
  *
  * @since 0.6.0
  *

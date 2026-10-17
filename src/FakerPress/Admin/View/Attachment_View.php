@@ -1,4 +1,9 @@
 <?php
+/**
+ * Admin view for the attachments generator page.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Admin\View;
 
@@ -11,7 +16,7 @@ use function FakerPress\get_request_var;
 use function FakerPress\make;
 
 /**
- * Class Attachment_View
+ * Admin view for the attachments generator page: React mount point plus the legacy form handler.
  *
  * @since TBD
  *
@@ -69,7 +74,7 @@ class Attachment_View extends Abstract_View {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $id ID of the attachment
+	 * @param int $id ID of the attachment.
 	 *
 	 * @return string
 	 */
@@ -91,7 +96,7 @@ class Attachment_View extends Abstract_View {
 			return;
 		}
 
-		// After this point we are safe to say that we have a good POST request
+		// After this point we are safe to say that we have a good POST request.
 		$results = (array) make( Attachment::class )->parse_request( null, get_request_var( Plugin::$slug, [] ) );
 
 		if ( ! empty( $results ) ) {

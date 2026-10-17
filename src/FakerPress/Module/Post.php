@@ -1,4 +1,9 @@
 <?php
+/**
+ * Generation module for posts of any public post type.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Module;
 
@@ -8,9 +13,14 @@ use WP_Error;
 use function FakerPress\make;
 use function FakerPress\get;
 
+/**
+ * Generates posts with the WP_Post provider, flags them as FakerPress content and adds their meta.
+ */
 class Post extends Abstract_Module {
 	/**
-	 * @inheritDoc
+	 * Faker providers this module needs besides the WP_Post provider.
+	 *
+	 * @var string[]
 	 */
 	protected $dependencies = [
 		FakerPress\ThirdParty\Faker\Provider\Lorem::class,
@@ -19,7 +29,9 @@ class Post extends Abstract_Module {
 	];
 
 	/**
-	 * @inheritDoc
+	 * Faker provider that generates the post fields.
+	 *
+	 * @var string
 	 */
 	protected $provider_class = FakerPress\Provider\WP_Post::class;
 
@@ -37,7 +49,11 @@ class Post extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Fetches the IDs of every post, of any type and status, flagged as created by FakerPress.
+	 *
+	 * @param array $args WP_Query arguments that override the defaults.
+	 *
+	 * @return int[] Post IDs.
 	 */
 	public static function fetch( array $args = [] ): array {
 		$defaults = [
@@ -62,7 +78,13 @@ class Post extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Permanently deletes a post, or a list of posts, created by FakerPress.
+	 *
+	 * Posts without the FakerPress flag are left alone.
+	 *
+	 * @param int|\WP_Post|array $item Post ID, post object, or a list of either.
+	 *
+	 * @return array|\WP_Post|false|null Results keyed by post ID for a list, otherwise the `wp_delete_post()` result, or false when the post is missing or not flagged.
 	 */
 	public static function delete( $item ) {
 		if ( is_array( $item ) ) {
@@ -99,7 +121,13 @@ class Post extends Abstract_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Inserts the post with `wp_insert_post()` and flags it as created by FakerPress.
+	 *
+	 * @param mixed           $response Response so far, ignored.
+	 * @param array           $data     Generated post fields for `wp_insert_post()`.
+	 * @param Abstract_Module $module   Module being saved.
+	 *
+	 * @return int|false The new post ID, or false when the insert failed.
 	 */
 	public function filter_save_response( $response, array $data, Abstract_Module $module ) {
 		$post_id = wp_insert_post( $data );
@@ -108,7 +136,7 @@ class Post extends Abstract_Module {
 			return false;
 		}
 
-		// Flag the Object as FakerPress
+		// Flag the Object as FakerPress.
 		update_post_meta( $post_id, static::get_flag(), 1 );
 
 		return $post_id;
@@ -119,39 +147,39 @@ class Post extends Abstract_Module {
 	 *
 	 * @since 0.6.4
 	 *
-	 * @throws \Exception
+	 * @throws \Exception Exceptions from the Faker generators are not caught.
 	 *
 	 * @param int   $qty      The quantity of posts to generate.
 	 * @param array $request  The request data.
 	 *
-	 * @return array|WP_Error
+	 * @return array|WP_Error IDs of the created posts, or a WP_Error when the quantity is below one.
 	 */
 	public function parse_request( int $qty, array $request = [] ) {
 		if ( 0 === $qty || ! is_numeric( $qty ) || $qty < 1 ) {
 			return new WP_Error( 'fakerpress_zero_posts', __( 'Zero is not a good number of posts to fake...', 'fakerpress' ) );
 		}
 
-		// Fetch Comment Status
+		// Fetch Comment Status.
 		$comment_status = get( $request, 'comment_status', '' );
 		$comment_status = array_map( 'trim', explode( ',', $comment_status ) );
 
-		// Fetch Post Author
+		// Fetch Post Author.
 		$post_author = get( $request, 'author', '' );
 		$post_author = array_map( 'trim', explode( ',', $post_author ) );
 		$post_author = array_intersect( get_users( [ 'fields' => 'ID' ] ), $post_author );
 
-		// Fetch the dates
+		// Fetch the dates.
 		$date = [
 			get( $request, [ 'interval_date', 'min' ] ),
 			get( $request, [ 'interval_date', 'max' ] ),
 		];
 
-		// Fetch Post Types
+		// Fetch Post Types.
 		$post_types = get( $request, 'post_types', '' );
 		$post_types = array_map( 'trim', explode( ',', $post_types ) );
 		$post_types = array_intersect( get_post_types( [ 'public' => true ] ), $post_types );
 
-		// Fetch Post Content
+		// Fetch Post Content.
 		$post_content_size      = get( $request, 'content_size', [ 5, 15 ] );
 		$post_content_use_html  = ( (int) get( $request, 'use_html', 0 ) ) === 1;
 		$post_content_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags', '' ) ) );
@@ -159,13 +187,13 @@ class Post extends Abstract_Module {
 		// Fetch Post Excerpt.
 		$post_excerpt_size = get( $request, 'excerpt_size', [ 1, 3 ] );
 
-		// Fetch and clean Post Parents
+		// Fetch and clean Post Parents.
 		$post_parents = get( $request, 'post_parent', '' );
 		$post_parents = array_map( 'trim', explode( ',', $post_parents ) );
 
 		$images_origin = array_map( 'trim', explode( ',', get( $request, 'images_origin', '' ) ) );
 
-		// Fetch Taxonomies
+		// Fetch Taxonomies.
 		$taxonomies_configuration = get( $request, 'taxonomy' );
 
 		// Fetch Metas It will be parsed later!

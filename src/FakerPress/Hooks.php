@@ -57,7 +57,7 @@ class Hooks extends Service_Provider {
 
 		add_action( 'admin_init', [ $this, 'parse_view_request' ], 15 );
 
-		// When trying to add a menu, make bigger than the default to avoid conflicting index further on
+		// When trying to add a menu, make bigger than the default to avoid conflicting index further on.
 		add_action( 'admin_menu', [ $menu, 'register_menus_to_wp' ], 11 );
 
 		add_action( 'current_screen', [ $this, 'modify_current_screen' ], 0 );
@@ -71,10 +71,10 @@ class Hooks extends Service_Provider {
 	protected function add_filters() {
 		$admin = make( Admin::class );
 
-		// Setup the Submenu using an PHP action based on View
+		// Setup the Submenu using an PHP action based on View.
 		add_filter( 'submenu_file', [ $this, 'filter_admin_submenu_file' ] );
 
-		// Creating information for the plugin pages footer
+		// Creating information for the plugin pages footer.
 		add_filter( 'admin_footer_text', [ $admin, '_filter_admin_footer_text' ] );
 		add_filter( 'update_footer', [ $admin, '_filter_update_footer' ], 15 );
 
@@ -82,7 +82,7 @@ class Hooks extends Service_Provider {
 
 		add_filter( 'plugin_row_meta', [ $admin, 'filter_plugin_row_meta' ], 10, 2 );
 
-		// Allow WordPress
+		// Allow WordPress.
 		add_filter( 'fakerpress.messages.allowed_html', [ $admin, '_filter_messages_allowed_html' ], 1, 1 );
 	}
 
@@ -137,7 +137,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 0.6.4
 	 *
-	 * @param \WP_Screen $screen
+	 * @param \WP_Screen $screen The screen WordPress just set as current.
 	 */
 	public function modify_current_screen( $screen ) {
 		// Removes itself since it's required to avoid infinitte loop.

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Exception for container lookups of an unbound slug.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Exceptions;
 

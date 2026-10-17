@@ -1,4 +1,9 @@
 <?php
+/**
+ * Admin view for the posts generator page.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Admin\View;
 
@@ -11,7 +16,7 @@ use function FakerPress\get_request_var;
 use function FakerPress\make;
 
 /**
- * Class Post_View
+ * Admin view for the posts generator page: React mount point plus the legacy form handler.
  *
  * @since 0.6.4
  *
@@ -147,7 +152,7 @@ class Post_View extends Abstract_View {
 	 *
 	 * @since 0.6.0
 	 *
-	 * @param int $id ID of the post
+	 * @param int $id ID of the post.
 	 *
 	 * @return string
 	 */
@@ -164,7 +169,7 @@ class Post_View extends Abstract_View {
 			return;
 		}
 
-		// After this point we are safe to say that we have a good POST request
+		// After this point we are safe to say that we have a good POST request.
 		$results = (array) make( Post::class )->parse_request( null, get_request_var( Plugin::$slug, [] ) );
 
 		if ( ! empty( $results ) ) {

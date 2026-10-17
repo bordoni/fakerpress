@@ -1,4 +1,9 @@
 <?php
+/**
+ * Base class shared by all the FakerPress generation modules.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Module;
 
@@ -6,7 +11,8 @@ use FakerPress\ThirdParty\Faker\Generator;
 use function FakerPress\is_truthy;
 
 /**
- * Class Abstract_Module.
+ * Base module: builds the Faker generator with the module providers, stores the data set for each
+ * generator method, generates the values and runs the save flow with its hooks.
  *
  * @since 0.6.0
  *
@@ -204,24 +210,44 @@ abstract class Abstract_Module implements Interface_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Deletes a given item created by this module.
+	 *
+	 * @since 0.6.0
+	 *
+	 * @param int|\WP_Post|string $item What are we deleting.
+	 *
+	 * @return bool|\WP_Error
 	 */
 	abstract public static function delete( $item );
 
 	/**
-	 * @inheritDoc
+	 * Fetches all the items created by this module.
+	 *
+	 * @since 0.6.0
+	 *
+	 * @param array $args Overwrite the default arguments used to fetch the items.
+	 *
+	 * @return array IDs of the items this module created.
 	 */
 	abstract public static function fetch( array $args = [] ): array;
 
 	/**
-	 * @inheritDoc
+	 * Sets the data for one generator method, or for each string key of an array of methods.
+	 *
+	 * Any arguments after `$key` are stored and passed to the generator method on `generate()`.
+	 *
+	 * @since 0.6.4
+	 *
+	 * @param array|string $key Name of a generator method or a list of names; anything else is ignored.
+	 *
+	 * @return Interface_Module
 	 */
 	final public function set( $key ): Interface_Module {
 		if ( ! is_string( $key ) && ! is_array( $key ) ) {
 			return $this;
 		}
 
-		// Allow a bunch of params
+		// Allow a bunch of params.
 		$arguments = func_get_args();
 
 		/**
@@ -262,16 +288,24 @@ abstract class Abstract_Module implements Interface_Module {
 	 *
 	 * @since 0.6.4
 	 *
-	 * @param mixed           $response
-	 * @param array           $data
-	 * @param Abstract_Module $module
+	 * @param mixed           $response Response so far, `false` when called from `save()`.
+	 * @param array           $data     Generated values keyed by generator method name.
+	 * @param Abstract_Module $module   Module being saved.
 	 *
 	 * @return mixed
 	 */
 	abstract protected function filter_save_response( $response, array $data, Abstract_Module $module );
 
 	/**
-	 * @inheritDoc
+	 * Saves the generated data through `filter_save_response()`, firing the before and after save hooks.
+	 *
+	 * Defines `WP_IMPORTING` (unless filtered off) so WordPress skips the `_encloseme` and `_pingme` meta.
+	 *
+	 * @since 0.6.0
+	 *
+	 * @param bool $reset Whether to reset the module data after saving.
+	 *
+	 * @return mixed The filtered save response, usually the new item ID, a WP_Error or false.
 	 */
 	final public function save( bool $reset = true ) {
 		$slug = static::get_slug();
@@ -406,7 +440,14 @@ abstract class Abstract_Module implements Interface_Module {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Generates a value for every piece of data that was set, calling the matching Faker generator.
+	 *
+	 * @since 0.6.0
+	 * @since 0.6.2 Added the $force parameter.
+	 *
+	 * @param bool $force Whether to regenerate values that already exist.
+	 *
+	 * @return Interface_Module
 	 */
 	public function generate( bool $force = false ): Interface_Module {
 		foreach ( $this->data as $name => $item ) {
@@ -425,9 +466,9 @@ abstract class Abstract_Module implements Interface_Module {
 	 *
 	 * @since 0.6.0
 	 *
-	 * @param $item
+	 * @param object $item Data object with `generator` and `arguments` properties, as stored by `set()`.
 	 *
-	 * @return false|mixed
+	 * @return false|mixed The generated value, or the first argument when there is no generator.
 	 */
 	protected function apply( $item ) {
 		// Where there is no generator just return the first argument.
@@ -452,14 +493,22 @@ abstract class Abstract_Module implements Interface_Module {
 	}
 
 	/**
-	 * @inheritdoc
+	 * Gets the data object stored for a given key.
+	 *
+	 * @param string $key Name of the generator method the data was set for.
+	 *
+	 * @return object|null The stored data object, or null when not set.
 	 */
 	public function get( string $key ): ?object {
 		return $this->data[ $key ] ?? null;
 	}
 
 	/**
-	 * @inheritdoc
+	 * Gets the generated value for a given key.
+	 *
+	 * @param string $key Name of the generator method the data was set for.
+	 *
+	 * @return mixed The generated value, or null when there is none.
 	 */
 	public function get_value( string $key ) {
 		$data = $this->get( $key );
@@ -467,7 +516,11 @@ abstract class Abstract_Module implements Interface_Module {
 	}
 
 	/**
-	 * @inheritdoc
+	 * Determines if a value was generated for a given key.
+	 *
+	 * @param string $key Name of the generator method the data was set for.
+	 *
+	 * @return bool
 	 */
 	public function has_value( string $key ): bool {
 		$data = $this->get( $key );

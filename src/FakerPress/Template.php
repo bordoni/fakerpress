@@ -1,10 +1,19 @@
 <?php
+/**
+ * Template loader that finds and renders PHP templates with a local and global context.
+ *
+ * @package FakerPress
+ */
+
 namespace FakerPress;
 
 use function FakerPress\is_truthy;
 use function FakerPress\set;
 use function FakerPress\get;
 
+/**
+ * Finds PHP template files in the plugin (and optionally the theme) and renders them with context data.
+ */
 class Template {
 	/**
 	 * The folders into which we will look for the template.
@@ -74,7 +83,8 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param object|string $origin   The base origin for the templates
+	 * @param object|string $origin The base origin for the templates: an object with a `path()` method,
+	 *                              or a class name with an `instance()` method. Defaults to the current origin.
 	 *
 	 * @return self
 	 */
@@ -84,7 +94,7 @@ class Template {
 		}
 
 		if ( is_string( $origin ) ) {
-			// Origin needs to be a class with a `instance` method
+			// Origin needs to be a class with a `instance` method.
 			if ( class_exists( $origin ) && method_exists( $origin, 'instance' ) ) {
 				$origin = call_user_func( [ $origin, 'instance' ] );
 			}
@@ -105,33 +115,33 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param array|string $folder  Which folder we are going to look for templates
+	 * @param array|string $folder Which folder we are going to look for templates, as a path or a list of path parts.
 	 *
 	 * @return self
 	 */
 	public function set_template_folder( $folder = null ) {
-		// Allows configuring a already set class
+		// Allows configuring a already set class.
 		if ( ! isset( $folder ) ) {
 			$folder = $this->folder;
 		}
 
-		// If Folder is String make it an Array
+		// If Folder is String make it an Array.
 		if ( is_string( $folder ) ) {
 			$folder = (array) explode( '/', $folder );
 		}
 
-		// Cast as Array and save
+		// Cast as Array and save.
 		$this->folder = (array) $folder;
 
 		return $this;
 	}
 
 	/**
-	 * Configures the class with the base folder in relation to the Origin
+	 * Configures whether templates are also looked up in the child and parent theme folders.
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param mixed $use  Should we look for template files in the list of folders
+	 * @param mixed $value Should we look for template files in the list of folders, any truthy value enables it.
 	 *
 	 * @return self
 	 */
@@ -146,12 +156,12 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param array $context  Default global Context
+	 * @param array $context Default global Context, merged over the existing globals.
 	 *
 	 * @return self
 	 */
 	public function add_template_globals( $context = [] ) {
-		// Cast as Array merge and save
+		// Cast as Array merge and save.
 		$this->global = wp_parse_args( (array) $context, $this->global );
 
 		return $this;
@@ -162,29 +172,30 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param bool $value  Should we extract context for templates
+	 * @param bool $value Should we extract context for templates.
 	 *
 	 * @return self
 	 */
 	public function set_template_context_extract( $value = false ) {
-		// Cast as bool and save
+		// Cast as bool and save.
 		$this->template_context_extract = is_truthy( $value );
 
 		return $this;
 	}
 
 	/**
-	 * Sets a Index inside of the global or local context
-	 * Final to prevent extending the class when the `get` already exists on the child class
+	 * Gets an Index from the global or local context.
+	 *
+	 * Final to prevent extending the class when the `get` already exists on the child class.
 	 *
 	 * @since 0.5.1
 	 *
 	 * @see \FakerPress\get
 	 *
-	 * @param array   $index     Specify each nested index in order.
-	 *                            Example: array( 'lvl1', 'lvl2' );
-	 * @param mixed   $default   Default value if the search finds nothing.
-	 * @param boolean $is_local  Use the Local or Global context
+	 * @param array|string $index    Specify each nested index in order.
+	 *                               Example: array( 'lvl1', 'lvl2' ).
+	 * @param mixed        $default  Default value if the search finds nothing.
+	 * @param boolean      $is_local Use the Local or Global context.
 	 *
 	 * @return mixed The value of the specified index or the default if not found.
 	 */
@@ -217,20 +228,21 @@ class Template {
 	}
 
 	/**
-	 * Sets a Index inside of the global or local context
-	 * Final to prevent extending the class when the `set` already exists on the child class
+	 * Sets a Index inside of the global or local context.
+	 *
+	 * Final to prevent extending the class when the `set` already exists on the child class.
 	 *
 	 * @since 0.5.1
 	 *
-	 * @see fp_array_set
+	 * @see \FakerPress\set
 	 *
-	 * @param string|array $index     To set a key nested multiple levels deep pass an array
-	 *                                 specifying each key in order as a value.
-	 *                                 Example: array( 'lvl1', 'lvl2', 'lvl3' );
-	 * @param mixed        $value     The value.
-	 * @param boolean      $is_local  Use the Local or Global context
+	 * @param string|array $index    To set a key nested multiple levels deep pass an array
+	 *                               specifying each key in order as a value.
+	 *                               Example: array( 'lvl1', 'lvl2', 'lvl3' ).
+	 * @param mixed        $value    The value.
+	 * @param boolean      $is_local Use the Local or Global context.
 	 *
-	 * @return array Full array with the key set to the specified value.
+	 * @return array The full local or global context with the key set to the specified value.
 	 */
 	final public function set( $index, $value = null, $is_local = true ) {
 		if ( true === $is_local ) {
@@ -245,23 +257,23 @@ class Template {
 	}
 
 	/**
-	 * Merges local and global context, and saves it locally
+	 * Merges local and global context, and saves it locally.
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param array  $context  Local Context array of data
-	 * @param string $file     Complete path to include the PHP File
-	 * @param array  $name     Template name
+	 * @param array  $context Local Context array of data.
+	 * @param string $file    Complete path to include the PHP File.
+	 * @param array  $name    Template name.
 	 *
-	 * @return array
+	 * @return array The merged context, after the `fakerpress_template_context` filter.
 	 */
 	public function merge_context( $context = [], $file = null, $name = null ) {
-		// Allow for simple null usage as well as array() for nothing
+		// Allow for simple null usage as well as array() for nothing.
 		if ( is_null( $context ) ) {
 			$context = [];
 		}
 
-		// Applies local context on top of Global one
+		// Applies local context on top of Global one.
 		$context = wp_parse_args( (array) $context, $this->global );
 
 		/**
@@ -287,10 +299,10 @@ class Template {
 	 * @return string
 	 */
 	protected function get_template_plugin_path() {
-		// Craft the plugin Path
+		// Craft the plugin Path.
 		$path = array_merge( (array) $this->template_base_path, $this->folder );
 
-		// Implode to avoid Window Problems
+		// Implode to avoid Window Problems.
 		$path = implode( DIRECTORY_SEPARATOR, $path );
 
 		/**
@@ -337,15 +349,15 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param mixed $base  Base path to look into
+	 * @param mixed $base Base path to look into, normally a theme directory.
 	 *
 	 * @return string
 	 */
 	protected function get_template_public_path( $base ) {
-		// Craft the plugin Path
+		// Craft the plugin Path.
 		$path = array_merge( (array) $base, (array) $this->get_template_public_namespace() );
 
-		// Implode to avoid Window Problems
+		// Implode to avoid Window Problems.
 		$path = implode( DIRECTORY_SEPARATOR, $path );
 
 		/**
@@ -369,7 +381,7 @@ class Template {
 	protected function get_template_path_list() {
 		$folders = [];
 
-		// Only look into public folders if we tell to use folders
+		// Only look into public folders if we tell to use folders.
 		if ( $this->template_folder_lookup ) {
 			$folders[] = [
 				'id'       => 'child-theme',
@@ -411,12 +423,12 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param mixed $name  File name we are looking for
+	 * @param string|array $name File name we are looking for, without the `.php` extension, as a path or list of path parts.
 	 *
-	 * @return string
+	 * @return string|false The full path of the first matching file, or false when none exists.
 	 */
 	public function get_template_file( $name ) {
-		// If name is String make it an Array
+		// If name is String make it an Array.
 		if ( is_string( $name ) ) {
 			$name = (array) explode( '/', $name );
 		}
@@ -429,13 +441,13 @@ class Template {
 				continue;
 			}
 
-			// Build the File Path
+			// Build the File Path.
 			$file = implode( DIRECTORY_SEPARATOR, array_merge( (array) $folder['path'], $name ) );
 
-			// Append the Extension to the file path
+			// Append the Extension to the file path.
 			$file .= '.php';
 
-			// Skip non-existent files
+			// Skip non-existent files.
 			if ( file_exists( $file ) ) {
 				/**
 				 * A more Specific Filter that will include the template name
@@ -451,7 +463,7 @@ class Template {
 			}
 		}
 
-		// Couldn't find a template on the Stack
+		// Couldn't find a template on the Stack.
 		return false;
 	}
 
@@ -460,19 +472,19 @@ class Template {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param string  $name    Which file we are talking about including
-	 * @param array   $context Any context data you need to expose to this file
-	 * @param boolean $echo    If we should also print the Template
+	 * @param string|array $name    Which file we are talking about including, as a path or list of path parts.
+	 * @param array        $context Any context data you need to expose to this file.
+	 * @param boolean      $echo    If we should also print the Template.
 	 *
 	 * @return string|false Either the final content HTML or `false` if no template could be found.
 	 */
 	public function render( $name, $context = [], $echo = true ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.echoFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
-		// If name is String make it an Array
+		// If name is String make it an Array.
 		if ( is_string( $name ) ) {
 			$name = (array) explode( '/', $name );
 		}
 
-		// Clean this Variable
+		// Clean this Variable.
 		$name = array_map( 'sanitize_key', $name );
 
 		if ( ! empty( $this->origin->template_namespace ) ) {
@@ -481,25 +493,25 @@ class Template {
 			$namespace = $name;
 		}
 
-		// Setup the Hook name
+		// Setup the Hook name.
 		$hook_name = implode( '/', $namespace );
 
-		// Check if the file exists
+		// Check if the file exists.
 		$file = $this->get_template_file( $name );
 
-		// Check if it's a valid variable
+		// Check if it's a valid variable.
 		if ( ! $file ) {
 			return false;
 		}
 
-		// Before we load the file we check if it exists
+		// Before we load the file we check if it exists.
 		if ( ! file_exists( $file ) ) {
 			return false;
 		}
 
 		ob_start();
 
-		// Merges the local data passed to template to the global scope
+		// Merges the local data passed to template to the global scope.
 		$this->merge_context( $context, $file, $name );
 
 		/**
@@ -531,7 +543,7 @@ class Template {
 
 		// Only do this if really needed (by default it wont).
 		if ( true === $this->template_context_extract && ! empty( $this->context ) ) {
-			// We don't allow extracting of a variable called $name
+			// We don't allow extracting of a variable called $name.
 			if ( isset( $this->context['name'] ) ) {
 				unset( $this->context['name'] );
 			}
@@ -574,7 +586,7 @@ class Template {
 		 */
 		do_action( "fakerpress_template_after_include:$hook_name", $file, $name, $this );
 
-		// Only fetch the contents after the action
+		// Only fetch the contents after the action.
 		$html = ob_get_clean();
 
 		/**

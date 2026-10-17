@@ -1,9 +1,17 @@
 <?php
+/**
+ * FakerPress admin pages: notices, page titles and footer links.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress;
 
 use FakerPress\Admin\View\Factory;
 
+/**
+ * Renders the FakerPress admin page templates and filters the admin chrome (notices, title, footer, body class) on FakerPress pages.
+ */
 class Admin extends Template {
 	/**
 	 * Variable holding the messages objects
@@ -32,6 +40,11 @@ class Admin extends Template {
 	 */
 	public static $is_ajax = false;
 
+	/**
+	 * Checks whether the current admin request is for a FakerPress page.
+	 *
+	 * @return bool True when the `page` request variable matches the plugin slug.
+	 */
 	public function is_active(): bool {
 		$page = get_request_var( 'page' );
 
@@ -39,15 +52,9 @@ class Admin extends Template {
 	}
 
 	/**
-	 * Static method to include all the Hooks for WordPress
-	 * There is a safe conditional here, it can only be triggered once!
+	 * Points the template loader at the plugin's `src/templates/pages` folder.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @uses add_filter
-	 *
-	 * @uses add_action
-	 * @return null Construct never returns
 	 */
 	public function __construct() {
 		$this->set_template_origin( make( Plugin::class ) )
@@ -55,16 +62,20 @@ class Admin extends Template {
 	}
 
 	/**
-	 * Creating messages in a standard way
+	 * Queues an admin notice to show on the current FakerPress page.
+	 *
+	 * The HTML runs through wpautop() and wp_kses() with the `fakerpress.messages.allowed_html` tags,
+	 * and the queue is re-sorted by priority after each addition.
 	 *
 	 * @todo Move to the Page Abstract.
 	 *
 	 * @since 0.1.2
 	 *
-	 * @param string  $type     The type of the Message
-	 * @param integer $priority The priority to show this message
+	 * @param string $html     HTML or text of the message.
+	 * @param string $type     Notice type: `success`, `error` or `warning`.
+	 * @param int    $priority Sort priority, lower shows first; 0 is bumped to 1.
 	 *
-	 * @param string  $html     HTML or text of the message
+	 * @return object The queued message, with `html`, `type` and `priority` properties.
 	 */
 	public static function add_message( $html, $type = 'success', $priority = 10 ) {
 		$priority = absint( $priority );
@@ -87,19 +98,20 @@ class Admin extends Template {
 	}
 
 	/**
-	 * Method triggered to add messages recorded in this request to the admin front-end
+	 * Prints the notices queued during this request as admin notices.
 	 *
 	 * @todo Move to the Page Abstract.
 	 *
 	 * @since 0.1.2
-	 * @return null Actions do not return
+	 *
+	 * @return void
 	 */
 	public function _action_admin_notices() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		foreach ( self::$messages as $k => $message ) {
 			$classes = [
-				// Plugin class to give the styling
+				// Plugin class to give the styling.
 				'fakerpress-message',
-				// This is to use WordPress JS to move them above the h2
+				// This is to use WordPress JS to move them above the h2.
 				'notice',
 			];
 
@@ -166,7 +178,16 @@ class Admin extends Template {
 	}
 
 	/**
+	 * Replaces the page title inside the admin `<title>` with "<view title> on FakerPress" on FakerPress pages.
+	 *
+	 * Hooked to `admin_title`.
+	 *
 	 * @todo refactor
+	 *
+	 * @param string $admin_title The full admin page title.
+	 * @param string $title       The original page title, the part that gets replaced.
+	 *
+	 * @return string The filtered admin page title.
 	 */
 	public function _filter_set_admin_page_title( $admin_title, $title ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		if ( ! $this->is_active() ) {
@@ -182,6 +203,13 @@ class Admin extends Template {
 		return $admin_title;
 	}
 
+	/**
+	 * Lists the HTML tags and attributes allowed in FakerPress admin notices.
+	 *
+	 * Hooked to `fakerpress.messages.allowed_html`.
+	 *
+	 * @return array<string, array<string, array>> Allowed tags for wp_kses(): links, line breaks, paragraphs, emphasis and lists.
+	 */
 	public function _filter_messages_allowed_html() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		return [
 			'a'      => [
@@ -220,13 +248,15 @@ class Admin extends Template {
 	}
 
 	/**
-	 * Filter the WordPress Version on plugins pages to display plugin version
+	 * Replaces the left admin footer text on FakerPress pages with support and review links.
+	 *
+	 * Hooked to `admin_footer_text`.
 	 *
 	 * @since 0.1.0
-	 * @uses __
 	 *
-	 * @uses \FakerPress\Plugin::$slug
-	 * @return string
+	 * @param string $text The default footer text.
+	 *
+	 * @return string The footer HTML, unchanged outside FakerPress pages.
 	 */
 	public function _filter_admin_footer_text( $text ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		if ( ! $this->is_active() ) {
@@ -245,15 +275,16 @@ class Admin extends Template {
 	}
 
 	/**
-	 * Filter the WordPress Version on plugins pages to display the plugin version
+	 * Replaces the WordPress version in the right admin footer on FakerPress pages with sponsor,
+	 * translation and plugin version links.
+	 *
+	 * Hooked to `update_footer`.
 	 *
 	 * @since 0.1.0
-	 * @uses \FakerPress\Plugin::admin_url
-	 * @uses \FakerPress\Plugin::VERSION
-	 * @uses __
 	 *
-	 * @uses \FakerPress\Plugin::$slug
-	 * @return string
+	 * @param string $text The default footer text (the WordPress version).
+	 *
+	 * @return string The footer HTML, unchanged outside FakerPress pages.
 	 */
 	public function _filter_update_footer( $text ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		if ( ! $this->is_active() ) {
@@ -282,6 +313,15 @@ class Admin extends Template {
 		return $sponsor . $translate . $version;
 	}
 
+	/**
+	 * Appends the `__fakerpress` class to the admin body classes.
+	 *
+	 * Hooked to `admin_body_class`; it runs on every admin page, not only FakerPress ones.
+	 *
+	 * @param string $classes Space-separated admin body classes.
+	 *
+	 * @return string The classes with `__fakerpress` appended.
+	 */
 	public function _filter_body_class( $classes ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Public hook callback name, renaming breaks third-party remove_action()/remove_filter() calls.
 		$more = [
 			$classes,

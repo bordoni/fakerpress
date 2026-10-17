@@ -1,10 +1,25 @@
 <?php
+/**
+ * Date interval presets used by the date range fields.
+ *
+ * @package FakerPress
+ */
+
 namespace FakerPress;
 
 use FakerPress\ThirdParty\Cake\Chronos\Chronos;
 
+/**
+ * Builds the named date intervals (today, this week, last 15 days, ...) offered by date fields.
+ */
 class Dates {
 
+	/**
+	 * Gets the list of date interval presets, with start and end dates computed relative to today.
+	 *
+	 * @return array List of intervals, each an array with `id`, translated `text`, and `min` / `max`
+	 *               dates as `Y-m-d` strings. Filtered by `fakerpress/date.get_intervals`.
+	 */
 	public static function get_intervals() {
 		return apply_filters(
 			'fakerpress/date.get_intervals',

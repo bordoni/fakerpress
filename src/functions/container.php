@@ -1,4 +1,9 @@
 <?php
+/**
+ * Shortcut functions for the FakerPress dependency injection container.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress;
 
@@ -251,7 +256,9 @@ function isset_var( $slug ) {
  *
  * @since 0.6.0
  *
- * @param string $provider_class
+ * @param string $provider_class Fully qualified name of the service provider class.
+ *
+ * @return void
  */
 function register( string $provider_class ): void {
 	Container::init()->register( $provider_class );
@@ -259,14 +266,15 @@ function register( string $provider_class ): void {
 
 /**
  * Returns a lambda function suitable to use as a callback; when called the function will build the implementation
- * bound to `$classOrInterface` and return the value of a call to `$method` method with the call arguments.
+ * bound to `$slug` and return the value of a call to `$method` method with the call arguments.
+ *
+ * Any extra arguments passed after `$method` are bound to the callback and passed down to the method.
  *
  * @since 0.6.0
  *
- * @param string   $slug        A class or interface fully qualified name or a string slug.
- * @param string   $method      The method that should be called on the resolved implementation with the
- *                              specified array arguments.
- * @param mixed  [ $argsN]      (optional) Any number of arguments that will be passed down to the Callback
+ * @param string $slug   A class or interface fully qualified name or a string slug.
+ * @param string $method The method that should be called on the resolved implementation with the
+ *                       specified array arguments.
  *
  * @return callable A PHP Callable based on the Slug and Methods passed
  */

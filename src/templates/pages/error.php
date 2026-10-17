@@ -1,4 +1,12 @@
 <?php
+/**
+ * Admin page template shown when a FakerPress page cannot be found.
+ *
+ * Prints a 404 message with a link to tweet at FakerPress, tagged with the site locale.
+ *
+ * @package FakerPress
+ */
+
 namespace FakerPress;
 
 $tweet_args  = [

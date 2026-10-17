@@ -1,4 +1,10 @@
 <?php
+/**
+ * Asset registry that registers and enqueues the plugin's scripts and styles.
+ *
+ * @package FakerPress
+ */
+
 namespace FakerPress\Utils;
 
 use function FakerPress\get;
@@ -41,7 +47,12 @@ class Assets {
 	/**
 	 * Register the Assets on the correct hooks.
 	 *
+	 * Registers each asset with `wp_register_script()` / `wp_register_style()`, in priority
+	 * order, skipping assets WordPress already knows about.
+	 *
 	 * @since 0.5.1
+	 *
+	 * @param object|object[]|null $assets Asset object or list of asset objects; null registers every stored asset.
 	 *
 	 * @return void
 	 */
@@ -142,7 +153,7 @@ class Assets {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param string|array $forcibly_enqueue
+	 * @param string|array $forcibly_enqueue Slug or list of slugs to enqueue regardless of the current action and conditionals.
 	 */
 	public function enqueue( $forcibly_enqueue = null ) {
 		$forcibly_enqueue = array_filter( (array) $forcibly_enqueue );
@@ -163,7 +174,7 @@ class Assets {
 				continue;
 			}
 
-			// If this asset was late called
+			// If this asset was late called.
 			if ( ! $asset->is_registered ) {
 				$this->register_in_wp( $asset );
 			}
@@ -181,7 +192,7 @@ class Assets {
 
 				// If we have a set of conditionals we loop on then and get if they are true.
 				foreach ( $asset->conditionals as $key => $conditional ) {
-					// Avoid doing anything to the operator
+					// Avoid doing anything to the operator.
 					if ( 'operator' === $key ) {
 						continue;
 					}
@@ -356,6 +367,16 @@ class Assets {
 		return false;
 	}
 
+	/**
+	 * Builds the public URL of an asset file inside the plugin's `build/` folder.
+	 *
+	 * Non-vendor files are looked up in a sub-folder named after their extension
+	 * (`build/css/`, `build/js/`, ...).
+	 *
+	 * @param object $asset Asset object with `file` and `origin_path` set.
+	 *
+	 * @return string The asset URL, filtered by `fakerpress_asset_resource_url`.
+	 */
 	public function get_resource_url( $asset = null ) {
 		$extension     = pathinfo( $asset->file, PATHINFO_EXTENSION );
 		$is_vendor     = strpos( $asset->file, 'vendor/' ) !== false ? true : false;
@@ -381,7 +402,7 @@ class Assets {
 		$resource = $resource_path . $asset->file;
 		$file     = wp_normalize_path( $asset->origin_path . $resource );
 
-		// Turn the Path into a URL
+		// Turn the Path into a URL.
 		$url = plugins_url( basename( $asset->file ), $file );
 
 		/**
@@ -522,7 +543,7 @@ class Assets {
 		 */
 		$asset->version = apply_filters( 'fakerpress_asset_version', $asset->version, $asset );
 
-		// Clean these
+		// Clean these.
 		$asset->priority  = absint( $asset->priority );
 		$asset->in_footer = (bool) $asset->in_footer;
 		$asset->media     = esc_attr( $asset->media );
@@ -578,9 +599,9 @@ class Assets {
 	 *
 	 * @since 0.5.1
 	 *
-	 * @param stdClass $asset Argument that set that asset.
+	 * @param \stdClass $asset Argument that set that asset.
 	 *
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	public function parse_argument_localize( \stdClass $asset ) {
 		if ( empty( $asset->localize ) ) {

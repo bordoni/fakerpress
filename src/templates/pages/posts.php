@@ -1,4 +1,12 @@
 <?php
+/**
+ * Admin page template for the posts screen.
+ *
+ * Prints the mount point the React admin app renders the posts screen into, plus a notice when JavaScript is off.
+ *
+ * @package FakerPress
+ */
+
 namespace FakerPress;
 
 use FakerPress\Admin\View\Abstract_View;

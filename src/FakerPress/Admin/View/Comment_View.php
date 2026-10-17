@@ -1,4 +1,9 @@
 <?php
+/**
+ * Admin view for the comments generator page.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Admin\View;
 
@@ -9,7 +14,7 @@ use function FakerPress\get_request_var;
 use function FakerPress\make;
 
 /**
- * Class Post_View
+ * Admin view for the comments generator page: React mount point plus the legacy form handler.
  *
  * @since 0.6.4
  *
@@ -71,9 +76,9 @@ class Comment_View extends Abstract_View {
 	 *
 	 * @since 0.6.0
 	 *
-	 * @param int $id ID of the post
+	 * @param int $id ID of the comment.
 	 *
-	 * @return string
+	 * @return string Link to the comment edit screen, labelled with the ID.
 	 */
 	public function format_link( $id ) {
 		return '<a href="' . esc_url( get_edit_comment_link( $id ) ) . '">' . absint( $id ) . '</a>';
@@ -88,7 +93,7 @@ class Comment_View extends Abstract_View {
 			return;
 		}
 
-		// After this point we are safe to say that we have a good POST request
+		// After this point we are safe to say that we have a good POST request.
 		$results = (array) make( Comment::class )->parse_request( null, get_request_var( Plugin::$slug, [] ) );
 
 		if ( ! empty( $results ) ) {
