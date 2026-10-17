@@ -47,6 +47,10 @@ interface PostsFormData {
  * Defaults are added non-destructively: a default whose meta `name` already
  * exists in `current` is skipped, and existing rules are never removed or
  * overwritten. Returns the same array reference when nothing is added.
+ *
+ * @param current   Meta rules currently in the form.
+ * @param postTypes Selected post types.
+ * @param byType    Default meta rules keyed by post type.
  */
 function mergeDefaultMeta(
 	current: MetaRule[],
@@ -309,7 +313,7 @@ export default function PostsPage() {
 								onChange={ field.onChange }
 								options={ postTypeOptions }
 								placeholder={ __(
-									'Select post types...',
+									'Select post types…',
 									'fakerpress'
 								) }
 							/>
@@ -334,7 +338,7 @@ export default function PostsPage() {
 									field.onChange( vals.map( Number ) )
 								}
 								placeholder={ __(
-									'Search for posts...',
+									'Search for posts…',
 									'fakerpress'
 								) }
 								onSearch={ parentSearch.search }
@@ -361,7 +365,7 @@ export default function PostsPage() {
 								onChange={ field.onChange }
 								options={ commentStatusOptions }
 								placeholder={ __(
-									'Select comment status...',
+									'Select comment status…',
 									'fakerpress'
 								) }
 							/>
@@ -386,7 +390,7 @@ export default function PostsPage() {
 									field.onChange( vals.map( Number ) )
 								}
 								placeholder={ __(
-									'Search for authors...',
+									'Search for authors…',
 									'fakerpress'
 								) }
 								onSearch={ authorSearch.search }
@@ -471,7 +475,7 @@ export default function PostsPage() {
 									onChange={ field.onChange }
 									options={ htmlTagOptions }
 									placeholder={ __(
-										'Select HTML tags...',
+										'Select HTML tags…',
 										'fakerpress'
 									) }
 									allowCreate
@@ -498,7 +502,7 @@ export default function PostsPage() {
 									onChange={ field.onChange }
 									options={ imageProviderOptions }
 									placeholder={ __(
-										'Select image providers...',
+										'Select image providers…',
 										'fakerpress'
 									) }
 								/>

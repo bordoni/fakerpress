@@ -139,22 +139,33 @@ function Calendar( {
 				...classNames,
 			} }
 			components={ {
-				Root: ( { className, rootRef, ...props } ) => {
+				Root: ( {
+					className: rootClassName,
+					rootRef,
+					...rootProps
+				} ) => {
 					return (
 						<div
 							data-slot="calendar"
 							ref={ rootRef }
-							className={ cn( className ) }
-							{ ...props }
+							className={ cn( rootClassName ) }
+							{ ...rootProps }
 						/>
 					);
 				},
-				Chevron: ( { className, orientation, ...props } ) => {
+				Chevron: ( {
+					className: chevronClassName,
+					orientation,
+					...chevronProps
+				} ) => {
 					if ( orientation === 'left' ) {
 						return (
 							<ChevronLeftIcon
-								className={ cn( 'fp:size-4', className ) }
-								{ ...props }
+								className={ cn(
+									'fp:size-4',
+									chevronClassName
+								) }
+								{ ...chevronProps }
 							/>
 						);
 					}
@@ -162,23 +173,26 @@ function Calendar( {
 					if ( orientation === 'right' ) {
 						return (
 							<ChevronRightIcon
-								className={ cn( 'fp:size-4', className ) }
-								{ ...props }
+								className={ cn(
+									'fp:size-4',
+									chevronClassName
+								) }
+								{ ...chevronProps }
 							/>
 						);
 					}
 
 					return (
 						<ChevronDownIcon
-							className={ cn( 'fp:size-4', className ) }
-							{ ...props }
+							className={ cn( 'fp:size-4', chevronClassName ) }
+							{ ...chevronProps }
 						/>
 					);
 				},
 				DayButton: CalendarDayButton,
-				WeekNumber: ( { children, ...props } ) => {
+				WeekNumber: ( { children, ...weekNumberProps } ) => {
 					return (
-						<td { ...props }>
+						<td { ...weekNumberProps }>
 							<div className="fp:flex fp:size-(--cell-size) fp:items-center fp:justify-center fp:text-center">
 								{ children }
 							</div>
@@ -202,7 +216,9 @@ function CalendarDayButton( {
 
 	const ref = React.useRef< HTMLButtonElement >( null );
 	React.useEffect( () => {
-		if ( modifiers.focused ) ref.current?.focus();
+		if ( modifiers.focused ) {
+			ref.current?.focus();
+		}
 	}, [ modifiers.focused ] );
 
 	return (

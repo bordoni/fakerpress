@@ -149,7 +149,7 @@ export default function TermsPage() {
 								onChange={ field.onChange }
 								options={ taxonomyOptions }
 								placeholder={ __(
-									'Select taxonomies...',
+									'Select taxonomies…',
 									'fakerpress'
 								) }
 							/>

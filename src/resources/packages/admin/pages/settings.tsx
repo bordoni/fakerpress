@@ -146,7 +146,7 @@ export default function SettingsPage() {
 								disabled={ isSubmitting }
 							>
 								{ isSubmitting
-									? __( 'Deleting...', 'fakerpress' )
+									? __( 'Deleting…', 'fakerpress' )
 									: __( 'Delete All Data', 'fakerpress' ) }
 							</Button>
 						</DialogFooter>
