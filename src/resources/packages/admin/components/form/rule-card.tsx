@@ -12,8 +12,16 @@ interface RuleSectionProps {
 /**
  * A rules section: the grey heading band and italic description used by the
  * stable generator's Taxonomy and Meta Field Rules, followed by its rule cards.
+ * @param root0
+ * @param root0.title
+ * @param root0.description
+ * @param root0.children
  */
-export function RuleSection( { title, description, children }: RuleSectionProps ) {
+export function RuleSection( {
+	title,
+	description,
+	children,
+}: RuleSectionProps ) {
 	return (
 		<div className="fp:py-[15px]">
 			<h3 className="fp:-ml-[22px] fp:mb-2.5 fp:bg-[#f9f9f9] fp:py-1.5 fp:pl-[22px] fp:text-[1.3em] fp:font-semibold fp:leading-7 fp:text-[#1d2327]">
@@ -46,8 +54,20 @@ interface RuleCardProps {
  * gutter with the rule number on the left, label-left field rows in the
  * middle, and stacked remove/add buttons in a grey gutter on the right.
  * Consecutive cards share a border so a list of rules reads as one block.
+ * @param root0
+ * @param root0.index
+ * @param root0.onRemove
+ * @param root0.onAdd
+ * @param root0.removeDisabled
+ * @param root0.children
  */
-export function RuleCard( { index, onRemove, onAdd, removeDisabled = false, children }: RuleCardProps ) {
+export function RuleCard( {
+	index,
+	onRemove,
+	onAdd,
+	removeDisabled = false,
+	children,
+}: RuleCardProps ) {
 	return (
 		<div
 			className={ cn(
@@ -68,7 +88,9 @@ export function RuleCard( { index, onRemove, onAdd, removeDisabled = false, chil
 						{ index + 1 }
 					</button>
 				</div>
-				<div className="fp:min-w-0 fp:flex-1 fp:bg-white fp:py-3">{ children }</div>
+				<div className="fp:min-w-0 fp:flex-1 fp:bg-white fp:py-3">
+					{ children }
+				</div>
 				<div className="fp:flex fp:w-[37px] fp:shrink-0 fp:flex-col fp:gap-0.5 fp:bg-[#f4f4f4] fp:pt-1">
 					<button
 						type="button"
@@ -106,18 +128,24 @@ interface RuleFieldProps {
 /**
  * A single labelled row inside a rule: label on the left, control on the
  * right, with an optional italic description beneath the control.
+ * @param root0
+ * @param root0.label
+ * @param root0.description
+ * @param root0.children
  */
 export function RuleField( { label, description, children }: RuleFieldProps ) {
 	return (
 		<div className="fp:flex fp:flex-col fp:py-2 fp:sm:flex-row">
 			<div className="fp:shrink-0 fp:pr-2 fp:pl-5 fp:sm:w-[139px]">
-				<label className="fp:mt-[5px] fp:inline-block fp:text-sm fp:leading-[18.2px] fp:text-[#3c434a]">
+				<span className="fp:mt-[5px] fp:inline-block fp:text-sm fp:leading-[18.2px] fp:text-[#3c434a]">
 					{ label }
-				</label>
+				</span>
 			</div>
 			<div className="fp:min-w-0 fp:flex-1 fp:px-2 fp:max-sm:pl-5">
 				{ children }
-				{ description && <RuleDescription>{ description }</RuleDescription> }
+				{ description && (
+					<RuleDescription>{ description }</RuleDescription>
+				) }
 			</div>
 		</div>
 	);
@@ -125,6 +153,8 @@ export function RuleField( { label, description, children }: RuleFieldProps ) {
 
 /**
  * Small italic helper text, as used under rule controls.
+ * @param root0
+ * @param root0.children
  */
 export function RuleDescription( { children }: { children: ReactNode } ) {
 	return (
@@ -145,13 +175,23 @@ interface RuleConfigItemProps {
 /**
  * One control inside a meta rule's "Configuration" row, with the small grey
  * inline label the stable generator uses (e.g. "Weight", "Stored Data").
+ * @param root0
+ * @param root0.label
+ * @param root0.labelBelow
+ * @param root0.children
  */
-export function RuleConfigItem( { label, labelBelow = false, children }: RuleConfigItemProps ) {
+export function RuleConfigItem( {
+	label,
+	labelBelow = false,
+	children,
+}: RuleConfigItemProps ) {
 	return (
 		<div
 			className={ cn(
 				'fp:flex fp:gap-x-2 fp:not-first:mt-2',
-				labelBelow ? 'fp:flex-col fp:items-start' : 'fp:flex-wrap fp:items-center'
+				labelBelow
+					? 'fp:flex-col fp:items-start'
+					: 'fp:flex-wrap fp:items-center'
 			) }
 		>
 			{ children }

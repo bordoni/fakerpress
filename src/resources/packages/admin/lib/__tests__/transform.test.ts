@@ -16,7 +16,10 @@ const usersForm = ( meta: MetaRule[] ) => ( {
 	meta,
 } );
 
-const postsForm = ( taxonomy_rules: TaxonomyRule[], meta: MetaRule[] = [] ) => ( {
+const postsForm = (
+	taxonomyRules: TaxonomyRule[],
+	meta: MetaRule[] = []
+) => ( {
 	qty: { min: 1, max: 1 },
 	date: { preset: 'today', start: '2026-10-17', end: '2026-10-17' },
 	post_type: [ 'post' ],
@@ -28,7 +31,7 @@ const postsForm = ( taxonomy_rules: TaxonomyRule[], meta: MetaRule[] = [] ) => (
 	html_tags: [],
 	image_providers: [],
 	excerpt_size: { min: 1, max: 3 },
-	taxonomy_rules,
+	taxonomy_rules: taxonomyRules,
 	meta,
 } );
 
@@ -42,11 +45,17 @@ describe( 'transform', () => {
 			] )
 		);
 
-		expect( result.meta ).toEqual( [ { type: 'email', name: 'contact', weight: 90 } ] );
+		expect( result.meta ).toEqual( [
+			{ type: 'email', name: 'contact', weight: 90 },
+		] );
 	} );
 
 	it( 'sends no meta when every rule is blank', () => {
-		expect( transformUsersForm( usersForm( [ { type: '', name: '', weight: 90, config: {} } ] ) ).meta ).toBeUndefined();
+		expect(
+			transformUsersForm(
+				usersForm( [ { type: '', name: '', weight: 90, config: {} } ] )
+			).meta
+		).toBeUndefined();
 	} );
 
 	it( 'orders date config as the handler expects: interval, format, weight', () => {
@@ -56,40 +65,96 @@ describe( 'transform', () => {
 					type: 'date',
 					name: 'event_date',
 					weight: 80,
-					config: { format: 'Y-m-d', interval: { name: 'today', min: '2026-10-17', max: '2026-10-17' } },
+					config: {
+						format: 'Y-m-d',
+						interval: {
+							name: 'today',
+							min: '2026-10-17',
+							max: '2026-10-17',
+						},
+					},
 				},
 			] )
 		);
 
 		const [ rule ] = result.meta as Record< string, unknown >[];
-		expect( Object.keys( rule ) ).toEqual( [ 'type', 'name', 'interval', 'format', 'weight' ] );
-		expect( rule.interval ).toEqual( { name: 'today', min: '2026-10-17', max: '2026-10-17' } );
+		expect( Object.keys( rule ) ).toEqual( [
+			'type',
+			'name',
+			'interval',
+			'format',
+			'weight',
+		] );
+		expect( rule.interval ).toEqual( {
+			name: 'today',
+			min: '2026-10-17',
+			max: '2026-10-17',
+		} );
 	} );
 
 	it( 'keeps attachment weight between providers and sizes', () => {
 		const result = transformUsersForm(
 			usersForm( [
-				{ type: 'attachment', name: '_thumbnail_id', weight: 75, config: { providers: 'placeholder', store: 'id' } },
+				{
+					type: 'attachment',
+					name: '_thumbnail_id',
+					weight: 75,
+					config: { providers: 'placeholder', store: 'id' },
+				},
 			] )
 		);
 
 		const [ rule ] = result.meta as Record< string, unknown >[];
-		expect( Object.keys( rule ) ).toEqual( [ 'type', 'name', 'store', 'providers', 'weight', 'width', 'height' ] );
+		expect( Object.keys( rule ) ).toEqual( [
+			'type',
+			'name',
+			'store',
+			'providers',
+			'weight',
+			'width',
+			'height',
+		] );
 	} );
 
 	it( 'drops taxonomy rules without taxonomies', () => {
 		const result = transformPostsForm(
 			postsForm( [
-				{ taxonomies: [], terms: [], rate: 85, qty: { min: 1, max: 4 } },
-				{ taxonomies: [ 'category' ], terms: [ 3 ], rate: 50, qty: { min: 2, max: undefined } },
+				{
+					taxonomies: [],
+					terms: [],
+					rate: 85,
+					qty: { min: 1, max: 4 },
+				},
+				{
+					taxonomies: [ 'category' ],
+					terms: [ 3 ],
+					rate: 50,
+					qty: { min: 2, max: undefined },
+				},
 			] )
 		);
 
-		expect( result.taxonomy ).toEqual( [ { taxonomies: [ 'category' ], terms: [ 3 ], rate: 50, qty: [ 2, 2 ] } ] );
+		expect( result.taxonomy ).toEqual( [
+			{
+				taxonomies: [ 'category' ],
+				terms: [ 3 ],
+				rate: 50,
+				qty: [ 2, 2 ],
+			},
+		] );
 	} );
 
 	it( 'sends no taxonomy when every rule is blank', () => {
-		const result = transformPostsForm( postsForm( [ { taxonomies: [], terms: [], rate: 85, qty: { min: 1, max: 4 } } ] ) );
+		const result = transformPostsForm(
+			postsForm( [
+				{
+					taxonomies: [],
+					terms: [],
+					rate: 85,
+					qty: { min: 1, max: 4 },
+				},
+			] )
+		);
 
 		expect( result.taxonomy ).toBeUndefined();
 	} );
@@ -147,8 +212,18 @@ describe( 'transform', () => {
 
 		it( 'terms', () => {
 			expect(
-				transformTermsForm( { qty: { min: 2, max: undefined }, size: { min: 1, max: 3 }, taxonomies: [ 'category', 'post_tag' ], meta: [] } )
-			).toEqual( { qty: { min: 2, max: 2 }, size: [ 1, 3 ], taxonomies: 'category,post_tag', meta: undefined } );
+				transformTermsForm( {
+					qty: { min: 2, max: undefined },
+					size: { min: 1, max: 3 },
+					taxonomies: [ 'category', 'post_tag' ],
+					meta: [],
+				} )
+			).toEqual( {
+				qty: { min: 2, max: 2 },
+				size: [ 1, 3 ],
+				taxonomies: 'category,post_tag',
+				meta: undefined,
+			} );
 		} );
 
 		it( 'comments', () => {
@@ -179,7 +254,11 @@ describe( 'transform', () => {
 			expect(
 				transformAttachmentsForm( {
 					qty: { min: 3, max: 12 },
-					date: { preset: 'today', start: '2026-10-17', end: '2026-10-17' },
+					date: {
+						preset: 'today',
+						start: '2026-10-17',
+						end: '2026-10-17',
+					},
 					provider: 'placeholder',
 					width: { min: 200, max: 1200 },
 					height: { min: undefined, max: undefined },

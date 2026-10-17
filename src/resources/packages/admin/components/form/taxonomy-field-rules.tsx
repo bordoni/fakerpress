@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Input } from '../ui/input';
 import { ComboboxMulti, type ComboboxOption } from './combobox-multi';
 import { RangeInput } from './range-input';
@@ -16,7 +16,10 @@ export const EMPTY_TAXONOMY_RULE: TaxonomyRule = {
 	qty: { min: 1, max: 4 },
 };
 
-/** Whether a rule has nothing chosen yet (so clearing it would change nothing). */
+/**
+ * Whether a rule has nothing chosen yet (so clearing it would change nothing).
+ * @param rule
+ */
 export function isEmptyTaxonomyRule( rule: TaxonomyRule ): boolean {
 	return rule.taxonomies.length === 0 && rule.terms.length === 0;
 }
@@ -43,7 +46,10 @@ export function TaxonomyFieldRules( {
 	description = 'Use the fields below to configure the rules for the Taxonomy and Terms selected',
 }: TaxonomyFieldRulesProps ) {
 	// Like the stable generator, there is always at least one rule on screen.
-	const rules = value.length > 0 ? value : [ EMPTY_TAXONOMY_RULE ];
+	const rules = useMemo(
+		() => ( value.length > 0 ? value : [ EMPTY_TAXONOMY_RULE ] ),
+		[ value ]
+	);
 
 	const addRule = useCallback( () => {
 		onChange( [ ...rules, { ...EMPTY_TAXONOMY_RULE } ] );
@@ -52,7 +58,11 @@ export function TaxonomyFieldRules( {
 	// Removing the only rule clears it instead.
 	const removeRule = useCallback(
 		( index: number ) => {
-			onChange( rules.length === 1 ? [] : rules.filter( ( _, i ) => i !== index ) );
+			onChange(
+				rules.length === 1
+					? []
+					: rules.filter( ( _, i ) => i !== index )
+			);
 		},
 		[ rules, onChange ]
 	);
@@ -74,13 +84,17 @@ export function TaxonomyFieldRules( {
 					index={ index }
 					onRemove={ () => removeRule( index ) }
 					onAdd={ addRule }
-					removeDisabled={ rules.length === 1 && isEmptyTaxonomyRule( rule ) }
+					removeDisabled={
+						rules.length === 1 && isEmptyTaxonomyRule( rule )
+					}
 				>
 					<RuleField label="Taxonomies">
 						<div className="fp:max-w-[420px]">
 							<ComboboxMulti
 								value={ rule.taxonomies }
-								onChange={ ( taxonomies ) => updateRule( index, { taxonomies } ) }
+								onChange={ ( taxonomies ) =>
+									updateRule( index, { taxonomies } )
+								}
 								options={ taxonomyOptions }
 								placeholder="Select Which taxonomies"
 							/>
@@ -91,9 +105,13 @@ export function TaxonomyFieldRules( {
 						<div className="fp:max-w-[420px]">
 							<ComboboxMulti
 								value={ rule.terms.map( String ) }
-								onChange={ ( terms ) => updateRule( index, { terms } ) }
+								onChange={ ( terms ) =>
+									updateRule( index, { terms } )
+								}
 								placeholder="Which terms can be used"
-								onSearch={ ( query ) => onSearchTerms?.( query, rule.taxonomies ) }
+								onSearch={ ( query ) =>
+									onSearchTerms?.( query, rule.taxonomies )
+								}
 								searchResults={ termSearchResults }
 								isSearching={ isSearchingTerms }
 							/>
@@ -108,7 +126,9 @@ export function TaxonomyFieldRules( {
 							type="number"
 							value={ rule.rate }
 							onChange={ ( e ) =>
-								updateRule( index, { rate: Number( e.target.value ) } )
+								updateRule( index, {
+									rate: Number( e.target.value ),
+								} )
 							}
 							placeholder="Rate"
 							min={ 0 }
@@ -123,7 +143,8 @@ export function TaxonomyFieldRules( {
 							<>
 								How many terms will be selected.
 								<br />
-								E.g.: From 1 to 4 or just fill the first field for an exact number
+								E.g.: From 1 to 4 or just fill the first field
+								for an exact number
 							</>
 						}
 					>
@@ -131,10 +152,14 @@ export function TaxonomyFieldRules( {
 							minValue={ rule.qty.min }
 							maxValue={ rule.qty.max }
 							onMinChange={ ( min ) =>
-								updateRule( index, { qty: { ...rule.qty, min } } )
+								updateRule( index, {
+									qty: { ...rule.qty, min },
+								} )
 							}
 							onMaxChange={ ( max ) =>
-								updateRule( index, { qty: { ...rule.qty, max } } )
+								updateRule( index, {
+									qty: { ...rule.qty, max },
+								} )
 							}
 							min={ 0 }
 							showMax

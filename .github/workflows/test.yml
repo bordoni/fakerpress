@@ -84,6 +84,15 @@ jobs:
         env:
           COMPOSER_AUTH: '{}'
 
+      # The React admin tests (ReactAssetTest) load build/admin.asset.php, so build the assets first.
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Build JS assets
+        run: |
+          bun install --frozen-lockfile
+          bun run build
+
       - name: Install WordPress test environment
         run: |
           # Download WordPress

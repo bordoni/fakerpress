@@ -52,7 +52,9 @@ export function useGenerateModule( endpoint: string ): UseGenerateModuleReturn {
 				let hasMore = true;
 
 				while ( hasMore ) {
-					const body = await apiFetch< GenerateResponse | { data: GenerateResponse } >( {
+					const body = await apiFetch<
+						GenerateResponse | { data: GenerateResponse }
+					>( {
 						path: `/fakerpress/v1/${ endpoint }/generate`,
 						method: 'POST',
 						data: {
@@ -62,7 +64,10 @@ export function useGenerateModule( endpoint: string ): UseGenerateModuleReturn {
 						},
 					} );
 					// The endpoints wrap the batch in `{ success, data, message }`.
-					const response = 'data' in body && body.data ? body.data : ( body as GenerateResponse );
+					const response =
+						'data' in body && body.data
+							? body.data
+							: ( body as GenerateResponse );
 
 					totalGenerated += response.generated ?? 0;
 					totalTime += response.time ?? 0;

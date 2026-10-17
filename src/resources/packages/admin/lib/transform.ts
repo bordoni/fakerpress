@@ -15,6 +15,7 @@ import type { RangeValue, DateRange, MetaRule, TaxonomyRule } from './types';
 
 /**
  * Convert a quantity range to the `qty` object the batching layer reads.
+ * @param range
  */
 function qtyToParam( range: RangeValue ): { min: number; max: number } {
 	const min = range.min ?? 1;
@@ -23,6 +24,8 @@ function qtyToParam( range: RangeValue ): { min: number; max: number } {
 
 /**
  * Convert a `{ min, max }` range to the `[ min, max ]` pair the modules read.
+ * @param range
+ * @param fallback
  */
 function rangeToPair( range: RangeValue, fallback = 1 ): [ number, number ] {
 	const min = range.min ?? fallback;
@@ -31,6 +34,7 @@ function rangeToPair( range: RangeValue, fallback = 1 ): [ number, number ] {
 
 /**
  * Join a list into the comma-separated string the modules explode.
+ * @param values
  */
 function list( values: ( string | number )[] | undefined ): string {
 	return ( values ?? [] ).map( String ).join( ',' );
@@ -38,8 +42,11 @@ function list( values: ( string | number )[] | undefined ): string {
 
 /**
  * Convert a date range to the `interval_date` param the modules read.
+ * @param date
  */
-function dateToParams( date: DateRange ): { interval_date?: { min?: string; max?: string } } {
+function dateToParams( date: DateRange ): {
+	interval_date?: { min?: string; max?: string };
+} {
 	if ( ! date.start && ! date.end ) {
 		return {};
 	}
@@ -79,6 +86,8 @@ const META_CONFIG_ORDER: Record< string, string[] > = {
 
 /**
  * Re-order a rule's config object into the canonical handler argument order.
+ * @param type
+ * @param config
  */
 function orderedConfig(
 	type: string,
@@ -105,19 +114,29 @@ function orderedConfig(
 
 /**
  * Convert meta rules to API format.
+ * @param meta
  */
-function metaToParam( meta: MetaRule[] ): Record< string, unknown >[] | undefined {
+function metaToParam(
+	meta: MetaRule[]
+): Record< string, unknown >[] | undefined {
 	// The rules UI always shows at least one rule, so blank ones (no type or no
 	// name yet) are expected here; the backend would skip them anyway.
-	const rules = ( meta ?? [] ).filter( ( rule ) => rule.type && rule.name.trim() );
+	const rules = ( meta ?? [] ).filter(
+		( rule ) => rule.type && rule.name.trim()
+	);
 	if ( rules.length === 0 ) {
 		return undefined;
 	}
 	return rules.map( ( rule ) => {
 		const config = orderedConfig( rule.type, rule.config );
-		const param: Record< string, unknown > = { type: rule.type, name: rule.name.trim() };
+		const param: Record< string, unknown > = {
+			type: rule.type,
+			name: rule.name.trim(),
+		};
 		const weight =
-			rule.weight !== undefined && rule.weight !== null ? rule.weight : undefined;
+			rule.weight !== undefined && rule.weight !== null
+				? rule.weight
+				: undefined;
 
 		// Attachment is the only handler where weight is NOT the final argument:
 		// meta_type_attachment( store, providers, weight, width, height ). Width and
@@ -143,7 +162,11 @@ function metaToParam( meta: MetaRule[] ): Record< string, unknown >[] | undefine
 /**
  * Transform Terms form data for the REST API.
  *
- * @param data Terms form values.
+ * @param data            Terms form values.
+ * @param data.qty
+ * @param data.size
+ * @param data.taxonomies
+ * @param data.meta
  */
 export function transformTermsForm( data: {
 	qty: RangeValue;
@@ -162,7 +185,13 @@ export function transformTermsForm( data: {
 /**
  * Transform Users form data for the REST API.
  *
- * @param data Users form values.
+ * @param data                  Users form values.
+ * @param data.qty
+ * @param data.roles
+ * @param data.description_size
+ * @param data.use_html
+ * @param data.html_tags
+ * @param data.meta
  */
 export function transformUsersForm( data: {
 	qty: RangeValue;
@@ -185,7 +214,15 @@ export function transformUsersForm( data: {
 /**
  * Transform Comments form data for the REST API.
  *
- * @param data Comments form values.
+ * @param data              Comments form values.
+ * @param data.type
+ * @param data.post_type
+ * @param data.qty
+ * @param data.date
+ * @param data.content_size
+ * @param data.use_html
+ * @param data.html_tags
+ * @param data.meta
  */
 export function transformCommentsForm( data: {
 	type: string[];
@@ -212,7 +249,19 @@ export function transformCommentsForm( data: {
 /**
  * Transform Attachments form data for the REST API.
  *
- * @param data Attachments form values.
+ * @param data              Attachments form values.
+ * @param data.qty
+ * @param data.date
+ * @param data.provider
+ * @param data.width
+ * @param data.height
+ * @param data.aspect_ratio
+ * @param data.parents
+ * @param data.author
+ * @param data.alt_text
+ * @param data.caption
+ * @param data.description
+ * @param data.meta
  */
 export function transformAttachmentsForm( data: {
 	qty: RangeValue;
@@ -229,7 +278,8 @@ export function transformAttachmentsForm( data: {
 	meta: MetaRule[];
 } ): Record< string, unknown > {
 	const [ widthMin, widthMax ] = rangeToPair( data.width, 200 );
-	const hasHeight = data.height.min !== undefined || data.height.max !== undefined;
+	const hasHeight =
+		data.height.min !== undefined || data.height.max !== undefined;
 	const [ heightMin, heightMax ] = rangeToPair( data.height, 0 );
 	return {
 		qty: qtyToParam( data.qty ),
@@ -250,7 +300,20 @@ export function transformAttachmentsForm( data: {
 /**
  * Transform Posts form data for the REST API.
  *
- * @param data Posts form values.
+ * @param data                 Posts form values.
+ * @param data.qty
+ * @param data.date
+ * @param data.post_type
+ * @param data.parents
+ * @param data.comment_status
+ * @param data.authors
+ * @param data.use_html
+ * @param data.content_size
+ * @param data.html_tags
+ * @param data.image_providers
+ * @param data.excerpt_size
+ * @param data.taxonomy_rules
+ * @param data.meta
  */
 export function transformPostsForm( data: {
 	qty: RangeValue;
