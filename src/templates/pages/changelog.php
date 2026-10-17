@@ -1,4 +1,12 @@
 <?php
+/**
+ * Admin page template for the changelog screen.
+ *
+ * Lists the changelog entries from the generated readme data, or only the one passed in the `version` query argument.
+ *
+ * @package FakerPress
+ */
+
 use function FakerPress\get_request_var;
 
 $only_version = get_request_var( 'version', null );
