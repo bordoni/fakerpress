@@ -17,7 +17,7 @@ namespace FakerPress;
  *
  * @return array Full array with the key set to the specified value.
  */
-function set( array $array, $key, $value ) {
+function set( array $array, $key, $value ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.arrayFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 	// Convert strings and such to array.
 	$key = (array) $key;
 
@@ -67,7 +67,7 @@ function set( array $array, $key, $value ) {
  *
  * @return mixed The value of the specified index or the default if not found.
  */
-function get( $variable, $indexes, $default = null ) {
+function get( $variable, $indexes, $default = null ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 	if ( is_object( $variable ) ) {
 		$variable = (array) $variable;
 	}
@@ -103,7 +103,7 @@ function get( $variable, $indexes, $default = null ) {
  *
  * @return mixed The value of the specified index or the default if not found.
  */
-function get_in_any( array $variables, $indexes, $default = null ) {
+function get_in_any( array $variables, $indexes, $default = null ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 	foreach ( $variables as $variable ) {
 		$found = get( $variable, $indexes, '__not_found__' );
 		if ( '__not_found__' !== $found ) {
@@ -132,8 +132,8 @@ function get_in_any( array $variables, $indexes, $default = null ) {
  *
  * @return mixed
  */
-function get_request_var( $indexes, $default = null ) {
-	return get_in_any( [ $_GET, $_POST, $_REQUEST ], $indexes, $default );
+function get_request_var( $indexes, $default = null ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
+	return get_in_any( [ $_GET, $_POST, $_REQUEST ], $indexes, $default ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- Generic request reader, callers verify the nonce or capability before acting on the value.
 }
 
 /**
