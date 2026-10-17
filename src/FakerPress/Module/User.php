@@ -4,6 +4,7 @@ namespace FakerPress\Module;
 
 use function FakerPress\get;
 use function FakerPress\make;
+use function FakerPress\is_truthy;
 use FakerPress;
 use WP_Error;
 use WP_User;
@@ -136,8 +137,9 @@ class User extends Abstract_Module {
 			return new WP_Error( 'fakerpress_zero_users', __( 'Zero is not a good number of users to fake...', 'fakerpress' ) );
 		}
 
+		// use_html: the legacy form posts 'on'; the REST API and the React admin send a boolean.
 		$description_size      = get( $request, 'description_size', [ 1, 5 ] );
-		$description_use_html  = get( $request, 'use_html', 'off' ) === 'on';
+		$description_use_html  = is_truthy( get( $request, 'use_html', 'off' ) );
 		$description_html_tags = array_map( 'trim', explode( ',', get( $request, 'html_tags', '' ) ) );
 
 		if ( ! function_exists( 'get_editable_roles' ) ) {

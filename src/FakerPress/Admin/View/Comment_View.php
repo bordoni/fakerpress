@@ -45,6 +45,28 @@ class Comment_View extends Abstract_View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	protected function get_page_data(): array {
+		$post_types = get_post_types( [ 'public' => true ], 'objects' );
+		unset( $post_types['attachment'] );
+
+		return [
+			'post_types'    => array_map(
+				static function ( $pt ) {
+					return [
+						'name'  => $pt->name,
+						'label' => $pt->label,
+					];
+				},
+				$post_types 
+			),
+			'comment_types' => [ 'default' ],
+			'html_tags'     => [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'div', 'p', 'blockquote' ],
+		];
+	}
+
+	/**
 	 * Format the Administration edit link for each comment instance.
 	 *
 	 * @since 0.6.0

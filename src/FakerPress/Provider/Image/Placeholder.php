@@ -38,7 +38,8 @@ class Placeholder extends Base {
 			$height = call_user_func_array( [ $this->generator, 'numberBetween' ], $height );
 		}
 
-		return "https://placehold.co/{$width}x{$height}/";
+		// Ask for a PNG: without an extension placehold.co serves SVG, which attachments reject.
+		return "https://placehold.co/{$width}x{$height}.png";
 	}
 
 	/**

@@ -140,7 +140,12 @@ class Meta extends Abstract_Module {
 		$faker = $this->get_faker();
 
 		if ( is_callable( [ $faker, 'meta_type_' . $type ] ) ) {
-			$this->data['meta_value'] = call_user_func_array( [ $faker, 'meta_type_' . $type ], $args );
+			try {
+				$this->data['meta_value'] = call_user_func_array( [ $faker, 'meta_type_' . $type ], $args );
+			} catch ( \Throwable $e ) {
+				// Not enough configuration to generate this meta value; skip it without halting generation.
+				return $this;
+			}
 		} elseif ( count( $args ) === 1 ) {
 			$this->data['meta_value'] = reset( $args );
 		}

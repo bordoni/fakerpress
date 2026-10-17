@@ -3,6 +3,8 @@
 namespace FakerPress\Module;
 
 use FakerPress\Contracts\Service_Provider;
+use function FakerPress\singleton;
+use function FakerPress\make;
 
 /**
  * Class Factory
@@ -29,7 +31,7 @@ class Factory extends Service_Provider {
 	 * @return Abstract_Module[]
 	 */
 	public function get_all(): array {
-		if ( empty( $this->views ) ) {
+		if ( empty( $this->modules ) ) {
 			$modules_classes = [
 				Attachment::class,
 				Comment::class,
@@ -40,8 +42,8 @@ class Factory extends Service_Provider {
 			];
 
 			foreach ( $modules_classes as $module_class ) {
-				$this->container->singleton( $module_class, $module_class, [ 'hook' ] );
-				$this->modules[] = $this->container->make( $module_class );
+				singleton( $module_class, $module_class, [ 'hook' ] );
+				$this->modules[] = make( $module_class );
 			}
 		}
 
@@ -65,18 +67,18 @@ class Factory extends Service_Provider {
 	 * @return Abstract_Module|null
 	 */
 	public function get( string $slug ) {
-		$views = array_filter(
+		$modules = array_filter(
 			$this->get_all(),
 			static function ( $module ) use ( $slug ) {
 				return $module::get_slug() === $slug;
-			} 
+			}
 		);
 
-		if ( empty( $views ) ) {
+		if ( empty( $modules ) ) {
 			return null;
 		}
 
-		return reset( $views );
+		return reset( $modules );
 	}
 
 	/**
@@ -86,7 +88,7 @@ class Factory extends Service_Provider {
 	 */
 	public function register() {
 		// Register the provider as a singleton.
-		$this->container->singleton( static::class, $this );
+		singleton( static::class, $this );
 
 		// Initializes all modules.
 		$this->get_all();

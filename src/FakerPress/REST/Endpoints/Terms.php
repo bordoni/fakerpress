@@ -65,7 +65,122 @@ class Terms extends Abstract_Endpoint {
 				'summary'             => 'Generate fake terms',
 				'description'         => 'Generates fake taxonomy terms with customizable parameters.',
 			],
+			'/search'   => [
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'search_terms' ],
+				'permission_callback' => [ $this, 'check_term_search_permission' ],
+				'args'                => [
+					'search'     => [
+						'description'       => __( 'Text to search terms by.', 'fakerpress' ),
+						'type'              => 'string',
+						'default'           => '',
+						'sanitize_callback' => 'sanitize_text_field',
+					],
+					'taxonomies' => [
+						'description' => __( 'Taxonomies to scope the search to.', 'fakerpress' ),
+						'type'        => 'array',
+						'items'       => [ 'type' => 'string' ],
+						'default'     => [],
+					],
+					'exclude'    => [
+						'description' => __( 'Term IDs to exclude from the results.', 'fakerpress' ),
+						'type'        => 'array',
+						'items'       => [ 'type' => 'integer' ],
+						'default'     => [],
+					],
+					'page'       => [
+						'description' => __( 'Page of results to return.', 'fakerpress' ),
+						'type'        => 'integer',
+						'default'     => 1,
+						'minimum'     => 1,
+					],
+					'per_page'   => [
+						'description' => __( 'Number of results to return per page.', 'fakerpress' ),
+						'type'        => 'integer',
+						'default'     => 10,
+						'minimum'     => 1,
+					],
+				],
+				'summary'             => 'Search taxonomy terms',
+				'description'         => 'Searches existing taxonomy terms for the term autocomplete in the post generator.',
+			],
 		];
+	}
+
+	/**
+	 * Search existing taxonomy terms.
+	 *
+	 * Powers the term autocomplete used by the Taxonomy Field Rules in the post generator.
+	 *
+	 * @since 0.9.1
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function search_terms( $request ) {
+		$search     = (string) $request->get_param( 'search' );
+		$taxonomies = array_values( array_filter( array_map( 'sanitize_key', (array) $request->get_param( 'taxonomies' ) ) ) );
+		$exclude    = array_values( array_filter( array_map( 'absint', (array) $request->get_param( 'exclude' ) ) ) );
+		$page       = max( 1, (int) $request->get_param( 'page' ) );
+		$per_page   = max( 1, (int) $request->get_param( 'per_page' ) );
+
+		// Default to all public taxonomies when none are provided.
+		if ( empty( $taxonomies ) ) {
+			$taxonomies = get_taxonomies( [ 'public' => true ], 'names' );
+		}
+
+		$args = [
+			'taxonomy'   => $taxonomies,
+			'hide_empty' => false,
+			'number'     => $per_page,
+			'offset'     => $per_page * ( $page - 1 ),
+			'search'     => $search,
+		];
+
+		if ( ! empty( $exclude ) ) {
+			$args['exclude'] = $exclude;
+		}
+
+		$terms = get_terms( $args );
+
+		if ( is_wp_error( $terms ) ) {
+			return $this->error_response( $terms->get_error_message(), 'term_search_failed', 400 );
+		}
+
+		$results = array_map(
+			static function ( $term ) {
+				return [
+					'id'       => $term->term_id,
+					'value'    => $term->term_id,
+					'name'     => $term->name,
+					'taxonomy' => $term->taxonomy,
+				];
+			},
+			$terms
+		);
+
+		return $this->success_response( [ 'results' => $results ] );
+	}
+
+	/**
+	 * Permission check for the term search route.
+	 *
+	 * Mirrors the post generator page capability so post authors are able to search
+	 * for terms, rather than the broader `manage_categories` used for term generation.
+	 *
+	 * @since 0.9.1
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function check_term_search_permission( $request ) {
+		if ( ! is_user_logged_in() ) {
+			return new \WP_Error( 'rest_not_logged_in', __( 'You must be logged in to search terms.', 'fakerpress' ), [ 'status' => 401 ] );
+		}
+
+		return current_user_can( 'publish_posts' );
 	}
 
 	/**

@@ -4,6 +4,9 @@ namespace FakerPress;
 use FakerPress\Provider\HTML;
 use FakerPress\Utils;
 
+/**
+ * @deprecated 0.9.0 Use React-based admin components instead.
+ */
 class Field {
 
 	const plugin = 'fakerpress';
