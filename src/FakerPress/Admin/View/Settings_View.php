@@ -1,4 +1,9 @@
 <?php
+/**
+ * Admin view for the settings page, including the delete-all-generated-data action.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Admin\View;
 
@@ -12,7 +17,7 @@ use function FakerPress\get_request_var;
 use function FakerPress\make;
 
 /**
- * Class Post_View
+ * Admin view for the settings page.
  *
  * @since 0.6.4
  *

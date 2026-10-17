@@ -1,4 +1,9 @@
 <?php
+/**
+ * Registry of FakerPress admin views.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Admin\View;
 
@@ -9,7 +14,7 @@ use function FakerPress\singleton;
 use function FakerPress\make;
 
 /**
- * Class Factory for Admin Views.
+ * Registers the admin views, resolves the current one from the request and fires its request hooks.
  *
  * @since 0.6.0
  *

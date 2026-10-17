@@ -1,9 +1,14 @@
 <?php
+/**
+ * Admin view shown when a FakerPress page cannot be found.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Admin\View;
 
 /**
- * Class Post_View
+ * Admin view for missing FakerPress pages.
  *
  * @since 0.6.4
  *

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Registry of FakerPress admin menu items.
+ *
+ * @package FakerPress
+ */
 
 namespace FakerPress\Admin;
 
@@ -33,17 +38,20 @@ class Menu {
 	protected static $needs_sorting = false;
 
 	/**
-	 * Creating submenus easier to be extent from outside
+	 * Registers a FakerPress menu item, so views and third parties can add pages.
+	 *
+	 * Items without a parent become top-level menus; the rest become submenus of `$parent`.
+	 * The item is added to WordPress later, by register_menus_to_wp().
 	 *
 	 * @since 0.6.0
 	 *
-	 * @param string        $slug       Translatable string for the title of the page
-	 * @param string        $title      Translatable string that will go on the menu
-	 * @param string        $label      Translatable string that will go on the menu
-	 * @param string        $capability WordPress capability that will be required to access this view
-	 * @param integer       $priority   The priority to show this submenu
+	 * @param string        $slug       Menu slug, run through sanitize_key().
+	 * @param string        $title      Translatable page title.
+	 * @param string        $label      Translatable text shown in the menu.
+	 * @param string        $capability WordPress capability required to access this view.
+	 * @param int           $priority   Sort priority, lower shows first.
 	 * @param callable|null $callback   A callback to render this menu item.
-	 * @param string|null   $parent     What is the parent menu.
+	 * @param string|null   $parent     Slug of the parent menu, null for a top-level menu.
 	 */
 	public static function add( string $slug, $title, $label, string $capability = 'manage_options', int $priority = 10, $callback = null, $parent = null ): void { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.parentFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 		$slug = sanitize_key( $slug );
@@ -77,10 +85,10 @@ class Menu {
 	 *
 	 * @since 0.6.0
 	 *
-	 * @param string $slug
-	 * @param array  $update_with
+	 * @param string $slug        Slug of the menu item to update.
+	 * @param array  $update_with Properties to merge into the menu item.
 	 *
-	 * @return bool
+	 * @return bool False when no item has that slug, true otherwise.
 	 */
 	public function update( string $slug, array $update_with ) {
 		$menu = $this->get( $slug );
@@ -117,9 +125,9 @@ class Menu {
 	 *
 	 * @since 0.6.0
 	 *
-	 * @param string $slug
+	 * @param string $slug Slug of the menu item.
 	 *
-	 * @return object|null
+	 * @return object|null The menu item, or null when no item has that slug.
 	 */
 	public function get( string $slug ) {
 		$all = $this->get_all();
@@ -153,17 +161,14 @@ class Menu {
 	}
 
 	/**
-	 * Method triggered to add the menu to WordPress administration
+	 * Adds every registered item the current user can access to the WordPress admin menu.
+	 *
+	 * Stores the page hook WordPress returns on each item, and relabels the auto-created first
+	 * FakerPress submenu item as "Settings".
 	 *
 	 * @since 0.6.0
 	 *
-	 * @uses \FakerPress\Plugin::$slug
-	 * @uses esc_attr__
-	 * @uses add_menu_page
-	 * @uses add_submenu_page
-	 * @uses current_user_can
-	 *
-	 * @return null Actions do not return
+	 * @return void
 	 */
 	public function register_menus_to_wp() {
 		foreach ( $this->get_all() as $menu ) {
@@ -211,7 +216,7 @@ class Menu {
 	 *
 	 * @since 0.6.4
 	 *
-	 * @param \WP_Screen $screen Which screen are we in?
+	 * @param \WP_Screen $screen The screen WordPress set. Unused, the screen is rebuilt from the current view's menu hook.
 	 *
 	 * @return void
 	 */
