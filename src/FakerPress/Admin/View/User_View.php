@@ -93,6 +93,7 @@ class User_View extends Abstract_View {
 		if ( ! empty( $results ) ) {
 			return Admin::add_message(
 				sprintf(
+					/* translators: 1: Number of items created, 2: Item type label (singular or plural), 3: Comma-separated links to the new items. */
 					__( 'Faked %1$d new %2$s: [ %3$s ]', 'fakerpress' ),
 					count( $results ),
 					_n( 'user', 'users', count( $results ), 'fakerpress' ),

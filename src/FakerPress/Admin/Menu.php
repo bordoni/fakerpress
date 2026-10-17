@@ -3,10 +3,10 @@
 namespace FakerPress\Admin;
 
 use FakerPress\Admin\View\Factory as View_Factory;
-use function FakerPress\make;
-
 use FakerPress\Plugin;
 use FakerPress\Admin;
+
+use function FakerPress\make;
 
 /**
  * Class Menu
@@ -45,10 +45,10 @@ class Menu {
 	 * @param callable|null $callback   A callback to render this menu item.
 	 * @param string|null   $parent     What is the parent menu.
 	 */
-	public static function add( string $slug, $title, $label, string $capability = 'manage_options', int $priority = 10, $callback = null, $parent = null ): void {
+	public static function add( string $slug, $title, $label, string $capability = 'manage_options', int $priority = 10, $callback = null, $parent = null ): void { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.parentFound -- Public API, renaming the parameter breaks callers that pass it as a named argument.
 		$slug = sanitize_key( $slug );
 
-		static::$items[ $slug ] = $menu = (object) [
+		$menu = (object) [
 			'slug'       => $slug,
 			'title'      => esc_attr( $title ),
 			'hook'       => null, // Will be set later from WP.
@@ -58,6 +58,8 @@ class Menu {
 			'callback'   => $callback, // Used to set up error page.
 			'parent'     => $parent, // Used to set up error page.
 		];
+
+		static::$items[ $slug ] = $menu;
 
 		if ( ! is_callable( $menu->callback ) ) {
 			$menu->callback = static function () use ( $menu ) {
@@ -199,7 +201,7 @@ class Menu {
 
 		// Change the Default Submenu for FakerPress menus
 		if ( ! empty( $GLOBALS['submenu'][ Plugin::$slug ] ) ) {
-			$GLOBALS['submenu'][ Plugin::$slug ][0][0] = esc_attr__( 'Settings', 'fakerpress' );
+			$GLOBALS['submenu'][ Plugin::$slug ][0][0] = esc_attr__( 'Settings', 'fakerpress' ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Relabels the auto-created first submenu item, which WordPress only exposes through this global.
 		}
 	}
 
@@ -213,7 +215,7 @@ class Menu {
 	 *
 	 * @return void
 	 */
-	public function correctly_set_current_screen( $screen ) {
+	public function correctly_set_current_screen( $screen ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- Public method called from the current_screen action with the screen argument, kept for BC.
 		$view = make( View_Factory::class )->get_current_view();
 		if ( ! $view ) {
 			return;

@@ -58,6 +58,7 @@ class Post_View extends Abstract_View {
 		$default_taxonomy_names = array_values(
 			array_intersect( [ 'category', 'post_tag' ], array_keys( $taxonomies ) )
 		);
+
 		$default_taxonomy = empty( $default_taxonomy_names )
 			? []
 			: [
@@ -169,6 +170,7 @@ class Post_View extends Abstract_View {
 		if ( ! empty( $results ) ) {
 			return Admin::add_message(
 				sprintf(
+					/* translators: 1: Number of items created, 2: Item type label (singular or plural), 3: Comma-separated links to the new items. */
 					__( 'Faked %1$d new %2$s: [ %3$s ]', 'fakerpress' ),
 					count( $results ),
 					_n( 'post', 'posts', count( $results ), 'fakerpress' ),
