@@ -181,6 +181,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 * Tweak - PHPCS skips the public hook names, the namespaced Faker formatter names and the generated readme data, each with a documented reason. [[#238](https://github.com/bordoni/fakerpress/pull/238)]
 * Fix - The text provider's sentences, paragraphs and text no longer fatal on PHP 8 (`join()` argument order); the post search verifies its nonce before reading the request; template output is escaped, and batch success messages are translatable. [[#239](https://github.com/bordoni/fakerpress/pull/239)]
 * Tweak - Document every class, method and template to the WordPress coding standards, and correct docblocks that contradicted the code. [[#240](https://github.com/bordoni/fakerpress/pull/240)]
+* Tests - CI runs the Jest suite and a TypeScript check, and lints JS and CSS in separate steps, so one failure never hides another. [[#241](https://github.com/bordoni/fakerpress/pull/241)]
 
 = 0.9.2 &mdash; 20 of July 2026 =
 
