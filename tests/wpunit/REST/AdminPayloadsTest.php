@@ -233,7 +233,7 @@ class AdminPayloadsTest extends \Codeception\TestCase\WPTestCase {
 					'roles'            => 'editor',
 					'description_size' => [ 1, 2 ],
 					'use_html'         => true,
-					'html_tags'        => 'p',
+					'html_tags'        => 'blockquote',
 					'meta'             => [ $this->email_rule ],
 					'offset'           => 0,
 				]
@@ -245,7 +245,8 @@ class AdminPayloadsTest extends \Codeception\TestCase\WPTestCase {
 		foreach ( $ids as $id ) {
 			$user = get_userdata( $id );
 			$this->assertContains( 'editor', $user->roles );
-			$this->assertMatchesRegularExpression( '/<[a-z]+[\s>]/', $user->description );
+			// WordPress runs wp_filter_kses on user bios, which keeps only inline tags such as blockquote.
+			$this->assertStringContainsString( '<blockquote', $user->description );
 			$this->assertNotFalse( is_email( get_user_meta( $id, 'fp_admin_email', true ) ) );
 		}
 
