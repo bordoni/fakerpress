@@ -4,6 +4,7 @@
  * Plugin URI:        https://fakerpress.com
  * Description:       FakerPress is a clean way to generate fake data to your WordPress installation, great for developers who need testing
  * Version:           0.9.2
+ * Requires at least: 6.6
  * Author:            Gustavo Bordoni
  * Author URI:        https://bordoni.me
  * Text Domain:       fakerpress
