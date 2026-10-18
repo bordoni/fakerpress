@@ -79,7 +79,7 @@ class WP_User extends Base {
 	 *
 	 * @since 0.1.0
 	 * @since 0.6.2 Introduced type safety.
-	 * @since TBD   Keeps generated URLs within WordPress's 100-character limit.
+	 * @since 0.10.0   Keeps generated URLs within WordPress's 100-character limit.
 	 *
 	 * @param string|null $url URL to use as is; null generates one of at most 100 characters.
 	 *

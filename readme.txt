@@ -4,7 +4,7 @@ Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 6.6
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        0.9.2
+Stable tag:        0.10.0
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -167,7 +167,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 
 == Changelog ==
 
-= 0.10.0 &mdash; TBD =
+= 0.10.0 &mdash; 18 of October 2026 =
 
 * Feature - Rebuild every FakerPress admin page (Posts, Users, Terms, Comments, Attachments and Settings) in React with Tailwind CSS v4 and shadcn/ui, on top of the REST API; the Taxonomy and Meta Field Rules keep the familiar numbered, label-left layout and every meta type, including Date. [[#187](https://github.com/bordoni/fakerpress/pull/187)]
 * Fix - Meta Field Rules on generated attachments are now generated like on every other module, instead of each rule being stored raw under a numeric meta key. [[#187](https://github.com/bordoni/fakerpress/pull/187)]
@@ -184,6 +184,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 * Tests - CI runs the Jest suite and a TypeScript check, and lints JS and CSS in separate steps, so one failure never hides another. [[#241](https://github.com/bordoni/fakerpress/pull/241)]
 * Tweak - Update the Composer dev dependencies with open security advisories (Composer, Guzzle, PSR-7, Symfony, Flysystem, PHP_CodeSniffer, PHPCSUtils and WPCS). [[#242](https://github.com/bordoni/fakerpress/pull/242)]
 * Tweak - FakerPress now requires WordPress 6.6 or later, the first version that ships the React JSX runtime the new admin loads. Older sites would load blank admin pages, so WordPress now refuses to install this update or activate the plugin there. [[#245](https://github.com/bordoni/fakerpress/pull/245)]
+* Tweak - Leave the Jest tests and mocks and the TypeScript, shadcn/ui and slic configs out of the plugin zip. [[#246](https://github.com/bordoni/fakerpress/pull/246)]
 
 = 0.9.2 &mdash; 20 of July 2026 =
 

@@ -47,3 +47,10 @@ codeception.dist.yml
 codeception.slic.yml
 phpcs.xml
 .env.testing
+
+# JS unit tests, their mocks, and dev-only tool configs (TypeScript, shadcn/ui, slic).
+__tests__/
+__mocks__/
+tsconfig.json
+components.json
+slic.json
