@@ -185,6 +185,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 * Tweak - Update the Composer dev dependencies with open security advisories (Composer, Guzzle, PSR-7, Symfony, Flysystem, PHP_CodeSniffer, PHPCSUtils and WPCS). [[#242](https://github.com/bordoni/fakerpress/pull/242)]
 * Tweak - FakerPress now requires WordPress 6.6 or later, the first version that ships the React JSX runtime the new admin loads. Older sites would load blank admin pages, so WordPress now refuses to install this update or activate the plugin there. [[#245](https://github.com/bordoni/fakerpress/pull/245)]
 * Tweak - Leave the Jest tests and mocks and the TypeScript, shadcn/ui and slic configs out of the plugin zip. [[#246](https://github.com/bordoni/fakerpress/pull/246)]
+* Tweak - Update the JavaScript dependencies within their current ranges in `bun.lock`, which covers every open Dependabot update (axios, express, lodash, node-forge, picomatch, PostCSS and more), and pin TypeScript 5 for the type check. [[#247](https://github.com/bordoni/fakerpress/pull/247)]
 
 = 0.9.2 &mdash; 20 of July 2026 =
 
