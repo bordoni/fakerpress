@@ -56,6 +56,44 @@
 }
 
 /*
+ * Motion for the generate result, which slides out from behind the
+ * Generate button. Use with fp:motion-reduce:animate-none.
+ */
+@theme {
+	--animate-result-in: result-in 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+	--animate-dialog-in: dialog-in 200ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+	@keyframes result-in {
+
+		from {
+			opacity: 0;
+			transform: translateX(-10px);
+			clip-path: inset(0 100% 0 0);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateX(0);
+			clip-path: inset(0 0 0 0);
+		}
+	}
+
+	/* Transform only: the dialog centres itself with `translate`. */
+	@keyframes dialog-in {
+
+		from {
+			opacity: 0;
+			transform: translateY(8px) scale(0.98);
+		}
+
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+}
+
+/*
  * Declare internal FakerPress layers for cascade organization.
  * Layer priority (highest → lowest within fp-* layers):
  * fp-utilities > fp-components > fp-base.

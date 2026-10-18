@@ -19,6 +19,7 @@ namespace FakerPress\REST\Traits;
  * @since 0.9.0
  */
 trait Handles_Batching {
+	use Describes_Generated_Items;
 
 	/**
 	 * Calculate the quantity to generate with batching support.
@@ -78,21 +79,28 @@ trait Handles_Batching {
 	 * Build batched response data.
 	 *
 	 * @since 0.9.0
+	 * @since 0.10.0 Adds `items` and `list_url` when the item type is given.
 	 *
-	 * @param array $results        The generation results.
-	 * @param array $batch_info     Batching information from calculate_batched_quantity.
-	 * @param array $formatted_links Formatted links for the generated items.
-	 * @param float $generation_time Time taken for generation.
+	 * @param array       $results         The generation results.
+	 * @param array       $batch_info      Batching information from calculate_batched_quantity.
+	 * @param array       $formatted_links Formatted links for the generated items.
+	 * @param float       $generation_time Time taken for generation.
+	 * @param string|null $item_type       Type of item (post, user, term, comment or attachment), to describe each one.
 	 *
 	 * @return array
 	 */
-	protected function build_batched_response_data( $results, $batch_info, $formatted_links, $generation_time ) {
+	protected function build_batched_response_data( $results, $batch_info, $formatted_links, $generation_time, $item_type = null ) {
 		$response_data = [
 			'generated' => count( $results ),
 			'ids'       => $results,
 			'links'     => $formatted_links,
 			'time'      => round( $generation_time, 3 ),
 		];
+
+		if ( null !== $item_type ) {
+			$response_data['items']    = $this->describe_generated_items( $item_type, $results );
+			$response_data['list_url'] = $this->get_generated_items_list_url( $item_type, $response_data['items'] );
+		}
 
 		// Add batching information if this is a batched request.
 		if ( $batch_info['is_capped'] || $batch_info['offset'] > 0 ) {

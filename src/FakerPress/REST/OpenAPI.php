@@ -143,6 +143,41 @@ class OpenAPI {
 						'description' => __( 'Time taken to generate items in seconds.', 'fakerpress' ),
 						'example'     => 1.23,
 					],
+					'items'     => [
+						'type'        => 'array',
+						'description' => __( 'Each generated item: title, summary, edit and view links, thumbnail, and its full data under `details`.', 'fakerpress' ),
+						'items'       => [
+							'type'       => 'object',
+							'properties' => [
+								'id'        => [ 'type' => 'integer' ],
+								'title'     => [ 'type' => 'string' ],
+								'type'      => [ 'type' => 'string' ],
+								'status'    => [ 'type' => [ 'string', 'null' ] ],
+								'date'      => [
+									'type'   => [ 'string', 'null' ],
+									'format' => 'date-time',
+								],
+								'summary'   => [
+									'type'  => 'array',
+									'items' => [
+										'type'       => 'object',
+										'properties' => [
+											'label' => [ 'type' => 'string' ],
+											'value' => [ 'type' => 'string' ],
+										],
+									],
+								],
+								'edit_url'  => [ 'type' => [ 'string', 'null' ] ],
+								'view_url'  => [ 'type' => [ 'string', 'null' ] ],
+								'thumbnail' => [ 'type' => [ 'string', 'null' ] ],
+								'details'   => [ 'type' => 'object' ],
+							],
+						],
+					],
+					'list_url'  => [
+						'type'        => [ 'string', 'null' ],
+						'description' => __( 'Admin screen listing items like the generated ones, when they share one list.', 'fakerpress' ),
+					],
 					'is_capped' => [
 						'type'        => 'boolean',
 						'description' => __( 'Whether the generation was capped due to limits (batching).', 'fakerpress' ),
