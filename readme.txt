@@ -184,6 +184,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 * Tests - CI runs the Jest suite and a TypeScript check, and lints JS and CSS in separate steps, so one failure never hides another. [[#241](https://github.com/bordoni/fakerpress/pull/241)]
 * Tweak - Update the Composer dev dependencies with open security advisories (Composer, Guzzle, PSR-7, Symfony, Flysystem, PHP_CodeSniffer, PHPCSUtils and WPCS). [[#242](https://github.com/bordoni/fakerpress/pull/242)]
 * Tweak - FakerPress now requires WordPress 6.6 or later, the first version that ships the React JSX runtime the new admin loads. Older sites would load blank admin pages, so WordPress now refuses to install this update or activate the plugin there. [[#245](https://github.com/bordoni/fakerpress/pull/245)]
+* Tweak - Leave the Jest tests and mocks and the TypeScript, shadcn/ui and slic configs out of the plugin zip. [[#246](https://github.com/bordoni/fakerpress/pull/246)]
 
 = 0.9.2 &mdash; 20 of July 2026 =
 
