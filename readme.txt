@@ -1,7 +1,7 @@
 === FakerPress ===
 Contributors:      bordoni
 Tags:              generator, dummy content, lorem ipsun, testing, developer
-Requires at least: 5.5
+Requires at least: 6.6
 Tested up to:      7.0
 Requires PHP:      8.1
 Stable tag:        0.9.2
@@ -17,7 +17,7 @@ When creating a new theme or plugin, you always need to create a custom data set
 
 The goal of FakerPress is to fill this gap, offering a solution for both developers and WordPress users.
 
-> **Note: This plugin requires PHP 8.1 or higher to be activated.**
+> **Note: This plugin requires WordPress 6.6 and PHP 8.1 or higher to be activated.**
 
 [**Checkout our GitHub Repository**](http://fakerpress.com/r/github)
 
@@ -183,6 +183,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 * Tweak - Document every class, method and template to the WordPress coding standards, and correct docblocks that contradicted the code. [[#240](https://github.com/bordoni/fakerpress/pull/240)]
 * Tests - CI runs the Jest suite and a TypeScript check, and lints JS and CSS in separate steps, so one failure never hides another. [[#241](https://github.com/bordoni/fakerpress/pull/241)]
 * Tweak - Update the Composer dev dependencies with open security advisories (Composer, Guzzle, PSR-7, Symfony, Flysystem, PHP_CodeSniffer, PHPCSUtils and WPCS). [[#242](https://github.com/bordoni/fakerpress/pull/242)]
+* Tweak - FakerPress now requires WordPress 6.6 or later, the first version that ships the React JSX runtime the new admin loads. Older sites would load blank admin pages, so WordPress now refuses to install this update or activate the plugin there. [[#245](https://github.com/bordoni/fakerpress/pull/245)]
 
 = 0.9.2 &mdash; 20 of July 2026 =
 
