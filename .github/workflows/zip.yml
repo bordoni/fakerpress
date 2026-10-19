@@ -46,8 +46,9 @@ jobs:
       - name: pup check
         run: composer -- pup check
 
-      - name: pup i18n
-        run: composer -- pup i18n
+      # Replaces `pup i18n`: pup requests every locale at once and translate.wordpress.org answers with 429.
+      - name: download translations
+        run: bun .github/scripts/i18n.ts
 
       - name: get version
         if: ${{ inputs.production }}
@@ -80,13 +81,13 @@ jobs:
           echo "Working directory: $(pwd)"
           echo "Listing all directories:"
           find . -type d -name "*pup*" -o -name "*zip*" | grep -v "node_modules"
-          
+
           echo "Searching for any ZIP files:"
           find . -name "*.zip" | sort
 
           echo "Directory structure from root:"
           ls -la
-      
+
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v7
         with:
