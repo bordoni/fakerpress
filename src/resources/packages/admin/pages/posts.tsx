@@ -7,7 +7,6 @@ import { useAsyncSearch } from '../hooks/use-async-search';
 import { useRestSearch } from '../hooks/use-rest-search';
 import { transformPostsForm } from '../lib/transform';
 import { PageLayout } from '../components/layout/page-layout';
-import { AdminNotice } from '../components/layout/admin-notice';
 import { FormField } from '../components/form/form-field';
 import { RangeInput } from '../components/form/range-input';
 import {
@@ -75,8 +74,15 @@ function mergeDefaultMeta(
 
 export default function PostsPage() {
 	const { data, ajaxNonces } = usePageConfig();
-	const { generate, isGenerating, progress, results, error, reset } =
-		useGenerateModule( 'posts' );
+	const {
+		generate,
+		isGenerating,
+		progress,
+		results,
+		error,
+		errorDetails,
+		reset,
+	} = useGenerateModule( 'posts' );
 
 	const postTypeOptions: ComboboxOption[] = useMemo( () => {
 		const postTypes = ( data.post_types || {} ) as Record<
@@ -234,23 +240,6 @@ export default function PostsPage() {
 
 	return (
 		<PageLayout title={ __( 'Generate Posts', 'fakerpress' ) }>
-			{ results && (
-				<AdminNotice
-					type="success"
-					title={ __( 'Success', 'fakerpress' ) }
-					message={ `Generated ${
-						results.generated
-					} posts in ${ results.time.toFixed( 2 ) }s.` }
-				/>
-			) }
-			{ error && (
-				<AdminNotice
-					type="error"
-					title={ __( 'Error', 'fakerpress' ) }
-					message={ error }
-				/>
-			) }
-
 			<form onSubmit={ handleSubmit( onSubmit ) }>
 				<Controller
 					name="qty"
@@ -580,6 +569,9 @@ export default function PostsPage() {
 					progress={ progress }
 					results={ results }
 					error={ error }
+					errorDetails={ errorDetails }
+					module="posts"
+					onDismiss={ reset }
 				/>
 			</form>
 		</PageLayout>

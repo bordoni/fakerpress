@@ -5,7 +5,6 @@ import { usePageConfig } from '../hooks/use-page-config';
 import { useGenerateModule } from '../hooks/use-generate-module';
 import { transformCommentsForm } from '../lib/transform';
 import { PageLayout } from '../components/layout/page-layout';
-import { AdminNotice } from '../components/layout/admin-notice';
 import { FormField } from '../components/form/form-field';
 import { RangeInput } from '../components/form/range-input';
 import {
@@ -32,8 +31,15 @@ interface CommentsFormData {
 
 export default function CommentsPage() {
 	const { data } = usePageConfig();
-	const { generate, isGenerating, progress, results, error, reset } =
-		useGenerateModule( 'comments' );
+	const {
+		generate,
+		isGenerating,
+		progress,
+		results,
+		error,
+		errorDetails,
+		reset,
+	} = useGenerateModule( 'comments' );
 
 	const commentTypeOptions: ComboboxOption[] = useMemo( () => {
 		const types = ( data.comment_types || [ 'default' ] ) as string[];
@@ -78,23 +84,6 @@ export default function CommentsPage() {
 
 	return (
 		<PageLayout title={ __( 'Generate Comments', 'fakerpress' ) }>
-			{ results && (
-				<AdminNotice
-					type="success"
-					title={ __( 'Success', 'fakerpress' ) }
-					message={ `Generated ${
-						results.generated
-					} comments in ${ results.time.toFixed( 2 ) }s.` }
-				/>
-			) }
-			{ error && (
-				<AdminNotice
-					type="error"
-					title={ __( 'Error', 'fakerpress' ) }
-					message={ error }
-				/>
-			) }
-
 			<form onSubmit={ handleSubmit( onSubmit ) }>
 				<Controller
 					name="type"
@@ -294,6 +283,9 @@ export default function CommentsPage() {
 					progress={ progress }
 					results={ results }
 					error={ error }
+					errorDetails={ errorDetails }
+					module="comments"
+					onDismiss={ reset }
 				/>
 			</form>
 		</PageLayout>

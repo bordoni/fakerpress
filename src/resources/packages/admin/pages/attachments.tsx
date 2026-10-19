@@ -6,7 +6,6 @@ import { useGenerateModule } from '../hooks/use-generate-module';
 import { useAsyncSearch } from '../hooks/use-async-search';
 import { transformAttachmentsForm } from '../lib/transform';
 import { PageLayout } from '../components/layout/page-layout';
-import { AdminNotice } from '../components/layout/admin-notice';
 import { FormField } from '../components/form/form-field';
 import { RangeInput } from '../components/form/range-input';
 import {
@@ -48,8 +47,15 @@ interface AttachmentsFormData {
 
 export default function AttachmentsPage() {
 	const { data, ajaxNonces } = usePageConfig();
-	const { generate, isGenerating, progress, results, error, reset } =
-		useGenerateModule( 'attachments' );
+	const {
+		generate,
+		isGenerating,
+		progress,
+		results,
+		error,
+		errorDetails,
+		reset,
+	} = useGenerateModule( 'attachments' );
 
 	const providerOptions = useMemo( () => {
 		return ( data.image_providers || [] ) as {
@@ -112,23 +118,6 @@ export default function AttachmentsPage() {
 
 	return (
 		<PageLayout title={ __( 'Generate Attachments', 'fakerpress' ) }>
-			{ results && (
-				<AdminNotice
-					type="success"
-					title={ __( 'Success', 'fakerpress' ) }
-					message={ `Generated ${
-						results.generated
-					} attachments in ${ results.time.toFixed( 2 ) }s.` }
-				/>
-			) }
-			{ error && (
-				<AdminNotice
-					type="error"
-					title={ __( 'Error', 'fakerpress' ) }
-					message={ error }
-				/>
-			) }
-
 			<form onSubmit={ handleSubmit( onSubmit ) }>
 				<Controller
 					name="qty"
@@ -480,6 +469,9 @@ export default function AttachmentsPage() {
 					progress={ progress }
 					results={ results }
 					error={ error }
+					errorDetails={ errorDetails }
+					module="attachments"
+					onDismiss={ reset }
 				/>
 			</form>
 		</PageLayout>

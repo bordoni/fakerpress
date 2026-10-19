@@ -22,7 +22,18 @@ function DialogTrigger( {
 function DialogPortal( {
 	...props
 }: React.ComponentProps< typeof DialogPrimitive.Portal > ) {
-	return <DialogPrimitive.Portal data-slot="dialog-portal" { ...props } />;
+	// Portal into the React root so the dialog keeps the FakerPress theme variables.
+	const container =
+		typeof document !== 'undefined'
+			? document.getElementById( 'fakerpress-react-root' )
+			: undefined;
+	return (
+		<DialogPrimitive.Portal
+			data-slot="dialog-portal"
+			container={ container ?? undefined }
+			{ ...props }
+		/>
+	);
 }
 
 function DialogClose( {
@@ -31,21 +42,22 @@ function DialogClose( {
 	return <DialogPrimitive.Close data-slot="dialog-close" { ...props } />;
 }
 
-function DialogOverlay( {
-	className,
-	...props
-}: React.ComponentProps< typeof DialogPrimitive.Overlay > ) {
-	return (
-		<DialogPrimitive.Overlay
-			data-slot="dialog-overlay"
-			className={ cn(
-				'fp:fixed fp:inset-0 fp:z-50 fp:bg-black/50 fp:data-[state=closed]:animate-out fp:data-[state=closed]:fade-out-0 fp:data-[state=open]:animate-in fp:data-[state=open]:fade-in-0',
-				className
-			) }
-			{ ...props }
-		/>
-	);
-}
+// forwardRef: the dialog's Presence passes a ref to the overlay, which React 18 drops on plain function components.
+const DialogOverlay = React.forwardRef<
+	React.ComponentRef< typeof DialogPrimitive.Overlay >,
+	React.ComponentProps< typeof DialogPrimitive.Overlay >
+>( ( { className, ...props }, ref ) => (
+	<DialogPrimitive.Overlay
+		ref={ ref }
+		data-slot="dialog-overlay"
+		className={ cn(
+			'fp:fixed fp:inset-0 fp:z-[100000] fp:bg-black/50 fp:data-[state=closed]:animate-out fp:data-[state=closed]:fade-out-0 fp:data-[state=open]:animate-in fp:data-[state=open]:fade-in-0',
+			className
+		) }
+		{ ...props }
+	/>
+) );
+DialogOverlay.displayName = 'DialogOverlay';
 
 function DialogContent( {
 	className,
@@ -61,7 +73,7 @@ function DialogContent( {
 			<DialogPrimitive.Content
 				data-slot="dialog-content"
 				className={ cn(
-					'fp:fixed fp:top-[50%] fp:left-[50%] fp:z-50 fp:grid fp:w-full fp:max-w-[calc(100%-2rem)] fp:translate-x-[-50%] fp:translate-y-[-50%] fp:gap-4 fp:rounded-lg fp:border fp:bg-background fp:p-6 fp:shadow-lg fp:duration-200 fp:outline-none fp:data-[state=closed]:animate-out fp:data-[state=closed]:fade-out-0 fp:data-[state=closed]:zoom-out-95 fp:data-[state=open]:animate-in fp:data-[state=open]:fade-in-0 fp:data-[state=open]:zoom-in-95 fp:sm:max-w-lg',
+					'fp:fixed fp:top-[50%] fp:left-[50%] fp:z-[100001] fp:grid fp:w-full fp:max-w-[calc(100%-2rem)] fp:translate-x-[-50%] fp:translate-y-[-50%] fp:gap-4 fp:rounded-lg fp:border fp:bg-background fp:p-6 fp:shadow-lg fp:duration-200 fp:outline-none fp:data-[state=closed]:animate-out fp:data-[state=closed]:fade-out-0 fp:data-[state=closed]:zoom-out-95 fp:data-[state=open]:animate-in fp:data-[state=open]:fade-in-0 fp:data-[state=open]:zoom-in-95 fp:sm:max-w-lg',
 					className
 				) }
 				{ ...props }

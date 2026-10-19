@@ -151,7 +151,8 @@ class Attachments extends Abstract_Endpoint {
 			$results,
 			$batch_info,
 			$formatted_links,
-			$end_time - $start_time
+			$end_time - $start_time,
+			'attachment'
 		);
 
 		$message = $this->format_batched_success_message(

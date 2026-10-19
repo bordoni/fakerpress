@@ -56,7 +56,7 @@ describe( 'useGenerateModule', () => {
 			expect.objectContaining( {
 				generated: 3,
 				ids: [ 1, 2, 3 ],
-				links: {},
+				links: [],
 				time: 0.5,
 			} )
 		);
@@ -182,6 +182,92 @@ describe( 'useGenerateModule', () => {
 		);
 		expect( result.current.results ).toEqual(
 			expect.objectContaining( { generated: 40 } )
+		);
+	} );
+
+	it( 'keeps every batch: links and items concatenated, raw requests and responses in order', async () => {
+		const item = ( id: number ) => ( {
+			id,
+			title: `Post ${ id }`,
+			type: 'post',
+			status: 'publish',
+			date: null,
+			summary: [],
+			edit_url: null,
+			view_url: null,
+			thumbnail: null,
+			details: {},
+		} );
+		mockApiFetch
+			.mockResolvedValueOnce( {
+				success: true,
+				data: {
+					generated: 1,
+					ids: [ 1 ],
+					links: [ '<a>1</a>' ],
+					items: [ item( 1 ) ],
+					list_url: 'edit.php?post_type=post',
+					time: 1,
+					is_capped: true,
+					offset: 1,
+					total: 2,
+				},
+			} )
+			.mockResolvedValueOnce( {
+				success: true,
+				data: {
+					generated: 1,
+					ids: [ 2 ],
+					links: [ '<a>2</a>' ],
+					items: [ item( 2 ) ],
+					time: 1,
+					is_capped: false,
+					offset: 2,
+					total: 2,
+				},
+			} );
+
+		const { result } = renderHook( () => useGenerateModule( 'posts' ) );
+
+		await act( async () => {
+			await result.current.generate( { qty: { min: 2, max: 2 } } );
+		} );
+
+		const results = result.current.results!;
+		// Index-keyed merging used to let batch 2's link overwrite batch 1's.
+		expect( results.links ).toEqual( [ '<a>1</a>', '<a>2</a>' ] );
+		expect( results.items.map( ( i ) => i.id ) ).toEqual( [ 1, 2 ] );
+		expect( results.listUrl ).toBe( 'edit.php?post_type=post' );
+		expect( results.batches ).toHaveLength( 2 );
+		expect( results.batches[ 1 ].request ).toEqual(
+			expect.objectContaining( { offset: 1, total: 2 } )
+		);
+	} );
+
+	it( 'reads the message, code and status from a REST error body', async () => {
+		mockApiFetch.mockRejectedValueOnce( {
+			code: 'insufficient_permissions',
+			message:
+				'Your user needs the "edit_posts" permission to generate posts.',
+			data: { status: 403 },
+		} );
+
+		const { result } = renderHook( () => useGenerateModule( 'posts' ) );
+
+		await act( async () => {
+			await result.current.generate( { qty: { min: 1, max: 1 } } );
+		} );
+
+		// Before, anything that was not an Error showed "An unknown error occurred."
+		expect( result.current.error ).toBe(
+			'Your user needs the "edit_posts" permission to generate posts.'
+		);
+		expect( result.current.errorDetails ).toEqual(
+			expect.objectContaining( {
+				code: 'insufficient_permissions',
+				status: 403,
+				request: expect.objectContaining( { offset: 0 } ),
+			} )
 		);
 	} );
 } );

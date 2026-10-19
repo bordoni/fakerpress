@@ -5,7 +5,6 @@ import { usePageConfig } from '../hooks/use-page-config';
 import { useGenerateModule } from '../hooks/use-generate-module';
 import { transformTermsForm } from '../lib/transform';
 import { PageLayout } from '../components/layout/page-layout';
-import { AdminNotice } from '../components/layout/admin-notice';
 import { FormField } from '../components/form/form-field';
 import { RangeInput } from '../components/form/range-input';
 import {
@@ -25,8 +24,15 @@ interface TermsFormData {
 
 export default function TermsPage() {
 	const { data } = usePageConfig();
-	const { generate, isGenerating, progress, results, error, reset } =
-		useGenerateModule( 'terms' );
+	const {
+		generate,
+		isGenerating,
+		progress,
+		results,
+		error,
+		errorDetails,
+		reset,
+	} = useGenerateModule( 'terms' );
 
 	const taxonomyOptions: ComboboxOption[] = useMemo( () => {
 		const taxonomies = ( data.taxonomies || {} ) as Record<
@@ -61,23 +67,6 @@ export default function TermsPage() {
 
 	return (
 		<PageLayout title={ __( 'Generate Terms', 'fakerpress' ) }>
-			{ results && (
-				<AdminNotice
-					type="success"
-					title={ __( 'Success', 'fakerpress' ) }
-					message={ `Generated ${
-						results.generated
-					} terms in ${ results.time.toFixed( 2 ) }s.` }
-				/>
-			) }
-			{ error && (
-				<AdminNotice
-					type="error"
-					title={ __( 'Error', 'fakerpress' ) }
-					message={ error }
-				/>
-			) }
-
 			<form onSubmit={ handleSubmit( onSubmit ) }>
 				<Controller
 					name="qty"
@@ -178,6 +167,9 @@ export default function TermsPage() {
 					progress={ progress }
 					results={ results }
 					error={ error }
+					errorDetails={ errorDetails }
+					module="terms"
+					onDismiss={ reset }
 				/>
 			</form>
 		</PageLayout>
