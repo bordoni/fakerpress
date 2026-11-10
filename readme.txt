@@ -4,7 +4,7 @@ Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 6.6
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        0.10.0
+Stable tag:        0.10.1
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -167,7 +167,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 
 == Changelog ==
 
-= 0.10.1 &mdash; TBD =
+= 0.10.1 &mdash; 10 of November 2026 =
 
 * Fix - Erasing faked data from FakerPress > Settings works again, instead of stopping on "The link you followed has expired." [[#252](https://github.com/bordoni/fakerpress/pull/252)]
 
