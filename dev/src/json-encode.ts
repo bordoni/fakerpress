@@ -9,27 +9,28 @@
  *   ' → \u0027
  *   " inside string values → \u0022
  *   / → \/ (PHP default)
+ * @param data
  */
-export function phpJsonEncode(data: unknown): string {
-	const json = JSON.stringify(data);
+export function phpJsonEncode( data: unknown ): string {
+	const json = JSON.stringify( data );
 
 	// Process character by character to correctly handle only quotes inside string values
 	let result = '';
 	let inString = false;
 	let i = 0;
 
-	while (i < json.length) {
-		const ch = json[i];
+	while ( i < json.length ) {
+		const ch = json[ i ];
 
-		if (ch === '\\' && inString) {
+		if ( ch === '\\' && inString ) {
 			// Escaped character — copy both chars verbatim
-			result += ch + json[i + 1];
+			result += ch + json[ i + 1 ];
 			i += 2;
 			continue;
 		}
 
-		if (ch === '"') {
-			if (!inString) {
+		if ( ch === '"' ) {
+			if ( ! inString ) {
 				// Opening quote of a JSON string — keep as literal "
 				inString = true;
 				result += '"';
@@ -43,9 +44,9 @@ export function phpJsonEncode(data: unknown): string {
 			continue;
 		}
 
-		if (inString) {
+		if ( inString ) {
 			// Apply PHP hex replacements inside string values
-			switch (ch) {
+			switch ( ch ) {
 				case '<':
 					result += '\\u003C';
 					break;

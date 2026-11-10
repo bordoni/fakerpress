@@ -12,7 +12,7 @@ export interface ReadmeSection {
 export interface ParsedReadme {
 	title: string;
 	shortDescription: string;
-	metadata: Record<string, string | string[]>;
+	metadata: Record< string, string | string[] >;
 	sections: ReadmeSection[];
 }
 
@@ -26,7 +26,7 @@ export interface ChangelogVersion {
 export interface ReadmeDataSection {
 	name: string;
 	content: string | null;
-	versions?: Record<string, ChangelogVersion>;
+	versions?: Record< string, ChangelogVersion >;
 }
 
-export type ReadmeData = Record<string, ReadmeDataSection>;
+export type ReadmeData = Record< string, ReadmeDataSection >;

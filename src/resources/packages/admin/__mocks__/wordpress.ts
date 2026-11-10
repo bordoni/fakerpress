@@ -25,6 +25,7 @@ Object.defineProperty( window, 'fakerpressPageConfig', {
 		page: 'test',
 		restRoot: 'http://localhost/wp-json/',
 		restNonce: 'test-nonce-123',
+		requestNonce: 'request-nonce-123',
 		ajaxUrl: 'http://localhost/wp-admin/admin-ajax.php',
 		ajaxNonces: {},
 		data: {},

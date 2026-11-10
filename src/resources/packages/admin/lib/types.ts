@@ -9,6 +9,8 @@ export interface PageConfig {
 	page: string;
 	restRoot: string;
 	restNonce: string;
+	/** Nonce for form POSTs to this view (`fakerpress.request.<view>`), checked by `check_admin_referer()`. */
+	requestNonce: string;
 	ajaxUrl: string;
 	ajaxNonces: Record< string, string >;
 	data: Record< string, unknown >;
