@@ -18,47 +18,49 @@ const PREDEFINED_KEYS = [
 	'License URI',
 ];
 
-export function parseReadmeTxt(source: string): ParsedReadme {
-	const match = source.match(/^=== (.+?) ===\n(.+?)\n\n(.+?)\n(.+)/s);
-	if (!match) {
-		throw new Error('Malformed metadata block');
+export function parseReadmeTxt( source: string ): ParsedReadme {
+	const match = source.match( /^=== (.+?) ===\n(.+?)\n\n(.+?)\n(.+)/s );
+	if ( ! match ) {
+		throw new Error( 'Malformed metadata block' );
 	}
 
-	const title = match[1];
-	const shortDescription = match[3];
-	const rest = match[4];
+	const title = match[ 1 ];
+	const shortDescription = match[ 3 ];
+	const rest = match[ 4 ];
 
 	// Parse metadata — predefined keys first, then additional in source order
-	const metadata: Record<string, string | string[]> = {};
-	for (const key of PREDEFINED_KEYS) {
-		metadata[key] = '';
+	const metadata: Record< string, string | string[] > = {};
+	for ( const key of PREDEFINED_KEYS ) {
+		metadata[ key ] = '';
 	}
 
-	for (const line of match[2].split('\n')) {
-		const m = line.match(/^(.+?):\s+(.+)$/);
-		if (!m) {
-			throw new Error(`Parse error in ${line}`);
+	for ( const line of match[ 2 ].split( '\n' ) ) {
+		const m = line.match( /^(.+?):\s+(.+)$/ );
+		if ( ! m ) {
+			throw new Error( `Parse error in ${ line }` );
 		}
-		metadata[m[1]] = m[2];
+		metadata[ m[ 1 ] ] = m[ 2 ];
 	}
 
 	// Split multi-value fields
-	metadata['Contributors'] = (metadata['Contributors'] as string).split(/\s*,\s*/);
-	metadata['Tags'] = (metadata['Tags'] as string).split(/\s*,\s*/);
+	metadata.Contributors = ( metadata.Contributors as string ).split(
+		/\s*,\s*/
+	);
+	metadata.Tags = ( metadata.Tags as string ).split( /\s*,\s*/ );
 
 	// Parse sections
 	const sections: ReadmeSection[] = [];
 	const sectionRegex = /(?:^|\n)== (.+?) ==\n(.+?)(?=\n== |$)/gs;
 	let sectionMatch;
 
-	while ((sectionMatch = sectionRegex.exec(rest)) !== null) {
-		const heading = sectionMatch[1];
-		let body = sectionMatch[2].trim();
+	while ( ( sectionMatch = sectionRegex.exec( rest ) ) !== null ) {
+		const heading = sectionMatch[ 1 ];
+		let body = sectionMatch[ 2 ].trim();
 		const subsections: { heading: string; body: string }[] = [];
 
 		let description = '';
-		if (body.includes('---')) {
-			description = body.split('---')[0];
+		if ( body.includes( '---' ) ) {
+			description = body.split( '---' )[ 0 ];
 		}
 
 		// Parse subsections
@@ -66,133 +68,144 @@ export function parseReadmeTxt(source: string): ParsedReadme {
 		let subMatch;
 		let hasSubsections = false;
 
-		while ((subMatch = subRegex.exec(body)) !== null) {
+		while ( ( subMatch = subRegex.exec( body ) ) !== null ) {
 			hasSubsections = true;
-			subsections.push({
-				heading: subMatch[1],
-				body: subMatch[2].trim(),
-			});
+			subsections.push( {
+				heading: subMatch[ 1 ],
+				body: subMatch[ 2 ].trim(),
+			} );
 		}
 
-		if (hasSubsections) {
+		if ( hasSubsections ) {
 			body = description;
 		}
 
-		sections.push({ heading, body, subsections });
+		sections.push( { heading, body, subsections } );
 	}
 
 	return { title, shortDescription, metadata, sections };
 }
 
-export function readmeToMarkdown(readmeTxtPath: string, source: string): string {
-	const readme = parseReadmeTxt(source);
-	const readmeDir = dirname(readmeTxtPath);
+export function readmeToMarkdown(
+	readmeTxtPath: string,
+	source: string
+): string {
+	const readme = parseReadmeTxt( source );
+	const readmeDir = dirname( readmeTxtPath );
 
 	// Format metadata
-	const formatted: Record<string, string> = {};
+	const formatted: Record< string, string > = {};
 
-	for (const [key, value] of Object.entries(readme.metadata)) {
-		if (key === 'Contributors') {
-			formatted[key] = (value as string[])
-				.map((c) => {
+	for ( const [ key, value ] of Object.entries( readme.metadata ) ) {
+		if ( key === 'Contributors' ) {
+			formatted[ key ] = ( value as string[] )
+				.map( ( c ) => {
 					const lc = c.toLowerCase();
-					return `[${lc}](http://profiles.wordpress.org/${lc})`;
-				})
-				.join(', ');
-		} else if (key === 'Tags') {
-			formatted[key] = (value as string[])
-				.map((tag) => {
-					const encoded = encodeURIComponent(tag).replace(/%20/g, '+');
-					return `[${tag}](http://wordpress.org/plugins/tags/${encoded})`;
-				})
-				.join(', ');
-		} else if (key === 'License') {
-			formatted[key] = `[${value as string}](${readme.metadata['License URI'] as string})`;
-		} else if (key === 'License URI') {
+					return `[${ lc }](http://profiles.wordpress.org/${ lc })`;
+				} )
+				.join( ', ' );
+		} else if ( key === 'Tags' ) {
+			formatted[ key ] = ( value as string[] )
+				.map( ( tag ) => {
+					const encoded = encodeURIComponent( tag ).replace(
+						/%20/g,
+						'+'
+					);
+					return `[${ tag }](http://wordpress.org/plugins/tags/${ encoded })`;
+				} )
+				.join( ', ' );
+		} else if ( key === 'License' ) {
+			formatted[ key ] = `[${ value as string }](${
+				readme.metadata[ 'License URI' ] as string
+			})`;
+		} else if ( key === 'License URI' ) {
 			// Skip — merged into License
 			continue;
-		} else if (key === 'Stable tag' && value === 'trunk') {
-			formatted[key] = 'trunk (master)';
+		} else if ( key === 'Stable tag' && value === 'trunk' ) {
+			formatted[ key ] = 'trunk (master)';
 		} else {
-			formatted[key] = value as string;
+			formatted[ key ] = value as string;
 		}
 	}
 
 	// YouTube embed converter
-	const youtubeReplace = (body: string): string =>
+	const youtubeReplace = ( body: string ): string =>
 		body.replace(
 			/#\[youtube\s+(?:http:\/\/www\.youtube\.com\/watch\?v=|http:\/\/youtu\.be\/)(.+?)\]/g,
-			'[![Play video on YouTube](http://i1.ytimg.com/vi/$1/hqdefault.jpg)](http://www.youtube.com/watch?v=$1)',
+			'[![Play video on YouTube](http://i1.ytimg.com/vi/$1/hqdefault.jpg)](http://www.youtube.com/watch?v=$1)'
 		);
 
 	// Screenshot section formatter
-	const formatScreenshots = (body: string): string => {
+	const formatScreenshots = ( body: string ): string => {
 		body = body.trim();
-		const matches = [...body.matchAll(/^\d+\. (.+?)$/gm)];
-		if (!matches.length) {
-			throw new Error('Malformed screenshot section');
+		const matches = [ ...body.matchAll( /^\d+\. (.+?)$/gm ) ];
+		if ( ! matches.length ) {
+			throw new Error( 'Malformed screenshot section' );
 		}
 
 		let newBody = '';
-		for (let i = 0; i < matches.length; i++) {
-			const extensions = ['jpg', 'gif', 'png'];
+		for ( let i = 0; i < matches.length; i++ ) {
+			const extensions = [ 'jpg', 'gif', 'png' ];
 			let filepath: string | null = null;
-			for (const ext of extensions) {
-				const candidate = `assets/screenshot-${i + 1}.${ext}`;
-				if (existsSync(join(readmeDir, candidate))) {
+			for ( const ext of extensions ) {
+				const candidate = `assets/screenshot-${ i + 1 }.${ ext }`;
+				if ( existsSync( join( readmeDir, candidate ) ) ) {
 					filepath = candidate;
 					break;
 				}
 			}
-			if (!filepath) continue;
+			if ( ! filepath ) {
+				continue;
+			}
 
-			const name = matches[i][1];
-			newBody += `### ${name}\n`;
+			const name = matches[ i ][ 1 ];
+			newBody += `### ${ name }\n`;
 			newBody += '\n';
-			newBody += `![${name}](${filepath})\n`;
+			newBody += `![${ name }](${ filepath })\n`;
 			newBody += '\n';
 		}
 		return newBody;
 	};
 
 	// Build markdown
-	let markdown = '<!-- DO NOT EDIT THIS FILE; it is auto-generated from readme.txt -->\n';
-	markdown += `# ${readme.title}\n`;
+	let markdown =
+		'<!-- DO NOT EDIT THIS FILE; it is auto-generated from readme.txt -->\n';
+	markdown += `# ${ readme.title }\n`;
 	markdown += '\n';
 
-	if (existsSync(join(readmeDir, 'assets/banner-1544x500.png'))) {
+	if ( existsSync( join( readmeDir, 'assets/banner-1544x500.png' ) ) ) {
 		markdown += '![Banner](assets/banner-1544x500.png)\n';
 	}
 
-	markdown += `${readme.shortDescription}\n`;
+	markdown += `${ readme.shortDescription }\n`;
 	markdown += '\n';
 
-	for (const [name, value] of Object.entries(formatted)) {
-		markdown += `**${name}:** ${value}  \n`;
+	for ( const [ name, value ] of Object.entries( formatted ) ) {
+		markdown += `**${ name }:** ${ value }  \n`;
 	}
 	markdown += '\n';
 
-	for (const section of readme.sections) {
-		markdown += `## ${section.heading} ##\n`;
+	for ( const section of readme.sections ) {
+		markdown += `## ${ section.heading } ##\n`;
 		markdown += '\n';
 
 		let body = section.body;
-		body = youtubeReplace(body);
+		body = youtubeReplace( body );
 
 		// PHP applies trim() when a section formatter exists (Description, Screenshots)
-		if (section.heading === 'Description') {
+		if ( section.heading === 'Description' ) {
 			body = body.trim();
-		} else if (section.heading === 'Screenshots') {
-			body = formatScreenshots(body).trim();
+		} else if ( section.heading === 'Screenshots' ) {
+			body = formatScreenshots( body ).trim();
 		}
 
-		if (body) {
-			markdown += `${body}\n`;
+		if ( body ) {
+			markdown += `${ body }\n`;
 		}
 
-		for (const sub of section.subsections) {
-			markdown += `### ${sub.heading} ###\n`;
-			markdown += `${sub.body}\n`;
+		for ( const sub of section.subsections ) {
+			markdown += `### ${ sub.heading } ###\n`;
+			markdown += `${ sub.body }\n`;
 			markdown += '\n';
 		}
 

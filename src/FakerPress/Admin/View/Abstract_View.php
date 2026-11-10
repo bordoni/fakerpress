@@ -195,14 +195,28 @@ abstract class Abstract_View extends Template implements Interface_View {
 			'fakerpress-admin-react',
 			'fakerpressPageConfig',
 			[
-				'page'       => static::get_slug(),
-				'restRoot'   => esc_url_raw( rest_url() ),
-				'restNonce'  => wp_create_nonce( 'wp_rest' ),
-				'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
-				'ajaxNonces' => $this->get_ajax_nonces(),
-				'data'       => $this->get_page_data(),
+				'page'         => static::get_slug(),
+				'restRoot'     => esc_url_raw( rest_url() ),
+				'restNonce'    => wp_create_nonce( 'wp_rest' ),
+				'requestNonce' => wp_create_nonce( static::get_request_nonce_action() ),
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+				'ajaxNonces'   => $this->get_ajax_nonces(),
+				'data'         => $this->get_page_data(),
 			] 
 		);
+	}
+
+	/**
+	 * Get the nonce action that guards form POSTs to this view.
+	 *
+	 * The React page gets a nonce for it as `requestNonce`, and `parse_request()` checks it.
+	 *
+	 * @since 0.10.1
+	 *
+	 * @return string Nonce action, e.g. `fakerpress.request.settings`.
+	 */
+	public static function get_request_nonce_action(): string {
+		return Plugin::$slug . '.request.' . static::get_slug();
 	}
 
 	/**
@@ -243,9 +257,7 @@ abstract class Abstract_View extends Template implements Interface_View {
 			return false;
 		}
 
-		$nonce_slug = Plugin::$slug . '.request.' . static::get_slug();
-
-		if ( ! check_admin_referer( $nonce_slug ) ) {
+		if ( ! check_admin_referer( static::get_request_nonce_action() ) ) {
 			return false;
 		}
 

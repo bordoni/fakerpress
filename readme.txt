@@ -167,6 +167,10 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 
 == Changelog ==
 
+= 0.10.1 &mdash; TBD =
+
+* Fix - Erasing faked data from FakerPress > Settings works again, instead of stopping on "The link you followed has expired." [[#251](https://github.com/bordoni/fakerpress/issues/251)]
+
 = 0.10.0 &mdash; 18 of October 2026 =
 
 * Feature - Rebuild every FakerPress admin page (Posts, Users, Terms, Comments, Attachments and Settings) in React with Tailwind CSS v4 and shadcn/ui, on top of the REST API; the Taxonomy and Meta Field Rules keep the familiar numbered, label-left layout and every meta type, including Date. [[#187](https://github.com/bordoni/fakerpress/pull/187)]

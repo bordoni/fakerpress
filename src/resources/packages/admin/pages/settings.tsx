@@ -17,7 +17,7 @@ import {
 } from '../components/ui/dialog';
 
 export default function SettingsPage() {
-	const { data, restNonce } = usePageConfig();
+	const { data, requestNonce } = usePageConfig();
 	const erasePhrase = ( data.erase_phrase as string ) || 'Let it Go!';
 
 	const [ phrase, setPhrase ] = useState( '' );
@@ -50,18 +50,11 @@ export default function SettingsPage() {
 				form.appendChild( input );
 			};
 
-			addField( '_wpnonce', restNonce );
+			// The PHP handler checks this view's request nonce, not the REST one.
+			addField( '_wpnonce', requestNonce );
 			addField( 'fakerpress[erase_phrase]', phrase );
 			addField( 'fakerpress[actions][delete]', '1' );
 			addField( '_wp_http_referer', window.location.href );
-
-			// Use the actual WP nonce from the page.
-			const wpNonceInput = document.querySelector< HTMLInputElement >(
-				'input[name="_wpnonce"]'
-			);
-			if ( wpNonceInput ) {
-				addField( '_wpnonce', wpNonceInput.value );
-			}
 
 			document.body.appendChild( form );
 			form.submit();
@@ -75,7 +68,7 @@ export default function SettingsPage() {
 			} );
 			setIsSubmitting( false );
 		}
-	}, [ phrase, restNonce ] );
+	}, [ phrase, requestNonce ] );
 
 	return (
 		<PageLayout title={ __( 'Settings', 'fakerpress' ) }>
