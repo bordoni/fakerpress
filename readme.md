@@ -7,8 +7,8 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Contributors:** [bordoni](http://profiles.wordpress.org/bordoni)  
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy+content), [lorem ipsun](http://wordpress.org/plugins/tags/lorem+ipsun), [testing](http://wordpress.org/plugins/tags/testing), [developer](http://wordpress.org/plugins/tags/developer)  
 **Requires at least:** 6.6  
-**Tested up to:** 7.0  
-**Stable tag:** 0.10.0  
+**Tested up to:** 7.1  
+**Stable tag:** 0.10.1  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 **Requires PHP:** 8.1  
 **Donate link:** https://fakerpress.com/r/sponsor  
@@ -145,7 +145,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 
 ## Changelog ##
 
-### 0.10.1 &mdash; TBD ###
+### 0.10.1 &mdash; 10 of November 2026 ###
 * Fix - Erasing faked data from FakerPress > Settings works again, instead of stopping on "The link you followed has expired." [[#252](https://github.com/bordoni/fakerpress/pull/252)]
 
 ### 0.10.0 &mdash; 18 of October 2026 ###
