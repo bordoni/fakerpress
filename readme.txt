@@ -169,7 +169,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 
 = 0.10.1 &mdash; TBD =
 
-* Fix - Erasing faked data from FakerPress > Settings works again, instead of stopping on "The link you followed has expired." [[#251](https://github.com/bordoni/fakerpress/issues/251)]
+* Fix - Erasing faked data from FakerPress > Settings works again, instead of stopping on "The link you followed has expired." [[#252](https://github.com/bordoni/fakerpress/pull/252)]
 
 = 0.10.0 &mdash; 18 of October 2026 =
 
