@@ -1,13 +1,15 @@
-name: Release to WordPress.org on Tag
+name: Release to WordPress.org
 
+# Publishing a GitHub Release ships it to WordPress.org: build the zip, write it to SVN
+# tags/<tag>, then point trunk's Stable tag at it so WordPress.org serves it as the update.
+# Pre-releases skip all of it. workflow_dispatch re-runs a release by hand.
 on:
-  push:
-    tags:
-      - '*'
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       destination_tag:
-        description: 'The tag version to create (e.g., 1.0.1)'
+        description: 'The tag version to release (e.g., 1.0.1)'
         required: true
         type: string
 
@@ -15,6 +17,7 @@ jobs:
   # Job to determine the previous tag
   find-previous-tag:
     name: Find Previous Tag
+    if: ${{ github.event_name == 'workflow_dispatch' || !github.event.release.prerelease }}
     runs-on: ubuntu-latest
     outputs:
       previous_tag: ${{ steps.get_previous_tag.outputs.previous_tag }}
@@ -63,6 +66,7 @@ jobs:
   # First job - build the ZIP file using the existing zip.yml workflow
   build:
     name: Build Plugin Package
+    if: ${{ github.event_name == 'workflow_dispatch' || !github.event.release.prerelease }}
     uses: ./.github/workflows/zip.yml
     with:
       production: true
@@ -76,4 +80,48 @@ jobs:
       source_tag: ${{ needs.find-previous-tag.outputs.previous_tag }}
       destination_tag: ${{ github.event.inputs.destination_tag || github.ref_name }}
       artifact_name: ${{ needs.build.outputs.zip_name }}
-    secrets: inherit 
+    secrets: inherit
+
+  # Last job - point trunk's Stable tag at the new tag, which is what makes WordPress.org offer it
+  stable-tag:
+    name: Set Stable Tag on SVN trunk
+    needs: release
+    runs-on: ubuntu-latest
+    env:
+      SVN_URL: https://plugins.svn.wordpress.org/fakerpress
+      TAG: ${{ github.event.inputs.destination_tag || github.ref_name }}
+      SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+      SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+    steps:
+      - name: Setup SVN
+        run: sudo apt-get update && sudo apt-get install -y subversion
+
+      - name: Check the SVN tag
+        run: |
+          # Only point trunk at a tag that exists and carries this version.
+          svn cat --non-interactive "$SVN_URL/tags/$TAG/fakerpress.php" | grep -Eq "^[[:space:]]*\*?[[:space:]]*Version:[[:space:]]*${TAG}[[:space:]]*$" || {
+            echo "::error::tags/$TAG/fakerpress.php is missing or not Version: $TAG"
+            exit 1
+          }
+
+      - name: Update trunk readme.txt
+        run: |
+          svn co --non-interactive --depth empty "$SVN_URL" svn
+          cd svn
+          svn up --non-interactive --depth empty trunk
+          svn up --non-interactive trunk/readme.txt
+
+          CURRENT=$(sed -n 's/^Stable tag:[[:space:]]*//p' trunk/readme.txt | tr -d '[:space:]')
+          echo "Trunk Stable tag: $CURRENT"
+          if [ "$CURRENT" == "$TAG" ]; then
+            echo "Already $TAG, nothing to commit"
+            echo "## Stable tag already \`$TAG\` :white_check_mark:" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          sed -i -E "s/^(Stable tag:[[:space:]]*).*/\1$TAG/" trunk/readme.txt
+          svn diff trunk/readme.txt
+          svn ci trunk/readme.txt -m "Stable tag $TAG" --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD"
+
+          echo "## Stable tag \`$CURRENT\` → \`$TAG\` :rocket:" >> "$GITHUB_STEP_SUMMARY"
+          echo "WordPress.org now offers $TAG: https://wordpress.org/plugins/fakerpress/" >> "$GITHUB_STEP_SUMMARY"
