@@ -145,6 +145,9 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 
 ## Changelog ##
 
+### 0.10.2 &mdash; TBD ###
+* Tweak - Buttons, select menus, checkboxes, switches, accordion headers and the dialog close button on the FakerPress admin pages show the pointer cursor on hover. [[#255](https://github.com/bordoni/fakerpress/pull/255)]
+
 ### 0.10.1 &mdash; 10 of November 2026 ###
 * Fix - Erasing faked data from FakerPress > Settings works again, instead of stopping on "The link you followed has expired." [[#252](https://github.com/bordoni/fakerpress/pull/252)]
 
