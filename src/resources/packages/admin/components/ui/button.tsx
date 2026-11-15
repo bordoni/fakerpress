@@ -5,7 +5,7 @@ import { Slot } from 'radix-ui';
 import { cn } from '@fp/admin/lib/utils';
 
 const buttonVariants = cva(
-	'fp:inline-flex fp:shrink-0 fp:items-center fp:justify-center fp:gap-2 fp:rounded-md fp:text-sm fp:font-medium fp:whitespace-nowrap fp:transition-all fp:outline-none fp:focus-visible:border-ring fp:focus-visible:ring-[3px] fp:focus-visible:ring-ring/50 fp:disabled:pointer-events-none fp:disabled:opacity-50 fp:aria-invalid:border-destructive fp:aria-invalid:ring-destructive/20 fp:dark:aria-invalid:ring-destructive/40 fp:[&_svg]:pointer-events-none fp:[&_svg]:shrink-0 fp:[&_svg:not([class*=size-])]:size-4',
+	'fp:inline-flex fp:shrink-0 fp:cursor-pointer fp:items-center fp:justify-center fp:gap-2 fp:rounded-md fp:text-sm fp:font-medium fp:whitespace-nowrap fp:transition-all fp:outline-none fp:focus-visible:border-ring fp:focus-visible:ring-[3px] fp:focus-visible:ring-ring/50 fp:disabled:pointer-events-none fp:disabled:opacity-50 fp:aria-invalid:border-destructive fp:aria-invalid:ring-destructive/20 fp:dark:aria-invalid:ring-destructive/40 fp:[&_svg]:pointer-events-none fp:[&_svg]:shrink-0 fp:[&_svg:not([class*=size-])]:size-4',
 	{
 		variants: {
 			variant: {
