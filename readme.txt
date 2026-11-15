@@ -4,7 +4,7 @@ Tags:              generator, dummy content, lorem ipsun, testing, developer
 Requires at least: 6.6
 Tested up to:      7.1
 Requires PHP:      8.1
-Stable tag:        0.10.1
+Stable tag:        0.10.2
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Donate link:       https://fakerpress.com/r/sponsor
@@ -167,7 +167,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 
 == Changelog ==
 
-= 0.10.2 &mdash; TBD =
+= 0.10.2 &mdash; 14 of November 2026 =
 
 * Tweak - Buttons, select menus, checkboxes, switches, accordion headers and the dialog close button on the FakerPress admin pages show the pointer cursor on hover. [[#255](https://github.com/bordoni/fakerpress/pull/255)]
 
