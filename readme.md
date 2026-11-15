@@ -8,7 +8,7 @@ FakerPress is a clean way to generate fake and dummy content to your WordPress, 
 **Tags:** [generator](http://wordpress.org/plugins/tags/generator), [dummy content](http://wordpress.org/plugins/tags/dummy+content), [lorem ipsun](http://wordpress.org/plugins/tags/lorem+ipsun), [testing](http://wordpress.org/plugins/tags/testing), [developer](http://wordpress.org/plugins/tags/developer)  
 **Requires at least:** 6.6  
 **Tested up to:** 7.1  
-**Stable tag:** 0.10.1  
+**Stable tag:** 0.10.2  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 **Requires PHP:** 8.1  
 **Donate link:** https://fakerpress.com/r/sponsor  
@@ -145,7 +145,7 @@ For help with or questions about FakerPress, visit the [WordPress Plugin Forums]
 
 ## Changelog ##
 
-### 0.10.2 &mdash; TBD ###
+### 0.10.2 &mdash; 14 of November 2026 ###
 * Tweak - Buttons, select menus, checkboxes, switches, accordion headers and the dialog close button on the FakerPress admin pages show the pointer cursor on hover. [[#255](https://github.com/bordoni/fakerpress/pull/255)]
 
 ### 0.10.1 &mdash; 10 of November 2026 ###
